@@ -1,0 +1,58 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Article {
+  id            Int      @id @default(autoincrement())
+  slug          String   @unique
+  headline      String                   // can be Bengali, English, or mixed
+  headlineBn    String?                  // optional separate Bengali headline
+  deck          String                   // 1–2 sentence subheadline
+  body          String                   // article body, plain paragraphs
+  kicker        String                   // e.g. "চ্যাম্পিয়নস লিগ · সেমিফাইনাল"
+  sport         String                   // football | basketball | cricket | tennis | f1 | rugby | athletics | other
+  mediaType     String                   // "photo" | "video"
+  mediaUrl      String                   // path in /public/media/
+  mediaCaption  String?
+  byline        String   @default("Staff Reporter")
+  isLead        Boolean  @default(false)
+  publishedAt   DateTime @default(now())
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model ScoreCard {
+  id            Int      @id @default(autoincrement())
+  league        String                   // e.g. "বাংলাদেশ প্রিমিয়ার লিগ", "EPL"
+  teamA         String
+  scoreA        String                   // supports "P1", "88", "3-2"
+  teamB         String
+  scoreB        String
+  winnerTeam    String?                  // "A" | "B" | null
+  status        String                   // "Full Time" | "৪৫+২'" | "Live" etc.
+  isLive        Boolean  @default(false)
+  sofascoreId   String?                  // SofaScore event ID for auto-sync
+  displayOrder  Int      @default(0)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model Sponsor {
+  id            Int      @id @default(autoincrement())
+  label         String   @default("Sponsor")
+  title         String
+  subtitle      String
+  ctaText       String
+  ctaUrl        String
+  placement     String                   // "inline" | "sidebar"
+  isActive      Boolean  @default(true)
+  displayOrder  Int      @default(0)
+}

@@ -1,0 +1,133 @@
+import type { Metadata } from 'next';
+import { notFound } from 'next/navigation';
+import { prisma } from '@/lib/prisma';
+import LeadStory from '@/components/LeadStory';
+import ArticleCard from '@/components/ArticleCard';
+import SponsorBlock from '@/components/SponsorBlock';
+import Sidebar from '@/components/Sidebar';
+
+interface PageProps {
+  params: { sport: string };
+}
+
+const SPORT_NAMES: Record<string, string> = {
+  football: 'ফুটবল',
+  cricket: 'ক্রিকেট',
+  basketball: 'বাস্কেটবল',
+  tennis: 'টেনিস',
+  f1: 'F1',
+  rugby: 'রাগবি',
+  athletics: 'অ্যাথলেটিক্স',
+  other: 'অন্যান্য',
+};
+
+const VALID_SPORTS = Object.keys(SPORT_NAMES);
+
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const sportBn = SPORT_NAMES[params.sport];
+  if (!sportBn) return { title: 'Sport Not Found' };
+  return {
+    title: `${sportBn} — খেলারদেশ`,
+    description: `${sportBn} সংক্রান্ত সর্বশেষ খবর।`,
+  };
+}
+
+/**
+ * Sport-filtered feed page — Section 4
+ * Same layout as homepage but filtered to one sport
+ */
+export default async function SportPage({ params }: PageProps) {
+  if (!VALID_SPORTS.includes(params.sport)) notFound();
+
+  const [lead, articles, scores, sponsors] = await Promise.all([
+    prisma.article.findFirst({
+      where: { sport: params.sport, isLead: true },
+      orderBy: { publishedAt: 'desc' },
+    }),
+    prisma.article.findMany({
+      where: { sport: params.sport, isLead: false },
+      orderBy: { publishedAt: 'desc' },
+      take: 20,
+      select: {
+        id: true, slug: true, headline: true, headlineBn: true,
+        deck: true, sport: true, mediaType: true, mediaUrl: true,
+        byline: true, publishedAt: true,
+      },
+    }),
+    prisma.scoreCard.findMany({
+      orderBy: [{ isLive: 'desc' }, { displayOrder: 'asc' }],
+    }),
+    prisma.sponsor.findMany({
+      where: { isActive: true },
+      orderBy: { displayOrder: 'asc' },
+    }),
+  ]);
+
+  const inlineSponsors = sponsors.filter((s) => s.placement === 'inline');
+  const sportBn = SPORT_NAMES[params.sport];
+
+  return (
+    <div style={{ backgroundColor: 'var(--bg-page)', minHeight: '100vh' }}>
+      {/* Sport heading */}
+      <div
+        className="px-4 lg:px-6 pt-6 pb-0 max-w-screen-xl mx-auto"
+        style={{ borderBottom: '1.5px solid var(--ink)' }}
+      >
+        <h1
+          style={{
+            fontFamily: "Georgia, 'Times New Roman', Times, serif",
+            fontWeight: 900,
+            fontSize: 'clamp(28px, 4vw, 48px)',
+            letterSpacing: '-0.02em',
+            color: 'var(--ink)',
+            marginBottom: 4,
+          }}
+        >
+          <span lang="bn">{sportBn}</span>
+        </h1>
+      </div>
+
+      {/* Desktop */}
+      <div className="hidden lg:grid max-w-screen-xl mx-auto px-6 pt-6 pb-12 gap-8"
+        style={{ gridTemplateColumns: '2fr 1fr' }}>
+        <div>
+          {lead && <div className="mb-8"><LeadStory article={lead} /></div>}
+          {articles.map((article, i) => (
+            <div key={article.id}>
+              <ArticleCard article={article} />
+              {(i + 1) % 3 === 0 && inlineSponsors[Math.floor(i / 3) % inlineSponsors.length] && (
+                <SponsorBlock
+                  {...inlineSponsors[Math.floor(i / 3) % inlineSponsors.length]}
+                />
+              )}
+            </div>
+          ))}
+          {articles.length === 0 && (
+            <p style={{ color: 'var(--ink-muted)', fontFamily: "'Hind Siliguri', sans-serif", fontSize: 14, padding: '24px 0' }}>
+              এই বিভাগে কোনো খবর নেই।
+            </p>
+          )}
+        </div>
+        <div><Sidebar scores={scores} sponsors={sponsors} /></div>
+      </div>
+
+      {/* Mobile */}
+      <div className="lg:hidden px-4 pb-12">
+        {lead && <div className="pt-4"><LeadStory article={lead} /></div>}
+        {articles.map((article, i) => (
+          <div key={article.id}>
+            <ArticleCard article={article} />
+            {(i + 1) % 3 === 0 && inlineSponsors[Math.floor(i / 3) % inlineSponsors.length] && (
+              <SponsorBlock {...inlineSponsors[Math.floor(i / 3) % inlineSponsors.length]} />
+            )}
+          </div>
+        ))}
+        {articles.length === 0 && (
+          <p style={{ color: 'var(--ink-muted)', fontFamily: "'Hind Siliguri', sans-serif", fontSize: 14, paddingTop: 24 }}>
+            এই বিভাগে কোনো খবর নেই।
+          </p>
+        )}
+      </div>
+    </div>
+  );
+}
