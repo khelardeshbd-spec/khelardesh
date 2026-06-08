@@ -3,6 +3,9 @@
 import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 
+export const runtime = 'edge';
+export const dynamic = 'force-dynamic';
+
 const SPORTS = ['football', 'cricket', 'basketball', 'tennis', 'f1', 'rugby', 'athletics', 'other'];
 
 interface Article {
@@ -40,7 +43,7 @@ export default function EditArticlePage({ params }: { params: { id: string } }) 
   useEffect(() => {
     fetch(`/api/admin/articles`)
       .then((r) => r.json())
-      .then((data) => {
+      .then((data: any) => {
         const found = data.articles?.find((a: Article) => a.id === parseInt(params.id, 10));
         if (found) {
           setArticle(found);
@@ -56,7 +59,8 @@ export default function EditArticlePage({ params }: { params: { id: string } }) 
     fd.append('file', file);
     const res = await fetch('/api/admin/upload', { method: 'POST', body: fd });
     if (!res.ok) throw new Error('Upload failed');
-    return (await res.json()).url;
+    const data = await res.json() as any;
+    return data.url;
   }
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -92,7 +96,10 @@ export default function EditArticlePage({ params }: { params: { id: string } }) 
         body: JSON.stringify(payload),
       });
 
-      if (!res.ok) throw new Error((await res.json()).error || 'Save failed');
+      if (!res.ok) {
+        const errorData = await res.json() as any;
+        throw new Error(errorData.error || 'Save failed');
+      }
       router.push('/admin/articles');
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : 'Error saving');

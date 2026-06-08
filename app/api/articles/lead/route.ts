@@ -1,5 +1,12 @@
 import { NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
+import { getPrisma } from '@/lib/prisma';
+
+export const runtime = 'edge';
+export const dynamic = 'force-dynamic';
+
+
+
+
 
 /**
  * GET /api/articles/lead
@@ -7,6 +14,7 @@ import { prisma } from '@/lib/prisma';
  */
 export async function GET() {
   try {
+    const prisma = getPrisma();
     const article = await prisma.article.findFirst({
       where: { isLead: true },
       orderBy: { publishedAt: 'desc' },

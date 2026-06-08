@@ -1,5 +1,12 @@
 import { NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
+import { getPrisma } from '@/lib/prisma';
+
+export const runtime = 'edge';
+export const dynamic = 'force-dynamic';
+
+
+
+
 
 /**
  * GET /api/articles/[slug]
@@ -10,6 +17,7 @@ export async function GET(
   { params }: { params: { slug: string } }
 ) {
   try {
+    const prisma = getPrisma();
     const article = await prisma.article.findUnique({
       where: { slug: params.slug },
     });

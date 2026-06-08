@@ -1,55 +1,43 @@
-import { NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
-import { writeFile, mkdir } from 'fs/promises';
-import path from 'path';
-import { randomBytes } from 'crypto';
+import { createClient } from '@supabase/supabase-js'
+import { NextRequest, NextResponse } from 'next/server'
 
-/**
- * POST /api/admin/upload
- * Multipart file upload → saves to /public/media/
- * Returns { url: '/media/filename.ext' }
- * Accepts: jpg, png, webp, mp4
- */
-export async function POST(request: Request) {
-  const session = await getServerSession(authOptions);
-  if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+export const runtime = 'edge';
+export const dynamic = 'force-dynamic';
 
-  try {
-    const formData = await request.formData();
-    const file = formData.get('file') as File | null;
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SECRET_KEY!
+)
 
-    if (!file) {
-      return NextResponse.json({ error: 'No file provided' }, { status: 400 });
-    }
+export async function POST(req: NextRequest) {
+  const { getServerSession } = require('next-auth');
+  const session = await getServerSession()
+  if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-    const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'video/mp4'];
-    if (!allowedTypes.includes(file.type)) {
-      return NextResponse.json(
-        { error: 'File type not allowed. Use: jpg, png, webp, mp4' },
-        { status: 400 }
-      );
-    }
+  const formData = await req.formData()
+  const file = formData.get('file') as File
+  if (!file) return NextResponse.json({ error: 'No file' }, { status: 400 })
 
-    const extMap: Record<string, string> = {
-      'image/jpeg': '.jpg',
-      'image/png': '.png',
-      'image/webp': '.webp',
-      'video/mp4': '.mp4',
-    };
-    const ext = extMap[file.type];
-    const uniqueName = `${Date.now()}-${randomBytes(4).toString('hex')}${ext}`;
+  const ext = file.name.split('.').pop()
+  const key = `${crypto.randomUUID()}.${ext}`
+  const buffer = Buffer.from(await file.arrayBuffer())
 
-    const mediaDir = path.join(process.cwd(), 'public', 'media');
-    await mkdir(mediaDir, { recursive: true });
+  const { data, error } = await supabase.storage
+    .from(process.env.SUPABASE_BUCKET_NAME!)
+    .upload(key, buffer, {
+      contentType: file.type,
+      upsert: true
+    })
 
-    const bytes = await file.arrayBuffer();
-    const buffer = Buffer.from(bytes);
-    await writeFile(path.join(mediaDir, uniqueName), buffer);
-
-    return NextResponse.json({ url: `/media/${uniqueName}` });
-  } catch (error) {
-    console.error('[POST /api/admin/upload]', error);
-    return NextResponse.json({ error: 'Upload failed' }, { status: 500 });
+  if (error) {
+    console.error('Supabase upload error:', error)
+    return NextResponse.json({ error: 'Upload failed' }, { status: 500 })
   }
+
+  const { data: publicUrlData } = supabase.storage
+    .from(process.env.SUPABASE_BUCKET_NAME!)
+    .getPublicUrl(key)
+
+  const url = publicUrlData.publicUrl
+  return NextResponse.json({ url })
 }

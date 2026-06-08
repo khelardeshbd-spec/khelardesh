@@ -51,7 +51,7 @@ export default function AdminScoresPage() {
 
   async function loadScores() {
     const res = await fetch('/api/admin/scores');
-    const data = await res.json();
+    const data = await res.json() as any;
     setScores(data.scores ?? []);
     setLoading(false);
   }
@@ -83,7 +83,10 @@ export default function AdminScoresPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ ...form, winnerTeam: form.winnerTeam || null, sofascoreId: form.sofascoreId || null }),
       });
-      if (!res.ok) throw new Error((await res.json()).error);
+      if (!res.ok) {
+        const err = await res.json() as any;
+        throw new Error(err.error);
+      }
       resetForm();
       await loadScores();
     } catch (err: unknown) {
@@ -104,7 +107,7 @@ export default function AdminScoresPage() {
     setSearching(true);
     try {
       const res = await fetch(`/api/proxy/sofascore?endpoint=/search/all?q=${encodeURIComponent(searchQuery)}`);
-      const data = await res.json();
+      const data = await res.json() as any;
       setSearchResults(data.results?.events ?? []);
     } catch {
       setSearchResults([]);

@@ -33,7 +33,7 @@ export default function AdminSponsorsPage() {
 
   async function loadSponsors() {
     const res = await fetch('/api/admin/sponsors');
-    const data = await res.json();
+    const data = await res.json() as any;
     setSponsors(data.sponsors ?? []);
     setLoading(false);
   }
@@ -52,7 +52,10 @@ export default function AdminSponsorsPage() {
       const url = editId ? `/api/admin/sponsors/${editId}` : '/api/admin/sponsors';
       const method = editId ? 'PUT' : 'POST';
       const res = await fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(form) });
-      if (!res.ok) throw new Error((await res.json()).error);
+      if (!res.ok) {
+        const err = await res.json() as any;
+        throw new Error(err.error);
+      }
       setForm(emptyForm);
       setEditId(null);
       await loadSponsors();

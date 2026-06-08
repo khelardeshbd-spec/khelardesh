@@ -1,9 +1,14 @@
-import { getServerSession } from 'next-auth';
 import { redirect } from 'next/navigation';
-import { authOptions } from '@/lib/auth';
-import { prisma } from '@/lib/prisma';
+import { getPrisma } from '@/lib/prisma';
+
 import Link from 'next/link';
 import AdminLogout from '../AdminLogout';
+
+export const runtime = 'edge';
+export const dynamic = 'force-dynamic';
+
+
+
 
 /**
  * Admin Dashboard — Section 11.2
@@ -11,9 +16,12 @@ import AdminLogout from '../AdminLogout';
  * Quick action buttons: New Article, New Score, New Sponsor
  */
 export default async function AdminDashboardPage() {
+  const { getServerSession } = require('next-auth');
+  const { authOptions } = require('@/lib/auth');
   const session = await getServerSession(authOptions);
   if (!session) redirect('/admin');
 
+  const prisma = getPrisma();
   const [articles, scores] = await Promise.all([
     prisma.article.findMany({
       orderBy: { publishedAt: 'desc' },

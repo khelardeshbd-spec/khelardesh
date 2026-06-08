@@ -1,7 +1,12 @@
 import { NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
-import { prisma } from '@/lib/prisma';
+import { getPrisma } from '@/lib/prisma';
+
+export const runtime = 'edge';
+export const dynamic = 'force-dynamic';
+
+
+
+
 
 function slugify(text: string): string {
   return text
@@ -21,9 +26,12 @@ function slugify(text: string): string {
  * Both require auth
  */
 export async function GET() {
+  const { getServerSession } = require('next-auth');
+  const { authOptions } = require('@/lib/auth');
   const session = await getServerSession(authOptions);
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
+  const prisma = getPrisma();
   const articles = await prisma.article.findMany({
     orderBy: { publishedAt: 'desc' },
     select: {
@@ -41,11 +49,13 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
+  const { getServerSession } = require('next-auth');
+  const { authOptions } = require('@/lib/auth');
   const session = await getServerSession(authOptions);
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
   try {
-    const body = await request.json();
+    const body = await request.json() as any;
     const {
       headline, headlineBn, deck, body: articleBody,
       kicker, sport, mediaType, mediaUrl, mediaCaption,
@@ -57,6 +67,7 @@ export async function POST(request: Request) {
     }
 
     // Auto-unpin existing lead if this article is set as lead (Section 13 rule 13)
+    const prisma = getPrisma();
     if (isLead) {
       await prisma.article.updateMany({
         where: { isLead: true },

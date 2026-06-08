@@ -23,7 +23,7 @@ export default function NewArticlePage() {
     fd.append('file', file);
     const res = await fetch('/api/admin/upload', { method: 'POST', body: fd });
     if (!res.ok) throw new Error('Upload failed');
-    const data = await res.json();
+    const data = await res.json() as any;
     return data.url as string;
   }
 
@@ -63,7 +63,7 @@ export default function NewArticlePage() {
       });
 
       if (!res.ok) {
-        const err = await res.json();
+        const err = await res.json() as any;
         throw new Error(err.error || 'Failed to create article');
       }
 

@@ -1,16 +1,24 @@
-import { getServerSession } from 'next-auth';
 import { redirect } from 'next/navigation';
-import { authOptions } from '@/lib/auth';
-import { prisma } from '@/lib/prisma';
+import { getPrisma } from '@/lib/prisma';
+
 import Link from 'next/link';
+
+export const runtime = 'edge';
+export const dynamic = 'force-dynamic';
+
+
+
 
 /**
  * Admin Articles List — Section 11 / 4
  */
 export default async function AdminArticlesPage() {
+  const { getServerSession } = require('next-auth');
+  const { authOptions } = require('@/lib/auth');
   const session = await getServerSession(authOptions);
   if (!session) redirect('/admin');
 
+  const prisma = getPrisma();
   const articles = await prisma.article.findMany({
     orderBy: { publishedAt: 'desc' },
     select: {

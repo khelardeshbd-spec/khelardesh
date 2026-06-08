@@ -1,11 +1,17 @@
 import type { Metadata } from 'next';
-import { prisma } from '@/lib/prisma';
+import { getPrisma } from '@/lib/prisma';
 import LeadStory from '@/components/LeadStory';
 import ArticleCard from '@/components/ArticleCard';
 import ScoresStrip from '@/components/ScoresStrip';
 import SponsorBlock from '@/components/SponsorBlock';
 import Sidebar from '@/components/Sidebar';
 import SkeletonCard from '@/components/SkeletonCard';
+
+export const runtime = 'edge';
+export const dynamic = 'force-dynamic';
+
+
+
 
 export const metadata: Metadata = {
   title: 'খেলারদেশ — স্পোর্টস · স্বতন্ত্র',
@@ -20,6 +26,7 @@ export const revalidate = 30; // ISR every 30 seconds
  * Desktop: 2fr main + 1fr sidebar
  */
 export default async function HomePage() {
+  const prisma = getPrisma();
   // Fetch data server-side
   const [leadResult, articlesResult, scoresResult, sponsorsResult] = await Promise.allSettled([
     prisma.article.findFirst({

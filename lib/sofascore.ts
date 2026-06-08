@@ -118,7 +118,7 @@ export async function fetchScheduledFootball(
       `${baseUrl}/api/proxy/sofascore?endpoint=/sport/football/scheduled-events/${date}`
     );
     if (!res.ok) return [];
-    const data = await res.json();
+    const data = await res.json() as any;
     return data.events ?? [];
   } catch {
     return [];
@@ -134,7 +134,7 @@ export async function fetchEvent(eventId: string, baseUrl = ''): Promise<SofaSco
       `${baseUrl}/api/proxy/sofascore?endpoint=/event/${eventId}`
     );
     if (!res.ok) return null;
-    const data = await res.json();
+    const data = await res.json() as any;
     return data.event ?? null;
   } catch {
     return null;
@@ -153,7 +153,7 @@ export async function searchMatches(
       `${baseUrl}/api/proxy/sofascore?endpoint=/search/all?q=${encodeURIComponent(query)}`
     );
     if (!res.ok) return [];
-    const data = await res.json();
+    const data = await res.json() as any;
     return data.results?.events ?? [];
   } catch {
     return [];

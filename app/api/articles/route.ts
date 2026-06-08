@@ -1,5 +1,12 @@
 import { NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
+import { getPrisma } from '@/lib/prisma';
+
+export const runtime = 'edge';
+export const dynamic = 'force-dynamic';
+
+
+
+
 
 /**
  * GET /api/articles
@@ -15,6 +22,7 @@ export async function GET(request: Request) {
 
     const where = sport ? { sport } : {};
 
+    const prisma = getPrisma();
     const [articles, total] = await Promise.all([
       prisma.article.findMany({
         where,

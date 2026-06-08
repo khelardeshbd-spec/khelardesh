@@ -1,10 +1,16 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { prisma } from '@/lib/prisma';
+import { getPrisma } from '@/lib/prisma';
 import LeadStory from '@/components/LeadStory';
 import ArticleCard from '@/components/ArticleCard';
 import SponsorBlock from '@/components/SponsorBlock';
 import Sidebar from '@/components/Sidebar';
+
+export const runtime = 'edge';
+export const dynamic = 'force-dynamic';
+
+
+
 
 interface PageProps {
   params: { sport: string };
@@ -23,6 +29,7 @@ const SPORT_NAMES: Record<string, string> = {
 
 const VALID_SPORTS = Object.keys(SPORT_NAMES);
 
+
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const sportBn = SPORT_NAMES[params.sport];
   if (!sportBn) return { title: 'Sport Not Found' };
@@ -39,6 +46,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 export default async function SportPage({ params }: PageProps) {
   if (!VALID_SPORTS.includes(params.sport)) notFound();
 
+  const prisma = getPrisma();
   const [lead, articles, scores, sponsors] = await Promise.all([
     prisma.article.findFirst({
       where: { sport: params.sport, isLead: true },

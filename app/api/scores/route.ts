@@ -1,5 +1,12 @@
 import { NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
+import { getPrisma } from '@/lib/prisma';
+
+export const runtime = 'edge';
+export const dynamic = 'force-dynamic';
+
+
+
+
 
 /**
  * GET /api/scores
@@ -8,6 +15,7 @@ import { prisma } from '@/lib/prisma';
  */
 export async function GET() {
   try {
+    const prisma = getPrisma();
     const scores = await prisma.scoreCard.findMany({
       orderBy: [
         { isLive: 'desc' },

@@ -1,16 +1,24 @@
 import { NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
-import { prisma } from '@/lib/prisma';
+import { getPrisma } from '@/lib/prisma';
+
+export const runtime = 'edge';
+export const dynamic = 'force-dynamic';
+
+
+
+
 
 /**
  * GET /api/admin/scores — list all score cards
  * POST /api/admin/scores — create score card
  */
 export async function GET() {
+  const { getServerSession } = require('next-auth');
+  const { authOptions } = require('@/lib/auth');
   const session = await getServerSession(authOptions);
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
+  const prisma = getPrisma();
   const scores = await prisma.scoreCard.findMany({
     orderBy: [{ isLive: 'desc' }, { displayOrder: 'asc' }],
   });
@@ -18,11 +26,13 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
+  const { getServerSession } = require('next-auth');
+  const { authOptions } = require('@/lib/auth');
   const session = await getServerSession(authOptions);
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
   try {
-    const body = await request.json();
+    const body = await request.json() as any;
     const {
       league, teamA, scoreA, teamB, scoreB,
       winnerTeam, status, isLive = false,
@@ -33,6 +43,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
+    const prisma = getPrisma();
     const score = await prisma.scoreCard.create({
       data: {
         league, teamA, scoreA: scoreA ?? '0', teamB, scoreB: scoreB ?? '0',

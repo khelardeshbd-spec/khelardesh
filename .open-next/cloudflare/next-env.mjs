@@ -1,0 +1,3 @@
+export const production = {"DATABASE_URL":"file:./dev.db","NEXTAUTH_SECRET":"replace-with-a-random-32-char-string","NEXTAUTH_URL":"http://localhost:3000","ADMIN_USERNAME":"admin","ADMIN_PASSWORD":"field2026"};
+export const development = {"DATABASE_URL":"file:./dev.db","NEXTAUTH_SECRET":"replace-with-a-random-32-char-string","NEXTAUTH_URL":"http://localhost:3000","ADMIN_USERNAME":"admin","ADMIN_PASSWORD":"field2026"};
+export const test = {"DATABASE_URL":"file:./dev.db","NEXTAUTH_SECRET":"replace-with-a-random-32-char-string","NEXTAUTH_URL":"http://localhost:3000","ADMIN_USERNAME":"admin","ADMIN_PASSWORD":"field2026"};

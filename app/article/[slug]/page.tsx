@@ -1,13 +1,21 @@
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
-import { prisma } from '@/lib/prisma';
+import { getPrisma } from '@/lib/prisma';
 import { formatDatetime, timeAgo } from '@/lib/timeAgo';
+
+export const runtime = 'edge';
+export const dynamic = 'force-dynamic';
+
+
+
 
 interface PageProps {
   params: { slug: string };
 }
 
+
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const prisma = getPrisma();
   const article = await prisma.article.findUnique({
     where: { slug: params.slug },
     select: { headline: true, headlineBn: true, deck: true },
@@ -26,6 +34,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
  * No related articles, no comments, no share buttons
  */
 export default async function ArticlePage({ params }: PageProps) {
+  const prisma = getPrisma();
   const article = await prisma.article.findUnique({
     where: { slug: params.slug },
   });
