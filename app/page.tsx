@@ -1,3 +1,4 @@
+export const runtime = 'nodejs'
 import type { Metadata } from 'next';
 import { getPrisma } from '@/lib/prisma';
 import LeadStory from '@/components/LeadStory';
@@ -7,7 +8,6 @@ import SponsorBlock from '@/components/SponsorBlock';
 import Sidebar from '@/components/Sidebar';
 import SkeletonCard from '@/components/SkeletonCard';
 
-export const runtime = 'edge';
 export const dynamic = 'force-dynamic';
 
 

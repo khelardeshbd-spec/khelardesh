@@ -1,9 +1,9 @@
+export const runtime = 'nodejs'
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import { getPrisma } from '@/lib/prisma';
 import { formatDatetime, timeAgo } from '@/lib/timeAgo';
 
-export const runtime = 'edge';
 export const dynamic = 'force-dynamic';
 
 
