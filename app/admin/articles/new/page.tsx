@@ -115,7 +115,7 @@ export default function NewArticlePage() {
 
           {/* Kicker */}
           <div>
-            <label htmlFor="kicker" className="admin-label">Kicker — e.g. "চ্যাম্পিয়নস লিগ · সেমিফাইনাল"</label>
+            <label htmlFor="kicker" className="admin-label">Kicker — e.g. &quot;চ্যাম্পিয়নস লিগ · সেমিফাইনাল&quot;</label>
             <input id="kicker" name="kicker" type="text" required className="admin-input" lang="bn" />
           </div>
 
