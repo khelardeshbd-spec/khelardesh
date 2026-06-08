@@ -42,3 +42,6 @@ dev.db
 
 # Uploaded media (keep all files)
 /public/media/.DS_Store
+.dev.vars
+*.log
+out.html
