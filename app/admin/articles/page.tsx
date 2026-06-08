@@ -3,7 +3,7 @@ import { getPrisma } from '@/lib/prisma';
 
 import Link from 'next/link';
 
-export const runtime = 'edge';
+
 export const dynamic = 'force-dynamic';
 
 
