@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 
+export const runtime = 'edge';
 /**
  * SofaScore Proxy — Section 9
  * GET /api/proxy/sofascore?endpoint=/sport/football/events/live
