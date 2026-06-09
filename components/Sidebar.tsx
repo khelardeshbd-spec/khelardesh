@@ -92,33 +92,6 @@ export default function Sidebar({ scores, sponsors }: SidebarProps) {
         />
       )}
 
-      {/* Briefs section placeholder */}
-      <section aria-label="Briefs">
-        <h2
-          style={{
-            fontFamily: "'Abu JM Akkas', 'Hind Siliguri', sans-serif",
-            fontSize: 8,
-            fontWeight: 500,
-            letterSpacing: '0.14em',
-            textTransform: 'uppercase',
-            color: 'var(--ink-muted)',
-            borderBottom: '1px solid var(--ink-border)',
-            paddingBottom: 4,
-            marginBottom: 8,
-          }}
-        >
-          সংক্ষিপ্ত
-        </h2>
-        <div className="flex flex-col gap-4">
-          {[1, 2, 3].map((i) => (
-            <div key={i} className="flex flex-col gap-1">
-              <div className="skeleton" style={{ height: 8, width: '60%' }} />
-              <div className="skeleton" style={{ height: 10, width: '100%' }} />
-              <div className="skeleton" style={{ height: 10, width: '80%' }} />
-            </div>
-          ))}
-        </div>
-      </section>
     </aside>
   );
 }

@@ -5,6 +5,8 @@ import LeadStory from '@/components/LeadStory';
 import ArticleCard from '@/components/ArticleCard';
 import SponsorBlock from '@/components/SponsorBlock';
 import Sidebar from '@/components/Sidebar';
+import NavStrip from '@/components/NavStrip';
+import BriefsColumn from '@/components/BriefsColumn';
 
 export const dynamic = 'force-dynamic';
 
@@ -102,13 +104,16 @@ export default async function SportPage({ params }: PageProps) {
       </div>
 
       {/* Desktop */}
-      <div className="hidden lg:grid max-w-screen-xl mx-auto px-6 pt-6 pb-12 gap-8"
-        style={{ gridTemplateColumns: '1fr 2.2fr' }}>
+      <div 
+        className="hidden lg:grid max-w-[1440px] mx-auto px-6 pt-4 pb-12 gap-6"
+        style={{ gridTemplateColumns: '18fr 64fr 18fr' }}
+      >
+        {/* Left Column (18%): Independently scrollable scores */}
         <div 
           style={{ 
             position: 'sticky', 
-            top: '160px', 
-            maxHeight: 'calc(100vh - 180px)', 
+            top: '20px', 
+            maxHeight: 'calc(100vh - 40px)', 
             overflowY: 'auto',
             paddingRight: '6px'
           }}
@@ -116,7 +121,16 @@ export default async function SportPage({ params }: PageProps) {
         >
           <Sidebar scores={scoresList} sponsors={sponsorsList} />
         </div>
+
+        {/* Middle Column (64%): Centered Category Strip & Main article feed */}
         <div>
+          {/* Centered category navigation strip */}
+          <div className="mb-6 flex justify-center">
+            <div className="w-full max-w-2xl">
+              <NavStrip noBorder={false} />
+            </div>
+          </div>
+
           {lead && <div className="mb-8"><LeadStory article={lead} /></div>}
           {articlesList.map((article, i) => (
             <div key={article.id}>
@@ -129,10 +143,24 @@ export default async function SportPage({ params }: PageProps) {
             </div>
           ))}
           {articlesList.length === 0 && (
-            <p style={{ color: 'var(--ink-muted)', fontFamily: "'Hind Siliguri', sans-serif", fontSize: 14, padding: '24px 0' }}>
+            <p style={{ color: 'var(--ink-muted)', fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif", fontSize: 14, padding: '24px 0' }}>
               এই বিভাগে কোনো খবর নেই।
             </p>
           )}
+        </div>
+
+        {/* Right Column (18%): Briefs & Headlines (independently scrollable) */}
+        <div 
+          style={{ 
+            position: 'sticky', 
+            top: '20px', 
+            maxHeight: 'calc(100vh - 40px)', 
+            overflowY: 'auto',
+            paddingLeft: '4px'
+          }}
+          className="scrollbar-none"
+        >
+          <BriefsColumn articles={articlesList} />
         </div>
       </div>
 

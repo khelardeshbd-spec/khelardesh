@@ -6,6 +6,8 @@ import ScoresStrip from '@/components/ScoresStrip';
 import SponsorBlock from '@/components/SponsorBlock';
 import Sidebar from '@/components/Sidebar';
 import SkeletonCard from '@/components/SkeletonCard';
+import NavStrip from '@/components/NavStrip';
+import BriefsColumn from '@/components/BriefsColumn';
 
 export const dynamic = 'force-dynamic';
 
@@ -63,15 +65,16 @@ export default async function HomePage() {
     <div style={{ backgroundColor: 'var(--bg-page)', minHeight: '100vh' }}>
 
       {/* ── DESKTOP LAYOUT ≥ 1024px ── */}
-      <div className="hidden lg:grid max-w-screen-xl mx-auto px-6 pt-6 pb-12 gap-8"
-        style={{ gridTemplateColumns: '1fr 2.2fr' }}>
-
-        {/* Sidebar (Left Column) - Independently scrollable */}
+      <div 
+        className="hidden lg:grid max-w-[1440px] mx-auto px-6 pt-4 pb-12 gap-6"
+        style={{ gridTemplateColumns: '18fr 64fr 18fr' }}
+      >
+        {/* Left Column (18%): Logo at top (optional header spacer) & Independently scrollable scores */}
         <div 
           style={{ 
             position: 'sticky', 
-            top: '160px', 
-            maxHeight: 'calc(100vh - 180px)', 
+            top: '20px', 
+            maxHeight: 'calc(100vh - 40px)', 
             overflowY: 'auto',
             paddingRight: '6px'
           }}
@@ -80,8 +83,15 @@ export default async function HomePage() {
           <Sidebar scores={scores} sponsors={sponsors} />
         </div>
 
-        {/* Main column (Right Column) */}
+        {/* Middle Column (64%): Centered Category Strip & Main article feed */}
         <div>
+          {/* Centered category navigation strip */}
+          <div className="mb-6 flex justify-center">
+            <div className="w-full max-w-2xl">
+              <NavStrip noBorder={false} />
+            </div>
+          </div>
+
           {/* Lead story */}
           {lead && (
             <div className="mb-8">
@@ -94,9 +104,9 @@ export default async function HomePage() {
             <>
               <h2
                 style={{
-                  fontFamily: "'Abu JM Akkas', 'Hind Siliguri', sans-serif",
-                  fontSize: 8,
-                  fontWeight: 500,
+                  fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif",
+                  fontSize: 9,
+                  fontWeight: 600,
                   letterSpacing: '0.16em',
                   textTransform: 'uppercase',
                   color: 'var(--ink-muted)',
@@ -130,7 +140,7 @@ export default async function HomePage() {
             <a
               href="/?page=2"
               style={{
-                fontFamily: "'Abu JM Akkas', 'Hind Siliguri', sans-serif",
+                fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif",
                 fontSize: 10,
                 letterSpacing: '0.12em',
                 textTransform: 'uppercase',
@@ -143,6 +153,20 @@ export default async function HomePage() {
               আরও লোড করুন
             </a>
           </div>
+        </div>
+
+        {/* Right Column (18%): Briefs & Headlines (also independently scrollable) */}
+        <div 
+          style={{ 
+            position: 'sticky', 
+            top: '20px', 
+            maxHeight: 'calc(100vh - 40px)', 
+            overflowY: 'auto',
+            paddingLeft: '4px'
+          }}
+          className="scrollbar-none"
+        >
+          <BriefsColumn articles={articles} />
         </div>
       </div>
 
