@@ -1,5 +1,5 @@
 import { redirect } from 'next/navigation';
-import { getPrisma } from '@/lib/prisma';
+import { supabaseAdmin } from '@/lib/supabase';
 
 import Link from 'next/link';
 import AdminLogout from '../AdminLogout';
@@ -21,16 +21,17 @@ export default async function AdminDashboardPage() {
   const session = await getServerSession(authOptions);
   if (!session) redirect('/admin');
 
-  const prisma = getPrisma();
-  const [articles, scores] = await Promise.all([
-    prisma.article.findMany({
-      orderBy: { publishedAt: 'desc' },
-      take: 10,
-      select: { id: true, slug: true, headline: true, headlineBn: true, sport: true, isLead: true, publishedAt: true },
-    }),
-    prisma.scoreCard.findMany({
-      orderBy: [{ isLive: 'desc' }, { displayOrder: 'asc' }],
-    }),
+  const [{ data: articles }, { data: scores }] = await Promise.all([
+    supabaseAdmin
+      .from('Article')
+      .select('id, slug, headline, headlineBn, sport, isLead, publishedAt')
+      .order('publishedAt', { ascending: false })
+      .limit(10),
+    supabaseAdmin
+      .from('ScoreCard')
+      .select('*')
+      .order('isLive', { ascending: false })
+      .order('displayOrder', { ascending: true }),
   ]);
 
   const headingStyle = {

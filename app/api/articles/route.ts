@@ -1,12 +1,8 @@
 export const runtime = 'nodejs'
-import { NextResponse } from 'next/server';
-import { getPrisma } from '@/lib/prisma';
+export const dynamic = 'force-dynamic'
 
-export const dynamic = 'force-dynamic';
-
-
-
-
+import { NextResponse } from 'next/server'
+import { supabaseAdmin } from '@/lib/supabase'
 
 /**
  * GET /api/articles
@@ -15,50 +11,36 @@ export const dynamic = 'force-dynamic';
  */
 export async function GET(request: Request) {
   try {
-    const { searchParams } = new URL(request.url);
-    const sport = searchParams.get('sport');
-    const page = Math.max(1, parseInt(searchParams.get('page') ?? '1', 10));
-    const pageSize = 20;
+    const { searchParams } = new URL(request.url)
+    const sport = searchParams.get('sport')
+    const page = Math.max(1, parseInt(searchParams.get('page') ?? '1', 10))
+    const pageSize = 20
+    const from = (page - 1) * pageSize
+    const to = from + pageSize - 1
 
-    const where = sport ? { sport } : {};
+    let query = supabaseAdmin
+      .from('Article')
+      .select('id, slug, headline, headlineBn, deck, kicker, sport, mediaType, mediaUrl, mediaCaption, byline, isLead, publishedAt', { count: 'exact' })
+      .order('isLead', { ascending: false })
+      .order('publishedAt', { ascending: false })
+      .range(from, to)
 
-    const prisma = getPrisma();
-    const [articles, total] = await Promise.all([
-      prisma.article.findMany({
-        where,
-        orderBy: [{ isLead: 'desc' }, { publishedAt: 'desc' }],
-        skip: (page - 1) * pageSize,
-        take: pageSize,
-        select: {
-          id: true,
-          slug: true,
-          headline: true,
-          headlineBn: true,
-          deck: true,
-          kicker: true,
-          sport: true,
-          mediaType: true,
-          mediaUrl: true,
-          mediaCaption: true,
-          byline: true,
-          isLead: true,
-          publishedAt: true,
-        },
-      }),
-      prisma.article.count({ where }),
-    ]);
+    if (sport) query = query.eq('sport', sport)
+
+    const { data: articles, count, error } = await query
+    if (error) throw error
 
     return NextResponse.json({
-      articles,
+      articles: articles ?? [],
       pagination: {
         page,
         pageSize,
-        total,
-        totalPages: Math.ceil(total / pageSize),
+        total: count ?? 0,
+        totalPages: Math.ceil((count ?? 0) / pageSize),
       },
-    });
+    })
   } catch (error) {
-    console.error('[GET /api/articles]', error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    console.error('[GET /api/articles]', error)
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }

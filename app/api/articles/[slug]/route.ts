@@ -1,12 +1,8 @@
 export const runtime = 'nodejs'
-import { NextResponse } from 'next/server';
-import { getPrisma } from '@/lib/prisma';
+export const dynamic = 'force-dynamic'
 
-export const dynamic = 'force-dynamic';
-
-
-
-
+import { NextResponse } from 'next/server'
+import { supabaseAdmin } from '@/lib/supabase'
 
 /**
  * GET /api/articles/[slug]
@@ -17,18 +13,19 @@ export async function GET(
   { params }: { params: { slug: string } }
 ) {
   try {
-    const prisma = getPrisma();
-    const article = await prisma.article.findUnique({
-      where: { slug: params.slug },
-    });
+    const { data: article, error } = await supabaseAdmin
+      .from('Article')
+      .select('*')
+      .eq('slug', params.slug)
+      .single()
 
-    if (!article) {
-      return NextResponse.json({ error: 'Article not found' }, { status: 404 });
+    if (error || !article) {
+      return NextResponse.json({ error: 'Article not found' }, { status: 404 })
     }
 
-    return NextResponse.json({ article });
+    return NextResponse.json({ article })
   } catch (error) {
-    console.error('[GET /api/articles/[slug]]', error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    console.error('[GET /api/articles/[slug]]', error)
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }

@@ -1,12 +1,8 @@
 export const runtime = 'nodejs'
-import { NextResponse } from 'next/server';
-import { getPrisma } from '@/lib/prisma';
+export const dynamic = 'force-dynamic'
 
-export const dynamic = 'force-dynamic';
-
-
-
-
+import { NextResponse } from 'next/server'
+import { supabaseAdmin } from '@/lib/supabase'
 
 /**
  * GET /api/sponsors
@@ -15,21 +11,22 @@ export const dynamic = 'force-dynamic';
  */
 export async function GET(request: Request) {
   try {
-    const prisma = getPrisma();
-    const { searchParams } = new URL(request.url);
-    const placement = searchParams.get('placement');
+    const { searchParams } = new URL(request.url)
+    const placement = searchParams.get('placement')
 
-    const where: { isActive: boolean; placement?: string } = { isActive: true };
-    if (placement) where.placement = placement;
+    let query = supabaseAdmin
+      .from('Sponsor')
+      .select('*')
+      .eq('isActive', true)
+      .order('displayOrder', { ascending: true })
 
-    const sponsors = await prisma.sponsor.findMany({
-      where,
-      orderBy: { displayOrder: 'asc' },
-    });
+    if (placement) query = query.eq('placement', placement)
 
-    return NextResponse.json({ sponsors });
+    const { data: sponsors, error } = await query
+    if (error) throw error
+    return NextResponse.json({ sponsors: sponsors ?? [] })
   } catch (error) {
-    console.error('[GET /api/sponsors]', error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    console.error('[GET /api/sponsors]', error)
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }

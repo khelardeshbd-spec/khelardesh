@@ -1,7 +1,7 @@
 export const runtime = 'nodejs'
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { getPrisma } from '@/lib/prisma';
+import { supabaseAdmin } from '@/lib/supabase';
 import LeadStory from '@/components/LeadStory';
 import ArticleCard from '@/components/ArticleCard';
 import SponsorBlock from '@/components/SponsorBlock';
@@ -46,30 +46,34 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 export default async function SportPage({ params }: PageProps) {
   if (!VALID_SPORTS.includes(params.sport)) notFound();
 
-  const prisma = getPrisma();
-  const [lead, articles, scores, sponsors] = await Promise.all([
-    prisma.article.findFirst({
-      where: { sport: params.sport, isLead: true },
-      orderBy: { publishedAt: 'desc' },
-    }),
-    prisma.article.findMany({
-      where: { sport: params.sport, isLead: false },
-      orderBy: { publishedAt: 'desc' },
-      take: 20,
-      select: {
-        id: true, slug: true, headline: true, headlineBn: true,
-        deck: true, sport: true, mediaType: true, mediaUrl: true,
-        byline: true, publishedAt: true,
-      },
-    }),
-    prisma.scoreCard.findMany({
-      orderBy: [{ isLive: 'desc' }, { displayOrder: 'asc' }],
-    }),
-    prisma.sponsor.findMany({
-      where: { isActive: true },
-      orderBy: { displayOrder: 'asc' },
-    }),
+  const [{ data: leadArr }, { data: articles }, { data: scores }, { data: sponsors }] = await Promise.all([
+    supabaseAdmin
+      .from('Article')
+      .select('*')
+      .eq('sport', params.sport)
+      .eq('isLead', true)
+      .order('publishedAt', { ascending: false })
+      .limit(1),
+    supabaseAdmin
+      .from('Article')
+      .select('id, slug, headline, headlineBn, deck, sport, mediaType, mediaUrl, byline, publishedAt')
+      .eq('sport', params.sport)
+      .eq('isLead', false)
+      .order('publishedAt', { ascending: false })
+      .limit(20),
+    supabaseAdmin
+      .from('ScoreCard')
+      .select('*')
+      .order('isLive', { ascending: false })
+      .order('displayOrder', { ascending: true }),
+    supabaseAdmin
+      .from('Sponsor')
+      .select('*')
+      .eq('isActive', true)
+      .order('displayOrder', { ascending: true }),
   ]);
+
+  const lead = leadArr?.[0] ?? null;
 
   const inlineSponsors = sponsors.filter((s) => s.placement === 'inline');
   const sportBn = SPORT_NAMES[params.sport];

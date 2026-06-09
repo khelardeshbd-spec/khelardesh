@@ -1,5 +1,5 @@
 import { redirect } from 'next/navigation';
-import { getPrisma } from '@/lib/prisma';
+import { supabaseAdmin } from '@/lib/supabase';
 
 import Link from 'next/link';
 
@@ -18,14 +18,10 @@ export default async function AdminArticlesPage() {
   const session = await getServerSession(authOptions);
   if (!session) redirect('/admin');
 
-  const prisma = getPrisma();
-  const articles = await prisma.article.findMany({
-    orderBy: { publishedAt: 'desc' },
-    select: {
-      id: true, slug: true, headline: true, headlineBn: true,
-      sport: true, isLead: true, publishedAt: true, byline: true,
-    },
-  });
+  const { data: articles } = await supabaseAdmin
+    .from('Article')
+    .select('id, slug, headline, headlineBn, sport, isLead, publishedAt, byline')
+    .order('publishedAt', { ascending: false });
 
   const thStyle = {
     fontFamily: "'Hind Siliguri', sans-serif",

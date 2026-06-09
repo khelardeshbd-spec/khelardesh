@@ -1,6 +1,6 @@
 export const runtime = 'nodejs'
 import type { Metadata } from 'next';
-import { getPrisma } from '@/lib/prisma';
+import { supabaseAdmin } from '@/lib/supabase';
 import LeadStory from '@/components/LeadStory';
 import ArticleCard from '@/components/ArticleCard';
 import ScoresStrip from '@/components/ScoresStrip';
@@ -26,36 +26,37 @@ export const revalidate = 30; // ISR every 30 seconds
  * Desktop: 2fr main + 1fr sidebar
  */
 export default async function HomePage() {
-  const prisma = getPrisma();
-  // Fetch data server-side
+  // Fetch data server-side via Supabase
   const [leadResult, articlesResult, scoresResult, sponsorsResult] = await Promise.allSettled([
-    prisma.article.findFirst({
-      where: { isLead: true },
-      orderBy: { publishedAt: 'desc' },
-    }),
-    prisma.article.findMany({
-      where: { isLead: false },
-      orderBy: { publishedAt: 'desc' },
-      take: 20,
-      select: {
-        id: true, slug: true, headline: true, headlineBn: true,
-        deck: true, sport: true, mediaType: true, mediaUrl: true,
-        byline: true, publishedAt: true,
-      },
-    }),
-    prisma.scoreCard.findMany({
-      orderBy: [{ isLive: 'desc' }, { displayOrder: 'asc' }],
-    }),
-    prisma.sponsor.findMany({
-      where: { isActive: true },
-      orderBy: { displayOrder: 'asc' },
-    }),
+    supabaseAdmin
+      .from('Article')
+      .select('*')
+      .eq('isLead', true)
+      .order('publishedAt', { ascending: false })
+      .limit(1)
+      .single(),
+    supabaseAdmin
+      .from('Article')
+      .select('id, slug, headline, headlineBn, deck, sport, mediaType, mediaUrl, byline, publishedAt')
+      .eq('isLead', false)
+      .order('publishedAt', { ascending: false })
+      .limit(20),
+    supabaseAdmin
+      .from('ScoreCard')
+      .select('*')
+      .order('isLive', { ascending: false })
+      .order('displayOrder', { ascending: true }),
+    supabaseAdmin
+      .from('Sponsor')
+      .select('*')
+      .eq('isActive', true)
+      .order('displayOrder', { ascending: true }),
   ]);
 
-  const lead = leadResult.status === 'fulfilled' ? leadResult.value : null;
-  const articles = articlesResult.status === 'fulfilled' ? articlesResult.value : [];
-  const scores = scoresResult.status === 'fulfilled' ? scoresResult.value : [];
-  const sponsors = sponsorsResult.status === 'fulfilled' ? sponsorsResult.value : [];
+  const lead = leadResult.status === 'fulfilled' ? leadResult.value.data : null;
+  const articles = articlesResult.status === 'fulfilled' ? (articlesResult.value.data ?? []) : [];
+  const scores = scoresResult.status === 'fulfilled' ? (scoresResult.value.data ?? []) : [];
+  const sponsors = sponsorsResult.status === 'fulfilled' ? (sponsorsResult.value.data ?? []) : [];
 
   const inlineSponsors = sponsors.filter((s) => s.placement === 'inline');
 

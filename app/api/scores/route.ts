@@ -1,30 +1,25 @@
 export const runtime = 'nodejs'
-import { NextResponse } from 'next/server';
-import { getPrisma } from '@/lib/prisma';
+export const dynamic = 'force-dynamic'
 
-export const dynamic = 'force-dynamic';
-
-
-
-
+import { NextResponse } from 'next/server'
+import { supabaseAdmin } from '@/lib/supabase'
 
 /**
  * GET /api/scores
- * All active score cards
- * Sort: live first, then by displayOrder (Section 13 rule 12)
+ * All active score cards — live first, then by displayOrder
  */
 export async function GET() {
   try {
-    const prisma = getPrisma();
-    const scores = await prisma.scoreCard.findMany({
-      orderBy: [
-        { isLive: 'desc' },
-        { displayOrder: 'asc' },
-      ],
-    });
-    return NextResponse.json({ scores });
+    const { data: scores, error } = await supabaseAdmin
+      .from('ScoreCard')
+      .select('*')
+      .order('isLive', { ascending: false })
+      .order('displayOrder', { ascending: true })
+
+    if (error) throw error
+    return NextResponse.json({ scores: scores ?? [] })
   } catch (error) {
-    console.error('[GET /api/scores]', error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    console.error('[GET /api/scores]', error)
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }

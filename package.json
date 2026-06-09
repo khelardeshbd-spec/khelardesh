@@ -3,7 +3,6 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "postinstall": "prisma generate",
     "dev": "next dev",
     "build": "prisma generate && next build",
     "pages:build": "npx @cloudflare/next-on-pages",
@@ -11,19 +10,11 @@
     "deploy": "npx @cloudflare/next-on-pages && wrangler pages deploy .vercel/output/static",
     "start": "next start",
     "lint": "next lint",
-    "db:generate": "prisma generate",
-    "db:push": "prisma db push",
-    "db:migrate": "prisma migrate dev",
-    "db:seed": "ts-node --project tsconfig.json prisma/seed.ts",
     "db:studio": "prisma studio"
   },
   "dependencies": {
-    "@auth/prisma-adapter": "^2.7.2",
     "@aws-sdk/client-s3": "latest",
     "@aws-sdk/s3-request-presigner": "latest",
-    "@prisma/adapter-d1": "^5.22.0",
-    "@prisma/adapter-pg": "latest",
-    "@prisma/client": "^5.22.0",
     "@supabase/supabase-js": "latest",
     "@types/pg": "^8.20.0",
     "crypto-browserify": "^3.12.1",
@@ -36,7 +27,6 @@
     "stream-browserify": "^3.0.0"
   },
   "devDependencies": {
-    "@cloudflare/next-on-pages": "latest",
     "@types/node": "^22.10.2",
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
@@ -44,13 +34,9 @@
     "eslint": "^8.57.0",
     "eslint-config-next": "14.2.29",
     "postcss": "^8.4.49",
-    "prisma": "^5.22.0",
     "tailwindcss": "^3.4.16",
     "ts-node": "^10.9.2",
     "typescript": "^5.7.2",
     "wrangler": "latest"
   },
-  "prisma": {
-    "seed": "ts-node --project tsconfig.seed.json prisma/seed.ts"
-  }
 }

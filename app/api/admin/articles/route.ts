@@ -1,12 +1,8 @@
 export const runtime = 'nodejs'
-import { NextResponse } from 'next/server';
-import { getPrisma } from '@/lib/prisma';
+export const dynamic = 'force-dynamic'
 
-export const dynamic = 'force-dynamic';
-
-
-
-
+import { NextResponse } from 'next/server'
+import { supabaseAdmin } from '@/lib/supabase'
 
 function slugify(text: string): string {
   return text
@@ -17,74 +13,65 @@ function slugify(text: string): string {
     .trim()
     .replace(/\s+/g, '-')
     .replace(/-+/g, '-')
-    .substring(0, 80);
+    .substring(0, 80)
 }
 
 /**
  * GET /api/admin/articles — list all articles for admin
  * POST /api/admin/articles — create new article
- * Both require auth
  */
 export async function GET() {
-  const { getServerSession } = require('next-auth');
-  const { authOptions } = require('@/lib/auth');
-  const session = await getServerSession(authOptions);
-  if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  const { getServerSession } = require('next-auth')
+  const { authOptions } = require('@/lib/auth')
+  const session = await getServerSession(authOptions)
+  if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-  const prisma = getPrisma();
-  const articles = await prisma.article.findMany({
-    orderBy: { publishedAt: 'desc' },
-    select: {
-      id: true,
-      slug: true,
-      headline: true,
-      headlineBn: true,
-      sport: true,
-      isLead: true,
-      publishedAt: true,
-      byline: true,
-    },
-  });
-  return NextResponse.json({ articles });
+  const { data: articles, error } = await supabaseAdmin
+    .from('Article')
+    .select('id, slug, headline, headlineBn, sport, isLead, publishedAt, byline')
+    .order('publishedAt', { ascending: false })
+
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+  return NextResponse.json({ articles: articles ?? [] })
 }
 
 export async function POST(request: Request) {
-  const { getServerSession } = require('next-auth');
-  const { authOptions } = require('@/lib/auth');
-  const session = await getServerSession(authOptions);
-  if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  const { getServerSession } = require('next-auth')
+  const { authOptions } = require('@/lib/auth')
+  const session = await getServerSession(authOptions)
+  if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   try {
-    const body = await request.json() as any;
+    const body = await request.json() as any
     const {
       headline, headlineBn, deck, body: articleBody,
       kicker, sport, mediaType, mediaUrl, mediaCaption,
       byline = 'Staff Reporter', isLead = false,
-    } = body;
+    } = body
 
     if (!headline || !deck || !articleBody || !kicker || !sport || !mediaType || !mediaUrl) {
-      return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
+      return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
     }
 
-    // Auto-unpin existing lead if this article is set as lead (Section 13 rule 13)
-    const prisma = getPrisma();
+    // Auto-unpin existing lead if this article is set as lead
     if (isLead) {
-      await prisma.article.updateMany({
-        where: { isLead: true },
-        data: { isLead: false },
-      });
+      await supabaseAdmin
+        .from('Article')
+        .update({ isLead: false })
+        .eq('isLead', true)
     }
 
     // Generate unique slug
-    const baseSlug = slugify(headline || headlineBn || 'article');
-    const existing = await prisma.article.findMany({
-      where: { slug: { startsWith: baseSlug } },
-      select: { slug: true },
-    });
-    const slug = existing.length > 0 ? `${baseSlug}-${Date.now()}` : baseSlug;
+    const baseSlug = slugify(headline || headlineBn || 'article')
+    const { data: existing } = await supabaseAdmin
+      .from('Article')
+      .select('slug')
+      .like('slug', `${baseSlug}%`)
+    const slug = (existing && existing.length > 0) ? `${baseSlug}-${Date.now()}` : baseSlug
 
-    const article = await prisma.article.create({
-      data: {
+    const { data: article, error } = await supabaseAdmin
+      .from('Article')
+      .insert({
         slug,
         headline,
         headlineBn: headlineBn || null,
@@ -97,12 +84,15 @@ export async function POST(request: Request) {
         mediaCaption: mediaCaption || null,
         byline,
         isLead,
-      },
-    });
+        publishedAt: new Date().toISOString(),
+      })
+      .select()
+      .single()
 
-    return NextResponse.json({ article }, { status: 201 });
+    if (error) throw error
+    return NextResponse.json({ article }, { status: 201 })
   } catch (error) {
-    console.error('[POST /api/admin/articles]', error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    console.error('[POST /api/admin/articles]', error)
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }

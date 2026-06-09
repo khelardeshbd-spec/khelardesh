@@ -1,7 +1,7 @@
 export const runtime = 'nodejs'
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
-import { getPrisma } from '@/lib/prisma';
+import { supabaseAdmin } from '@/lib/supabase';
 import { formatDatetime, timeAgo } from '@/lib/timeAgo';
 
 export const dynamic = 'force-dynamic';
@@ -15,17 +15,14 @@ interface PageProps {
 
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const prisma = getPrisma();
-  const article = await prisma.article.findUnique({
-    where: { slug: params.slug },
-    select: { headline: true, headlineBn: true, deck: true },
-  });
+  const { data: article } = await supabaseAdmin
+    .from('Article')
+    .select('headline, headlineBn, deck')
+    .eq('slug', params.slug)
+    .single()
   if (!article) return { title: 'Not Found' };
   const title = article.headlineBn || article.headline;
-  return {
-    title,
-    description: article.deck,
-  };
+  return { title, description: article.deck };
 }
 
 /**
@@ -34,10 +31,11 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
  * No related articles, no comments, no share buttons
  */
 export default async function ArticlePage({ params }: PageProps) {
-  const prisma = getPrisma();
-  const article = await prisma.article.findUnique({
-    where: { slug: params.slug },
-  });
+  const { data: article } = await supabaseAdmin
+    .from('Article')
+    .select('*')
+    .eq('slug', params.slug)
+    .single()
 
   if (!article) notFound();
 
