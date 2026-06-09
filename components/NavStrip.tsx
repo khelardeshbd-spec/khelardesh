@@ -20,7 +20,7 @@ const NAV_ITEMS = [
   { label: 'অ্যাথলেটিক্স', slug: 'athletics' },
 ];
 
-export default function NavStrip() {
+export default function NavStrip({ noBorder = false }: { noBorder?: boolean }) {
   const pathname = usePathname();
 
   const isActive = (slug: string) => {
@@ -33,7 +33,7 @@ export default function NavStrip() {
   return (
     <nav
       className="scrollbar-none overflow-x-auto"
-      style={{ borderBottom: '1.5px solid var(--ink)' }}
+      style={{ borderBottom: noBorder ? 'none' : '1.5px solid var(--ink)' }}
       aria-label="Sport categories"
     >
       <ul className="flex flex-nowrap items-stretch">

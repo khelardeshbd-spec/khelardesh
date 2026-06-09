@@ -66,8 +66,17 @@ export default async function HomePage() {
       <div className="hidden lg:grid max-w-screen-xl mx-auto px-6 pt-6 pb-12 gap-8"
         style={{ gridTemplateColumns: '1fr 2.2fr' }}>
 
-        {/* Sidebar (Left Column) */}
-        <div>
+        {/* Sidebar (Left Column) - Independently scrollable */}
+        <div 
+          style={{ 
+            position: 'sticky', 
+            top: '160px', 
+            maxHeight: 'calc(100vh - 180px)', 
+            overflowY: 'auto',
+            paddingRight: '6px'
+          }}
+          className="scrollbar-none"
+        >
           <Sidebar scores={scores} sponsors={sponsors} />
         </div>
 

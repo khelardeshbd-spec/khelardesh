@@ -30,14 +30,18 @@ export default function SmartHeader() {
       {/* Top bar: masthead word + theme toggle on same row (mobile) */}
       {/* Desktop: stacked masthead then nav */}
       <div className="hidden lg:block">
-        {/* Desktop: left-aligned logo bar */}
-        <div className="relative flex items-center justify-between px-6 pb-2">
-          {/* Left: masthead */}
-          <div className="flex-1 flex justify-start">
+        {/* Desktop: inline logo + categories + controls */}
+        <div className="relative flex items-center justify-between px-6 py-1">
+          {/* Left: Brand logo & tagline */}
+          <div className="flex-shrink-0">
             <Masthead />
           </div>
-          {/* Right: theme toggle + search icon */}
-          <div className="flex items-center gap-3" style={{ justifyContent: 'flex-end', alignSelf: 'flex-start', marginTop: '24px' }}>
+          {/* Center: Inline Navigation Strip */}
+          <div className="flex-1 px-8 overflow-hidden">
+            <NavStrip noBorder={true} />
+          </div>
+          {/* Right: Theme Toggle & Search */}
+          <div className="flex items-center gap-4 flex-shrink-0">
             <ThemeToggle />
             <Link
               href="/search"
@@ -48,7 +52,6 @@ export default function SmartHeader() {
             </Link>
           </div>
         </div>
-        <NavStrip />
       </div>
 
       {/* Mobile: slim single row */}
