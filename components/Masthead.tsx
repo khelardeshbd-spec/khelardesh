@@ -8,23 +8,25 @@
  */
 export default function Masthead() {
   return (
-    <div className="masthead-border pb-1">
+    <div className="masthead-border">
       {/* Tagline above title */}
       <p
-        className="type-kicker text-center tracking-widest mb-0.5"
-        style={{ fontSize: '10px', fontFamily: "'Abu JM Akkas', 'Hind Siliguri', sans-serif", color: 'var(--ink-muted)' }}
+        className="type-kicker text-center tracking-widest"
+        style={{ fontSize: '10px', fontFamily: "'Abu JM Akkas', 'Hind Siliguri', sans-serif", color: 'var(--ink-muted)', marginBottom: '2px' }}
       >
         Sports · Independent
       </p>
       {/* The খেলারদেশ logo image */}
-      <div className="flex justify-center py-1">
+      <div className="flex justify-center">
         <img
           src="/logo.png"
           alt="খেলারদেশ"
           style={{
-            height: '110px',
+            height: '160px',
             objectFit: 'contain',
-            filter: 'var(--logo-filter, none)'
+            filter: 'var(--logo-filter, none)',
+            marginTop: '-5px',
+            marginBottom: '-5px'
           }}
         />
       </div>

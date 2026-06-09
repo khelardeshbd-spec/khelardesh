@@ -54,7 +54,7 @@ export default function SmartHeader() {
       </div>
 
       {/* Mobile: slim single row */}
-      <div className="flex lg:hidden items-center justify-between px-3 py-1.5" style={{ minHeight: 36 }}>
+      <div className="flex lg:hidden items-center justify-between px-3 py-1" style={{ minHeight: 46 }}>
         {/* Hamburger / dot placeholder */}
         <div className="flex items-center gap-2">
           <div
@@ -67,7 +67,7 @@ export default function SmartHeader() {
             src="/logo.png"
             alt="খেলারদেশ"
             style={{
-              height: '32px',
+              height: '42px',
               objectFit: 'contain',
               filter: 'var(--logo-filter, none)'
             }}

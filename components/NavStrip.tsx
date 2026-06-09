@@ -44,11 +44,11 @@ export default function NavStrip() {
             <li key={slug} className="flex-shrink-0">
               <Link
                 href={href}
-                className="nav-item ui-label flex items-center px-3 py-2 whitespace-nowrap transition-colors duration-150"
+                className="nav-item ui-label flex items-center px-4 py-3 whitespace-nowrap transition-colors duration-150"
                 style={{
                   fontFamily: "'Abu JM Akkas', 'Hind Siliguri', sans-serif",
-                  fontSize: '10px',
-                  fontWeight: 400,
+                  fontSize: '14px',
+                  fontWeight: 500,
                   letterSpacing: '0.12em',
                   textTransform: 'uppercase',
                   backgroundColor: active ? 'var(--ink)' : 'transparent',
