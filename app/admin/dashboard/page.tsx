@@ -34,6 +34,9 @@ export default async function AdminDashboardPage() {
       .order('displayOrder', { ascending: true }),
   ]);
 
+  const safeArticles = articles ?? []
+  const safeScores = scores ?? []
+
   const headingStyle = {
     fontFamily: "'Hind Siliguri', sans-serif",
     fontSize: 10,
@@ -126,7 +129,7 @@ export default async function AdminDashboardPage() {
                 </tr>
               </thead>
               <tbody>
-                {articles.map((a) => (
+                {safeArticles.map((a) => (
                   <tr key={a.id}>
                     <td style={tdStyle}>
                       <Link
@@ -197,7 +200,7 @@ export default async function AdminDashboardPage() {
                 </tr>
               </thead>
               <tbody>
-                {scores.map((s) => (
+                {safeScores.map((s) => (
                   <tr key={s.id}>
                     <td style={{ ...tdStyle, color: 'var(--ink-muted)' }} lang="bn">{s.league}</td>
                     <td style={tdStyle} lang="bn">{s.teamA} vs {s.teamB}</td>

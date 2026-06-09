@@ -21,7 +21,9 @@ export default async function AdminArticlesPage() {
   const { data: articles } = await supabaseAdmin
     .from('Article')
     .select('id, slug, headline, headlineBn, sport, isLead, publishedAt, byline')
-    .order('publishedAt', { ascending: false });
+    .order('publishedAt', { ascending: false })
+
+  const safeArticles = articles ?? []
 
   const thStyle = {
     fontFamily: "'Hind Siliguri', sans-serif",
@@ -62,7 +64,7 @@ export default async function AdminArticlesPage() {
               </tr>
             </thead>
             <tbody>
-              {articles.map((a) => (
+              {safeArticles.map((a) => (
                 <tr key={a.id}>
                   <td style={tdStyle}>
                     <Link href={`/admin/articles/${a.id}`} style={{ color: 'var(--ink)', textDecoration: 'underline', textDecorationColor: 'var(--ink-border)' }} lang="bn">
