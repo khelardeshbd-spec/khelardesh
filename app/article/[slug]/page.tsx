@@ -52,9 +52,9 @@ export default async function ArticlePage({ params }: PageProps) {
   const exactTime = formatDatetime(publishedAt);
 
   // Parse body into paragraphs (blank line separated)
-  const paragraphs = body
+  const paragraphs = (body || '')
     .split(/\n\n+/)
-    .map((p) => p.trim())
+    .map((p: string) => p.trim())
     .filter(Boolean);
 
   return (
