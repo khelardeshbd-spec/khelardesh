@@ -121,16 +121,31 @@ export default function ScoreCard({
       </div>
 
       {/* Status */}
-      <div className="flex items-center gap-1">
-        {isLive && <span className="live-dot" style={{ width: 5, height: 5 }} />}
+      <div className="flex items-center gap-1" style={{ minHeight: '8px' }}>
+        {isLive && (
+          <span 
+            className="live-dot" 
+            style={{ 
+              width: 5, 
+              height: 5, 
+              marginRight: 2, 
+              display: 'inline-block', 
+              verticalAlign: 'middle', 
+              flexShrink: 0 
+            }} 
+          />
+        )}
         <span
           style={{
             fontFamily: "'Abu JM Akkas', 'Hind Siliguri', sans-serif",
             fontSize: 8,
-            fontWeight: 400,
+            fontWeight: 500,
             letterSpacing: '0.1em',
             textTransform: 'uppercase',
             color: isLive ? 'var(--live-red)' : 'var(--ink-ghost)',
+            display: 'inline-block',
+            verticalAlign: 'middle',
+            lineHeight: 1
           }}
         >
           {status}
