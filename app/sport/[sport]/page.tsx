@@ -84,24 +84,6 @@ export default async function SportPage({ params }: PageProps) {
 
   return (
     <div style={{ backgroundColor: 'var(--bg-page)', minHeight: '100vh' }}>
-      {/* Sport heading */}
-      <div
-        className="px-4 lg:px-6 pt-6 pb-0 max-w-screen-xl mx-auto"
-        style={{ borderBottom: '1.5px solid var(--ink)' }}
-      >
-        <h1
-          style={{
-            fontFamily: "Georgia, 'Times New Roman', Times, serif",
-            fontWeight: 900,
-            fontSize: 'clamp(28px, 4vw, 48px)',
-            letterSpacing: '-0.02em',
-            color: 'var(--ink)',
-            marginBottom: 4,
-          }}
-        >
-          <span lang="bn">{sportBn}</span>
-        </h1>
-      </div>
 
       {/* Desktop */}
       <div 
@@ -123,6 +105,25 @@ export default async function SportPage({ params }: PageProps) {
 
         {/* Middle Column (64%): Main article feed */}
         <div className="pt-28">
+          {/* Sport heading */}
+          <div
+            className="pb-2 mb-6"
+            style={{ borderBottom: '1.5px solid var(--ink)' }}
+          >
+            <h1
+              style={{
+                fontFamily: "Georgia, 'Times New Roman', Times, serif",
+                fontWeight: 900,
+                fontSize: 'clamp(28px, 4vw, 48px)',
+                letterSpacing: '-0.02em',
+                color: 'var(--ink)',
+                marginBottom: 4,
+              }}
+            >
+              <span lang="bn">{sportBn}</span>
+            </h1>
+          </div>
+
           {lead && <div className="mb-8 mt-2"><LeadStory article={lead} /></div>}
           {articlesList.map((article, i) => (
             <div key={article.id}>
@@ -158,6 +159,24 @@ export default async function SportPage({ params }: PageProps) {
 
       {/* Mobile */}
       <div className="lg:hidden px-4 pb-12">
+        {/* Sport heading */}
+        <div
+          className="pt-4 pb-2 mb-4"
+          style={{ borderBottom: '1.5px solid var(--ink)' }}
+        >
+          <h1
+            style={{
+              fontFamily: "Georgia, 'Times New Roman', Times, serif",
+              fontWeight: 900,
+              fontSize: '28px',
+              color: 'var(--ink)',
+              marginBottom: 4,
+            }}
+          >
+            <span lang="bn">{sportBn}</span>
+          </h1>
+        </div>
+
         {lead && <div className="pt-4"><LeadStory article={lead} /></div>}
         {articlesList.map((article, i) => (
           <div key={article.id}>
