@@ -104,12 +104,18 @@
    --------------------------------------------------------------------------- */
 :lang(bn),
 [data-lang="bn"] {
-  font-family: 'Manowar Murshidabad', 'Noto Serif Bengali', serif;   /* Bengali headlines */
+  font-family: 'Kalpurush', 'Hind Siliguri', sans-serif;   /* Bengali body / UI chrome universally */
 }
 
-.ui-label:lang(bn),
-.nav-item:lang(bn) {
-  font-family: 'Kalpurush', 'Hind Siliguri', sans-serif;   /* Bengali UI chrome */
+h1:lang(bn),
+h2:lang(bn),
+h3:lang(bn),
+h4:lang(bn),
+h5:lang(bn),
+h6:lang(bn),
+.type-story-bn,
+.type-lead-bn {
+  font-family: 'Manowar Murshidabad', 'Noto Serif Bengali', serif;   /* Bengali headlines */
 }
 
 /* ---------------------------------------------------------------------------
