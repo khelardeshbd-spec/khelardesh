@@ -109,7 +109,7 @@
 
 .ui-label:lang(bn),
 .nav-item:lang(bn) {
-  font-family: 'Abu JM Akkas', 'Hind Siliguri', sans-serif;   /* Bengali UI chrome */
+  font-family: 'Kalpurush', 'Hind Siliguri', sans-serif;   /* Bengali UI chrome */
 }
 
 /* ---------------------------------------------------------------------------
@@ -133,7 +133,7 @@ html {
 body {
   background-color: var(--bg-page);
   color: var(--ink);
-  font-family: 'Source Serif 4', 'Abu JM Akkas', Georgia, serif;
+  font-family: 'Source Serif 4', 'Kalpurush', Georgia, serif;
   font-weight: 300;
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
@@ -239,7 +239,7 @@ ul, ol {
 }
 
 .type-body-bn {
-  font-family: 'Abu JM Akkas', 'Hind Siliguri', sans-serif;
+  font-family: 'Kalpurush', 'Hind Siliguri', sans-serif;
   font-weight: 400;
   font-size: 18px;
   line-height: 1.85;
@@ -247,7 +247,7 @@ ul, ol {
 
 /* Kicker / sport label */
 .type-kicker {
-  font-family: 'Abu JM Akkas', 'Hind Siliguri', sans-serif;
+  font-family: 'Kalpurush', 'Hind Siliguri', sans-serif;
   font-weight: 500;
   font-size: 11px;
   letter-spacing: 0.14em;
@@ -257,7 +257,7 @@ ul, ol {
 
 /* Nav labels */
 .type-nav {
-  font-family: 'Abu JM Akkas', 'Hind Siliguri', sans-serif;
+  font-family: 'Kalpurush', 'Hind Siliguri', sans-serif;
   font-weight: 500;
   font-size: 12px;
   letter-spacing: 0.12em;
@@ -351,7 +351,7 @@ ul, ol {
 }
 
 .prose-field p:lang(bn) {
-  font-family: 'Abu JM Akkas', 'Hind Siliguri', sans-serif;
+  font-family: 'Kalpurush', 'Hind Siliguri', sans-serif;
   font-weight: 400;
 }
 
@@ -418,7 +418,7 @@ html {
   border: 1px solid var(--ink-border);
   background: var(--bg-surface);
   color: var(--ink);
-  font-family: 'Abu JM Akkas', 'Hind Siliguri', sans-serif;
+  font-family: 'Kalpurush', 'Hind Siliguri', sans-serif;
   font-size: 14px;
   border-radius: 2px;
   transition: border-color 0.15s ease;
@@ -452,7 +452,7 @@ html {
 
 .admin-label {
   display: block;
-  font-family: 'Abu JM Akkas', 'Hind Siliguri', sans-serif;
+  font-family: 'Kalpurush', 'Hind Siliguri', sans-serif;
   font-size: 10px;
   font-weight: 500;
   letter-spacing: 0.1em;
@@ -465,7 +465,7 @@ html {
   padding: 8px 18px;
   background: var(--ink);
   color: var(--bg-page);
-  font-family: 'Abu JM Akkas', 'Hind Siliguri', sans-serif;
+  font-family: 'Kalpurush', 'Hind Siliguri', sans-serif;
   font-size: 11px;
   font-weight: 500;
   letter-spacing: 0.1em;
@@ -484,7 +484,7 @@ html {
   padding: 8px 18px;
   background: transparent;
   color: var(--ink);
-  font-family: 'Abu JM Akkas', 'Hind Siliguri', sans-serif;
+  font-family: 'Kalpurush', 'Hind Siliguri', sans-serif;
   font-size: 11px;
   font-weight: 500;
   letter-spacing: 0.1em;
@@ -503,7 +503,7 @@ html {
   padding: 8px 18px;
   background: transparent;
   color: #C0392B;
-  font-family: 'Abu JM Akkas', 'Hind Siliguri', sans-serif;
+  font-family: 'Kalpurush', 'Hind Siliguri', sans-serif;
   font-size: 11px;
   font-weight: 500;
   letter-spacing: 0.1em;
