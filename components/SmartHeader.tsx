@@ -17,7 +17,7 @@ export default function SmartHeader() {
   return (
     <header
       id="smart-header"
-      className="sticky lg:relative top-0 z-50 border-b border-[var(--ink-border)] bg-[var(--bg-page)] lg:bg-transparent lg:border-none transition-transform duration-250 max-lg:[transform:var(--nav-transform)]"
+      className="sticky lg:absolute top-0 lg:left-0 lg:right-0 lg:w-full lg:z-40 border-b border-[var(--ink-border)] bg-[var(--bg-page)] lg:bg-transparent lg:border-none transition-transform duration-250 max-lg:[transform:var(--nav-transform)]"
       style={{
         '--nav-transform': navVisible ? 'translateY(0)' : 'translateY(-100%)',
       } as React.CSSProperties}

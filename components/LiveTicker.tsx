@@ -68,64 +68,82 @@ export default function LiveTicker() {
   const display = shouldScroll ? `${tickerContent}     ·     ${tickerContent}` : tickerContent;
 
   return (
-    <div
-      className="hidden lg:flex items-center overflow-hidden"
-      style={{
-        height: 30,
-        backgroundColor: 'var(--ink)',
-        color: 'var(--bg-page)',
-      }}
-    >
-      {/* Live label */}
+    <>
+      {/* Desktop ticker */}
       <div
-        className="flex-shrink-0 flex items-center gap-1.5 px-4 border-r"
-        style={{ borderColor: 'rgba(255,255,255,0.15)', height: '100%' }}
+        className="hidden lg:grid max-w-[1440px] mx-auto px-6 gap-6"
+        style={{
+          position: 'absolute',
+          top: '72px',
+          left: 0,
+          right: 0,
+          zIndex: 40,
+          gridTemplateColumns: '18fr 82fr',
+        }}
       >
-        <span className="live-dot" style={{ backgroundColor: 'var(--live-red)' }} />
-        <span
+        <div /> {/* Spacer for left 18% column */}
+        <div
+          className="flex items-center overflow-hidden"
           style={{
-            fontFamily: "'Abu JM Akkas', 'Hind Siliguri', sans-serif",
-            fontSize: 10,
-            fontWeight: 700,
-            letterSpacing: '0.14em',
-            textTransform: 'uppercase',
+            height: 30,
+            backgroundColor: 'var(--ink)',
+            color: 'var(--bg-page)',
           }}
         >
-          লাইভ
-        </span>
-      </div>
-
-      {/* Scrolling content */}
-      <div className="flex-1 overflow-hidden relative">
-        {shouldScroll ? (
-          <div className="ticker-track">
+          {/* Live label */}
+          <div
+            className="flex-shrink-0 flex items-center gap-1.5 px-4 border-r"
+            style={{ borderColor: 'rgba(255,255,255,0.15)', height: '100%' }}
+          >
+            <span className="live-dot" style={{ backgroundColor: 'var(--live-red)' }} />
             <span
               style={{
                 fontFamily: "'Abu JM Akkas', 'Hind Siliguri', sans-serif",
-                fontSize: 11,
-                letterSpacing: '0.04em',
-                paddingLeft: 16,
-                paddingRight: 16,
-                whiteSpace: 'nowrap',
+                fontSize: 10,
+                fontWeight: 700,
+                letterSpacing: '0.14em',
+                textTransform: 'uppercase',
               }}
             >
-              {display}
+              লাইভ
             </span>
           </div>
-        ) : (
-          <span
-            style={{
-              fontFamily: "'Abu JM Akkas', 'Hind Siliguri', sans-serif",
-              fontSize: 11,
-              letterSpacing: '0.04em',
-              paddingLeft: 16,
-              whiteSpace: 'nowrap',
-            }}
-          >
-            {tickerContent}
-          </span>
-        )}
+
+          {/* Scrolling content */}
+          <div className="flex-1 overflow-hidden relative">
+            {shouldScroll ? (
+              <div className="ticker-track">
+                <span
+                  style={{
+                    fontFamily: "'Abu JM Akkas', 'Hind Siliguri', sans-serif",
+                    fontSize: 11,
+                    letterSpacing: '0.04em',
+                    paddingLeft: 16,
+                    paddingRight: 16,
+                    whiteSpace: 'nowrap',
+                  }}
+                >
+                  {display}
+                </span>
+              </div>
+            ) : (
+              <span
+                style={{
+                  fontFamily: "'Abu JM Akkas', 'Hind Siliguri', sans-serif",
+                  fontSize: 11,
+                  letterSpacing: '0.04em',
+                  paddingLeft: 16,
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                {tickerContent}
+              </span>
+            )}
+          </div>
+        </div>
       </div>
-    </div>
+
+      {/* Mobile ticker (if needed in future, currently hidden) */}
+    </>
   );
 }

@@ -8,16 +8,16 @@
  */
 export default function Masthead() {
   return (
-    <div className="flex flex-col items-start" style={{ minWidth: '180px' }}>
+    <div className="flex flex-col items-start" style={{ minWidth: '220px' }}>
       {/* The খেলারদেশ logo image */}
       <img
         src="/logo.png"
         alt="খেলারদেশ"
         style={{
-          height: '110px',
+          height: '160px',
           objectFit: 'contain',
           filter: 'var(--logo-filter, none)',
-          marginLeft: '-15px',
+          marginLeft: '-22px',
           display: 'block'
         }}
       />
@@ -25,11 +25,11 @@ export default function Masthead() {
       <p
         className="type-kicker tracking-widest"
         style={{ 
-          fontSize: '8px', 
+          fontSize: '9.5px', 
           fontFamily: "'Abu JM Akkas', 'Hind Siliguri', sans-serif", 
           color: 'var(--ink-muted)',
-          paddingLeft: '12px',
-          marginTop: '-6px',
+          paddingLeft: '14px',
+          marginTop: '-12px',
           textTransform: 'uppercase'
         }}
       >

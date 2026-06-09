@@ -105,7 +105,7 @@ export default async function SportPage({ params }: PageProps) {
 
       {/* Desktop */}
       <div 
-        className="hidden lg:grid max-w-[1440px] mx-auto px-6 pt-4 pb-12 gap-6"
+        className="hidden lg:grid max-w-[1440px] mx-auto px-6 pb-12 gap-6"
         style={{ gridTemplateColumns: '18fr 64fr 18fr' }}
       >
         {/* Left Column (18%): Logo at top (static header) & Independently scrollable scores */}
@@ -113,7 +113,7 @@ export default async function SportPage({ params }: PageProps) {
           className="flex flex-col h-screen sticky top-0 pb-4 gap-4"
           style={{ overflow: 'hidden' }}
         >
-          <div className="flex-shrink-0 pt-4">
+          <div className="flex-shrink-0 pt-2">
             <Masthead />
           </div>
           <div className="flex-grow overflow-y-auto scrollbar-none pr-1">
@@ -122,7 +122,7 @@ export default async function SportPage({ params }: PageProps) {
         </div>
 
         {/* Middle Column (64%): Main article feed */}
-        <div>
+        <div className="pt-28">
           {lead && <div className="mb-8 mt-2"><LeadStory article={lead} /></div>}
           {articlesList.map((article, i) => (
             <div key={article.id}>
@@ -145,12 +145,12 @@ export default async function SportPage({ params }: PageProps) {
         <div 
           style={{ 
             position: 'sticky', 
-            top: '20px', 
-            maxHeight: 'calc(100vh - 40px)', 
+            top: '120px', 
+            maxHeight: 'calc(100vh - 140px)', 
             overflowY: 'auto',
             paddingLeft: '4px'
           }}
-          className="scrollbar-none"
+          className="scrollbar-none pt-28"
         >
           <BriefsColumn articles={articlesList} />
         </div>
