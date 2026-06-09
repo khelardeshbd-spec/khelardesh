@@ -64,9 +64,14 @@ export default async function HomePage() {
 
       {/* ── DESKTOP LAYOUT ≥ 1024px ── */}
       <div className="hidden lg:grid max-w-screen-xl mx-auto px-6 pt-6 pb-12 gap-8"
-        style={{ gridTemplateColumns: '2fr 1fr' }}>
+        style={{ gridTemplateColumns: '1fr 2.2fr' }}>
 
-        {/* Main column */}
+        {/* Sidebar (Left Column) */}
+        <div>
+          <Sidebar scores={scores} sponsors={sponsors} />
+        </div>
+
+        {/* Main column (Right Column) */}
         <div>
           {/* Lead story */}
           {lead && (
@@ -129,11 +134,6 @@ export default async function HomePage() {
               আরও লোড করুন
             </a>
           </div>
-        </div>
-
-        {/* Sidebar */}
-        <div>
-          <Sidebar scores={scores} sponsors={sponsors} />
         </div>
       </div>
 

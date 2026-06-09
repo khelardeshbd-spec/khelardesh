@@ -103,7 +103,8 @@ export default async function SportPage({ params }: PageProps) {
 
       {/* Desktop */}
       <div className="hidden lg:grid max-w-screen-xl mx-auto px-6 pt-6 pb-12 gap-8"
-        style={{ gridTemplateColumns: '2fr 1fr' }}>
+        style={{ gridTemplateColumns: '1fr 2.2fr' }}>
+        <div><Sidebar scores={scoresList} sponsors={sponsorsList} /></div>
         <div>
           {lead && <div className="mb-8"><LeadStory article={lead} /></div>}
           {articlesList.map((article, i) => (
@@ -122,7 +123,6 @@ export default async function SportPage({ params }: PageProps) {
             </p>
           )}
         </div>
-        <div><Sidebar scores={scoresList} sponsors={sponsorsList} /></div>
       </div>
 
       {/* Mobile */}
