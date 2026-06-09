@@ -6,9 +6,10 @@ import { useRouter } from 'next/navigation';
 const SPORTS = ['football', 'cricket', 'basketball', 'tennis', 'f1', 'rugby', 'athletics', 'other'];
 
 /**
- * Interactive Real-Time Article Editor & Live Preview Templates — Section 11.3 & 10.9
+ * Interactive Real-Time Article Editor & Live Inline Click-to-Edit Preview — Section 11.3 & 10.9
  * Dual panel layout: left side edits, right side is an exact real-time rendering 
- * of the article template.
+ * of the article template. Clicking any element in the preview focuses/activates 
+ * editing or triggers file upload.
  */
 export default function NewArticlePage() {
   const router = useRouter();
@@ -29,11 +30,27 @@ export default function NewArticlePage() {
   const [body, setBody] = useState('This is paragraph one. Write the main content of your story here.\n\nThis is paragraph two. Separate paragraphs with a blank line just like in a text editor to preview spacing.');
 
   const [mediaPreview, setMediaPreview] = useState<string | null>(null);
+  
+  // Focus refs to link preview elements to form inputs
   const fileRef = useRef<HTMLInputElement>(null);
+  const inputHeadlineRef = useRef<HTMLInputElement>(null);
+  const inputHeadlineBnRef = useRef<HTMLInputElement>(null);
+  const inputDeckRef = useRef<HTMLInputElement>(null);
+  const inputKickerRef = useRef<HTMLInputElement>(null);
+  const inputBylineRef = useRef<HTMLInputElement>(null);
+  const inputCaptionRef = useRef<HTMLInputElement>(null);
+  const textareaBodyRef = useRef<HTMLTextAreaElement>(null);
 
   const displayHeadline = headlineBn || headline;
   const isBn = !!headlineBn;
   const paragraphs = body.split(/\n\n+/).map(p => p.trim()).filter(Boolean);
+
+  // Helper to trigger hidden file dialog
+  function handleMediaClick() {
+    if (fileRef.current) {
+      fileRef.current.click();
+    }
+  }
 
   async function handleUpload(file: File) {
     const fd = new FormData();
@@ -120,6 +137,7 @@ export default function NewArticlePage() {
             <label htmlFor="headline" className="admin-label">Headline (EN)</label>
             <input 
               id="headline" 
+              ref={inputHeadlineRef}
               type="text" 
               required 
               className="admin-input" 
@@ -133,6 +151,7 @@ export default function NewArticlePage() {
             <label htmlFor="headlineBn" className="admin-label">Headline (BN)</label>
             <input 
               id="headlineBn" 
+              ref={inputHeadlineBnRef}
               type="text" 
               className="admin-input" 
               value={headlineBn}
@@ -145,6 +164,7 @@ export default function NewArticlePage() {
             <label htmlFor="deck" className="admin-label">Deck / Summary</label>
             <input 
               id="deck" 
+              ref={inputDeckRef}
               type="text" 
               required 
               className="admin-input" 
@@ -158,6 +178,7 @@ export default function NewArticlePage() {
             <label htmlFor="kicker" className="admin-label">Kicker (Category Line)</label>
             <input 
               id="kicker" 
+              ref={inputKickerRef}
               type="text" 
               required 
               className="admin-input" 
@@ -171,6 +192,7 @@ export default function NewArticlePage() {
             <label htmlFor="byline" className="admin-label">Byline</label>
             <input 
               id="byline" 
+              ref={inputBylineRef}
               type="text" 
               className="admin-input" 
               value={byline}
@@ -253,6 +275,7 @@ export default function NewArticlePage() {
             <label htmlFor="mediaCaption" className="admin-label">Media Caption</label>
             <input 
               id="mediaCaption" 
+              ref={inputCaptionRef}
               type="text" 
               className="admin-input" 
               value={mediaCaption}
@@ -279,6 +302,7 @@ export default function NewArticlePage() {
             <label htmlFor="body" className="admin-label">Body Paragraphs</label>
             <textarea
               id="body"
+              ref={textareaBodyRef}
               required
               className="admin-textarea flex-1 min-h-[140px] text-sm"
               value={body}
@@ -313,7 +337,7 @@ export default function NewArticlePage() {
             textAlign: 'center'
           }}
         >
-          📰 Live Preview Simulator (Exact Render)
+          📰 Live Preview Simulator (Click elements to edit / upload)
         </div>
 
         {/* Simulator Frame */}
@@ -330,10 +354,12 @@ export default function NewArticlePage() {
             position: 'relative'
           }}
         >
-          {/* Sim Media container */}
+          {/* Sim Media container (Click to upload) */}
           <div
-            className="w-full relative"
+            className="w-full relative cursor-pointer group hover:opacity-90 transition"
             style={{ aspectRatio: '16/9', backgroundColor: 'var(--ink-ghost)', overflow: 'hidden' }}
+            onClick={handleMediaClick}
+            title="Click to upload media file"
           >
             {mediaPreview || mediaUrl ? (
               mediaType === 'video' ? (
@@ -354,8 +380,8 @@ export default function NewArticlePage() {
               )
             ) : (
               <div className="absolute inset-0 flex flex-col items-center justify-center text-xs text-[var(--ink-muted)]">
-                <span>[No Media Attached]</span>
-                <span>Select a file or enter URL to preview</span>
+                <span className="font-bold text-sm mb-1">📷 Click to upload media file</span>
+                <span>Or enter URL path in editor panel</span>
               </div>
             )}
             <span
@@ -369,17 +395,26 @@ export default function NewArticlePage() {
             >
               {mediaType === 'video' ? '▶ Video' : 'Photo'}
             </span>
+            {/* Overlay instruction */}
+            <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition">
+              <span className="text-white text-xs font-semibold px-3 py-1.5 bg-black/60 rounded">
+                Click to Replace File
+              </span>
+            </div>
           </div>
 
           {/* Sim Caption */}
           {mediaCaption && (
             <div className="px-6">
               <p
+                onClick={() => inputCaptionRef.current?.focus()}
                 style={{
                   fontFamily: "'Source Serif 4', Georgia, serif",
                   fontStyle: 'italic', fontSize: 11,
                   color: 'var(--ink-muted)', marginTop: 8,
+                  cursor: 'text'
                 }}
+                title="Click to edit caption"
               >
                 {mediaCaption}
               </p>
@@ -390,19 +425,23 @@ export default function NewArticlePage() {
           <div className="px-6 mt-6">
             {/* Kicker · Sport */}
             <p
+              onClick={() => inputKickerRef.current?.focus()}
               style={{
                 fontFamily: "'Abu JM Akkas', 'Hind Siliguri', sans-serif",
                 fontSize: 11, fontWeight: 500,
                 letterSpacing: '0.14em', textTransform: 'uppercase',
                 color: 'var(--ink-muted)', marginBottom: 8,
+                cursor: 'text'
               }}
               lang="bn"
+              title="Click to edit kicker"
             >
               {kicker}
             </p>
 
-            {/* Headline */}
+            {/* Headline (Bangla) */}
             <h1
+              onClick={() => inputHeadlineBnRef.current?.focus()}
               lang={isBn ? 'bn' : 'en'}
               style={{
                 fontFamily: isBn
@@ -413,7 +452,9 @@ export default function NewArticlePage() {
                 fontSize: 'clamp(24px, 3.5vw, 34px)',
                 lineHeight: 1.15, letterSpacing: '-0.01em',
                 color: 'var(--ink)', marginBottom: 10,
+                cursor: 'text'
               }}
+              title="Click to edit Bengali headline"
             >
               {displayHeadline}
             </h1>
@@ -421,13 +462,16 @@ export default function NewArticlePage() {
             {/* English title if bilingual */}
             {headlineBn && headline !== headlineBn && (
               <h2
+                onClick={() => inputHeadlineRef.current?.focus()}
                 lang="en"
                 style={{
                   fontFamily: "Georgia, 'Times New Roman', Times, serif",
                   fontWeight: 700, fontStyle: 'italic',
                   fontSize: 'clamp(15px, 2vw, 18px)',
                   color: 'var(--ink-muted)', marginBottom: 10, lineHeight: 1.2,
+                  cursor: 'text'
                 }}
+                title="Click to edit English headline"
               >
                 {headline}
               </h2>
@@ -435,13 +479,16 @@ export default function NewArticlePage() {
 
             {/* Deck */}
             <p
+              onClick={() => inputDeckRef.current?.focus()}
               lang={isBn ? 'bn' : 'en'}
               style={{
                 fontFamily: isBn ? "'Abu JM Akkas', 'Hind Siliguri', sans-serif" : "'Source Serif 4', Georgia, serif",
                 fontWeight: 300, fontSize: '15px',
                 color: 'var(--ink-muted)', lineHeight: 1.65,
                 marginBottom: 14, borderBottom: '0.5px solid var(--ink-border)', paddingBottom: 12,
+                cursor: 'text'
               }}
+              title="Click to edit deck"
             >
               {deck}
             </p>
@@ -449,12 +496,15 @@ export default function NewArticlePage() {
             {/* Byline + Timestamp */}
             <div className="flex items-center gap-2 mb-6">
               <span
+                onClick={() => inputBylineRef.current?.focus()}
                 style={{
                   fontFamily: "'Abu JM Akkas', 'Hind Siliguri', sans-serif",
                   fontSize: 10, fontWeight: 400,
                   letterSpacing: '0.1em', textTransform: 'uppercase',
                   color: 'var(--ink-ghost)',
+                  cursor: 'text'
                 }}
+                title="Click to edit byline"
               >
                 {byline}
               </span>
@@ -470,7 +520,7 @@ export default function NewArticlePage() {
             </div>
 
             {/* Body paragraphs */}
-            <div>
+            <div onClick={() => textareaBodyRef.current?.focus()} style={{ cursor: 'text' }} title="Click to edit body content">
               {paragraphs.map((para, i) => (
                 <p
                   key={i}
