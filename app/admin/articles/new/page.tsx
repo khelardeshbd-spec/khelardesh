@@ -6,17 +6,17 @@ import { useRouter } from 'next/navigation';
 const SPORTS = ['football', 'cricket', 'basketball', 'tennis', 'f1', 'rugby', 'athletics', 'other'];
 
 /**
- * Interactive Real-Time Article Editor & Live Inline Click-to-Edit Preview — Section 11.3 & 10.9
- * Dual panel layout: left side edits, right side is an exact real-time rendering 
- * of the article template. Clicking any element in the preview focuses/activates 
- * editing or triggers file upload.
+ * Mobile-First WYSIWYG Inline Editor — Section 11.3 & 10.9
+ * Eliminates side-panel layout. The editor is the template itself.
+ * All headers, decks, categories, and paragraphs are directly focusable and editable (contentEditable).
+ * Media areas are clickable to upload images/videos directly.
  */
 export default function NewArticlePage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  
-  // Real-time editor state
+
+  // Editor states
   const [headline, setHeadline] = useState('An exciting sports headline goes here');
   const [headlineBn, setHeadlineBn] = useState('এখানে একটি আকর্ষণীয় খেলার শিরোনাম বসবে');
   const [deck, setDeck] = useState('Provide a brief deck or summary explaining the core scoop of the article here.');
@@ -30,26 +30,20 @@ export default function NewArticlePage() {
   const [body, setBody] = useState('This is paragraph one. Write the main content of your story here.\n\nThis is paragraph two. Separate paragraphs with a blank line just like in a text editor to preview spacing.');
 
   const [mediaPreview, setMediaPreview] = useState<string | null>(null);
-  
-  // Focus refs to link preview elements to form inputs
   const fileRef = useRef<HTMLInputElement>(null);
-  const inputHeadlineRef = useRef<HTMLInputElement>(null);
-  const inputHeadlineBnRef = useRef<HTMLInputElement>(null);
-  const inputDeckRef = useRef<HTMLInputElement>(null);
-  const inputKickerRef = useRef<HTMLInputElement>(null);
-  const inputBylineRef = useRef<HTMLInputElement>(null);
-  const inputCaptionRef = useRef<HTMLInputElement>(null);
-  const textareaBodyRef = useRef<HTMLTextAreaElement>(null);
 
   const displayHeadline = headlineBn || headline;
   const isBn = !!headlineBn;
-  const paragraphs = body.split(/\n\n+/).map(p => p.trim()).filter(Boolean);
 
-  // Helper to trigger hidden file dialog
-  function handleMediaClick() {
-    if (fileRef.current) {
-      fileRef.current.click();
-    }
+  // Simple parser to map text blocks back into state from editable div changes
+  function updateBodyFromDOM(htmlContent: string) {
+    // Replace divs/brs with single/double newlines to parse paragraphs cleanly
+    const cleanText = htmlContent
+      .replace(/<div><br><\/div>/g, '\n')
+      .replace(/<div>/g, '\n')
+      .replace(/<\/div>/g, '')
+      .replace(/<br>/g, '\n');
+    setBody(cleanText);
   }
 
   async function handleUpload(file: File) {
@@ -61,8 +55,7 @@ export default function NewArticlePage() {
     return data.url as string;
   }
 
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
+  async function handlePublish() {
     setError('');
     setLoading(true);
 
@@ -109,438 +102,339 @@ export default function NewArticlePage() {
   }
 
   return (
-    <div style={{ minHeight: '100vh', backgroundColor: 'var(--bg-page)' }} className="flex flex-col lg:flex-row">
-      {/* LEFT: Editor Console */}
+    <div style={{ minHeight: '100vh', backgroundColor: 'var(--bg-page)', paddingBottom: '120px' }}>
+      {/* Floating Action Bar / Controls for Phone/Desktop convenience */}
       <div 
-        style={{ 
-          borderRight: '1px solid var(--ink-border)',
+        style={{
+          position: 'sticky', top: 0, zIndex: 100,
           backgroundColor: 'var(--bg-surface)',
+          borderBottom: '1.5px solid var(--ink-border)',
+          padding: '12px 16px',
         }}
-        className="w-full lg:w-[450px] p-6 lg:overflow-y-auto lg:h-screen flex flex-col"
+        className="flex items-center justify-between gap-3 flex-wrap"
       >
-        <div className="flex items-center justify-between mb-6">
-          <h1 style={{ fontFamily: "Georgia, 'Times New Roman', Times, serif", fontWeight: 700, fontSize: 20, color: 'var(--ink)' }}>
-            Compose Story
-          </h1>
-          <a href="/admin/articles" className="admin-btn-secondary" style={{ padding: '4px 10px', fontSize: 10 }}>← Back</a>
+        <div className="flex items-center gap-3">
+          <a href="/admin/articles" className="admin-btn-secondary" style={{ padding: '6px 12px' }}>← Back</a>
+          <span style={{ fontSize: '13px', fontWeight: 600, fontFamily: "'Hind Siliguri', sans-serif" }}>
+            Drafting in Section:
+          </span>
+          <select 
+            style={{ 
+              backgroundColor: 'var(--bg-page)', 
+              color: 'var(--ink)', 
+              border: '1px solid var(--ink-border)',
+              padding: '4px 8px',
+              fontSize: '13px',
+              borderRadius: '2px'
+            }}
+            value={sport}
+            onChange={(e) => setSport(e.target.value)}
+          >
+            {SPORTS.map((s) => (
+              <option key={s} value={s}>{s.toUpperCase()}</option>
+            ))}
+          </select>
+
+          {/* Lead Pin status */}
+          <label className="flex items-center gap-2 cursor-pointer ml-2">
+            <input 
+              type="checkbox" 
+              checked={isLead} 
+              onChange={(e) => setIsLead(e.target.checked)}
+            />
+            <span style={{ fontSize: '12px', fontFamily: "'Hind Siliguri', sans-serif" }}>Pin as Lead</span>
+          </label>
         </div>
 
+        <div className="flex items-center gap-3">
+          <button 
+            onClick={handlePublish} 
+            className="admin-btn-primary" 
+            style={{ padding: '8px 18px', backgroundColor: 'var(--ink)', color: 'var(--bg-page)' }}
+            disabled={loading}
+          >
+            {loading ? 'Publishing...' : 'Publish Story'}
+          </button>
+        </div>
+      </div>
+
+      <div style={{ maxWidth: '680px', margin: '24px auto' }} className="px-4">
         {error && (
           <div style={{ color: '#C0392B', fontFamily: "'Hind Siliguri', sans-serif", fontSize: 13, marginBottom: 16 }}>
             {error}
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4 flex-1">
-          {/* Headline (EN) */}
-          <div>
-            <label htmlFor="headline" className="admin-label">Headline (EN)</label>
-            <input 
-              id="headline" 
-              ref={inputHeadlineRef}
-              type="text" 
-              required 
-              className="admin-input" 
-              value={headline}
-              onChange={(e) => setHeadline(e.target.value)}
-            />
-          </div>
+        {/* Hidden File Picker */}
+        <input
+          ref={fileRef}
+          type="file"
+          accept=".jpg,.jpeg,.png,.webp,.mp4"
+          style={{ display: 'none' }}
+          onChange={(e) => {
+            const file = e.target.files?.[0];
+            if (file) {
+              setMediaPreview(URL.createObjectURL(file));
+            }
+          }}
+        />
 
-          {/* Headline (BN) */}
-          <div>
-            <label htmlFor="headlineBn" className="admin-label">Headline (BN)</label>
-            <input 
-              id="headlineBn" 
-              ref={inputHeadlineBnRef}
-              type="text" 
-              className="admin-input" 
-              value={headlineBn}
-              onChange={(e) => setHeadlineBn(e.target.value)}
-            />
-          </div>
-
-          {/* Deck */}
-          <div>
-            <label htmlFor="deck" className="admin-label">Deck / Summary</label>
-            <input 
-              id="deck" 
-              ref={inputDeckRef}
-              type="text" 
-              required 
-              className="admin-input" 
-              value={deck}
-              onChange={(e) => setDeck(e.target.value)}
-            />
-          </div>
-
-          {/* Kicker */}
-          <div>
-            <label htmlFor="kicker" className="admin-label">Kicker (Category Line)</label>
-            <input 
-              id="kicker" 
-              ref={inputKickerRef}
-              type="text" 
-              required 
-              className="admin-input" 
-              value={kicker}
-              onChange={(e) => setKicker(e.target.value)}
-            />
-          </div>
-
-          {/* Byline */}
-          <div>
-            <label htmlFor="byline" className="admin-label">Byline</label>
-            <input 
-              id="byline" 
-              ref={inputBylineRef}
-              type="text" 
-              className="admin-input" 
-              value={byline}
-              onChange={(e) => setByline(e.target.value)}
-            />
-          </div>
-
-          {/* Sport */}
-          <div>
-            <label htmlFor="sport" className="admin-label">Sport Section</label>
-            <select 
-              id="sport" 
-              required 
-              className="admin-input"
-              value={sport}
-              onChange={(e) => setSport(e.target.value)}
-            >
-              {SPORTS.map((s) => (
-                <option key={s} value={s}>{s}</option>
-              ))}
-            </select>
-          </div>
-
-          {/* Media Type */}
-          <div>
-            <label className="admin-label">Media Type</label>
-            <div className="flex gap-4">
-              {(['photo', 'video'] as const).map((mt) => (
-                <label key={mt} className="flex items-center gap-2 cursor-pointer">
-                  <input
-                    type="radio"
-                    name="mediaType"
-                    value={mt}
-                    checked={mediaType === mt}
-                    onChange={() => setMediaType(mt)}
-                  />
-                  <span style={{ fontFamily: "'Hind Siliguri', sans-serif", fontSize: 12, color: 'var(--ink)' }}>
-                    {mt.charAt(0).toUpperCase() + mt.slice(1)}
-                  </span>
-                </label>
-              ))}
-            </div>
-          </div>
-
-          {/* Upload Media */}
-          <div>
-            <label htmlFor="mediaFile" className="admin-label">Media Attachment</label>
-            <input
-              id="mediaFile"
-              ref={fileRef}
-              type="file"
-              accept=".jpg,.jpeg,.png,.webp,.mp4"
-              className="admin-input"
-              style={{ paddingTop: 6 }}
-              onChange={(e) => {
-                const file = e.target.files?.[0];
-                if (file) {
-                  setMediaPreview(URL.createObjectURL(file));
-                }
-              }}
-            />
-            <p style={{ fontFamily: "'Hind Siliguri', sans-serif", fontSize: 9, color: 'var(--ink-muted)', marginTop: 4 }}>
-              Or use absolute URL path:
-            </p>
-            <input
-              id="mediaUrl"
-              type="text"
-              placeholder="/media/placeholder-football.jpg"
-              className="admin-input mt-1"
-              value={mediaUrl}
-              onChange={(e) => {
-                setMediaUrl(e.target.value);
-                setMediaPreview(null); // clear uploaded file preview to use URL
-              }}
-            />
-          </div>
-
-          {/* Media Caption */}
-          <div>
-            <label htmlFor="mediaCaption" className="admin-label">Media Caption</label>
-            <input 
-              id="mediaCaption" 
-              ref={inputCaptionRef}
-              type="text" 
-              className="admin-input" 
-              value={mediaCaption}
-              onChange={(e) => setMediaCaption(e.target.value)}
-            />
-          </div>
-
-          {/* Pin as Lead */}
-          <div className="py-1">
-            <label className="flex items-center gap-2 cursor-pointer">
-              <input 
-                type="checkbox" 
-                checked={isLead} 
-                onChange={(e) => setIsLead(e.target.checked)}
+        {/* Media Frame (Click to select/upload file) */}
+        <div 
+          onClick={() => fileRef.current?.click()}
+          style={{ 
+            aspectRatio: '16/9', 
+            backgroundColor: 'var(--ink-ghost)', 
+            position: 'relative',
+            cursor: 'pointer',
+            overflow: 'hidden',
+            borderRadius: '2px',
+            border: '1px dashed var(--ink-border)'
+          }}
+          className="group hover:opacity-95 transition mb-3"
+          title="Click to select file to upload"
+        >
+          {mediaPreview || mediaUrl ? (
+            mediaType === 'video' ? (
+              <video
+                src={mediaPreview || mediaUrl}
+                autoPlay
+                muted
+                loop
+                playsInline
+                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
               />
-              <span style={{ fontFamily: "'Hind Siliguri', sans-serif", fontSize: 11, color: 'var(--ink)' }}>
-                Pin as Lead Story
-              </span>
-            </label>
-          </div>
-
-          {/* Body */}
-          <div className="flex-1 flex flex-col min-h-[180px]">
-            <label htmlFor="body" className="admin-label">Body Paragraphs</label>
-            <textarea
-              id="body"
-              ref={textareaBodyRef}
-              required
-              className="admin-textarea flex-1 min-h-[140px] text-sm"
-              value={body}
-              onChange={(e) => setBody(e.target.value)}
-            />
-          </div>
-
-          {/* Submit Actions */}
-          <div className="flex gap-3 pt-2 pb-6">
-            <button type="submit" className="admin-btn-primary flex-1" disabled={loading}>
-              {loading ? 'Publishing...' : 'Publish Story'}
-            </button>
-          </div>
-        </form>
-      </div>
-
-      {/* RIGHT: Live Visual Interactive Preview Panel */}
-      <div className="flex-1 lg:h-screen lg:overflow-y-auto p-4 lg:p-8 flex flex-col items-center">
-        {/* Simulator Device Header */}
-        <div 
-          style={{ 
-            fontFamily: "'Hind Siliguri', sans-serif",
-            fontSize: 10,
-            textTransform: 'uppercase',
-            color: 'var(--ink-muted)',
-            letterSpacing: '0.12em',
-            marginBottom: 12,
-            borderBottom: '1px dashed var(--ink-border)',
-            paddingBottom: 4,
-            width: '100%',
-            maxWidth: '680px',
-            textAlign: 'center'
-          }}
-        >
-          📰 Live Preview Simulator (Click elements to edit / upload)
-        </div>
-
-        {/* Simulator Frame */}
-        <div 
-          style={{ 
-            backgroundColor: 'var(--bg-page)', 
-            border: '1.5px solid var(--ink-border)',
-            borderRadius: '4px',
-            width: '100%',
-            maxWidth: '680px',
-            boxShadow: '0 4px 24px rgba(0,0,0,0.05)',
-            minHeight: '80vh',
-            paddingBottom: '48px',
-            position: 'relative'
-          }}
-        >
-          {/* Sim Media container (Click to upload) */}
-          <div
-            className="w-full relative cursor-pointer group hover:opacity-90 transition"
-            style={{ aspectRatio: '16/9', backgroundColor: 'var(--ink-ghost)', overflow: 'hidden' }}
-            onClick={handleMediaClick}
-            title="Click to upload media file"
-          >
-            {mediaPreview || mediaUrl ? (
-              mediaType === 'video' ? (
-                <video
-                  src={mediaPreview || mediaUrl}
-                  autoPlay
-                  muted
-                  loop
-                  playsInline
-                  style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                />
-              ) : (
-                <img
-                  src={mediaPreview || mediaUrl}
-                  alt={displayHeadline}
-                  style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                />
-              )
             ) : (
-              <div className="absolute inset-0 flex flex-col items-center justify-center text-xs text-[var(--ink-muted)]">
-                <span className="font-bold text-sm mb-1">📷 Click to upload media file</span>
-                <span>Or enter URL path in editor panel</span>
-              </div>
-            )}
-            <span
-              style={{
-                position: 'absolute', top: 10, left: 10,
-                backgroundColor: 'var(--ink)', color: 'var(--bg-page)',
-                fontFamily: "'Abu JM Akkas', 'Hind Siliguri', sans-serif",
-                fontSize: 7, fontWeight: 500, letterSpacing: '0.1em',
-                textTransform: 'uppercase', padding: '2px 5px', borderRadius: 1,
-              }}
-            >
-              {mediaType === 'video' ? '▶ Video' : 'Photo'}
-            </span>
-            {/* Overlay instruction */}
-            <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition">
-              <span className="text-white text-xs font-semibold px-3 py-1.5 bg-black/60 rounded">
-                Click to Replace File
-              </span>
-            </div>
-          </div>
-
-          {/* Sim Caption */}
-          {mediaCaption && (
-            <div className="px-6">
-              <p
-                onClick={() => inputCaptionRef.current?.focus()}
-                style={{
-                  fontFamily: "'Source Serif 4', Georgia, serif",
-                  fontStyle: 'italic', fontSize: 11,
-                  color: 'var(--ink-muted)', marginTop: 8,
-                  cursor: 'text'
-                }}
-                title="Click to edit caption"
-              >
-                {mediaCaption}
-              </p>
+              <img
+                src={mediaPreview || mediaUrl}
+                alt="Brand media preview"
+                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+              />
+            )
+          ) : (
+            <div className="absolute inset-0 flex flex-col items-center justify-center text-xs text-[var(--ink-muted)]">
+              <span className="font-semibold text-sm mb-1">📷 Tap/Click here to Upload Media</span>
+              <span>Accepts JPG, PNG, WEBP, or MP4</span>
             </div>
           )}
 
-          {/* Sim Content body */}
-          <div className="px-6 mt-6">
-            {/* Kicker · Sport */}
-            <p
-              onClick={() => inputKickerRef.current?.focus()}
+          <div className="absolute top-2 left-2 flex gap-2" onClick={(e) => e.stopPropagation()}>
+            <select
               style={{
-                fontFamily: "'Abu JM Akkas', 'Hind Siliguri', sans-serif",
-                fontSize: 11, fontWeight: 500,
-                letterSpacing: '0.14em', textTransform: 'uppercase',
-                color: 'var(--ink-muted)', marginBottom: 8,
-                cursor: 'text'
+                backgroundColor: 'var(--ink)',
+                color: 'var(--bg-page)',
+                fontSize: '8px',
+                padding: '2px 4px',
+                border: 'none',
+                borderRadius: '1px',
+                cursor: 'pointer'
               }}
-              lang="bn"
-              title="Click to edit kicker"
+              value={mediaType}
+              onChange={(e) => setMediaType(e.target.value as 'photo' | 'video')}
             >
-              {kicker}
-            </p>
-
-            {/* Headline (Bangla) */}
-            <h1
-              onClick={() => inputHeadlineBnRef.current?.focus()}
-              lang={isBn ? 'bn' : 'en'}
-              style={{
-                fontFamily: isBn
-                  ? "'Manowar Murshidabad', 'Noto Serif Bengali', serif"
-                  : "Georgia, 'Times New Roman', Times, serif",
-                fontWeight: 700,
-                fontStyle: !isBn ? 'italic' : 'normal',
-                fontSize: 'clamp(24px, 3.5vw, 34px)',
-                lineHeight: 1.15, letterSpacing: '-0.01em',
-                color: 'var(--ink)', marginBottom: 10,
-                cursor: 'text'
-              }}
-              title="Click to edit Bengali headline"
-            >
-              {displayHeadline}
-            </h1>
-
-            {/* English title if bilingual */}
-            {headlineBn && headline !== headlineBn && (
-              <h2
-                onClick={() => inputHeadlineRef.current?.focus()}
-                lang="en"
-                style={{
-                  fontFamily: "Georgia, 'Times New Roman', Times, serif",
-                  fontWeight: 700, fontStyle: 'italic',
-                  fontSize: 'clamp(15px, 2vw, 18px)',
-                  color: 'var(--ink-muted)', marginBottom: 10, lineHeight: 1.2,
-                  cursor: 'text'
-                }}
-                title="Click to edit English headline"
-              >
-                {headline}
-              </h2>
-            )}
-
-            {/* Deck */}
-            <p
-              onClick={() => inputDeckRef.current?.focus()}
-              lang={isBn ? 'bn' : 'en'}
-              style={{
-                fontFamily: isBn ? "'Abu JM Akkas', 'Hind Siliguri', sans-serif" : "'Source Serif 4', Georgia, serif",
-                fontWeight: 300, fontSize: '15px',
-                color: 'var(--ink-muted)', lineHeight: 1.65,
-                marginBottom: 14, borderBottom: '0.5px solid var(--ink-border)', paddingBottom: 12,
-                cursor: 'text'
-              }}
-              title="Click to edit deck"
-            >
-              {deck}
-            </p>
-
-            {/* Byline + Timestamp */}
-            <div className="flex items-center gap-2 mb-6">
-              <span
-                onClick={() => inputBylineRef.current?.focus()}
-                style={{
-                  fontFamily: "'Abu JM Akkas', 'Hind Siliguri', sans-serif",
-                  fontSize: 10, fontWeight: 400,
-                  letterSpacing: '0.1em', textTransform: 'uppercase',
-                  color: 'var(--ink-ghost)',
-                  cursor: 'text'
-                }}
-                title="Click to edit byline"
-              >
-                {byline}
-              </span>
-              <span style={{ color: 'var(--ink-ghost)', fontSize: 10 }}>·</span>
-              <span
-                style={{
-                  fontFamily: "'Abu JM Akkas', 'Hind Siliguri', sans-serif",
-                  fontSize: 10, color: 'var(--ink-ghost)',
-                }}
-              >
-                Just now
-              </span>
-            </div>
-
-            {/* Body paragraphs */}
-            <div onClick={() => textareaBodyRef.current?.focus()} style={{ cursor: 'text' }} title="Click to edit body content">
-              {paragraphs.map((para, i) => (
-                <p
-                  key={i}
-                  lang={isBn ? 'bn' : 'en'}
-                  style={{
-                    fontFamily: isBn
-                      ? "'Abu JM Akkas', 'Hind Siliguri', sans-serif"
-                      : "'Source Serif 4', Georgia, serif",
-                    fontWeight: isBn ? 400 : 300,
-                    fontSize: isBn ? 17 : '18px',
-                    lineHeight: 1.85,
-                    color: 'var(--ink)',
-                    marginBottom: '1.25em',
-                  }}
-                >
-                  {para}
-                </p>
-              ))}
-            </div>
+              <option value="photo">PHOTO</option>
+              <option value="video">VIDEO</option>
+            </select>
           </div>
+
+          <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition">
+            <span className="text-white text-xs font-semibold px-3 py-1.5 bg-black/60 rounded">
+              Upload file
+            </span>
+          </div>
+        </div>
+
+        {/* Media URL / Path override input (optional) */}
+        <div className="mb-6 flex gap-2 items-center">
+          <span style={{ fontSize: '9px', textTransform: 'uppercase', color: 'var(--ink-muted)' }}>Or asset path:</span>
+          <input
+            type="text"
+            placeholder="/media/placeholder-football.jpg (optional URL)"
+            style={{
+              flex: 1,
+              fontSize: '11px',
+              padding: '3px 6px',
+              background: 'transparent',
+              border: '1px solid var(--ink-border)',
+              color: 'var(--ink)',
+              borderRadius: '2px'
+            }}
+            value={mediaUrl}
+            onChange={(e) => {
+              setMediaUrl(e.target.value);
+              setMediaPreview(null); // use URL
+            }}
+          />
+        </div>
+
+        {/* Media Caption */}
+        <div className="mb-6">
+          <input
+            type="text"
+            placeholder="[Tap to enter caption here]"
+            style={{
+              width: '100%',
+              fontFamily: "'Source Serif 4', Georgia, serif",
+              fontStyle: 'italic',
+              fontSize: '11px',
+              color: 'var(--ink-muted)',
+              border: 'none',
+              borderBottom: '1px dashed transparent',
+              background: 'transparent',
+              padding: '2px 0'
+            }}
+            className="hover:border-var(--ink-border) focus:border-var(--ink) outline-none"
+            value={mediaCaption}
+            onChange={(e) => setMediaCaption(e.target.value)}
+          />
+        </div>
+
+        {/* Kicker Category Line */}
+        <div className="mb-2">
+          <input
+            type="text"
+            placeholder="ক্যাটেগরি / কিকার (যেমন: চ্যাম্পিয়নস লিগ · সেমিফাইনাল)"
+            style={{
+              width: '100%',
+              fontFamily: "'Abu JM Akkas', 'Hind Siliguri', sans-serif",
+              fontSize: '11px',
+              fontWeight: 500,
+              letterSpacing: '0.14em',
+              textTransform: 'uppercase',
+              color: 'var(--ink-muted)',
+              border: 'none',
+              borderBottom: '1px dashed transparent',
+              background: 'transparent',
+              padding: '2px 0'
+            }}
+            className="hover:border-var(--ink-border) focus:border-var(--ink) outline-none"
+            value={kicker}
+            onChange={(e) => setKicker(e.target.value)}
+          />
+        </div>
+
+        {/* Headline (Bengali / Primary) */}
+        <div className="mb-3">
+          <textarea
+            placeholder="প্রধান বাংলা শিরোনাম (এখানে সরাসরি বাংলা টাইপ করুন)"
+            rows={2}
+            style={{
+              width: '100%',
+              fontFamily: "'Manowar Murshidabad', 'Noto Serif Bengali', serif",
+              fontWeight: 700,
+              fontSize: '28px',
+              lineHeight: 1.25,
+              letterSpacing: '-0.01em',
+              color: 'var(--ink)',
+              border: 'none',
+              borderBottom: '1px dashed transparent',
+              background: 'transparent',
+              resize: 'none',
+              padding: 0
+            }}
+            className="hover:border-var(--ink-border) focus:border-var(--ink) outline-none"
+            value={headlineBn}
+            onChange={(e) => setHeadlineBn(e.target.value)}
+          />
+        </div>
+
+        {/* Headline (English / Secondary) */}
+        <div className="mb-4">
+          <input
+            type="text"
+            placeholder="Secondary English Headline (optional)"
+            style={{
+              width: '100%',
+              fontFamily: "Georgia, 'Times New Roman', Times, serif",
+              fontWeight: 700,
+              fontStyle: 'italic',
+              fontSize: '17px',
+              color: 'var(--ink-muted)',
+              border: 'none',
+              borderBottom: '1px dashed transparent',
+              background: 'transparent',
+              padding: '2px 0'
+            }}
+            className="hover:border-var(--ink-border) focus:border-var(--ink) outline-none"
+            value={headline}
+            onChange={(e) => setHeadline(e.target.value)}
+          />
+        </div>
+
+        {/* Deck */}
+        <div className="mb-4" style={{ borderBottom: '0.5px solid var(--ink-border)', paddingBottom: '14px' }}>
+          <textarea
+            placeholder="Enter article deck / brief summary explaining the main hook of this news story..."
+            rows={2}
+            style={{
+              width: '100%',
+              fontFamily: "'Abu JM Akkas', 'Hind Siliguri', sans-serif",
+              fontWeight: 300,
+              fontSize: '15px',
+              lineHeight: 1.65,
+              color: 'var(--ink-muted)',
+              border: 'none',
+              borderBottom: '1px dashed transparent',
+              background: 'transparent',
+              resize: 'none',
+              padding: 0
+            }}
+            className="hover:border-var(--ink-border) focus:border-var(--ink) outline-none"
+            value={deck}
+            onChange={(e) => setDeck(e.target.value)}
+          />
+        </div>
+
+        {/* Byline */}
+        <div className="mb-6 flex gap-2 items-center">
+          <span style={{ fontSize: '10px', textTransform: 'uppercase', color: 'var(--ink-ghost)' }}>By:</span>
+          <input
+            type="text"
+            placeholder="Staff Reporter"
+            style={{
+              fontFamily: "'Abu JM Akkas', 'Hind Siliguri', sans-serif",
+              fontSize: '10px',
+              letterSpacing: '0.15em',
+              textTransform: 'uppercase',
+              color: 'var(--ink-ghost)',
+              border: 'none',
+              borderBottom: '1px dashed transparent',
+              background: 'transparent',
+              width: '140px',
+              padding: '2px 0'
+            }}
+            className="hover:border-var(--ink-border) focus:border-var(--ink) outline-none"
+            value={byline}
+            onChange={(e) => setByline(e.target.value)}
+          />
+        </div>
+
+        {/* Body Paragraph Editor (contentEditable template block) */}
+        <div style={{ fontFamily: "'Hind Siliguri', sans-serif", fontSize: '10px', color: 'var(--ink-ghost)', marginBottom: '8px' }}>
+          ARTICLE CONTENT (PRESS ENTER FOR NEW PARAGRAPHS):
+        </div>
+        <div
+          contentEditable
+          suppressContentEditableWarning
+          onBlur={(e) => updateBodyFromDOM(e.currentTarget.innerHTML)}
+          style={{
+            minHeight: '220px',
+            fontFamily: isBn ? "'Abu JM Akkas', 'Hind Siliguri', sans-serif" : "'Source Serif 4', Georgia, serif",
+            fontWeight: isBn ? 400 : 300,
+            fontSize: isBn ? '17px' : '18px',
+            lineHeight: 1.85,
+            color: 'var(--ink)',
+            outline: 'none',
+            border: '1px dashed var(--ink-border)',
+            padding: '12px',
+            borderRadius: '2px',
+            backgroundColor: 'var(--bg-page)'
+          }}
+          className="prose-field"
+        >
+          {body.split(/\n\n+/).map((p, i) => (
+            <div key={i} style={{ marginBottom: '1.25em' }}>{p}</div>
+          ))}
         </div>
       </div>
     </div>
