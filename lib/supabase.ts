@@ -1,4 +1,3 @@
-import 'server-only'
 import { createClient } from '@supabase/supabase-js'
 
 // Server-side client using the secret key (full access, for API routes / Server Components)

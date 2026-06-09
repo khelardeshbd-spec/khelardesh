@@ -1,4 +1,3 @@
-export const runtime = 'nodejs'
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import { supabaseAdmin } from '@/lib/supabase';
@@ -197,7 +196,7 @@ export default async function ArticlePage({ params }: PageProps) {
 
         {/* Body paragraphs */}
         <div>
-          {paragraphs.map((para, i) => (
+          {paragraphs.map((para: string, i: number) => (
             <p
               key={i}
               lang={isBn ? 'bn' : 'en'}

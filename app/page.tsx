@@ -1,4 +1,3 @@
-export const runtime = 'nodejs'
 import type { Metadata } from 'next';
 import { supabaseAdmin } from '@/lib/supabase';
 import LeadStory from '@/components/LeadStory';

@@ -1,4 +1,3 @@
-export const runtime = 'nodejs'
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { supabaseAdmin } from '@/lib/supabase';
@@ -74,8 +73,11 @@ export default async function SportPage({ params }: PageProps) {
   ]);
 
   const lead = leadArr?.[0] ?? null;
+  const articlesList = articles ?? [];
+  const scoresList = scores ?? [];
+  const sponsorsList = sponsors ?? [];
 
-  const inlineSponsors = sponsors.filter((s) => s.placement === 'inline');
+  const inlineSponsors = sponsorsList.filter((s) => s.placement === 'inline');
   const sportBn = SPORT_NAMES[params.sport];
 
   return (
@@ -104,7 +106,7 @@ export default async function SportPage({ params }: PageProps) {
         style={{ gridTemplateColumns: '2fr 1fr' }}>
         <div>
           {lead && <div className="mb-8"><LeadStory article={lead} /></div>}
-          {articles.map((article, i) => (
+          {articlesList.map((article, i) => (
             <div key={article.id}>
               <ArticleCard article={article} />
               {(i + 1) % 3 === 0 && inlineSponsors[Math.floor(i / 3) % inlineSponsors.length] && (
@@ -114,19 +116,19 @@ export default async function SportPage({ params }: PageProps) {
               )}
             </div>
           ))}
-          {articles.length === 0 && (
+          {articlesList.length === 0 && (
             <p style={{ color: 'var(--ink-muted)', fontFamily: "'Hind Siliguri', sans-serif", fontSize: 14, padding: '24px 0' }}>
               এই বিভাগে কোনো খবর নেই।
             </p>
           )}
         </div>
-        <div><Sidebar scores={scores} sponsors={sponsors} /></div>
+        <div><Sidebar scores={scoresList} sponsors={sponsorsList} /></div>
       </div>
 
       {/* Mobile */}
       <div className="lg:hidden px-4 pb-12">
         {lead && <div className="pt-4"><LeadStory article={lead} /></div>}
-        {articles.map((article, i) => (
+        {articlesList.map((article, i) => (
           <div key={article.id}>
             <ArticleCard article={article} />
             {(i + 1) % 3 === 0 && inlineSponsors[Math.floor(i / 3) % inlineSponsors.length] && (
@@ -134,7 +136,7 @@ export default async function SportPage({ params }: PageProps) {
             )}
           </div>
         ))}
-        {articles.length === 0 && (
+        {articlesList.length === 0 && (
           <p style={{ color: 'var(--ink-muted)', fontFamily: "'Hind Siliguri', sans-serif", fontSize: 14, paddingTop: 24 }}>
             এই বিভাগে কোনো খবর নেই।
           </p>
