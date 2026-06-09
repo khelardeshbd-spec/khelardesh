@@ -52,6 +52,17 @@
    Three reading themes, toggled via data-theme on <html>
    --------------------------------------------------------------------------- */
 
+/* Fallback / Base — applied on <html> and overridden by data-theme */
+:root {
+  --bg-page:      #F8F1E3;
+  --bg-surface:   #EFE7D3;
+  --ink:          #2C1E0F;
+  --ink-muted:    #7A6A52;
+  --ink-ghost:    #D4C9B0;
+  --ink-border:   #C8BAA0;
+  --live-red:     #C0392B;
+}
+
 /* Theme 1 — Light (Default warm white) */
 [data-theme="light"] {
   --bg-page:      #FAFAF8;    /* very slightly warm white */
@@ -86,17 +97,6 @@
   --ink-border:   #363330;
   --live-red:     #E74C3C;
   --logo-filter:  brightness(0) saturate(100%) invert(88%) sepia(9%) saturate(415%) hue-rotate(331deg) brightness(95%) contrast(92%); /* Bright cream to match text in night theme */
-}
-
-/* Fallback — applied on <html> before JS loads, defaults to paper */
-:root {
-  --bg-page:      #F8F1E3;
-  --bg-surface:   #EFE7D3;
-  --ink:          #2C1E0F;
-  --ink-muted:    #7A6A52;
-  --ink-ghost:    #D4C9B0;
-  --ink-border:   #C8BAA0;
-  --live-red:     #C0392B;
 }
 
 /* ---------------------------------------------------------------------------
