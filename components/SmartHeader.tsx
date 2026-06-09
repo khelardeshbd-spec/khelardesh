@@ -8,8 +8,8 @@ import Link from 'next/link';
 
 /**
  * SmartHeader — Section 7 / 8
- * Wraps Masthead + NavStrip with disappearing scroll behavior
- * Desktop: 44px total; Mobile: 36px header
+ * Wraps Masthead + NavStrip with disappearing scroll behavior on mobile
+ * Desktop: Static topbar starting from where the live score column ends
  */
 export default function SmartHeader() {
   const navVisible = useScrollDirection();
@@ -17,41 +17,41 @@ export default function SmartHeader() {
   return (
     <header
       id="smart-header"
+      className="sticky lg:relative top-0 z-50 border-b border-[var(--ink-border)] bg-[var(--bg-page)] lg:bg-transparent lg:border-none transition-transform duration-250 max-lg:[transform:var(--nav-transform)]"
       style={{
-        transform: navVisible ? 'translateY(0)' : 'translateY(-100%)',
-        transition: 'transform 0.25s ease',
-        position: 'sticky',
-        top: 0,
-        zIndex: 50,
-        backgroundColor: 'var(--bg-page)',
-        borderBottom: '1px solid var(--ink-border)',
-      }}
+        '--nav-transform': navVisible ? 'translateY(0)' : 'translateY(-100%)',
+      } as React.CSSProperties}
     >
-      {/* Top bar: masthead word + theme toggle on same row (mobile) */}
-      {/* Desktop: stacked masthead then nav */}
-      <div className="hidden lg:block">
-        {/* Desktop: clean top logo and theme row */}
-        <div className="relative flex items-center justify-between px-6 py-2">
-          {/* Left: Brand logo & tagline */}
-          <div className="flex-shrink-0">
-            <Masthead />
+      {/* ── DESKTOP TOPBAR ── */}
+      <div 
+        className="hidden lg:grid max-w-[1440px] mx-auto px-6 gap-6 pt-4"
+        style={{ gridTemplateColumns: '18fr 64fr 18fr' }}
+      >
+        {/* Left column spacer (18%): Empty because left column has its own header/logo */}
+        <div />
+
+        {/* Middle column (64%): Centered category navigation strip */}
+        <div className="flex items-center justify-center border-b border-[var(--ink-border)] pb-2">
+          <div className="w-full max-w-2xl">
+            <NavStrip noBorder={true} />
           </div>
-          {/* Right: Theme Toggle & Search */}
-          <div className="flex items-center gap-4 flex-shrink-0" style={{ marginTop: '16px' }}>
-            <ThemeToggle />
-            <Link
-              href="/search"
-              aria-label="Search"
-              style={{ color: 'var(--ink)', fontSize: 16, lineHeight: 1 }}
-            >
-              🔍
-            </Link>
-          </div>
+        </div>
+
+        {/* Right column (18%): Theme Toggle & Search */}
+        <div className="flex items-center justify-end gap-4 border-b border-[var(--ink-border)] pb-2">
+          <ThemeToggle />
+          <Link
+            href="/search"
+            aria-label="Search"
+            style={{ color: 'var(--ink)', fontSize: 16, lineHeight: 1 }}
+          >
+            🔍
+          </Link>
         </div>
       </div>
 
       {/* Mobile: slim single row */}
-      <div className="flex lg:hidden items-center justify-between px-3 py-1" style={{ minHeight: 46 }}>
+      <div className="flex lg:hidden items-center justify-between px-3 py-1 bg-[var(--bg-page)]" style={{ minHeight: 46 }}>
         {/* Hamburger / dot placeholder */}
         <div className="flex items-center gap-2">
           <div
@@ -80,3 +80,4 @@ export default function SmartHeader() {
     </header>
   );
 }
+

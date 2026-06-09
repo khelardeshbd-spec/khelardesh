@@ -6,7 +6,7 @@ import ScoresStrip from '@/components/ScoresStrip';
 import SponsorBlock from '@/components/SponsorBlock';
 import Sidebar from '@/components/Sidebar';
 import SkeletonCard from '@/components/SkeletonCard';
-import NavStrip from '@/components/NavStrip';
+import Masthead from '@/components/Masthead';
 import BriefsColumn from '@/components/BriefsColumn';
 
 export const dynamic = 'force-dynamic';
@@ -69,32 +69,24 @@ export default async function HomePage() {
         className="hidden lg:grid max-w-[1440px] mx-auto px-6 pt-4 pb-12 gap-6"
         style={{ gridTemplateColumns: '18fr 64fr 18fr' }}
       >
-        {/* Left Column (18%): Logo at top (optional header spacer) & Independently scrollable scores */}
+        {/* Left Column (18%): Logo at top (static header) & Independency scrollable scores */}
         <div 
-          style={{ 
-            position: 'sticky', 
-            top: '20px', 
-            maxHeight: 'calc(100vh - 40px)', 
-            overflowY: 'auto',
-            paddingRight: '6px'
-          }}
-          className="scrollbar-none"
+          className="flex flex-col h-screen sticky top-0 pb-4 gap-4"
+          style={{ overflow: 'hidden' }}
         >
-          <Sidebar scores={scores} sponsors={sponsors} />
+          <div className="flex-shrink-0 pt-4">
+            <Masthead />
+          </div>
+          <div className="flex-grow overflow-y-auto scrollbar-none pr-1">
+            <Sidebar scores={scores} sponsors={sponsors} />
+          </div>
         </div>
 
-        {/* Middle Column (64%): Centered Category Strip & Main article feed */}
+        {/* Middle Column (64%): Main article feed */}
         <div>
-          {/* Centered category navigation strip */}
-          <div className="mb-6 flex justify-center">
-            <div className="w-full max-w-2xl">
-              <NavStrip noBorder={false} />
-            </div>
-          </div>
-
           {/* Lead story */}
           {lead && (
-            <div className="mb-8">
+            <div className="mb-8 mt-2">
               <LeadStory article={lead} />
             </div>
           )}
