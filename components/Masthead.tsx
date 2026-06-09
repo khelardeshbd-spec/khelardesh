@@ -16,19 +16,18 @@ export default function Masthead() {
       >
         Sports · Independent
       </p>
-      {/* The খেলারদেশ wordmark */}
-      <h1
-        className="type-masthead text-center"
-        style={{
-          fontFamily: "'Manowar Murshidabad', 'Noto Serif Bengali', serif",
-          fontWeight: 900,
-          letterSpacing: '-0.02em',
-          lineHeight: 1,
-          color: 'var(--ink)',
-        }}
-      >
-        খেলারদেশ
-      </h1>
+      {/* The খেলারদেশ logo image */}
+      <div className="flex justify-center py-1">
+        <img
+          src="/logo.png"
+          alt="খেলারদেশ"
+          style={{
+            height: '110px',
+            objectFit: 'contain',
+            filter: 'var(--logo-filter, none)'
+          }}
+        />
+      </div>
     </div>
   );
 }

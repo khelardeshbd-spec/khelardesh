@@ -63,18 +63,15 @@ export default function SmartHeader() {
               backgroundColor: 'var(--ink)'
             }}
           />
-          <span
+          <img
+            src="/logo.png"
+            alt="খেলারদেশ"
             style={{
-              fontFamily: "'Manowar Murshidabad', 'Noto Serif Bengali', serif",
-              fontWeight: 900,
-              fontSize: 24,
-              letterSpacing: '-0.02em',
-              color: 'var(--ink)',
-              lineHeight: 1,
+              height: '32px',
+              objectFit: 'contain',
+              filter: 'var(--logo-filter, none)'
             }}
-          >
-            খেলারদেশ
-          </span>
+          />
         </div>
         <ThemeToggle />
       </div>

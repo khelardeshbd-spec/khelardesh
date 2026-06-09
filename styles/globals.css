@@ -61,6 +61,7 @@
   --ink-ghost:    #CCCCBF;
   --ink-border:   #D4D2CB;
   --live-red:     #C0392B;
+  --logo-filter:  brightness(0) saturate(100%) invert(14%) sepia(31%) saturate(2283%) hue-rotate(114deg) brightness(93%) contrast(106%); /* Dark Green matches brand */
 }
 
 /* Theme 2 — Paper (Apple Books "Bold" / Sepia-adjacent — PROJECT DEFAULT) */
@@ -72,6 +73,7 @@
   --ink-ghost:    #D4C9B0;    /* borders */
   --ink-border:   #C8BAA0;
   --live-red:     #C0392B;
+  --logo-filter:  brightness(0) saturate(100%) invert(14%) sepia(31%) saturate(2283%) hue-rotate(114deg) brightness(93%) contrast(106%); /* Keep beautiful dark green on paper background */
 }
 
 /* Theme 3 — Night (Dark) */
@@ -83,6 +85,7 @@
   --ink-ghost:    #2E2C28;
   --ink-border:   #363330;
   --live-red:     #E74C3C;
+  --logo-filter:  brightness(0) saturate(100%) invert(88%) sepia(9%) saturate(415%) hue-rotate(331deg) brightness(95%) contrast(92%); /* Bright cream to match text in night theme */
 }
 
 /* Fallback — applied on <html> before JS loads, defaults to paper */
