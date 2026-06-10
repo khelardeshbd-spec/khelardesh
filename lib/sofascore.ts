@@ -68,25 +68,40 @@ export function formatStatus(event: SofaScoreEvent): { text: string; isLive: boo
   const { status, time } = event;
   if (status.type === 'inprogress') {
     if (status.description === 'Halftime') {
-      return { text: 'Half Time', isLive: true };
+      return { text: 'বিরতি', isLive: true };
     }
     return { text: `${time?.played ?? '?'}'`, isLive: true };
   }
   if (status.type === 'finished') {
-    return { text: 'Full Time', isLive: false };
+    return { text: 'পূর্ণ সময়', isLive: false };
   }
   if (status.type === 'notstarted') {
     return { text: formatKickoff(event.startTimestamp), isLive: false };
   }
+  if (status.type === 'postponed') {
+    return { text: 'স্থগিত', isLive: false };
+  }
+  if (status.type === 'canceled') {
+    return { text: 'বাতিল', isLive: false };
+  }
   if (status.description === 'Halftime') {
-    return { text: 'Half Time', isLive: false };
+    return { text: 'বিরতি', isLive: false };
   }
   return { text: status.description, isLive: false };
 }
 
 function formatKickoff(timestamp: number): string {
   const date = new Date(timestamp * 1000);
-  return date.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+  // Show date + time in Bengali locale
+  const now = new Date();
+  const isToday =
+    date.getDate() === now.getDate() &&
+    date.getMonth() === now.getMonth() &&
+    date.getFullYear() === now.getFullYear();
+  if (isToday) {
+    return date.toLocaleTimeString('bn-BD', { hour: '2-digit', minute: '2-digit' });
+  }
+  return date.toLocaleDateString('bn-BD', { day: 'numeric', month: 'short' });
 }
 
 /**

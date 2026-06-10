@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import ScoreCard from './ScoreCard';
 
 interface Score {
@@ -18,9 +19,9 @@ interface ScoresStripProps {
 }
 
 /**
- * ScoresStrip — Section 8 (mobile)
+ * ScoresStrip — Section 4 (mobile)
  * Horizontal scroll strip of score cards
- * Sort: Live first, then by displayOrder (Section 13 rule 12)
+ * Sort: Live first, then by displayOrder
  */
 export default function ScoresStrip({ scores }: ScoresStripProps) {
   // Sort: live first, then by displayOrder
@@ -32,16 +33,55 @@ export default function ScoresStrip({ scores }: ScoresStripProps) {
 
   if (sorted.length === 0) return null;
 
+  const hasLive = sorted.some((s) => s.isLive);
+
   return (
-    <section aria-label="Live scores">
+    <section aria-label="স্কোর">
+      {/* Section header */}
+      <div
+        className="flex items-center justify-between px-3 py-2"
+        style={{ borderTop: '1px solid var(--ink-border)' }}
+      >
+        <h2
+          style={{
+            fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif",
+            fontSize: 10,
+            fontWeight: 600,
+            letterSpacing: '0.06em',
+            color: 'var(--ink-muted)',
+          }}
+          lang="bn"
+        >
+          {hasLive ? (
+            <span className="flex items-center gap-1.5">
+              <span className="live-dot" style={{ width: 6, height: 6 }} />
+              লাইভ স্কোর
+            </span>
+          ) : (
+            'স্কোর'
+          )}
+        </h2>
+        <Link
+          href="/scores"
+          style={{
+            fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif",
+            fontSize: 10,
+            color: 'var(--ink-muted)',
+            textDecoration: 'none',
+          }}
+          lang="bn"
+          className="hover:underline"
+        >
+          সব স্কোর দেখুন →
+        </Link>
+      </div>
+
+      {/* Horizontal scroll */}
       <div
         className="scrollbar-none overflow-x-auto"
-        style={{
-          borderTop: '1px solid var(--ink-border)',
-          borderBottom: '1px solid var(--ink-border)',
-        }}
+        style={{ borderBottom: '1px solid var(--ink-border)' }}
       >
-        <div className="flex gap-2 p-3">
+        <div className="flex gap-2 px-3 pb-3">
           {sorted.map((score) => (
             <ScoreCard
               key={score.id}

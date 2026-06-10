@@ -185,7 +185,7 @@ export default async function SportPage({ params }: PageProps) {
           </div>
         ))}
         {articlesList.length === 0 && (
-          <p style={{ color: 'var(--ink-muted)', fontFamily: "'Hind Siliguri', sans-serif", fontSize: 14, paddingTop: 24 }}>
+          <p style={{ color: 'var(--ink-muted)', fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif", fontSize: 14, paddingTop: 24 }} lang="bn">
             এই বিভাগে কোনো খবর নেই।
           </p>
         )}

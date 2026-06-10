@@ -4,28 +4,37 @@ import { useEffect, useState } from 'react';
 import { fetchLiveFootball, formatStatus, type SofaScoreEvent } from '@/lib/sofascore';
 
 /**
- * LiveTicker — Section 10.7 / 9
+ * LiveTicker — Section 4
  * Desktop only: full-width bar with ink background
  * Left: "● লাইভ" blinking label
  * Items scroll (CSS marquee) or static if ≤ 3 events
  * Polls every 30 seconds
+ * Shows nothing (null) when no live matches — does NOT get stuck on "লোড হচ্ছে..."
  */
 export default function LiveTicker() {
   const [events, setEvents] = useState<SofaScoreEvent[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    let cancelled = false;
+
     const refresh = async () => {
       const live = await fetchLiveFootball();
-      setEvents(live);
-      setLoading(false);
+      if (!cancelled) {
+        setEvents(live);
+        setLoading(false);
+      }
     };
 
     refresh();
     const interval = setInterval(refresh, 30_000);
-    return () => clearInterval(interval);
+    return () => {
+      cancelled = true;
+      clearInterval(interval);
+    };
   }, []);
 
+  // While loading show a slim placeholder bar (not indefinite)
   if (loading) {
     return (
       <div
@@ -39,33 +48,44 @@ export default function LiveTicker() {
       >
         <span
           style={{
-            fontFamily: "'Abu JM Akkas', 'Hind Siliguri', sans-serif",
+            fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif",
             fontSize: 10,
             fontWeight: 500,
-            letterSpacing: '0.12em',
+            letterSpacing: '0.06em',
             opacity: 0.5,
           }}
         >
           ● লাইভ
         </span>
-        <span style={{ fontFamily: "'Abu JM Akkas', 'Hind Siliguri', sans-serif", fontSize: 10, opacity: 0.4 }}>
-          লোড হচ্ছে...
+        <span
+          style={{
+            fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif",
+            fontSize: 10,
+            opacity: 0.3,
+          }}
+        >
+          লোড হচ্ছে…
         </span>
       </div>
     );
   }
 
+  // No live events — hide completely (no empty bar)
   if (events.length === 0) return null;
 
   const tickerItems = events.map((e) => {
     const { text } = formatStatus(e);
-    return `${e.homeTeam.shortName} ${e.homeScore.current}–${e.awayScore.current} ${e.awayTeam.shortName}  ${text}`;
+    const home = e.homeTeam.shortName || e.homeTeam.nameCode;
+    const away = e.awayTeam.shortName || e.awayTeam.nameCode;
+    return `${home} ${e.homeScore.current}–${e.awayScore.current} ${away}  ${text}`;
   });
 
   const shouldScroll = tickerItems.length > 3;
   const tickerContent = tickerItems.join('     ·     ');
   // Double for seamless loop
-  const display = shouldScroll ? `${tickerContent}     ·     ${tickerContent}` : tickerContent;
+  const display = shouldScroll
+    ? `${tickerContent}     ·     ${tickerContent}`
+    : tickerContent;
 
   return (
     <>
@@ -98,11 +118,10 @@ export default function LiveTicker() {
             <span className="live-dot" style={{ backgroundColor: 'var(--live-red)' }} />
             <span
               style={{
-                fontFamily: "'Abu JM Akkas', 'Hind Siliguri', sans-serif",
-                fontSize: 10,
+                fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif",
+                fontSize: 11,
                 fontWeight: 700,
-                letterSpacing: '0.14em',
-                textTransform: 'uppercase',
+                letterSpacing: '0.08em',
               }}
             >
               লাইভ
@@ -115,9 +134,9 @@ export default function LiveTicker() {
               <div className="ticker-track">
                 <span
                   style={{
-                    fontFamily: "'Abu JM Akkas', 'Hind Siliguri', sans-serif",
-                    fontSize: 11,
-                    letterSpacing: '0.04em',
+                    fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif",
+                    fontSize: 12,
+                    letterSpacing: '0.02em',
                     paddingLeft: 16,
                     paddingRight: 16,
                     whiteSpace: 'nowrap',
@@ -129,9 +148,9 @@ export default function LiveTicker() {
             ) : (
               <span
                 style={{
-                  fontFamily: "'Abu JM Akkas', 'Hind Siliguri', sans-serif",
-                  fontSize: 11,
-                  letterSpacing: '0.04em',
+                  fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif",
+                  fontSize: 12,
+                  letterSpacing: '0.02em',
                   paddingLeft: 16,
                   whiteSpace: 'nowrap',
                 }}
@@ -142,8 +161,6 @@ export default function LiveTicker() {
           </div>
         </div>
       </div>
-
-      {/* Mobile ticker (if needed in future, currently hidden) */}
     </>
   );
 }

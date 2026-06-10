@@ -38,9 +38,9 @@ export default function SponsorBlock({
       {/* Sponsor label */}
       <p
         style={{
-          fontFamily: "'Abu JM Akkas', 'Hind Siliguri', sans-serif",
-          fontSize: 8,
-          fontWeight: 400,
+          fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif",
+          fontSize: 9,
+          fontWeight: 500,
           letterSpacing: '0.14em',
           textTransform: 'uppercase',
           color: 'var(--ink-ghost)',

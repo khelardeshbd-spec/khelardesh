@@ -183,10 +183,10 @@ export default async function HomePage() {
           {articles.length > 0 && (
             <h2
               style={{
-                fontFamily: "'Abu JM Akkas', 'Hind Siliguri', sans-serif",
-                fontSize: 8,
-                fontWeight: 500,
-                letterSpacing: '0.16em',
+                fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif",
+                fontSize: 10,
+                fontWeight: 600,
+                letterSpacing: '0.10em',
                 textTransform: 'uppercase',
                 color: 'var(--ink-muted)',
                 borderBottom: '1px solid var(--ink-border)',
@@ -194,6 +194,7 @@ export default async function HomePage() {
                 marginBottom: 0,
                 marginTop: 12,
               }}
+              lang="bn"
             >
               আরও খবর
             </h2>
@@ -219,7 +220,7 @@ export default async function HomePage() {
             <a
               href="/?page=2"
               style={{
-                fontFamily: "'Abu JM Akkas', 'Hind Siliguri', sans-serif",
+                fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif",
                 fontSize: 10,
                 letterSpacing: '0.12em',
                 textTransform: 'uppercase',
@@ -228,6 +229,7 @@ export default async function HomePage() {
                 textDecorationColor: 'var(--ink-border)',
                 textUnderlineOffset: 3,
               }}
+              lang="bn"
             >
               আরও লোড করুন
             </a>

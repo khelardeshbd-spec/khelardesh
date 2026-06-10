@@ -11,8 +11,8 @@
 /* -----------------------------------------------------------------/* ---------------------------------------------------------------------------
    Custom Bengali Fonts (self-hosted)
    Place font files in /public/fonts/
-   Manowar Murshidabad  →  Bengali headlines / headers
-   Abu JM Akkas  →  Bengali body / UI text
+   * 2. Primary / Display  →  Kalpurush  →  Bengali headlines / display text */
+/* 3. Secondary / Body   →  Kalpurush  →  Bengali body / UI text */
    --------------------------------------------------------------------------- */
 @font-face {
   font-family: 'Manowar Murshidabad';
@@ -29,14 +29,14 @@
   font-display: swap;
 }
 @font-face {
-  font-family: 'Abu JM Akkas';
+  font-family: 'Kalpurush';
   src: url('/fonts/AbuJMAkkas.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
 }
 @font-face {
-  font-family: 'Abu JM Akkas';
+  font-family: 'Kalpurush';
   src: url('/fonts/AbuJMAkkas-Italic.ttf') format('truetype');
   font-weight: normal;
   font-style: italic;
@@ -368,7 +368,7 @@ ul, ol {
   left: 8px;
   background: var(--ink);
   color: var(--bg-page);
-  font-family: 'Abu JM Akkas', 'Hind Siliguri', sans-serif;
+  font-family: 'Kalpurush', 'Hind Siliguri', sans-serif;
   font-size: 7px;
   font-weight: 500;
   letter-spacing: 0.1em;

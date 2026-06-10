@@ -95,12 +95,13 @@ export default async function ArticlePage({ params }: PageProps) {
           style={{
             position: 'absolute', top: 10, left: 10,
             backgroundColor: 'var(--ink)', color: 'var(--bg-page)',
-            fontFamily: "'Abu JM Akkas', 'Hind Siliguri', sans-serif",
-            fontSize: 7, fontWeight: 500, letterSpacing: '0.1em',
+            fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif",
+            fontSize: 9, fontWeight: 500, letterSpacing: '0.04em',
             textTransform: 'uppercase', padding: '2px 5px', borderRadius: 1,
           }}
+          lang="bn"
         >
-          {isVideo ? '▶ Video' : 'Photo'}
+          {isVideo ? '▶ ভিডিও' : 'ছবি'}
         </span>
       </div>
 
@@ -109,10 +110,11 @@ export default async function ArticlePage({ params }: PageProps) {
         <div className="prose-field px-4 lg:px-0">
           <p
             style={{
-              fontFamily: "'Source Serif 4', Georgia, serif",
-              fontStyle: 'italic', fontSize: 10,
+              fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif",
+              fontSize: 12,
               color: 'var(--ink-muted)', marginTop: 6,
             }}
+            lang="bn"
           >
             {mediaCaption}
           </p>
@@ -124,9 +126,9 @@ export default async function ArticlePage({ params }: PageProps) {
         {/* Kicker · Sport */}
         <p
           style={{
-            fontFamily: "'Abu JM Akkas', 'Hind Siliguri', sans-serif",
-            fontSize: 10, fontWeight: 400,
-            letterSpacing: '0.14em', textTransform: 'uppercase',
+            fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif",
+            fontSize: 12, fontWeight: 500,
+            letterSpacing: '0.06em',
             color: 'var(--ink-muted)', marginBottom: 8,
           }}
           lang="bn"
@@ -167,21 +169,22 @@ export default async function ArticlePage({ params }: PageProps) {
         <div className="flex items-center gap-2 mb-8">
           <span
             style={{
-              fontFamily: "'Abu JM Akkas', 'Hind Siliguri', sans-serif",
-              fontSize: 10, fontWeight: 400,
-              letterSpacing: '0.1em', textTransform: 'uppercase',
+              fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif",
+              fontSize: 11, fontWeight: 500,
+              letterSpacing: '0.04em',
               color: 'var(--ink-ghost)',
             }}
+            lang="bn"
           >
             {byline}
           </span>
-          <span style={{ color: 'var(--ink-ghost)', fontSize: 10 }}>·</span>
+          <span style={{ color: 'var(--ink-ghost)', fontSize: 11 }}>·</span>
           <time
             dateTime={new Date(publishedAt).toISOString()}
             title={exactTime}
             style={{
-              fontFamily: "'Abu JM Akkas', 'Hind Siliguri', sans-serif",
-              fontSize: 10, color: 'var(--ink-ghost)',
+              fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif",
+              fontSize: 11, color: 'var(--ink-ghost)',
             }}
             lang="bn"
           >

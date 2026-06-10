@@ -5,7 +5,12 @@ import { useRouter } from 'next/navigation';
 
 export const dynamic = 'force-dynamic';
 
-const SPORTS = ['football', 'cricket', 'basketball', 'tennis', 'f1', 'rugby', 'athletics', 'other'];
+const SPORTS = [
+  'football', 'international-football', 'club-football', 'world-cup-2026',
+  'bd-football', 'cricket', 'bd-cricket', 'basketball', 'tennis',
+  'f1', 'rugby', 'table-tennis', 'golf', 'athletics',
+  'interview', 'feature', 'special', 'guest-column', 'other',
+];
 
 interface Article {
   id: number;

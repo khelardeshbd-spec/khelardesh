@@ -1,8 +1,8 @@
 import { redirect } from 'next/navigation';
 import { supabaseAdmin } from '@/lib/supabase';
-
 import Link from 'next/link';
 import AdminLogout from '../AdminLogout';
+import AdminShell from '../AdminShell';
 
 
 export const dynamic = 'force-dynamic';
@@ -21,7 +21,7 @@ export default async function AdminDashboardPage() {
   const session = await getServerSession(authOptions);
   if (!session) redirect('/admin');
 
-  const [{ data: articles }, { data: scores }] = await Promise.all([
+  const [{ data: articles }, { data: scores }, { data: countRes }] = await Promise.all([
     supabaseAdmin
       .from('Article')
       .select('id, slug, headline, headlineBn, sport, isLead, publishedAt')
@@ -32,7 +32,12 @@ export default async function AdminDashboardPage() {
       .select('*')
       .order('isLive', { ascending: false })
       .order('displayOrder', { ascending: true }),
+    supabaseAdmin
+      .from('Article')
+      .select('id', { count: 'exact', head: true }),
   ]);
+
+  const totalArticles = (countRes as any)?.length ?? 0;
 
   const safeArticles = articles ?? []
   const safeScores = scores ?? []
@@ -69,49 +74,30 @@ export default async function AdminDashboardPage() {
   };
 
   return (
-    <div
-      style={{
-        minHeight: '100vh',
-        backgroundColor: 'var(--bg-page)',
-        padding: '0 0 64px',
-      }}
-    >
-      {/* Admin header */}
-      <div
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          padding: '14px 24px',
-          borderBottom: '1px solid var(--ink-border)',
-          backgroundColor: 'var(--bg-surface)',
-        }}
-      >
-        <h1
-          style={{
-            fontFamily: "Georgia, 'Times New Roman', Times, serif",
-            fontWeight: 700,
-            fontSize: 22,
-            color: 'var(--ink)',
-          }}
-        >
-          খেলারদেশ Admin
-        </h1>
-        <AdminLogout />
-      </div>
-
+    <AdminShell>
       <div style={{ padding: '24px', maxWidth: 960, margin: '0 auto' }}>
+        {/* Stats row */}
+        <div className="flex gap-4 mb-8 flex-wrap">
+          <div style={{ padding: '16px 24px', backgroundColor: 'var(--bg-surface)', border: '1px solid var(--ink-border)', borderRadius: 2, minWidth: 140 }}>
+            <p style={{ fontFamily: "'Hind Siliguri', sans-serif", fontSize: 9, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--ink-muted)', marginBottom: 4 }}>Total Articles</p>
+            <p style={{ fontFamily: "'Hind Siliguri', sans-serif", fontSize: 32, fontWeight: 700, color: 'var(--ink)', lineHeight: 1 }}>{safeArticles.length}+</p>
+          </div>
+          <div style={{ padding: '16px 24px', backgroundColor: 'var(--bg-surface)', border: '1px solid var(--ink-border)', borderRadius: 2, minWidth: 140 }}>
+            <p style={{ fontFamily: "'Hind Siliguri', sans-serif", fontSize: 9, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--ink-muted)', marginBottom: 4 }}>Live Scores</p>
+            <p style={{ fontFamily: "'Hind Siliguri', sans-serif", fontSize: 32, fontWeight: 700, color: 'var(--ink)', lineHeight: 1 }}>{safeScores.filter(s => s.isLive).length}</p>
+          </div>
+          <div style={{ padding: '16px 24px', backgroundColor: 'var(--bg-surface)', border: '1px solid var(--ink-border)', borderRadius: 2, minWidth: 140 }}>
+            <p style={{ fontFamily: "'Hind Siliguri', sans-serif", fontSize: 9, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--ink-muted)', marginBottom: 4 }}>Lead Stories</p>
+            <p style={{ fontFamily: "'Hind Siliguri', sans-serif", fontSize: 32, fontWeight: 700, color: 'var(--live-red)', lineHeight: 1 }}>{safeArticles.filter(a => a.isLead).length}</p>
+          </div>
+        </div>
+
         {/* Quick actions */}
         <div className="flex gap-3 mb-8 flex-wrap">
-          <Link href="/admin/articles/new" className="admin-btn-primary">
-            + New Article
-          </Link>
-          <Link href="/admin/scores" className="admin-btn-secondary">
-            + New Score
-          </Link>
-          <Link href="/admin/sponsors" className="admin-btn-secondary">
-            + New Sponsor
-          </Link>
+          <Link href="/admin/articles/new" className="admin-btn-primary">+ New Article</Link>
+          <Link href="/admin/scores" className="admin-btn-secondary">Manage Scores</Link>
+          <Link href="/admin/sponsors" className="admin-btn-secondary">Manage Sponsors</Link>
+          <Link href="/admin/sidebar-content" className="admin-btn-secondary">Sidebar Content</Link>
         </div>
 
         {/* Recent Articles */}
@@ -228,6 +214,6 @@ export default async function AdminDashboardPage() {
           </div>
         </section>
       </div>
-    </div>
+    </AdminShell>
   );
 }

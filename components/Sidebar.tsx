@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import ScoreCard from './ScoreCard';
 import SponsorBlock from './SponsorBlock';
 
@@ -29,10 +30,9 @@ interface SidebarProps {
 }
 
 /**
- * Sidebar — Section 8 (desktop ≥1024px)
- * - Scores section (1fr column)
+ * Sidebar — Section 4 (desktop ≥1024px)
+ * - Scores section with "সব স্কোর দেখুন →" link
  * - Sponsor block
- * - Briefs placeholder
  */
 export default function Sidebar({ scores, sponsors }: SidebarProps) {
   const sorted = [...scores].sort((a, b) => {
@@ -41,28 +41,60 @@ export default function Sidebar({ scores, sponsors }: SidebarProps) {
     return a.displayOrder - b.displayOrder;
   });
 
-  const sidebarSponsor = sponsors.find((s) => s.label.toLowerCase().includes('sidebar') || s.label === 'Sponsor');
+  const hasLive = sorted.some((s) => s.isLive);
+
+  const sidebarSponsor = sponsors.find(
+    (s) => s.label.toLowerCase().includes('sidebar') || s.label === 'Sponsor'
+  );
 
   return (
     <aside className="flex flex-col gap-6" aria-label="Sidebar">
       {/* Scores section */}
-      {sorted.length > 0 && (
-        <section>
+      <section>
+        {/* Section heading */}
+        <div
+          className="flex items-center justify-between"
+          style={{
+            borderBottom: '1px solid var(--ink-border)',
+            paddingBottom: 6,
+            marginBottom: 10,
+          }}
+        >
           <h2
             style={{
-              fontFamily: "'Abu JM Akkas', 'Hind Siliguri', sans-serif",
-              fontSize: 8,
-              fontWeight: 500,
-              letterSpacing: '0.14em',
-              textTransform: 'uppercase',
+              fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif",
+              fontSize: 10,
+              fontWeight: 600,
+              letterSpacing: '0.06em',
               color: 'var(--ink-muted)',
-              borderBottom: '1px solid var(--ink-border)',
-              paddingBottom: 4,
-              marginBottom: 8,
             }}
+            lang="bn"
           >
-            স্কোর
+            {hasLive ? (
+              <span className="flex items-center gap-1.5">
+                <span className="live-dot" style={{ width: 6, height: 6 }} />
+                লাইভ স্কোর
+              </span>
+            ) : (
+              'স্কোর'
+            )}
           </h2>
+          <Link
+            href="/scores"
+            style={{
+              fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif",
+              fontSize: 9,
+              color: 'var(--ink-muted)',
+              textDecoration: 'none',
+            }}
+            lang="bn"
+            className="hover:underline"
+          >
+            সব →
+          </Link>
+        </div>
+
+        {sorted.length > 0 ? (
           <div className="flex flex-col gap-2">
             {sorted.map((score) => (
               <ScoreCard
@@ -78,8 +110,21 @@ export default function Sidebar({ scores, sponsors }: SidebarProps) {
               />
             ))}
           </div>
-        </section>
-      )}
+        ) : (
+          <p
+            style={{
+              fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif",
+              fontSize: 12,
+              color: 'var(--ink-ghost)',
+              textAlign: 'center',
+              padding: '12px 0',
+            }}
+            lang="bn"
+          >
+            কোনো লাইভ ম্যাচ নেই
+          </p>
+        )}
+      </section>
 
       {/* Sponsor block */}
       {sidebarSponsor && (
@@ -91,7 +136,6 @@ export default function Sidebar({ scores, sponsors }: SidebarProps) {
           ctaUrl={sidebarSponsor.ctaUrl}
         />
       )}
-
     </aside>
   );
 }

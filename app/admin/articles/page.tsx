@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation';
 import { supabaseAdmin } from '@/lib/supabase';
-
 import Link from 'next/link';
+import AdminShell from '../AdminShell';
 
 
 export const dynamic = 'force-dynamic';
@@ -39,16 +39,13 @@ export default async function AdminArticlesPage() {
   };
 
   return (
-    <div style={{ minHeight: '100vh', backgroundColor: 'var(--bg-page)', padding: '24px' }}>
-      <div style={{ maxWidth: 960, margin: '0 auto' }}>
+    <AdminShell>
+      <div style={{ maxWidth: 960, margin: '0 auto', padding: 24 }}>
         <div className="flex items-center justify-between mb-6">
-          <h1 style={{ fontFamily: "Georgia, 'Times New Roman', Times, serif", fontWeight: 700, fontSize: 24, color: 'var(--ink)' }}>
+          <h1 style={{ fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif", fontWeight: 700, fontSize: 22, color: 'var(--ink)' }}>
             Articles
           </h1>
-          <div className="flex gap-2">
-            <Link href="/admin/articles/new" className="admin-btn-primary">+ New Article</Link>
-            <Link href="/admin/dashboard" className="admin-btn-secondary">← Dashboard</Link>
-          </div>
+          <Link href="/admin/articles/new" className="admin-btn-primary">+ New Article</Link>
         </div>
 
         <div style={{ overflowX: 'auto' }}>
@@ -77,12 +74,12 @@ export default async function AdminArticlesPage() {
                   </td>
                   <td style={{ ...tdStyle, color: 'var(--ink-muted)' }}>{a.byline}</td>
                   <td style={{ ...tdStyle, color: 'var(--ink-muted)', whiteSpace: 'nowrap' }}>
-                    {new Date(a.publishedAt).toLocaleDateString('en-GB')}
+                    {new Date(a.publishedAt).toLocaleDateString('bn-BD')}
                   </td>
                   <td style={tdStyle}>
                     <div className="flex gap-2 items-center">
                       <Link href={`/admin/articles/${a.id}`} style={{ color: 'var(--ink)', fontSize: 13 }} title="Edit">✎</Link>
-                      <Link href={`/article/${a.slug}`} target="_blank" style={{ color: 'var(--ink-muted)', fontSize: 13 }} title="View">↗</Link>
+                      <Link href={`/article/${a.slug}`} target="_blank" style={{ color: 'var(--ink-muted)', fontSize: 13 }} title="View live">↗</Link>
                     </div>
                   </td>
                 </tr>
@@ -91,6 +88,6 @@ export default async function AdminArticlesPage() {
           </table>
         </div>
       </div>
-    </div>
+    </AdminShell>
   );
 }
