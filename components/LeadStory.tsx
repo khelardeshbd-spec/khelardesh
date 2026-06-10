@@ -131,8 +131,7 @@ export default function LeadStory({ article }: LeadStoryProps) {
             <p
               lang="en"
               style={{
-                fontFamily: "Georgia, 'Times New Roman', Times, serif",
-                fontStyle: 'italic',
+                fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif",
                 fontSize: 'clamp(13px, 1.5vw, 15px)',
                 color: 'var(--ink-muted)',
                 marginBottom: 8,

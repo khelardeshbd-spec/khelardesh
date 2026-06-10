@@ -69,7 +69,7 @@ export default async function HomePage() {
         className="hidden lg:grid max-w-[1440px] mx-auto px-6 pb-12 gap-6"
         style={{ gridTemplateColumns: '18fr 64fr 18fr' }}
       >
-        {/* Left Column (18%): Logo at top (static header) & Independency scrollable scores */}
+        {/* Left Column (18%): Logo at top & BriefsColumn */}
         <div 
           className="flex flex-col h-screen sticky top-0 pb-4 gap-4"
           style={{ overflow: 'hidden' }}
@@ -78,7 +78,7 @@ export default async function HomePage() {
             <Masthead />
           </div>
           <div className="flex-grow overflow-y-auto scrollbar-none pr-1">
-            <Sidebar scores={scores} sponsors={sponsors} />
+            <BriefsColumn articles={articles} />
           </div>
         </div>
 
@@ -147,7 +147,7 @@ export default async function HomePage() {
           </div>
         </div>
 
-        {/* Right Column (18%): Briefs & Headlines (also independently scrollable) */}
+        {/* Right Column (18%): Scores & Sponsors (also independently scrollable) */}
         <div 
           style={{ 
             position: 'sticky', 
@@ -158,7 +158,7 @@ export default async function HomePage() {
           }}
           className="scrollbar-none pt-28"
         >
-          <BriefsColumn articles={articles} />
+          <Sidebar scores={scores} sponsors={sponsors} />
         </div>
       </div>
 

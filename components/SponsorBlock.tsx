@@ -53,7 +53,7 @@ export default function SponsorBlock({
       {/* Title */}
       <p
         style={{
-          fontFamily: "Georgia, 'Times New Roman', Times, serif",
+          fontFamily: "'Kalpurush', sans-serif",
           fontSize: 13,
           fontWeight: 700,
           color: 'var(--ink)',
@@ -68,7 +68,7 @@ export default function SponsorBlock({
       {/* Tagline */}
       <p
         style={{
-          fontFamily: "'Source Serif 4', Georgia, serif",
+          fontFamily: "'Source Serif 4', 'Kalpurush', serif",
           fontStyle: 'italic',
           fontWeight: 300,
           fontSize: 11,
@@ -89,9 +89,9 @@ export default function SponsorBlock({
         className="sponsor-cta-link"
         style={{
           display: 'inline-block',
-          fontFamily: "'Abu JM Akkas', 'Hind Siliguri', sans-serif",
-          fontSize: 9,
-          fontWeight: 500,
+          fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif",
+          fontSize: 12,
+          fontWeight: 600,
           letterSpacing: '0.12em',
           textTransform: 'uppercase',
           color: 'var(--ink)',

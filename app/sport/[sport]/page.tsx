@@ -90,7 +90,7 @@ export default async function SportPage({ params }: PageProps) {
         className="hidden lg:grid max-w-[1440px] mx-auto px-6 pb-12 gap-6"
         style={{ gridTemplateColumns: '18fr 64fr 18fr' }}
       >
-        {/* Left Column (18%): Logo at top (static header) & Independently scrollable scores */}
+        {/* Left Column (18%): Logo at top & BriefsColumn */}
         <div 
           className="flex flex-col h-screen sticky top-0 pb-4 gap-4"
           style={{ overflow: 'hidden' }}
@@ -99,7 +99,7 @@ export default async function SportPage({ params }: PageProps) {
             <Masthead />
           </div>
           <div className="flex-grow overflow-y-auto scrollbar-none pr-1">
-            <Sidebar scores={scoresList} sponsors={sponsorsList} />
+            <BriefsColumn articles={articlesList} />
           </div>
         </div>
 
@@ -140,7 +140,7 @@ export default async function SportPage({ params }: PageProps) {
           )}
         </div>
 
-        {/* Right Column (18%): Briefs & Headlines (independently scrollable) */}
+        {/* Right Column (18%): Scores & Sponsors (independently scrollable) */}
         <div 
           style={{ 
             position: 'sticky', 
@@ -151,7 +151,7 @@ export default async function SportPage({ params }: PageProps) {
           }}
           className="scrollbar-none pt-28"
         >
-          <BriefsColumn articles={articlesList} />
+          <Sidebar scores={scoresList} sponsors={sponsorsList} />
         </div>
       </div>
 

@@ -177,7 +177,7 @@ ul, ol {
 
 /* Masthead */
 .type-masthead {
-  font-family: Georgia, 'Times New Roman', Times, serif;
+  font-family: 'Kalpurush', 'Hind Siliguri', sans-serif;
   font-weight: 900;
   font-size: clamp(30px, 5vw, 64px);
   letter-spacing: -0.02em;
@@ -186,7 +186,7 @@ ul, ol {
 
 /* Lead headline — English */
 .type-lead-en {
-  font-family: Georgia, 'Times New Roman', Times, serif;
+  font-family: 'Kalpurush', 'Hind Siliguri', sans-serif;
   font-weight: 700;
   font-size: clamp(26px, 3vw, 36px);
   line-height: 1.15;
@@ -203,7 +203,7 @@ ul, ol {
 
 /* Story headline — English */
 .type-story-en {
-  font-family: Georgia, 'Times New Roman', Times, serif;
+  font-family: 'Kalpurush', 'Hind Siliguri', sans-serif;
   font-weight: 700;
   font-size: 16px;
   line-height: 1.35;

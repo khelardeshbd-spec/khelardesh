@@ -9,8 +9,8 @@ const config: Config = {
   theme: {
     extend: {
       fontFamily: {
-        'playfair': ['Playfair Display', 'Georgia', 'serif'],
-        'source-serif': ['Source Serif 4', 'Georgia', 'serif'],
+        'playfair': ['Playfair Display', 'serif'],
+        'source-serif': ['Source Serif 4', 'serif'],
         'noto-bengali': ['Noto Serif Bengali', 'serif'],
         'hind': ['Hind Siliguri', 'sans-serif'],
       },

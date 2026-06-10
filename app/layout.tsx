@@ -3,6 +3,7 @@ import '@/styles/globals.css';
 import SmartHeader from '@/components/SmartHeader';
 import BottomNav from '@/components/BottomNav';
 import LiveTicker from '@/components/LiveTicker';
+import Footer from '@/components/Footer';
 
 export const metadata: Metadata = {
   title: {
@@ -45,6 +46,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <main id="main-content" tabIndex={-1}>
           {children}
         </main>
+        <Footer />
         <BottomNav />
       </body>
     </html>

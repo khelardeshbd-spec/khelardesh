@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { timeAgo, formatDatetime } from '@/lib/timeAgo';
+import BookmarkButton from './BookmarkButton';
 
 interface Article {
   id: number;
@@ -154,20 +155,22 @@ export default function ArticleCard({ article }: ArticleCardProps) {
             {deck}
           </p>
 
-          {/* Time ago */}
-          <time
-            dateTime={new Date(publishedAt).toISOString()}
-            title={exactTime}
-            style={{
-              fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif",
-              fontSize: 10,
-              color: 'var(--ink-ghost)',
-              marginTop: 2,
-            }}
-            lang="bn"
-          >
-            {time}
-          </time>
+          {/* Time ago + Bookmark Toggle */}
+          <div className="flex items-center justify-between mt-2">
+            <time
+              dateTime={new Date(publishedAt).toISOString()}
+              title={exactTime}
+              style={{
+                fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif",
+                fontSize: 10,
+                color: 'var(--ink-ghost)',
+              }}
+              lang="bn"
+            >
+              {time}
+            </time>
+            <BookmarkButton article={article} />
+          </div>
         </div>
       </Link>
     </article>
