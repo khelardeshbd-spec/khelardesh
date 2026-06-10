@@ -113,13 +113,13 @@ export default async function HomePage() {
               {articles.map((article, i) => (
                 <div key={article.id}>
                   <ArticleCard article={article} />
-                  {(i + 1) % 3 === 0 && inlineSponsors[(Math.floor(i / 3)) % inlineSponsors.length] && (
+                  {i === 2 && inlineSponsors[0] && (
                     <SponsorBlock
-                      label={inlineSponsors[(Math.floor(i / 3)) % inlineSponsors.length].label}
-                      title={inlineSponsors[(Math.floor(i / 3)) % inlineSponsors.length].title}
-                      subtitle={inlineSponsors[(Math.floor(i / 3)) % inlineSponsors.length].subtitle}
-                      ctaText={inlineSponsors[(Math.floor(i / 3)) % inlineSponsors.length].ctaText}
-                      ctaUrl={inlineSponsors[(Math.floor(i / 3)) % inlineSponsors.length].ctaUrl}
+                      label={inlineSponsors[0].label}
+                      title={inlineSponsors[0].title}
+                      subtitle={inlineSponsors[0].subtitle}
+                      ctaText={inlineSponsors[0].ctaText}
+                      ctaUrl={inlineSponsors[0].ctaUrl}
                     />
                   )}
                 </div>
@@ -202,13 +202,13 @@ export default async function HomePage() {
           {articles.map((article, i) => (
             <div key={article.id}>
               <ArticleCard article={article} />
-              {(i + 1) % 3 === 0 && inlineSponsors[(Math.floor(i / 3)) % inlineSponsors.length] && (
+              {i === 2 && inlineSponsors[0] && (
                 <SponsorBlock
-                  label={inlineSponsors[(Math.floor(i / 3)) % inlineSponsors.length].label}
-                  title={inlineSponsors[(Math.floor(i / 3)) % inlineSponsors.length].title}
-                  subtitle={inlineSponsors[(Math.floor(i / 3)) % inlineSponsors.length].subtitle}
-                  ctaText={inlineSponsors[(Math.floor(i / 3)) % inlineSponsors.length].ctaText}
-                  ctaUrl={inlineSponsors[(Math.floor(i / 3)) % inlineSponsors.length].ctaUrl}
+                  label={inlineSponsors[0].label}
+                  title={inlineSponsors[0].title}
+                  subtitle={inlineSponsors[0].subtitle}
+                  ctaText={inlineSponsors[0].ctaText}
+                  ctaUrl={inlineSponsors[0].ctaUrl}
                 />
               )}
             </div>

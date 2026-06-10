@@ -23,28 +23,33 @@ const SPORT_LABELS: Record<string, string> = {
   cricket: 'ক্রিকেট',
   basketball: 'বাস্কেটবল',
   tennis: 'টেনিস',
-  f1: 'F1',
+  f1: 'ফর্মুলা ওয়ান',
   rugby: 'রাগবি',
   athletics: 'অ্যাথলেটিক্স',
+  interview: 'ইন্টারভিউ',
+  feature: 'ফিচার',
+  special: 'খেলার দেশ বিশেষ',
+  'guest-column': 'অতিথি কলাম',
+  'bd-football': 'বাংলাদেশের ফুটবল',
+  'bd-cricket': 'বাংলাদেশের ক্রিকেট',
+  'international-football': 'আন্তর্জাতিক ফুটবল',
+  'club-football': 'ক্লাব ফুটবল',
+  'world-cup-2026': 'ফুটবল বিশ্বকাপ ২০২৬',
+  'table-tennis': 'টেবিল টেনিস',
+  golf: 'গল্ফ',
   other: 'অন্যান্য',
 };
 
 /**
- * ArticleCard — Section 10.4
- * [84×63 thumb]  Sport label  9.5px Hind Siliguri --ink-muted
- *                Headline     Playfair / Noto Serif BN 15px bold
- *                Snippet      Source Serif 4 / Hind 12px 300 --ink-muted
- *                X hrs ago    10px --ink-ghost
- * Thumb has Photo / ▶ Video badge
- * Full row is a Link
- * Separated by 0.5px --ink-border rule
+ * ArticleCard — thumbnail + headline + deck + time
+ * Full Bengali, Kalpurush font throughout
+ * Media badge in Bengali: 'ভিডিও' or 'ছবি'
  */
 export default function ArticleCard({ article }: ArticleCardProps) {
-  const { slug, headline, headlineBn, deck, sport, mediaType, mediaUrl, byline, publishedAt } = article;
+  const { slug, headline, headlineBn, deck, sport, mediaType, mediaUrl, publishedAt } = article;
   const displayHeadline = headlineBn || headline;
-  const isBn = !!headlineBn;
   const sportLabel = SPORT_LABELS[sport] ?? sport;
-  const time = timeAgo(publishedAt, isBn ? 'bn' : 'en');
+  const time = timeAgo(publishedAt, 'bn');
   const exactTime = formatDatetime(publishedAt);
   const isVideo = mediaType === 'video';
 
@@ -57,7 +62,7 @@ export default function ArticleCard({ article }: ArticleCardProps) {
       <Link
         href={`/article/${slug}`}
         className="flex gap-3 py-3 px-0 hover:opacity-80 transition-opacity duration-150"
-        aria-label={`Read: ${displayHeadline}`}
+        aria-label={`পড়ুন: ${displayHeadline}`}
       >
         {/* Thumbnail */}
         <div
@@ -74,9 +79,24 @@ export default function ArticleCard({ article }: ArticleCardProps) {
           ) : (
             <div className="skeleton" style={{ width: '100%', height: '100%' }} />
           )}
-          {/* Media badge */}
-          <span className="media-badge">
-            {isVideo ? '▶ Video' : 'Photo'}
+          {/* Media badge — Bengali */}
+          <span
+            lang="bn"
+            style={{
+              position: 'absolute',
+              top: 4,
+              left: 4,
+              backgroundColor: 'var(--ink)',
+              color: 'var(--bg-page)',
+              fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif",
+              fontSize: 8,
+              fontWeight: 500,
+              letterSpacing: '0.06em',
+              padding: '1px 4px',
+              borderRadius: 1,
+            }}
+          >
+            {isVideo ? '▶ ভিডিও' : 'ছবি'}
           </span>
         </div>
 
@@ -84,14 +104,14 @@ export default function ArticleCard({ article }: ArticleCardProps) {
         <div className="flex flex-col justify-between flex-1 min-w-0 py-0.5">
           {/* Sport label */}
           <span
-            className="type-kicker"
             lang="bn"
             style={{
-              fontFamily: "'Abu JM Akkas', 'Hind Siliguri', sans-serif",
+              fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif",
               fontSize: 9.5,
-              letterSpacing: '0.14em',
+              letterSpacing: '0.1em',
               textTransform: 'uppercase',
               color: 'var(--ink-muted)',
+              fontWeight: 500,
             }}
           >
             {sportLabel}
@@ -99,15 +119,12 @@ export default function ArticleCard({ article }: ArticleCardProps) {
 
           {/* Headline */}
           <h2
-            className={isBn ? 'type-story-bn' : 'type-story-en'}
-            lang={isBn ? 'bn' : 'en'}
+            lang="bn"
             style={{
-              fontFamily: isBn
-                ? "'Manowar Murshidabad', 'Noto Serif Bengali', serif"
-                : "Georgia, 'Times New Roman', Times, serif",
-              fontWeight: isBn ? 600 : 700,
+              fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif",
+              fontWeight: 600,
               fontSize: 15,
-              lineHeight: 1.3,
+              lineHeight: 1.35,
               color: 'var(--ink)',
               display: '-webkit-box',
               WebkitLineClamp: 2,
@@ -118,11 +135,12 @@ export default function ArticleCard({ article }: ArticleCardProps) {
             {displayHeadline}
           </h2>
 
-          {/* Snippet */}
+          {/* Deck */}
           <p
+            lang="bn"
             style={{
-              fontFamily: isBn ? "'Abu JM Akkas', 'Hind Siliguri', sans-serif" : "'Source Serif 4', Georgia, serif",
-              fontWeight: 300,
+              fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif",
+              fontWeight: 400,
               fontSize: 12,
               color: 'var(--ink-muted)',
               lineHeight: 1.4,
@@ -132,7 +150,6 @@ export default function ArticleCard({ article }: ArticleCardProps) {
               overflow: 'hidden',
               marginTop: 2,
             }}
-            lang={isBn ? 'bn' : 'en'}
           >
             {deck}
           </p>
@@ -142,12 +159,12 @@ export default function ArticleCard({ article }: ArticleCardProps) {
             dateTime={new Date(publishedAt).toISOString()}
             title={exactTime}
             style={{
-              fontFamily: "'Abu JM Akkas', 'Hind Siliguri', sans-serif",
+              fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif",
               fontSize: 10,
               color: 'var(--ink-ghost)',
               marginTop: 2,
             }}
-            lang={isBn ? 'bn' : 'en'}
+            lang="bn"
           >
             {time}
           </time>

@@ -112,10 +112,10 @@ export default async function SportPage({ params }: PageProps) {
           >
             <h1
               style={{
-                fontFamily: "Georgia, 'Times New Roman', Times, serif",
+                fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif",
                 fontWeight: 900,
                 fontSize: 'clamp(28px, 4vw, 48px)',
-                letterSpacing: '-0.02em',
+                letterSpacing: '-0.01em',
                 color: 'var(--ink)',
                 marginBottom: 4,
               }}
@@ -128,10 +128,8 @@ export default async function SportPage({ params }: PageProps) {
           {articlesList.map((article, i) => (
             <div key={article.id}>
               <ArticleCard article={article} />
-              {(i + 1) % 3 === 0 && inlineSponsors[Math.floor(i / 3) % inlineSponsors.length] && (
-                <SponsorBlock
-                  {...inlineSponsors[Math.floor(i / 3) % inlineSponsors.length]}
-                />
+              {i === 2 && inlineSponsors[0] && (
+                <SponsorBlock {...inlineSponsors[0]} />
               )}
             </div>
           ))}
@@ -166,7 +164,7 @@ export default async function SportPage({ params }: PageProps) {
         >
           <h1
             style={{
-              fontFamily: "Georgia, 'Times New Roman', Times, serif",
+              fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif",
               fontWeight: 900,
               fontSize: '28px',
               color: 'var(--ink)',
@@ -181,8 +179,8 @@ export default async function SportPage({ params }: PageProps) {
         {articlesList.map((article, i) => (
           <div key={article.id}>
             <ArticleCard article={article} />
-            {(i + 1) % 3 === 0 && inlineSponsors[Math.floor(i / 3) % inlineSponsors.length] && (
-              <SponsorBlock {...inlineSponsors[Math.floor(i / 3) % inlineSponsors.length]} />
+            {i === 2 && inlineSponsors[0] && (
+              <SponsorBlock {...inlineSponsors[0]} />
             )}
           </div>
         ))}

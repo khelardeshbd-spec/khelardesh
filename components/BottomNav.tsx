@@ -5,17 +5,52 @@ import { usePathname } from 'next/navigation';
 import { useScrollDirection } from '@/hooks/useScrollDirection';
 
 /**
- * BottomNav — Section 7 / 8 (mobile only)
- * Sticky bottom bar: Home Search Saved Alerts
- * Slides off-screen on scroll down, slides back on scroll up
- * Height: 52px
+ * BottomNav — mobile only
+ * SVG icons (no unicode glyphs), Bengali labels
+ * Active state: ink color fill
+ * Safe-area-inset-bottom padding for iPhone notch
  */
 
 const NAV_ITEMS = [
-  { label: 'Home', labelBn: 'হোম', href: '/', icon: '⌂' },
-  { label: 'Search', labelBn: 'খোঁজ', href: '/search', icon: '◎' },
-  { label: 'Saved', labelBn: 'সেভ', href: '/saved', icon: '♡' },
-  { label: 'Alerts', labelBn: 'সতর্কতা', href: '/alerts', icon: '◉' },
+  {
+    labelBn: 'মাঠ',
+    href: '/',
+    icon: (active: boolean) => (
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={active ? 2.2 : 1.8} strokeLinecap="round" strokeLinejoin="round">
+        <path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9.5z" fill={active ? 'currentColor' : 'none'} />
+        <path d="M9 21V12h6v9" />
+      </svg>
+    ),
+  },
+  {
+    labelBn: 'খোঁজ',
+    href: '/search',
+    icon: (active: boolean) => (
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={active ? 2.2 : 1.8} strokeLinecap="round" strokeLinejoin="round">
+        <circle cx="11" cy="11" r="7" />
+        <line x1="16.5" y1="16.5" x2="22" y2="22" />
+      </svg>
+    ),
+  },
+  {
+    labelBn: 'সেভ',
+    href: '/saved',
+    icon: (active: boolean) => (
+      <svg width="22" height="22" viewBox="0 0 24 24" fill={active ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth={active ? 2.2 : 1.8} strokeLinecap="round" strokeLinejoin="round">
+        <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
+      </svg>
+    ),
+  },
+  {
+    labelBn: 'সতর্কতা',
+    href: '/alerts',
+    icon: (active: boolean) => (
+      <svg width="22" height="22" viewBox="0 0 24 24" fill={active ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth={active ? 2.2 : 1.8} strokeLinecap="round" strokeLinejoin="round">
+        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+        <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+      </svg>
+    ),
+  },
 ];
 
 export default function BottomNav() {
@@ -25,20 +60,20 @@ export default function BottomNav() {
   return (
     <nav
       id="bottom-nav"
-      aria-label="Mobile navigation"
+      aria-label="মোবাইল নেভিগেশন"
       className="lg:hidden fixed bottom-0 left-0 right-0"
       style={{
-        height: 52,
         backgroundColor: 'var(--bg-page)',
         borderTop: '1px solid var(--ink-border)',
         transform: navVisible ? 'translateY(0)' : 'translateY(100%)',
         transition: 'transform 0.25s ease',
         zIndex: 50,
+        paddingBottom: 'max(8px, env(safe-area-inset-bottom))',
       }}
     >
-      <ul className="flex items-stretch h-full">
-        {NAV_ITEMS.map(({ label, labelBn, href, icon }) => {
-          const isActive = pathname === href;
+      <ul className="flex items-stretch" style={{ height: 52 }}>
+        {NAV_ITEMS.map(({ labelBn, href, icon }) => {
+          const isActive = href === '/' ? pathname === '/' : pathname.startsWith(href);
           return (
             <li key={href} className="flex-1">
               <Link
@@ -47,17 +82,18 @@ export default function BottomNav() {
                 aria-current={isActive ? 'page' : undefined}
                 style={{
                   color: isActive ? 'var(--ink)' : 'var(--ink-muted)',
+                  minHeight: 44,
                 }}
               >
-                <span style={{ fontSize: 18, lineHeight: 1 }}>{icon}</span>
+                {icon(isActive)}
                 <span
-                  className="type-nav"
                   lang="bn"
                   style={{
-                    fontFamily: "'Abu JM Akkas', 'Hind Siliguri', sans-serif",
+                    fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif",
                     fontSize: 9,
-                    letterSpacing: '0.06em',
+                    letterSpacing: '0.04em',
                     color: 'inherit',
+                    fontWeight: isActive ? 600 : 400,
                   }}
                 >
                   {labelBn}

@@ -21,22 +21,15 @@ interface LeadStoryProps {
 
 /**
  * LeadStory — Section 10.5
- * Full-width 16:9 media block
- * Photo: <img loading="lazy" />
- * Video: <video autoPlay muted loop playsInline /> — ambient, no controls
- * Badge top-left: "▶ Video" or "Photo"
- * Optional caption: italic 10px --ink-muted
- * Kicker above headline: Hind Siliguri 10px uppercase --ink-muted
- * Headline: Playfair Display (EN) or Noto Serif Bengali (BN), italic allowed
- * Deck: Source Serif 4 / Hind Siliguri 13–14px weight 300 --ink-muted
- * Byline: Hind Siliguri 10px uppercase --ink-ghost
+ * Bengali-first: headlineBn is always primary H2
+ * English title (if different) shown as muted subtitle beneath
+ * Media badge in Bengali: 'ভিডিও' or 'ছবি'
  */
 export default function LeadStory({ article }: LeadStoryProps) {
   const { slug, headline, headlineBn, deck, kicker, mediaType, mediaUrl, mediaCaption, byline, publishedAt } = article;
   const displayHeadline = headlineBn || headline;
-  const isBn = !!headlineBn;
   const isVideo = mediaType === 'video';
-  const time = timeAgo(publishedAt, isBn ? 'bn' : 'en');
+  const time = timeAgo(publishedAt, 'bn');
   const exactTime = formatDatetime(publishedAt);
 
   return (
@@ -62,38 +55,39 @@ export default function LeadStory({ article }: LeadStoryProps) {
               className="group-hover:scale-[1.01] transition-transform duration-500"
             />
           )}
-          {/* Media type badge */}
+          {/* Media type badge — Bengali only */}
           <span
+            lang="bn"
             style={{
               position: 'absolute',
               top: 8,
               left: 8,
               backgroundColor: 'var(--ink)',
               color: 'var(--bg-page)',
-              fontFamily: "'Abu JM Akkas', 'Hind Siliguri', sans-serif",
-              fontSize: 7,
+              fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif",
+              fontSize: 9,
               fontWeight: 500,
-              letterSpacing: '0.1em',
-              textTransform: 'uppercase',
-              padding: '2px 5px',
+              letterSpacing: '0.08em',
+              padding: '2px 6px',
               borderRadius: 1,
             }}
           >
-            {isVideo ? '▶ Video' : 'Photo'}
+            {isVideo ? '▶ ভিডিও' : 'ছবি'}
           </span>
         </div>
 
-        {/* Optional caption */}
+        {/* Caption below image */}
         {mediaCaption && (
           <p
             style={{
-              fontFamily: "'Source Serif 4', Georgia, serif",
+              fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif",
               fontStyle: 'italic',
-              fontSize: 10,
+              fontSize: 11,
               color: 'var(--ink-muted)',
               marginTop: 4,
               paddingLeft: 2,
             }}
+            lang="bn"
           >
             {mediaCaption}
           </p>
@@ -104,7 +98,7 @@ export default function LeadStory({ article }: LeadStoryProps) {
           {/* Kicker */}
           <p
             style={{
-              fontFamily: "'Abu JM Akkas', 'Hind Siliguri', sans-serif",
+              fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif",
               fontSize: 10,
               fontWeight: 400,
               letterSpacing: '0.14em',
@@ -117,52 +111,48 @@ export default function LeadStory({ article }: LeadStoryProps) {
             {kicker}
           </p>
 
-          {/* Headline */}
+          {/* PRIMARY: Bengali headline */}
           <h2
-            lang={isBn ? 'bn' : 'en'}
+            lang="bn"
             style={{
-              fontFamily: isBn
-                ? "'Manowar Murshidabad', 'Noto Serif Bengali', serif"
-                : "Georgia, 'Times New Roman', Times, serif",
+              fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif",
               fontWeight: 700,
-              fontStyle: isBn ? 'normal' : 'italic',
-              fontSize: 'clamp(26px, 4vw, 36px)',
-              lineHeight: 1.15,
-              letterSpacing: '-0.01em',
+              fontSize: 'clamp(22px, 3.5vw, 34px)',
+              lineHeight: 1.25,
               color: 'var(--ink)',
-              marginBottom: 8,
+              marginBottom: headlineBn && headline !== headlineBn ? 4 : 8,
             }}
           >
             {displayHeadline}
           </h2>
 
-          {/* English headline if separate */}
+          {/* SECONDARY: English headline — only if it's different, shown as muted subtitle */}
           {headlineBn && headline !== headlineBn && (
-            <h3
+            <p
               lang="en"
               style={{
                 fontFamily: "Georgia, 'Times New Roman', Times, serif",
-                fontWeight: 700,
                 fontStyle: 'italic',
-                fontSize: 'clamp(16px, 2vw, 20px)',
+                fontSize: 'clamp(13px, 1.5vw, 15px)',
                 color: 'var(--ink-muted)',
                 marginBottom: 8,
-                lineHeight: 1.2,
+                lineHeight: 1.3,
+                fontWeight: 400,
               }}
             >
               {headline}
-            </h3>
+            </p>
           )}
 
           {/* Deck */}
           <p
-            lang={isBn ? 'bn' : 'en'}
+            lang="bn"
             style={{
-              fontFamily: isBn ? "'Abu JM Akkas', 'Hind Siliguri', sans-serif" : "'Source Serif 4', Georgia, serif",
-              fontWeight: 300,
-              fontSize: 'clamp(13px, 1.5vw, 14px)',
+              fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif",
+              fontWeight: 400,
+              fontSize: 'clamp(14px, 1.5vw, 15px)',
               color: 'var(--ink-muted)',
-              lineHeight: 1.6,
+              lineHeight: 1.65,
               marginBottom: 8,
             }}
           >
@@ -173,7 +163,7 @@ export default function LeadStory({ article }: LeadStoryProps) {
           <div className="flex items-center gap-2">
             <span
               style={{
-                fontFamily: "'Abu JM Akkas', 'Hind Siliguri', sans-serif",
+                fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif",
                 fontSize: 10,
                 fontWeight: 400,
                 letterSpacing: '0.1em',
@@ -188,11 +178,11 @@ export default function LeadStory({ article }: LeadStoryProps) {
               dateTime={new Date(publishedAt).toISOString()}
               title={exactTime}
               style={{
-                fontFamily: "'Abu JM Akkas', 'Hind Siliguri', sans-serif",
+                fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif",
                 fontSize: 10,
                 color: 'var(--ink-ghost)',
               }}
-              lang={isBn ? 'bn' : 'en'}
+              lang="bn"
             >
               {time}
             </time>
