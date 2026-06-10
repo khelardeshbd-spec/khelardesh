@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import AdminShell from '../../AdminShell';
+import AdminShell from '../AdminShell';
 
 type TabType = 'trivia' | 'history' | 'fixture' | 'tv';
 

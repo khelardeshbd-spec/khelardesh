@@ -45,3 +45,4 @@ dev.db
 .dev.vars
 *.log
 out.html
+scripts/create-sidebar-table.mjs
