@@ -1,4 +1,5 @@
 import { notFound } from 'next/navigation';
+import Link from 'next/link';
 import type { Metadata } from 'next';
 import { supabaseAdmin } from '@/lib/supabase';
 import { formatDatetime, timeAgo } from '@/lib/timeAgo';
@@ -45,9 +46,8 @@ export default async function ArticlePage({ params }: PageProps) {
   } = article;
 
   const displayHeadline = headlineBn || headline;
-  const isBn = !!headlineBn;
   const isVideo = mediaType === 'video';
-  const time = timeAgo(publishedAt, isBn ? 'bn' : 'en');
+  const time = timeAgo(publishedAt, 'bn');
   const exactTime = formatDatetime(publishedAt);
 
   // Parse body into paragraphs (blank line separated)
@@ -58,6 +58,17 @@ export default async function ArticlePage({ params }: PageProps) {
 
   return (
     <div style={{ backgroundColor: 'var(--bg-page)', minHeight: '100vh', paddingBottom: 64 }}>
+      {/* Home Button / Breadcrumb */}
+      <div className="w-full max-w-[680px] mx-auto px-4 lg:px-0 py-4">
+        <Link 
+          href="/"
+          className="inline-flex items-center gap-1 text-[var(--ink-muted)] hover:text-[var(--ink)] transition-colors"
+          style={{ fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif", fontSize: 13, fontWeight: 500 }}
+        >
+          <span>←</span> নীড়পাতা
+        </Link>
+      </div>
+
       {/* Full-width media */}
       <div
         className="w-full relative"
@@ -125,13 +136,10 @@ export default async function ArticlePage({ params }: PageProps) {
 
         {/* Headline */}
         <h1
-          lang={isBn ? 'bn' : 'en'}
+          lang="bn"
           style={{
-            fontFamily: isBn
-              ? "'Manowar Murshidabad', 'Noto Serif Bengali', serif"
-              : "Georgia, 'Times New Roman', Times, serif",
+            fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif",
             fontWeight: 700,
-            fontStyle: !isBn ? 'italic' : 'normal',
             fontSize: 'clamp(26px, 4vw, 36px)',
             lineHeight: 1.15, letterSpacing: '-0.01em',
             color: 'var(--ink)', marginBottom: 10,
@@ -140,27 +148,14 @@ export default async function ArticlePage({ params }: PageProps) {
           {displayHeadline}
         </h1>
 
-        {/* English title if bilingual */}
-        {headlineBn && headline !== headlineBn && (
-          <h2
-            lang="en"
-            style={{
-              fontFamily: "Georgia, 'Times New Roman', Times, serif",
-              fontWeight: 700, fontStyle: 'italic',
-              fontSize: 'clamp(16px, 2vw, 20px)',
-              color: 'var(--ink-muted)', marginBottom: 10, lineHeight: 1.2,
-            }}
-          >
-            {headline}
-          </h2>
-        )}
+        {/* English title removed */}
 
         {/* Deck */}
         <p
-          lang={isBn ? 'bn' : 'en'}
+          lang="bn"
           style={{
-            fontFamily: isBn ? "'Abu JM Akkas', 'Hind Siliguri', sans-serif" : "'Source Serif 4', Georgia, serif",
-            fontWeight: 300, fontSize: 'clamp(14px, 1.5vw, 16px)',
+            fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif",
+            fontWeight: 400, fontSize: 'clamp(16px, 1.5vw, 18px)',
             color: 'var(--ink-muted)', lineHeight: 1.65,
             marginBottom: 12, borderBottom: '0.5px solid var(--ink-border)', paddingBottom: 12,
           }}
@@ -188,7 +183,7 @@ export default async function ArticlePage({ params }: PageProps) {
               fontFamily: "'Abu JM Akkas', 'Hind Siliguri', sans-serif",
               fontSize: 10, color: 'var(--ink-ghost)',
             }}
-            lang={isBn ? 'bn' : 'en'}
+            lang="bn"
           >
             {time}
           </time>
@@ -199,13 +194,11 @@ export default async function ArticlePage({ params }: PageProps) {
           {paragraphs.map((para: string, i: number) => (
             <p
               key={i}
-              lang={isBn ? 'bn' : 'en'}
+              lang="bn"
               style={{
-                fontFamily: isBn
-                  ? "'Abu JM Akkas', 'Hind Siliguri', sans-serif"
-                  : "'Source Serif 4', Georgia, serif",
-                fontWeight: isBn ? 400 : 300,
-                fontSize: isBn ? 16 : 'clamp(16px, 1.5vw, 18px)',
+                fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif",
+                fontWeight: 400,
+                fontSize: 18,
                 lineHeight: 1.8,
                 color: 'var(--ink)',
                 marginBottom: '1.25em',

@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { supabaseAdmin } from '@/lib/supabase';
 import LeadStory from '@/components/LeadStory';
+import HomeSlider from '@/components/HomeSlider';
 import ArticleCard from '@/components/ArticleCard';
 import ScoresStrip from '@/components/ScoresStrip';
 import SponsorBlock from '@/components/SponsorBlock';
@@ -34,8 +35,7 @@ export default async function HomePage() {
       .select('*')
       .eq('isLead', true)
       .order('publishedAt', { ascending: false })
-      .limit(1)
-      .single(),
+      .limit(4),
     supabaseAdmin
       .from('Article')
       .select('id, slug, headline, headlineBn, deck, sport, mediaType, mediaUrl, byline, publishedAt')
@@ -54,7 +54,7 @@ export default async function HomePage() {
       .order('displayOrder', { ascending: true }),
   ]);
 
-  const lead = leadResult.status === 'fulfilled' ? leadResult.value.data : null;
+  const leads = leadResult.status === 'fulfilled' ? (leadResult.value.data ?? []) : [];
   const articles = articlesResult.status === 'fulfilled' ? (articlesResult.value.data ?? []) : [];
   const scores = scoresResult.status === 'fulfilled' ? (scoresResult.value.data ?? []) : [];
   const sponsors = sponsorsResult.status === 'fulfilled' ? (sponsorsResult.value.data ?? []) : [];
@@ -84,10 +84,10 @@ export default async function HomePage() {
 
         {/* Middle Column (64%): Main article feed */}
         <div className="pt-28">
-          {/* Lead story */}
-          {lead && (
+          {/* Lead story Slider */}
+          {leads.length > 0 && (
             <div className="mb-8 mt-2">
-              <LeadStory article={lead} />
+              <HomeSlider articles={leads} />
             </div>
           )}
 
@@ -164,10 +164,10 @@ export default async function HomePage() {
 
       {/* ── MOBILE LAYOUT < 1024px ── */}
       <div className="lg:hidden">
-        {/* Lead story */}
-        {lead && (
+        {/* Lead story Slider */}
+        {leads.length > 0 && (
           <div className="px-4 pt-4 pb-4">
-            <LeadStory article={lead} />
+            <HomeSlider articles={leads} />
           </div>
         )}
 

@@ -21,20 +21,7 @@ export default function Masthead() {
           display: 'block'
         }}
       />
-      {/* Tagline below logo */}
-      <p
-        className="type-kicker tracking-widest"
-        style={{ 
-          fontSize: '10px', 
-          fontFamily: "'Abu JM Akkas', 'Hind Siliguri', sans-serif", 
-          color: 'var(--ink-muted)',
-          paddingLeft: '12px',
-          marginTop: '-24px',
-          textTransform: 'uppercase'
-        }}
-      >
-        SPORTS · INDEPENDENT
-      </p>
+      {/* Tagline removed as per request to remove English */}
     </div>
   );
 }
