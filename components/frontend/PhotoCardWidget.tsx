@@ -23,7 +23,7 @@ export default function PhotoCardWidget({ title, imageUrl, href }: PhotoCardProp
       <div className="absolute bottom-0 left-0 right-0 p-3">
         <h3
           style={{
-            fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif",
+            fontFamily: "var(--font-body)",
             fontWeight: 600,
             fontSize: 16,
             color: 'var(--bg-page)',

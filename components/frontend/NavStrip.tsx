@@ -98,7 +98,7 @@ export default function NavStrip({ noBorder = false, vertical = false, onNavigat
                     lang="bn"
                     className="flex-1 px-4 py-3 flex items-center"
                     style={{
-                      fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif",
+                      fontFamily: "var(--font-body)",
                       fontSize: 17,
                       fontWeight: active ? 700 : 500,
                       color: active ? 'var(--live-red)' : 'var(--ink)',
@@ -142,7 +142,7 @@ export default function NavStrip({ noBorder = false, vertical = false, onNavigat
                           lang="bn"
                           className="block px-8 py-2.5 hover:bg-[var(--ink-ghost)] transition-colors"
                           style={{
-                            fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif",
+                            fontFamily: "var(--font-body)",
                             fontSize: 15,
                             color: pathname === `/sport/${sub.slug}` ? 'var(--live-red)' : 'var(--ink-muted)',
                             fontWeight: pathname === `/sport/${sub.slug}` ? 600 : 400,
@@ -186,7 +186,7 @@ export default function NavStrip({ noBorder = false, vertical = false, onNavigat
                   lang="bn"
                   className="flex items-center px-1.5 py-2.5 whitespace-nowrap transition-colors duration-150"
                   style={{
-                    fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif",
+                    fontFamily: "var(--font-body)",
                     fontSize: 12.5,
                     fontWeight: 600,
                     backgroundColor: active ? 'var(--ink)' : 'transparent',
@@ -247,7 +247,7 @@ export default function NavStrip({ noBorder = false, vertical = false, onNavigat
                           lang="bn"
                           className="block px-4 py-2.5 hover:bg-[var(--ink-ghost)] transition-colors whitespace-nowrap"
                           style={{
-                            fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif",
+                            fontFamily: "var(--font-body)",
                             fontSize: 14,
                             color: pathname === `/sport/${sub.slug}` ? 'var(--live-red)' : 'var(--ink)',
                             fontWeight: pathname === `/sport/${sub.slug}` ? 600 : 400,
@@ -278,7 +278,7 @@ export default function NavStrip({ noBorder = false, vertical = false, onNavigat
                           lang="bn"
                           className="block px-4 py-2.5 hover:bg-[var(--ink-ghost)] transition-colors whitespace-nowrap"
                           style={{
-                            fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif",
+                            fontFamily: "var(--font-body)",
                             fontSize: 14,
                             color: pathname === `/sport/${sub.slug}` ? 'var(--live-red)' : 'var(--ink-muted)',
                             fontWeight: pathname === `/sport/${sub.slug}` ? 600 : 400,

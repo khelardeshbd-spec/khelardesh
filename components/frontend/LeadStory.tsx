@@ -64,7 +64,7 @@ export default function LeadStory({ article }: LeadStoryProps) {
               left: 8,
               backgroundColor: 'var(--ink)',
               color: 'var(--bg-page)',
-              fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif",
+              fontFamily: "var(--font-body)",
               fontSize: 9,
               fontWeight: 500,
               letterSpacing: '0.08em',
@@ -80,7 +80,7 @@ export default function LeadStory({ article }: LeadStoryProps) {
         {mediaCaption && (
           <p
             style={{
-              fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif",
+              fontFamily: "var(--font-body)",
               fontStyle: 'italic',
               fontSize: 11,
               color: 'var(--ink-muted)',
@@ -98,7 +98,7 @@ export default function LeadStory({ article }: LeadStoryProps) {
           {/* Kicker */}
           <p
             style={{
-              fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif",
+              fontFamily: "var(--font-body)",
               fontSize: 10,
               fontWeight: 400,
               letterSpacing: '0.14em',
@@ -115,7 +115,7 @@ export default function LeadStory({ article }: LeadStoryProps) {
           <h2
             lang="bn"
             style={{
-              fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif",
+              fontFamily: "var(--font-headline)",
               fontWeight: 700,
               fontSize: 'clamp(22px, 3.5vw, 34px)',
               lineHeight: 1.25,
@@ -131,7 +131,7 @@ export default function LeadStory({ article }: LeadStoryProps) {
             <p
               lang="en"
               style={{
-                fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif",
+                fontFamily: "var(--font-body)",
                 fontSize: 'clamp(13px, 1.5vw, 15px)',
                 color: 'var(--ink-muted)',
                 marginBottom: 8,
@@ -147,7 +147,7 @@ export default function LeadStory({ article }: LeadStoryProps) {
           <p
             lang="bn"
             style={{
-              fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif",
+              fontFamily: "var(--font-headline)",
               fontWeight: 400,
               fontSize: 'clamp(14px, 1.5vw, 15px)',
               color: 'var(--ink-muted)',
@@ -162,7 +162,7 @@ export default function LeadStory({ article }: LeadStoryProps) {
           <div className="flex items-center gap-2">
             <span
               style={{
-                fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif",
+                fontFamily: "var(--font-body)",
                 fontSize: 10,
                 fontWeight: 400,
                 letterSpacing: '0.1em',
@@ -177,7 +177,7 @@ export default function LeadStory({ article }: LeadStoryProps) {
               dateTime={new Date(publishedAt).toISOString()}
               title={exactTime}
               style={{
-                fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif",
+                fontFamily: "var(--font-body)",
                 fontSize: 10,
                 color: 'var(--ink-ghost)',
               }}

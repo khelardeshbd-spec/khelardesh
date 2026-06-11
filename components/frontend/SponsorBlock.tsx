@@ -38,7 +38,7 @@ export default function SponsorBlock({
       {/* Sponsor label */}
       <p
         style={{
-          fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif",
+          fontFamily: "var(--font-body)",
           fontSize: 9,
           fontWeight: 500,
           letterSpacing: '0.14em',
@@ -53,7 +53,7 @@ export default function SponsorBlock({
       {/* Title */}
       <p
         style={{
-          fontFamily: "'Kalpurush', sans-serif",
+          fontFamily: "var(--font-body)",
           fontSize: 13,
           fontWeight: 700,
           color: 'var(--ink)',
@@ -89,7 +89,7 @@ export default function SponsorBlock({
         className="sponsor-cta-link"
         style={{
           display: 'inline-block',
-          fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif",
+          fontFamily: "var(--font-body)",
           fontSize: 12,
           fontWeight: 600,
           letterSpacing: '0.12em',

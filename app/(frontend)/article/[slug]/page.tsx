@@ -88,7 +88,7 @@ export default async function ArticlePage({ params }: PageProps) {
         <Link 
           href="/"
           className="inline-flex items-center gap-1 text-[var(--ink-muted)] hover:text-[var(--ink)] transition-colors"
-          style={{ fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif", fontSize: 13, fontWeight: 500 }}
+          style={{ fontFamily: "var(--font-body)", fontSize: 13, fontWeight: 500 }}
         >
           <span>←</span> নীড়পাতা
         </Link>
@@ -125,7 +125,7 @@ export default async function ArticlePage({ params }: PageProps) {
               style={{
                 position: 'absolute', top: 10, left: 10,
                 backgroundColor: 'var(--ink)', color: 'var(--bg-page)',
-                fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif",
+                fontFamily: "var(--font-body)",
                 fontSize: 9, fontWeight: 500, letterSpacing: '0.04em',
                 textTransform: 'uppercase', padding: '2px 5px', borderRadius: 1,
               }}
@@ -140,7 +140,7 @@ export default async function ArticlePage({ params }: PageProps) {
             <div className="prose-field px-4 lg:px-0">
               <p
                 style={{
-                  fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif",
+                  fontFamily: "var(--font-body)",
                   fontSize: 12,
                   color: 'var(--ink-muted)', marginTop: 6,
                 }}
@@ -156,7 +156,7 @@ export default async function ArticlePage({ params }: PageProps) {
             {/* Kicker · Sport */}
             <p
               style={{
-                fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif",
+                fontFamily: "var(--font-body)",
                 fontSize: 12, fontWeight: 500,
                 letterSpacing: '0.06em',
                 color: 'var(--ink-muted)', marginBottom: 8,
@@ -170,7 +170,7 @@ export default async function ArticlePage({ params }: PageProps) {
             <h1
               lang="bn"
               style={{
-                fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif",
+                fontFamily: "var(--font-headline)",
                 fontWeight: 700,
                 fontSize: 'clamp(26px, 4vw, 36px)',
                 lineHeight: 1.15, letterSpacing: '-0.01em',
@@ -184,7 +184,7 @@ export default async function ArticlePage({ params }: PageProps) {
             <p
               lang="bn"
               style={{
-                fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif",
+                fontFamily: "var(--font-headline)",
                 fontWeight: 400, fontSize: 'clamp(16px, 1.5vw, 18px)',
                 color: 'var(--ink-muted)', lineHeight: 1.65,
                 marginBottom: 12, borderBottom: '0.5px solid var(--ink-border)', paddingBottom: 12,
@@ -198,7 +198,7 @@ export default async function ArticlePage({ params }: PageProps) {
               <div className="flex items-center gap-2">
                 <span
                   style={{
-                    fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif",
+                    fontFamily: "var(--font-body)",
                     fontSize: 11, fontWeight: 500,
                     letterSpacing: '0.04em',
                     color: 'var(--ink-ghost)',
@@ -212,7 +212,7 @@ export default async function ArticlePage({ params }: PageProps) {
                   dateTime={new Date(publishedAt).toISOString()}
                   title={exactTime}
                   style={{
-                    fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif",
+                    fontFamily: "var(--font-body)",
                     fontSize: 11, color: 'var(--ink-ghost)',
                   }}
                   lang="bn"
@@ -230,7 +230,7 @@ export default async function ArticlePage({ params }: PageProps) {
                   key={i}
                   lang="bn"
                   style={{
-                    fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif",
+                    fontFamily: "var(--font-body)",
                     fontWeight: 400,
                     fontSize: 18,
                     lineHeight: 1.8,

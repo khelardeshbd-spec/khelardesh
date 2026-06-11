@@ -29,6 +29,13 @@
   font-display: swap;
 }
 @font-face {
+  font-family: 'Prothom Alo';
+  src: url('/fonts/ProthomAlo.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
   font-family: 'Kalpurush';
   src: url('/fonts/AbuJMAkkas.ttf') format('truetype');
   font-weight: normal;
@@ -54,6 +61,9 @@
 
 /* Fallback / Base — applied on <html> and overridden by data-theme */
 :root {
+  --font-body: 'Prothom Alo', var(--font-body);
+  --font-headline: 'Manowar Murshidabad', 'Noto Serif Bengali', serif;
+  
   --bg-page:      #F8F1E3;
   --bg-surface:   #EFE7D3;
   --ink:          #2C1E0F;
@@ -120,7 +130,7 @@
    --------------------------------------------------------------------------- */
 :lang(bn),
 [data-lang="bn"] {
-  font-family: 'Kalpurush', 'Hind Siliguri', sans-serif;   /* Bengali body / UI chrome universally */
+  font-family: var(--font-body);   /* Bengali body / UI chrome universally */
 }
 
 h1:lang(bn),
@@ -131,7 +141,7 @@ h5:lang(bn),
 h6:lang(bn),
 .type-story-bn,
 .type-lead-bn {
-  font-family: 'Kalpurush', 'Hind Siliguri', sans-serif;
+  font-family: var(--font-headline);
 }
 
 /* ---------------------------------------------------------------------------
@@ -155,7 +165,7 @@ html {
 body {
   background-color: var(--bg-page);
   color: var(--ink);
-  font-family: 'Kalpurush', 'Hind Siliguri', sans-serif;
+  font-family: var(--font-body);
   font-weight: 300;
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
@@ -193,7 +203,7 @@ ul, ol {
 
 /* Masthead */
 .type-masthead {
-  font-family: 'Kalpurush', 'Hind Siliguri', sans-serif;
+  font-family: var(--font-body);
   font-weight: 900;
   font-size: clamp(30px, 5vw, 64px);
   letter-spacing: -0.02em;
@@ -202,7 +212,7 @@ ul, ol {
 
 /* Lead headline — English */
 .type-lead-en {
-  font-family: 'Kalpurush', 'Hind Siliguri', sans-serif;
+  font-family: var(--font-body);
   font-weight: 700;
   font-size: clamp(26px, 3vw, 36px);
   line-height: 1.15;
@@ -211,7 +221,7 @@ ul, ol {
 
 /* Lead headline — Bengali */
 .type-lead-bn {
-  font-family: 'Kalpurush', 'Hind Siliguri', sans-serif;
+  font-family: var(--font-body);
   font-weight: 700;
   font-size: clamp(24px, 2.8vw, 34px);
   line-height: 1.3;
@@ -219,7 +229,7 @@ ul, ol {
 
 /* Story headline — English */
 .type-story-en {
-  font-family: 'Kalpurush', 'Hind Siliguri', sans-serif;
+  font-family: var(--font-body);
   font-weight: 700;
   font-size: 16px;
   line-height: 1.35;
@@ -234,7 +244,7 @@ ul, ol {
 
 /* Story headline — Bengali */
 .type-story-bn {
-  font-family: 'Kalpurush', 'Hind Siliguri', sans-serif;
+  font-family: var(--font-body);
   font-weight: 600;
   font-size: 16px;
   line-height: 1.45;
@@ -248,7 +258,7 @@ ul, ol {
 
 /* Body text */
 .type-body {
-  font-family: 'Kalpurush', 'Hind Siliguri', sans-serif;
+  font-family: var(--font-body);
   font-weight: 400;
   font-size: 18px;
   line-height: 1.85;
@@ -261,7 +271,7 @@ ul, ol {
 }
 
 .type-body-bn {
-  font-family: 'Kalpurush', 'Hind Siliguri', sans-serif;
+  font-family: var(--font-body);
   font-weight: 400;
   font-size: 18px;
   line-height: 1.85;
@@ -269,7 +279,7 @@ ul, ol {
 
 /* Kicker / sport label */
 .type-kicker {
-  font-family: 'Kalpurush', 'Hind Siliguri', sans-serif;
+  font-family: var(--font-body);
   font-weight: 500;
   font-size: 11px;
   letter-spacing: 0.14em;
@@ -279,7 +289,7 @@ ul, ol {
 
 /* Nav labels */
 .type-nav {
-  font-family: 'Kalpurush', 'Hind Siliguri', sans-serif;
+  font-family: var(--font-body);
   font-weight: 500;
   font-size: 12px;
   letter-spacing: 0.12em;
@@ -371,7 +381,7 @@ ul, ol {
 }
 
 .prose-field p {
-  font-family: 'Kalpurush', 'Hind Siliguri', sans-serif;
+  font-family: var(--font-body);
   font-weight: 400;
   font-size: 18px;
   line-height: 1.85;
@@ -386,7 +396,7 @@ ul, ol {
 }
 
 .prose-field p:lang(bn) {
-  font-family: 'Kalpurush', 'Hind Siliguri', sans-serif;
+  font-family: var(--font-body);
   font-weight: 400;
 }
 
@@ -397,7 +407,7 @@ ul, ol {
   left: 8px;
   background: var(--ink);
   color: var(--bg-page);
-  font-family: 'Kalpurush', 'Hind Siliguri', sans-serif;
+  font-family: var(--font-body);
   font-size: 7px;
   font-weight: 500;
   letter-spacing: 0.1em;
@@ -453,7 +463,7 @@ html {
   border: 1px solid var(--ink-border);
   background: var(--bg-surface);
   color: var(--ink);
-  font-family: 'Kalpurush', 'Hind Siliguri', sans-serif;
+  font-family: var(--font-body);
   font-size: 14px;
   border-radius: 2px;
   transition: border-color 0.15s ease;
@@ -471,7 +481,7 @@ html {
   border: 1px solid var(--ink-border);
   background: var(--bg-surface);
   color: var(--ink);
-  font-family: 'Kalpurush', 'Hind Siliguri', sans-serif;
+  font-family: var(--font-body);
   font-size: 15px;
   font-weight: 400;
   line-height: 1.7;
@@ -487,7 +497,7 @@ html {
 
 .admin-label {
   display: block;
-  font-family: 'Kalpurush', 'Hind Siliguri', sans-serif;
+  font-family: var(--font-body);
   font-size: 10px;
   font-weight: 500;
   letter-spacing: 0.1em;
@@ -500,7 +510,7 @@ html {
   padding: 8px 18px;
   background: var(--ink);
   color: var(--bg-page);
-  font-family: 'Kalpurush', 'Hind Siliguri', sans-serif;
+  font-family: var(--font-body);
   font-size: 11px;
   font-weight: 500;
   letter-spacing: 0.1em;
@@ -519,7 +529,7 @@ html {
   padding: 8px 18px;
   background: transparent;
   color: var(--ink);
-  font-family: 'Kalpurush', 'Hind Siliguri', sans-serif;
+  font-family: var(--font-body);
   font-size: 11px;
   font-weight: 500;
   letter-spacing: 0.1em;
@@ -538,7 +548,7 @@ html {
   padding: 8px 18px;
   background: transparent;
   color: #C0392B;
-  font-family: 'Kalpurush', 'Hind Siliguri', sans-serif;
+  font-family: var(--font-body);
   font-size: 11px;
   font-weight: 500;
   letter-spacing: 0.1em;

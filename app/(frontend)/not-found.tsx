@@ -25,7 +25,7 @@ export default function NotFound() {
       {/* Massive 404 */}
       <h1 
         style={{
-          fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif",
+          fontFamily: "var(--font-body)",
           fontSize: 'clamp(80px, 15vw, 120px)',
           fontWeight: 900,
           color: 'var(--live-red)',
@@ -41,7 +41,7 @@ export default function NotFound() {
       {/* Error Message */}
       <p
         style={{
-          fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif",
+          fontFamily: "var(--font-body)",
           fontSize: 'clamp(18px, 3vw, 24px)',
           fontWeight: 500,
           color: 'var(--ink)',
@@ -61,7 +61,7 @@ export default function NotFound() {
           style={{
             backgroundColor: 'var(--ink)',
             color: 'var(--bg-page)',
-            fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif",
+            fontFamily: "var(--font-body)",
             fontSize: 15,
             fontWeight: 600,
             borderRadius: 2
@@ -77,7 +77,7 @@ export default function NotFound() {
             backgroundColor: 'transparent',
             color: 'var(--ink)',
             border: '1px solid var(--ink)',
-            fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif",
+            fontFamily: "var(--font-body)",
             fontSize: 15,
             fontWeight: 600,
             borderRadius: 2

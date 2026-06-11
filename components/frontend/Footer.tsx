@@ -25,7 +25,7 @@ export default function Footer() {
           <p 
             lang="bn"
             style={{
-              fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif",
+              fontFamily: "var(--font-body)",
               fontSize: 12,
               color: 'var(--ink-muted)',
             }}
@@ -42,7 +42,7 @@ export default function Footer() {
               href={`/${link === 'সম্পর্কে' ? 'about' : link === 'যোগাযোগ' ? 'contact' : 'privacy'}`}
               lang="bn"
               style={{
-                fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif",
+                fontFamily: "var(--font-body)",
                 fontSize: 13,
                 fontWeight: 500,
                 color: 'var(--ink)',

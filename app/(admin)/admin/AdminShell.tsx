@@ -36,7 +36,7 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
         >
           <p
             style={{
-              fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif",
+              fontFamily: "var(--font-body)",
               fontWeight: 900,
               fontSize: 22,
               color: 'var(--ink)',
@@ -119,7 +119,7 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
       >
         <p
           style={{
-            fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif",
+            fontFamily: "var(--font-body)",
             fontWeight: 900,
             fontSize: 18,
             color: 'var(--ink)',

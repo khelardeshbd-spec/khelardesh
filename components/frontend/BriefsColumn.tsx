@@ -116,7 +116,7 @@ function TriviaCard({ item }: { item: SidebarItem }) {
       <div className="absolute bottom-0 left-0 right-0 p-3">
         <p
           style={{
-            fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif",
+            fontFamily: "var(--font-body)",
             fontSize: 14,
             fontWeight: 600,
             color: 'white',
@@ -153,7 +153,7 @@ function HistoryCard({ item }: { item: SidebarItem }) {
       <div className="absolute bottom-0 left-0 right-0 p-3">
         <p
           style={{
-            fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif",
+            fontFamily: "var(--font-body)",
             fontSize: 14,
             fontWeight: 600,
             color: 'white',
@@ -180,7 +180,7 @@ function FixtureCard({ item }: { item: SidebarItem }) {
       <div className="flex-1 min-w-0">
         <p
           style={{
-            fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif",
+            fontFamily: "var(--font-body)",
             fontSize: 9,
             fontWeight: 500,
             color: 'var(--ink-muted)',
@@ -193,7 +193,7 @@ function FixtureCard({ item }: { item: SidebarItem }) {
         </p>
         <p
           style={{
-            fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif",
+            fontFamily: "var(--font-body)",
             fontSize: 13,
             fontWeight: 600,
             color: 'var(--ink)',
@@ -208,7 +208,7 @@ function FixtureCard({ item }: { item: SidebarItem }) {
       {time && (
         <span
           style={{
-            fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif",
+            fontFamily: "var(--font-body)",
             fontSize: 12,
             fontWeight: 600,
             color: 'var(--ink)',
@@ -249,7 +249,7 @@ function TvCard({ item }: { item: SidebarItem }) {
       <div className="flex-1 min-w-0">
         <p
           style={{
-            fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif",
+            fontFamily: "var(--font-body)",
             fontSize: 13,
             fontWeight: 600,
             color: 'var(--ink)',
@@ -263,7 +263,7 @@ function TvCard({ item }: { item: SidebarItem }) {
         </p>
         <p
           style={{
-            fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif",
+            fontFamily: "var(--font-body)",
             fontSize: 10,
             color: 'var(--ink-muted)',
           }}
@@ -337,7 +337,7 @@ export default function BriefsColumn({ articles }: BriefsColumnProps) {
       <section>
         <h2
           style={{
-            fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif",
+            fontFamily: "var(--font-body)",
             fontSize: 10,
             fontWeight: 600,
             letterSpacing: '0.1em',
@@ -357,7 +357,7 @@ export default function BriefsColumn({ articles }: BriefsColumnProps) {
               <Link key={article.id} href={`/article/${article.slug}`} className="group block">
                 <p
                   style={{
-                    fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif",
+                    fontFamily: "var(--font-body)",
                     fontSize: 9,
                     fontWeight: 500,
                     letterSpacing: '0.06em',
@@ -371,7 +371,7 @@ export default function BriefsColumn({ articles }: BriefsColumnProps) {
                 <h3
                   lang="bn"
                   style={{
-                    fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif",
+                    fontFamily: "var(--font-body)",
                     fontWeight: 600,
                     fontSize: 15,
                     lineHeight: 1.38,
@@ -419,7 +419,7 @@ export default function BriefsColumn({ articles }: BriefsColumnProps) {
               onClick={() => setActiveTab(tab.key)}
               style={{
                 flex: 1,
-                fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif",
+                fontFamily: "var(--font-body)",
                 fontSize: 10,
                 fontWeight: activeTab === tab.key ? 700 : 400,
                 color: activeTab === tab.key ? 'var(--ink)' : 'var(--ink-muted)',

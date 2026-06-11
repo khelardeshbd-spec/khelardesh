@@ -39,7 +39,7 @@ export default function AlertsPage() {
         <h1
           lang="bn"
           style={{
-            fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif",
+            fontFamily: "var(--font-body)",
             fontWeight: 900,
             fontSize: 'clamp(28px, 4vw, 40px)',
             color: 'var(--ink)',
@@ -63,7 +63,7 @@ export default function AlertsPage() {
                   <span
                     lang="bn"
                     style={{
-                      fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif",
+                      fontFamily: "var(--font-body)",
                       fontSize: 10,
                       fontWeight: 600,
                       color: alert.color,
@@ -79,7 +79,7 @@ export default function AlertsPage() {
                   <span
                     lang="bn"
                     style={{
-                      fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif",
+                      fontFamily: "var(--font-body)",
                       fontSize: 10,
                       color: 'var(--ink-ghost)',
                     }}
@@ -90,7 +90,7 @@ export default function AlertsPage() {
                 <p
                   lang="bn"
                   style={{
-                    fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif",
+                    fontFamily: "var(--font-body)",
                     fontSize: 16,
                     fontWeight: 500,
                     color: 'var(--ink)',
@@ -111,7 +111,7 @@ export default function AlertsPage() {
             <p
               lang="bn"
               style={{
-                fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif",
+                fontFamily: "var(--font-body)",
                 fontSize: 16,
               }}
             >

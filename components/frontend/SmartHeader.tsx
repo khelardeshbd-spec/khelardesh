@@ -171,11 +171,11 @@ export default function SmartHeader() {
                   onChange={(e) => setSearchQuery(e.target.value)}
                   autoFocus
                   className="w-full bg-transparent outline-none text-[var(--ink)] text-sm"
-                  style={{ fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif", fontSize: 14 }}
+                  style={{ fontFamily: "var(--font-body)", fontSize: 14 }}
                   lang="bn"
                 />
                 {loading && (
-                  <span style={{ fontFamily: "'Kalpurush', sans-serif", fontSize: 11, color: 'var(--ink-muted)', flexShrink: 0 }}>
+                  <span style={{ fontFamily: "var(--font-body)", fontSize: 11, color: 'var(--ink-muted)', flexShrink: 0 }}>
                     খোঁজা হচ্ছে...
                   </span>
                 )}
@@ -204,10 +204,10 @@ export default function SmartHeader() {
                             className="p-3 hover:bg-[var(--ink-ghost)] transition-colors flex flex-col text-left"
                             style={{ color: 'var(--ink)' }}
                           >
-                            <span lang="bn" style={{ fontFamily: "'Kalpurush', sans-serif", fontWeight: 600, fontSize: 14 }} className="line-clamp-1">
+                            <span lang="bn" style={{ fontFamily: "var(--font-body)", fontWeight: 600, fontSize: 14 }} className="line-clamp-1">
                               {headline}
                             </span>
-                            <span lang="bn" style={{ fontFamily: "'Kalpurush', sans-serif", fontSize: 11, color: 'var(--ink-muted)' }} className="line-clamp-1 mt-0.5">
+                            <span lang="bn" style={{ fontFamily: "var(--font-body)", fontSize: 11, color: 'var(--ink-muted)' }} className="line-clamp-1 mt-0.5">
                               {article.deck}
                             </span>
                           </Link>
@@ -215,7 +215,7 @@ export default function SmartHeader() {
                       })
                     ) : (
                       !loading && (
-                        <div className="p-3 text-sm text-[var(--ink-muted)]" style={{ fontFamily: "'Kalpurush', sans-serif" }} lang="bn">
+                        <div className="p-3 text-sm text-[var(--ink-muted)]" style={{ fontFamily: "var(--font-body)" }} lang="bn">
                           কোনো খবর পাওয়া যায়নি।
                         </div>
                       )
@@ -252,7 +252,7 @@ export default function SmartHeader() {
                 borderRadius: 20, padding: '6px 14px',
                 color: 'var(--ink-muted)', cursor: 'pointer',
                 fontSize: 12,
-                fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif"
+                fontFamily: "var(--font-body)"
               }}
             >
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -318,7 +318,7 @@ export default function SmartHeader() {
                 onChange={(e) => setSearchQuery(e.target.value)}
                 autoFocus
                 className="w-full bg-transparent outline-none text-[var(--ink)]"
-                style={{ fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif", fontSize: 15 }}
+                style={{ fontFamily: "var(--font-body)", fontSize: 15 }}
                 lang="bn"
               />
               <button onClick={closeSearch} aria-label="খোঁজ বন্ধ করুন" style={{ color: 'var(--ink)' }}>
@@ -340,13 +340,13 @@ export default function SmartHeader() {
                       className="p-3 hover:bg-[var(--ink-ghost)] transition-colors"
                       style={{ color: 'var(--ink)' }}
                     >
-                      <span lang="bn" style={{ fontFamily: "'Kalpurush', sans-serif", fontWeight: 600, fontSize: 14 }} className="line-clamp-2 block">
+                      <span lang="bn" style={{ fontFamily: "var(--font-body)", fontWeight: 600, fontSize: 14 }} className="line-clamp-2 block">
                         {headline}
                       </span>
                     </Link>
                   );
                 }) : !loading && (
-                  <div className="p-3 text-sm" style={{ fontFamily: "'Kalpurush', sans-serif", color: 'var(--ink-muted)' }} lang="bn">
+                  <div className="p-3 text-sm" style={{ fontFamily: "var(--font-body)", color: 'var(--ink-muted)' }} lang="bn">
                     কোনো খবর পাওয়া যায়নি।
                   </div>
                 )}
@@ -396,7 +396,7 @@ export default function SmartHeader() {
           <span
             lang="bn"
             style={{
-              fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif",
+              fontFamily: "var(--font-body)",
               fontSize: 16,
               fontWeight: 700,
               color: 'var(--ink)',
@@ -424,7 +424,7 @@ export default function SmartHeader() {
           <p
             lang="bn"
             style={{
-              fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif",
+              fontFamily: "var(--font-body)",
               fontSize: 11,
               color: 'var(--ink-muted)',
               textAlign: 'center',

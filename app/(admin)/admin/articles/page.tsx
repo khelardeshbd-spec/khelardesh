@@ -42,7 +42,7 @@ export default async function AdminArticlesPage() {
     <AdminShell>
       <div style={{ maxWidth: 960, margin: '0 auto', padding: 24 }}>
         <div className="flex items-center justify-between mb-6">
-          <h1 style={{ fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif", fontWeight: 700, fontSize: 22, color: 'var(--ink)' }}>
+          <h1 style={{ fontFamily: "var(--font-body)", fontWeight: 700, fontSize: 22, color: 'var(--ink)' }}>
             Articles
           </h1>
           <Link href="/admin/articles/new" className="admin-btn-primary">+ New Article</Link>

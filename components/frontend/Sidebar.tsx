@@ -64,7 +64,7 @@ export default function Sidebar({ scores, sponsors }: SidebarProps) {
         >
           <h2
             style={{
-              fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif",
+              fontFamily: "var(--font-body)",
               fontSize: 10,
               fontWeight: 600,
               letterSpacing: '0.06em',
@@ -84,7 +84,7 @@ export default function Sidebar({ scores, sponsors }: SidebarProps) {
           <Link
             href="/scores"
             style={{
-              fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif",
+              fontFamily: "var(--font-body)",
               fontSize: 9,
               color: 'var(--ink-muted)',
               textDecoration: 'none',
@@ -117,7 +117,7 @@ export default function Sidebar({ scores, sponsors }: SidebarProps) {
         ) : (
           <p
             style={{
-              fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif",
+              fontFamily: "var(--font-body)",
               fontSize: 12,
               color: 'var(--ink-ghost)',
               textAlign: 'center',

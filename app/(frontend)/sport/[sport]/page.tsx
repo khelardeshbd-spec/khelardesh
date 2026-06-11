@@ -113,7 +113,7 @@ export default async function SportPage({ params }: PageProps) {
           >
             <h1
               style={{
-                fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif",
+                fontFamily: "var(--font-body)",
                 fontWeight: 900,
                 fontSize: 'clamp(28px, 4vw, 48px)',
                 letterSpacing: '-0.01em',
@@ -135,7 +135,7 @@ export default async function SportPage({ params }: PageProps) {
             </div>
           ))}
           {articlesList.length === 0 && (
-            <p style={{ color: 'var(--ink-muted)', fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif", fontSize: 14, padding: '24px 0' }}>
+            <p style={{ color: 'var(--ink-muted)', fontFamily: "var(--font-body)", fontSize: 14, padding: '24px 0' }}>
               এই বিভাগে কোনো খবর নেই।
             </p>
           )}
@@ -165,7 +165,7 @@ export default async function SportPage({ params }: PageProps) {
         >
           <h1
             style={{
-              fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif",
+              fontFamily: "var(--font-body)",
               fontWeight: 900,
               fontSize: '28px',
               color: 'var(--ink)',
@@ -186,7 +186,7 @@ export default async function SportPage({ params }: PageProps) {
           </div>
         ))}
         {articlesList.length === 0 && (
-          <p style={{ color: 'var(--ink-muted)', fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif", fontSize: 14, paddingTop: 24 }} lang="bn">
+          <p style={{ color: 'var(--ink-muted)', fontFamily: "var(--font-body)", fontSize: 14, paddingTop: 24 }} lang="bn">
             এই বিভাগে কোনো খবর নেই।
           </p>
         )}

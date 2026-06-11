@@ -95,7 +95,7 @@ export default function ArticleCard({ article }: ArticleCardProps) {
               left: 4,
               backgroundColor: 'var(--ink)',
               color: 'var(--bg-page)',
-              fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif",
+              fontFamily: "var(--font-body)",
               fontSize: 8,
               fontWeight: 500,
               letterSpacing: '0.06em',
@@ -113,7 +113,7 @@ export default function ArticleCard({ article }: ArticleCardProps) {
           <span
             lang="bn"
             style={{
-              fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif",
+              fontFamily: "var(--font-body)",
               fontSize: 10,
               letterSpacing: '0.05em',
               color: '#dc2626',
@@ -127,10 +127,10 @@ export default function ArticleCard({ article }: ArticleCardProps) {
           <h2
             lang="bn"
             style={{
-              fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif",
+              fontFamily: "var(--font-headline)",
               fontWeight: 600,
-              fontSize: 14.5,
-              lineHeight: 1.35,
+              fontSize: 15,
+              lineHeight: 1.3,
               color: 'var(--ink)',
               display: '-webkit-box',
               WebkitLineClamp: 2,
@@ -145,7 +145,7 @@ export default function ArticleCard({ article }: ArticleCardProps) {
           <p
             lang="bn"
             style={{
-              fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif",
+              fontFamily: "var(--font-body)",
               fontWeight: 400,
               fontSize: 12,
               color: 'var(--ink-muted)',
@@ -163,7 +163,7 @@ export default function ArticleCard({ article }: ArticleCardProps) {
           {/* Time ago + Bookmark Toggle */}
           <div className="flex items-center justify-between mt-2">
             <span style={{
-              fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif",
+              fontFamily: "var(--font-body)",
               fontSize: 10,
               color: 'var(--ink-ghost)',
             }}>

@@ -105,7 +105,7 @@ export default function BottomNav() {
                 <span
                   lang="bn"
                   style={{
-                    fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif",
+                    fontFamily: "var(--font-body)",
                     fontSize: 9,
                     letterSpacing: '0.04em',
                     color: 'inherit',

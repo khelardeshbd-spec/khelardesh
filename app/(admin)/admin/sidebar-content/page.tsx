@@ -175,7 +175,7 @@ export default function AdminSidebarContentPage() {
   return (
     <AdminShell>
       <div style={{ maxWidth: 900, margin: '0 auto', padding: 24 }}>
-        <h1 style={{ fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif", fontWeight: 700, fontSize: 22, color: 'var(--ink)', marginBottom: 20 }}>
+        <h1 style={{ fontFamily: "var(--font-body)", fontWeight: 700, fontSize: 22, color: 'var(--ink)', marginBottom: 20 }}>
           Sidebar Content
         </h1>
 
@@ -187,7 +187,7 @@ export default function AdminSidebarContentPage() {
               onClick={() => { setActiveTab(tab); resetForm(); }}
               lang="bn"
               style={{
-                fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif",
+                fontFamily: "var(--font-body)",
                 fontSize: 13, fontWeight: activeTab === tab ? 700 : 400,
                 padding: '6px 14px',
                 backgroundColor: activeTab === tab ? 'var(--ink)' : 'var(--bg-surface)',

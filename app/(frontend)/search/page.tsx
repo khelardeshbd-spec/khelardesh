@@ -75,7 +75,7 @@ export default function SearchPage() {
             autoFocus
             className="w-full bg-[var(--bg-surface)] border border-[var(--ink-border)] outline-none text-[var(--ink)] py-3 pl-12 pr-4 transition-colors"
             style={{ 
-              fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif", 
+              fontFamily: "var(--font-body)", 
               fontSize: 16,
               borderRadius: 2 
             }}
@@ -84,7 +84,7 @@ export default function SearchPage() {
           {loading && (
             <span 
               className="absolute right-4 top-1/2 -translate-y-1/2 text-[var(--ink-muted)]"
-              style={{ fontFamily: "'Kalpurush', sans-serif", fontSize: 12 }}
+              style={{ fontFamily: "var(--font-body)", fontSize: 12 }}
             >
               খোঁজা হচ্ছে...
             </span>
@@ -102,7 +102,7 @@ export default function SearchPage() {
               <p
                 lang="bn"
                 style={{
-                  fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif",
+                  fontFamily: "var(--font-body)",
                   fontSize: 16,
                 }}
               >

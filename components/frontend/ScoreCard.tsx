@@ -68,7 +68,7 @@ export default function ScoreCard({
         )}
         <span
           style={{
-            fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif",
+            fontFamily: "var(--font-body)",
             fontSize: 9,
             fontWeight: 600,
             color: isLive ? 'var(--live-red)' : 'var(--ink-ghost)',
@@ -84,7 +84,7 @@ export default function ScoreCard({
       {/* League label */}
       <p
         style={{
-          fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif",
+          fontFamily: "var(--font-body)",
           fontSize: 8.5,
           fontWeight: 500,
           letterSpacing: '0.06em',
@@ -112,7 +112,7 @@ export default function ScoreCard({
           </div>
           <span
             style={{
-              fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif",
+              fontFamily: "var(--font-body)",
               fontSize: 12,
               fontWeight: winnerA ? 700 : 400,
               color: winnerA ? 'var(--ink)' : isDraw ? 'var(--ink-muted)' : 'var(--ink-ghost)',
@@ -127,7 +127,7 @@ export default function ScoreCard({
         </div>
         <span
           style={{
-            fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif",
+            fontFamily: "var(--font-body)",
             fontSize: 17,
             fontWeight: 700,
             color: winnerA ? 'var(--ink)' : 'var(--ink-muted)',
@@ -151,7 +151,7 @@ export default function ScoreCard({
           </div>
           <span
             style={{
-              fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif",
+              fontFamily: "var(--font-body)",
               fontSize: 12,
               fontWeight: winnerB ? 700 : 400,
               color: winnerB ? 'var(--ink)' : isDraw ? 'var(--ink-muted)' : 'var(--ink-ghost)',
@@ -166,7 +166,7 @@ export default function ScoreCard({
         </div>
         <span
           style={{
-            fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif",
+            fontFamily: "var(--font-body)",
             fontSize: 17,
             fontWeight: 700,
             color: winnerB ? 'var(--ink)' : 'var(--ink-muted)',

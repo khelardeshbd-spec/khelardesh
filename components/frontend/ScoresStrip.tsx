@@ -50,7 +50,7 @@ export default function ScoresStrip({ scores }: ScoresStripProps) {
       >
         <h2
           style={{
-            fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif",
+            fontFamily: "var(--font-body)",
             fontSize: 9,
             fontWeight: 600,
             letterSpacing: '0.06em',
@@ -70,7 +70,7 @@ export default function ScoresStrip({ scores }: ScoresStripProps) {
         <Link
           href="/scores"
           style={{
-            fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif",
+            fontFamily: "var(--font-body)",
             fontSize: 9,
             color: 'var(--ink-muted)',
             textDecoration: 'none',

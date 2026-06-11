@@ -48,7 +48,7 @@ export default function LiveTicker() {
       >
         <span
           style={{
-            fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif",
+            fontFamily: "var(--font-body)",
             fontSize: 10,
             fontWeight: 500,
             letterSpacing: '0.06em',
@@ -59,7 +59,7 @@ export default function LiveTicker() {
         </span>
         <span
           style={{
-            fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif",
+            fontFamily: "var(--font-body)",
             fontSize: 10,
             opacity: 0.3,
           }}
@@ -118,7 +118,7 @@ export default function LiveTicker() {
             <span className="live-dot" style={{ backgroundColor: 'var(--live-red)' }} />
             <span
               style={{
-                fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif",
+                fontFamily: "var(--font-body)",
                 fontSize: 11,
                 fontWeight: 700,
                 letterSpacing: '0.08em',
@@ -134,7 +134,7 @@ export default function LiveTicker() {
               <div className="ticker-track">
                 <span
                   style={{
-                    fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif",
+                    fontFamily: "var(--font-body)",
                     fontSize: 12,
                     letterSpacing: '0.02em',
                     paddingLeft: 16,
@@ -148,7 +148,7 @@ export default function LiveTicker() {
             ) : (
               <span
                 style={{
-                  fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif",
+                  fontFamily: "var(--font-body)",
                   fontSize: 12,
                   letterSpacing: '0.02em',
                   paddingLeft: 16,

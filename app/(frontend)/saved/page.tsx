@@ -48,7 +48,7 @@ export default function SavedPage() {
         <h1
           lang="bn"
           style={{
-            fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif",
+            fontFamily: "var(--font-body)",
             fontWeight: 900,
             fontSize: 'clamp(28px, 4vw, 40px)',
             color: 'var(--ink)',
@@ -74,7 +74,7 @@ export default function SavedPage() {
             <p
               lang="bn"
               style={{
-                fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif",
+                fontFamily: "var(--font-body)",
                 fontSize: 16,
               }}
             >

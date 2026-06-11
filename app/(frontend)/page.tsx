@@ -101,7 +101,7 @@ export default async function HomePage() {
             <>
               <h2
                 style={{
-                  fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif",
+                  fontFamily: "var(--font-body)",
                   fontSize: 9,
                   fontWeight: 600,
                   letterSpacing: '0.16em',
@@ -143,7 +143,7 @@ export default async function HomePage() {
             <a
               href="/?page=2"
               style={{
-                fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif",
+                fontFamily: "var(--font-body)",
                 fontSize: 10,
                 letterSpacing: '0.12em',
                 textTransform: 'uppercase',
@@ -200,7 +200,7 @@ export default async function HomePage() {
           {articles.length > 0 && (
             <h2
               style={{
-                fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif",
+                fontFamily: "var(--font-body)",
                 fontSize: 10,
                 fontWeight: 600,
                 letterSpacing: '0.10em',
@@ -243,7 +243,7 @@ export default async function HomePage() {
             <a
               href="/?page=2"
               style={{
-                fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif",
+                fontFamily: "var(--font-body)",
                 fontSize: 10,
                 letterSpacing: '0.12em',
                 textTransform: 'uppercase',
