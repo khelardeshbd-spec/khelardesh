@@ -3,27 +3,30 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import AdminLogout from './AdminLogout';
+import { LayoutDashboard, Pencil, Trophy, Megaphone, Sidebar, ExternalLink } from 'lucide-react';
 
 const NAV = [
-  { href: '/admin/dashboard', label: 'Dashboard', icon: '⊞' },
-  { href: '/admin/articles', label: 'Articles', icon: '✍' },
-  { href: '/admin/scores', label: 'Scores', icon: '⚽' },
-  { href: '/admin/sponsors', label: 'Sponsors', icon: '◈' },
-  { href: '/admin/sidebar-content', label: 'Sidebar Content', icon: '▦' },
+  { href: '/admin/dashboard', label: 'Dashboard', icon: <LayoutDashboard size={15} /> },
+  { href: '/admin/articles', label: 'Articles', icon: <Pencil size={15} /> },
+  { href: '/admin/scores', label: 'Scores', icon: <Trophy size={15} /> },
+  { href: '/admin/sponsors', label: 'Sponsors', icon: <Megaphone size={15} /> },
+  { href: '/admin/sidebar-content', label: 'Sidebar Content', icon: <Sidebar size={15} /> },
 ];
 
 export default function AdminShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
 
   return (
-    <div className="flex min-h-screen" style={{ backgroundColor: 'var(--bg-page)' }}>
+    <div className="flex min-h-screen overflow-hidden" style={{ backgroundColor: 'var(--bg-page)' }}>
       {/* Sidebar */}
       <aside
         className="hidden lg:flex flex-col flex-shrink-0"
         style={{
           width: 220,
-          backgroundColor: 'var(--bg-surface)',
+          backgroundColor: 'var(--bg-page)',
           borderRight: '1px solid var(--ink-border)',
+          borderTopRightRadius: 16,
+          borderBottomRightRadius: 16,
         }}
       >
         {/* Logo area */}
@@ -62,23 +65,26 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
           {NAV.map(({ href, label, icon }) => {
             const active = pathname.startsWith(href);
             return (
-              <Link
-                key={href}
-                href={href}
-                className="flex items-center gap-3 px-5 py-3 transition-colors"
-                style={{
-                  backgroundColor: active ? 'var(--ink)' : 'transparent',
-                  color: active ? 'var(--bg-page)' : 'var(--ink-muted)',
-                  fontFamily: "'Hind Siliguri', sans-serif",
-                  fontSize: 13,
-                  fontWeight: active ? 600 : 400,
-                  borderLeft: active ? '3px solid var(--live-red)' : '3px solid transparent',
-                }}
-                aria-current={active ? 'page' : undefined}
-              >
-                <span style={{ fontSize: 14 }}>{icon}</span>
-                {label}
-              </Link>
+              <div key={href} className="hover:bg-[var(--ink-ghost)] rounded-[6px] mx-2 mb-1 transition-colors duration-150">
+                <Link
+                  href={href}
+                  className="flex items-center gap-3 transition-colors"
+                  style={{
+                    backgroundColor: active ? 'var(--ink)' : 'transparent',
+                    borderRadius: 6,
+                    borderLeft: 'none',
+                    padding: '9px 12px',
+                    color: active ? 'var(--bg-page)' : 'var(--ink-muted)',
+                    fontFamily: "'Hind Siliguri', sans-serif",
+                    fontSize: 13,
+                    fontWeight: active ? 600 : 400,
+                  }}
+                  aria-current={active ? 'page' : undefined}
+                >
+                  <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{icon}</span>
+                  {label}
+                </Link>
+              </div>
             );
           })}
         </nav>

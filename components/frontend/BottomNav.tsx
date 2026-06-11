@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useScrollDirection } from '@/hooks/useScrollDirection';
+import { motion } from 'framer-motion';
 
 /**
  * BottomNav — mobile only
@@ -63,26 +64,42 @@ export default function BottomNav() {
       aria-label="মোবাইল নেভিগেশন"
       className="lg:hidden fixed bottom-0 left-0 right-0"
       style={{
-        backgroundColor: 'var(--bg-page)',
-        borderTop: '1px solid var(--ink-border)',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'flex-end',
         transform: navVisible ? 'translateY(0)' : 'translateY(100%)',
         transition: 'transform 0.25s ease',
         zIndex: 50,
-        paddingBottom: 'max(8px, env(safe-area-inset-bottom))',
+        paddingBottom: 'max(12px, env(safe-area-inset-bottom))',
       }}
     >
-      <ul className="flex items-stretch" style={{ height: 52 }}>
+      <motion.div
+        initial={{ y: 20, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ type: 'spring', stiffness: 300, damping: 30, delay: 0.3 }}
+        style={{
+          display: 'flex', alignItems: 'center', gap: 0,
+          backgroundColor: 'var(--bg-page)',
+          border: '0.5px solid var(--ink-border)',
+          borderRadius: 100,
+          padding: '6px 8px',
+          marginBottom: 8,
+        }}
+      >
         {NAV_ITEMS.map(({ labelBn, href, icon }) => {
           const isActive = href === '/' ? pathname === '/' : pathname.startsWith(href);
           return (
-            <li key={href} className="flex-1">
+            <motion.div key={href} whileTap={{ scale: 0.88 }} transition={{ type: 'spring', stiffness: 400, damping: 25 }}>
               <Link
                 href={href}
-                className="flex flex-col items-center justify-center h-full gap-0.5"
+                className="flex flex-col items-center justify-center gap-0.5"
                 aria-current={isActive ? 'page' : undefined}
                 style={{
                   color: isActive ? 'var(--ink)' : 'var(--ink-muted)',
                   minHeight: 44,
+                  padding: '7px 16px',
+                  backgroundColor: isActive ? 'var(--ink-ghost)' : 'transparent',
+                  borderRadius: 100,
                 }}
               >
                 {icon(isActive)}
@@ -99,10 +116,10 @@ export default function BottomNav() {
                   {labelBn}
                 </span>
               </Link>
-            </li>
+            </motion.div>
           );
         })}
-      </ul>
+      </motion.div>
     </nav>
   );
 }

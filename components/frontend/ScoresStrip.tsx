@@ -1,5 +1,7 @@
 import Link from 'next/link';
 import ScoreCard from './ScoreCard';
+import { motion } from 'framer-motion';
+import { staggerContainer, slideInRight } from '@/lib/animations';
 
 interface Score {
   id: number;
@@ -42,12 +44,12 @@ export default function ScoresStrip({ scores }: ScoresStripProps) {
       {/* Section header */}
       <div
         className="flex items-center justify-between px-3 py-2"
-        style={{ borderTop: '1px solid var(--ink-border)' }}
+        style={{ borderTop: '1px solid var(--ink-border)', paddingTop: 4 }}
       >
         <h2
           style={{
             fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif",
-            fontSize: 10,
+            fontSize: 9,
             fontWeight: 600,
             letterSpacing: '0.06em',
             color: 'var(--ink-muted)',
@@ -67,7 +69,7 @@ export default function ScoresStrip({ scores }: ScoresStripProps) {
           href="/scores"
           style={{
             fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif",
-            fontSize: 10,
+            fontSize: 9,
             color: 'var(--ink-muted)',
             textDecoration: 'none',
           }}
@@ -83,23 +85,29 @@ export default function ScoresStrip({ scores }: ScoresStripProps) {
         className="scrollbar-none overflow-x-auto"
         style={{ borderBottom: '1px solid var(--ink-border)' }}
       >
-        <div className="flex gap-2 px-3 pb-3">
+        <motion.div
+          className="flex gap-3 px-3 pb-3"
+          variants={staggerContainer}
+          initial="hidden"
+          animate="visible"
+        >
           {sorted.map((score) => (
-            <ScoreCard
-              key={score.id}
-              league={score.league}
-              teamA={score.teamA}
-              scoreA={score.scoreA}
-              teamB={score.teamB}
-              scoreB={score.scoreB}
-              winnerTeam={score.winnerTeam}
-              status={score.status}
-              isLive={score.isLive}
-              home_team_logo={score.home_team_logo}
-              away_team_logo={score.away_team_logo}
-            />
+            <motion.div variants={slideInRight} key={score.id}>
+              <ScoreCard
+                league={score.league}
+                teamA={score.teamA}
+                scoreA={score.scoreA}
+                teamB={score.teamB}
+                scoreB={score.scoreB}
+                winnerTeam={score.winnerTeam}
+                status={score.status}
+                isLive={score.isLive}
+                home_team_logo={score.home_team_logo}
+                away_team_logo={score.away_team_logo}
+              />
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       </div>
     </section>
   );

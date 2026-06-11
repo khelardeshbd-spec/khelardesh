@@ -7,6 +7,7 @@ import Masthead from './Masthead';
 import NavStrip, { NAV_ITEMS } from './NavStrip';
 import ThemeToggle from './ThemeToggle';
 import Link from 'next/link';
+import { motion, AnimatePresence } from 'framer-motion';
 
 interface SearchResult {
   id: number;
@@ -144,11 +145,15 @@ export default function SmartHeader() {
       >
         {/* ── DESKTOP TOPBAR ── */}
         <div
-          className="hidden lg:grid max-w-[1440px] mx-auto px-6 gap-6 pt-4"
-          style={{ gridTemplateColumns: '18fr 64fr 18fr' }}
+          className="hidden lg:grid max-w-[1440px] mx-auto px-6 gap-6 pt-3"
+          style={{ gridTemplateColumns: '200px 1fr 220px' }}
         >
           {/* Left spacer */}
-          <div />
+          <div className="flex items-center gap-3 border-b border-[var(--ink-border)] pb-2">
+            <Link href="/" aria-label="খেলারদেশ নীড়পাতা">
+              <img src="/logo.png" alt="খেলারদেশ" style={{ height: 36, objectFit: 'contain', filter: 'var(--logo-filter, none)' }} />
+            </Link>
+          </div>
 
           {/* Middle: NavStrip or Search Input */}
           <div className="flex items-center justify-center border-b border-[var(--ink-border)] pb-2 relative" ref={searchRef}>
@@ -226,11 +231,21 @@ export default function SmartHeader() {
             <ThemeToggle />
             <button
               onClick={() => { setIsSearchOpen(!isSearchOpen); setSearchQuery(''); }}
-              aria-label={isSearchOpen ? 'খোঁজ বন্ধ করুন' : 'খবর খুঁজুন'}
-              style={{ color: 'var(--ink)' }}
-              className="hover:opacity-75 transition-opacity flex items-center"
+              aria-label="খবর খুঁজুন"
+              style={{
+                display: 'flex', alignItems: 'center', gap: 8,
+                backgroundColor: 'var(--bg-surface)',
+                border: '0.5px solid var(--ink-border)',
+                borderRadius: 20, padding: '6px 14px',
+                color: 'var(--ink-muted)', cursor: 'pointer',
+                fontSize: 12,
+                fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif"
+              }}
             >
-              {isSearchOpen ? <CloseIcon /> : <SearchIcon />}
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="11" cy="11" r="7" /><line x1="16.5" y1="16.5" x2="22" y2="22" />
+              </svg>
+              খবর খুঁজুন…
             </button>
           </div>
         </div>
@@ -271,10 +286,18 @@ export default function SmartHeader() {
         </div>
 
         {/* Mobile search bar (expands below top bar) */}
-        {isSearchOpen && (
-          <div className="lg:hidden px-3 pb-3 relative" ref={searchRef}>
-            <div className="flex items-center bg-[var(--bg-surface)] border border-[var(--ink)] px-3 py-2 gap-2" style={{ borderRadius: 2 }}>
-              <SearchIcon size={14} />
+        <AnimatePresence>
+          {isSearchOpen && (
+            <motion.div
+              className="lg:hidden px-3 pb-3 relative"
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.2 }}
+              ref={searchRef}
+            >
+              <div className="flex items-center bg-[var(--bg-surface)] border border-[var(--ink)] px-3 py-2 gap-2" style={{ borderRadius: 2 }}>
+                <SearchIcon size={14} />
               <input
                 type="text"
                 placeholder="খবর খুঁজুন..."
@@ -316,8 +339,9 @@ export default function SmartHeader() {
                 )}
               </div>
             )}
-          </div>
+          </motion.div>
         )}
+        </AnimatePresence>
 
         {/* Mobile horizontal NavStrip */}
         <div className="lg:hidden">

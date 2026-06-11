@@ -9,6 +9,8 @@ import Sidebar from '@/components/frontend/Sidebar';
 import SkeletonCard from '@/components/frontend/SkeletonCard';
 import Masthead from '@/components/frontend/Masthead';
 import BriefsColumn from '@/components/frontend/BriefsColumn';
+import { motion } from 'framer-motion';
+import { staggerContainer, fadeUp } from '@/lib/animations';
 
 export const dynamic = 'force-dynamic';
 
@@ -87,9 +89,15 @@ export default async function HomePage() {
         <div className="pt-28">
           {/* Lead story Slider */}
           {leads.length > 0 && (
-            <div className="mb-8 mt-2">
-              <HomeSlider articles={leads} />
-            </div>
+            <motion.div
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ type: 'spring', stiffness: 260, damping: 28, delay: 0.1 }}
+            >
+              <div className="mb-8 mt-2">
+                <HomeSlider articles={leads} />
+              </div>
+            </motion.div>
           )}
 
           {/* More stories heading */}
@@ -111,20 +119,26 @@ export default async function HomePage() {
                 আরও খবর
               </h2>
               {/* Story feed with sponsor every 3 stories */}
-              {articles.map((article, i) => (
-                <div key={article.id}>
-                  <ArticleCard article={article} />
-                  {i === 2 && inlineSponsors[0] && (
-                    <SponsorBlock
-                      label={inlineSponsors[0].label}
-                      title={inlineSponsors[0].title}
-                      subtitle={inlineSponsors[0].subtitle}
-                      ctaText={inlineSponsors[0].ctaText}
-                      ctaUrl={inlineSponsors[0].ctaUrl}
-                    />
-                  )}
-                </div>
-              ))}
+              <motion.div
+                variants={staggerContainer}
+                initial="hidden"
+                animate="visible"
+              >
+                {articles.map((article, i) => (
+                  <motion.div key={article.id} variants={fadeUp}>
+                    <ArticleCard article={article} />
+                    {i === 2 && inlineSponsors[0] && (
+                      <SponsorBlock
+                        label={inlineSponsors[0].label}
+                        title={inlineSponsors[0].title}
+                        subtitle={inlineSponsors[0].subtitle}
+                        ctaText={inlineSponsors[0].ctaText}
+                        ctaUrl={inlineSponsors[0].ctaUrl}
+                      />
+                    )}
+                  </motion.div>
+                ))}
+              </motion.div>
             </>
           )}
 
@@ -167,9 +181,15 @@ export default async function HomePage() {
       <div className="lg:hidden">
         {/* Lead story Slider */}
         {leads.length > 0 && (
-          <div className="px-4 pt-4 pb-4">
-            <HomeSlider articles={leads} />
-          </div>
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ type: 'spring', stiffness: 260, damping: 28, delay: 0.1 }}
+          >
+            <div className="px-4 pt-4 pb-4">
+              <HomeSlider articles={leads} />
+            </div>
+          </motion.div>
         )}
 
         {/* Scores strip */}
@@ -201,20 +221,26 @@ export default async function HomePage() {
             </h2>
           )}
 
-          {articles.map((article, i) => (
-            <div key={article.id}>
-              <ArticleCard article={article} />
-              {i === 2 && inlineSponsors[0] && (
-                <SponsorBlock
-                  label={inlineSponsors[0].label}
-                  title={inlineSponsors[0].title}
-                  subtitle={inlineSponsors[0].subtitle}
-                  ctaText={inlineSponsors[0].ctaText}
-                  ctaUrl={inlineSponsors[0].ctaUrl}
-                />
-              )}
-            </div>
-          ))}
+          <motion.div
+            variants={staggerContainer}
+            initial="hidden"
+            animate="visible"
+          >
+            {articles.map((article, i) => (
+              <motion.div key={article.id} variants={fadeUp}>
+                <ArticleCard article={article} />
+                {i === 2 && inlineSponsors[0] && (
+                  <SponsorBlock
+                    label={inlineSponsors[0].label}
+                    title={inlineSponsors[0].title}
+                    subtitle={inlineSponsors[0].subtitle}
+                    ctaText={inlineSponsors[0].ctaText}
+                    ctaUrl={inlineSponsors[0].ctaUrl}
+                  />
+                )}
+              </motion.div>
+            ))}
+          </motion.div>
 
           {/* Load more */}
           <div className="py-8 text-center">

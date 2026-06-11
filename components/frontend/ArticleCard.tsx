@@ -1,6 +1,8 @@
 import Link from 'next/link';
 import { timeAgo, formatDatetime } from '@/lib/timeAgo';
 import BookmarkButton from './BookmarkButton';
+import { motion } from 'framer-motion';
+import { fadeUp } from '@/lib/animations';
 
 interface Article {
   id: number;
@@ -55,7 +57,11 @@ export default function ArticleCard({ article }: ArticleCardProps) {
   const isVideo = mediaType === 'video';
 
   return (
-    <article
+    <motion.article
+      variants={fadeUp}
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true, margin: '-40px' }}
       style={{
         borderBottom: '0.5px solid var(--ink-border)',
       }}
@@ -68,7 +74,7 @@ export default function ArticleCard({ article }: ArticleCardProps) {
         {/* Thumbnail */}
         <div
           className="flex-shrink-0 relative overflow-hidden"
-          style={{ width: 84, height: 63, backgroundColor: 'var(--ink-ghost)' }}
+          style={{ width: 84, height: 63, backgroundColor: 'var(--ink-ghost)', borderRadius: 8 }}
         >
           {mediaUrl ? (
             <img
@@ -108,11 +114,10 @@ export default function ArticleCard({ article }: ArticleCardProps) {
             lang="bn"
             style={{
               fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif",
-              fontSize: 9.5,
-              letterSpacing: '0.1em',
-              textTransform: 'uppercase',
-              color: 'var(--ink-muted)',
-              fontWeight: 500,
+              fontSize: 10,
+              letterSpacing: '0.05em',
+              color: '#dc2626',
+              fontWeight: 600,
             }}
           >
             {sportLabel}
@@ -124,7 +129,7 @@ export default function ArticleCard({ article }: ArticleCardProps) {
             style={{
               fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif",
               fontWeight: 600,
-              fontSize: 15,
+              fontSize: 14.5,
               lineHeight: 1.35,
               color: 'var(--ink)',
               display: '-webkit-box',
@@ -157,22 +162,17 @@ export default function ArticleCard({ article }: ArticleCardProps) {
 
           {/* Time ago + Bookmark Toggle */}
           <div className="flex items-center justify-between mt-2">
-            <time
-              dateTime={new Date(publishedAt).toISOString()}
-              title={exactTime}
-              style={{
-                fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif",
-                fontSize: 10,
-                color: 'var(--ink-ghost)',
-              }}
-              lang="bn"
-            >
-              {time}
-            </time>
+            <span style={{
+              fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif",
+              fontSize: 10,
+              color: 'var(--ink-ghost)',
+            }}>
+              {time} · {article.byline}
+            </span>
             <BookmarkButton article={article} />
           </div>
         </div>
       </Link>
-    </article>
+    </motion.article>
   );
 }
