@@ -76,7 +76,7 @@ export default async function HomePage() {
           className="flex flex-col h-screen sticky top-0 pb-4 gap-4"
           style={{ overflow: 'hidden' }}
         >
-          <div className="flex-grow overflow-y-auto scrollbar-none pr-1 mt-6">
+          <div className="flex-grow overflow-y-auto scrollbar-none pr-1 pt-28">
             <BriefsColumn articles={articles} />
           </div>
         </div>

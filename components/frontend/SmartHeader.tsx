@@ -149,14 +149,14 @@ export default function SmartHeader() {
           style={{ gridTemplateColumns: '200px 1fr 220px' }}
         >
           {/* Left spacer */}
-          <div className="flex items-center gap-3 border-b border-[var(--ink-border)] pb-2">
+          <div className="flex items-center h-full gap-3 border-b border-[var(--ink-border)] pb-2">
             <Link href="/" aria-label="খেলারদেশ নীড়পাতা">
-              <img src="/logo.png" alt="খেলারদেশ" style={{ height: 36, objectFit: 'contain', filter: 'var(--logo-filter, none)' }} />
+              <img src="/logo.png" alt="খেলারদেশ" style={{ height: 54, objectFit: 'contain', filter: 'var(--logo-filter, none)' }} />
             </Link>
           </div>
 
           {/* Middle: NavStrip or Search Input */}
-          <div className="flex items-center justify-center border-b border-[var(--ink-border)] pb-2 relative" ref={searchRef}>
+          <div className="flex items-center justify-center h-full border-b border-[var(--ink-border)] pb-2 relative" ref={searchRef}>
             {!isSearchOpen ? (
               <div className="w-full max-w-2xl">
                 <NavStrip noBorder={true} />
@@ -227,7 +227,7 @@ export default function SmartHeader() {
           </div>
 
           {/* Right: ThemeToggle + Saved + Search button */}
-          <div className="flex items-center justify-end gap-3 border-b border-[var(--ink-border)] pb-2">
+          <div className="flex items-center justify-end h-full gap-3 border-b border-[var(--ink-border)] pb-2">
             <ThemeToggle />
 
             {/* Desktop Saved Folder Button */}
@@ -270,7 +270,7 @@ export default function SmartHeader() {
             <img
               src="/logo.png"
               alt="খেলারদেশ"
-              style={{ height: '40px', objectFit: 'contain', filter: 'var(--logo-filter, none)' }}
+              style={{ height: '48px', objectFit: 'contain', filter: 'var(--logo-filter, none)' }}
             />
           </Link>
 
