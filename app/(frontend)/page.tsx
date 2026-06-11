@@ -9,7 +9,7 @@ import Sidebar from '@/components/frontend/Sidebar';
 import SkeletonCard from '@/components/frontend/SkeletonCard';
 import Masthead from '@/components/frontend/Masthead';
 import BriefsColumn from '@/components/frontend/BriefsColumn';
-import { motion } from 'framer-motion';
+import { MotionDiv } from '@/components/frontend/MotionDiv';
 import { staggerContainer, fadeUp } from '@/lib/animations';
 
 export const dynamic = 'force-dynamic';
@@ -89,7 +89,7 @@ export default async function HomePage() {
         <div className="pt-28">
           {/* Lead story Slider */}
           {leads.length > 0 && (
-            <motion.div
+            <MotionDiv
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ type: 'spring', stiffness: 260, damping: 28, delay: 0.1 }}
@@ -97,7 +97,7 @@ export default async function HomePage() {
               <div className="mb-8 mt-2">
                 <HomeSlider articles={leads} />
               </div>
-            </motion.div>
+            </MotionDiv>
           )}
 
           {/* More stories heading */}
@@ -119,13 +119,13 @@ export default async function HomePage() {
                 আরও খবর
               </h2>
               {/* Story feed with sponsor every 3 stories */}
-              <motion.div
+              <MotionDiv
                 variants={staggerContainer}
                 initial="hidden"
                 animate="visible"
               >
                 {articles.map((article, i) => (
-                  <motion.div key={article.id} variants={fadeUp}>
+                  <MotionDiv key={article.id} variants={fadeUp}>
                     <ArticleCard article={article} />
                     {i === 2 && inlineSponsors[0] && (
                       <SponsorBlock
@@ -136,9 +136,9 @@ export default async function HomePage() {
                         ctaUrl={inlineSponsors[0].ctaUrl}
                       />
                     )}
-                  </motion.div>
+                  </MotionDiv>
                 ))}
-              </motion.div>
+              </MotionDiv>
             </>
           )}
 
@@ -181,7 +181,7 @@ export default async function HomePage() {
       <div className="lg:hidden">
         {/* Lead story Slider */}
         {leads.length > 0 && (
-          <motion.div
+          <MotionDiv
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ type: 'spring', stiffness: 260, damping: 28, delay: 0.1 }}
@@ -189,7 +189,7 @@ export default async function HomePage() {
             <div className="px-4 pt-4 pb-4">
               <HomeSlider articles={leads} />
             </div>
-          </motion.div>
+          </MotionDiv>
         )}
 
         {/* Scores strip */}
@@ -221,13 +221,13 @@ export default async function HomePage() {
             </h2>
           )}
 
-          <motion.div
+          <MotionDiv
             variants={staggerContainer}
             initial="hidden"
             animate="visible"
           >
             {articles.map((article, i) => (
-              <motion.div key={article.id} variants={fadeUp}>
+              <MotionDiv key={article.id} variants={fadeUp}>
                 <ArticleCard article={article} />
                 {i === 2 && inlineSponsors[0] && (
                   <SponsorBlock
@@ -238,9 +238,9 @@ export default async function HomePage() {
                     ctaUrl={inlineSponsors[0].ctaUrl}
                   />
                 )}
-              </motion.div>
+              </MotionDiv>
             ))}
-          </motion.div>
+          </MotionDiv>
 
           {/* Load more */}
           <div className="py-8 text-center">
