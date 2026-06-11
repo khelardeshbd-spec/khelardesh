@@ -33,10 +33,10 @@ export default function LeadStory({ article }: LeadStoryProps) {
   const exactTime = formatDatetime(publishedAt);
 
   return (
-    <article>
+    <article className="clay-card mb-4 p-4 overflow-hidden">
       <Link href={`/article/${slug}`} className="block group">
         {/* Media block — 16:9 ratio */}
-        <div className="relative w-full" style={{ aspectRatio: '16/9', backgroundColor: 'var(--ink-ghost)', overflow: 'hidden' }}>
+        <div className="relative w-full rounded-md" style={{ aspectRatio: '16/9', backgroundColor: 'var(--ink-ghost)', overflow: 'hidden' }}>
           {isVideo ? (
             <video
               src={mediaUrl}

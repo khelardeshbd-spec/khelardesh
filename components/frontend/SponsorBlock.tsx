@@ -27,10 +27,10 @@ export default function SponsorBlock({
 }: SponsorBlockProps) {
   return (
     <aside
+      className="clay-card"
       aria-label={`Sponsored content: ${title}`}
       style={{
-        borderLeft: '2px solid var(--ink)',
-        backgroundColor: 'var(--bg-surface)',
+        borderLeft: '4px solid var(--live-red)',
         padding: '10px 14px',
         marginBlock: 12,
       }}

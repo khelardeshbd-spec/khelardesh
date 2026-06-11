@@ -62,9 +62,8 @@ export default function BottomNav() {
     <nav
       id="bottom-nav"
       aria-label="মোবাইল নেভিগেশন"
-      className="md:hidden fixed bottom-0 left-0 right-0"
+      className="md:hidden flex fixed bottom-0 left-0 right-0"
       style={{
-        display: 'flex',
         justifyContent: 'center',
         alignItems: 'flex-end',
         transform: navVisible ? 'translateY(0)' : 'translateY(100%)',
