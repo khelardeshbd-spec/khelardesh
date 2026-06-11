@@ -1,3 +1,5 @@
+'use client';
+
 import Link from 'next/link';
 import { timeAgo, formatDatetime } from '@/lib/timeAgo';
 import BookmarkButton from './BookmarkButton';

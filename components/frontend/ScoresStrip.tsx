@@ -1,3 +1,5 @@
+'use client';
+
 import Link from 'next/link';
 import ScoreCard from './ScoreCard';
 import { motion } from 'framer-motion';
