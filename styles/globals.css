@@ -14,45 +14,359 @@
    * 2. Primary / Display  →  Kalpurush  →  Bengali headlines / display text 
    * 3. Secondary / Body   →  Kalpurush  →  Bengali body / UI text 
    --------------------------------------------------------------------------- */
+/* Manowar Murshidabad Regular */
 @font-face {
   font-family: 'Manowar Murshidabad';
   src: url('/fonts/ManowarMurshidabad.ttf') format('truetype');
-  font-weight: normal;
+  font-weight: 300;
   font-style: normal;
   font-display: swap;
 }
 @font-face {
   font-family: 'Manowar Murshidabad';
+  src: url('/fonts/ManowarMurshidabad.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Manowar Murshidabad';
+  src: url('/fonts/ManowarMurshidabad.ttf') format('truetype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Manowar Murshidabad';
+  src: url('/fonts/ManowarMurshidabad.ttf') format('truetype');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Manowar Murshidabad';
+  src: url('/fonts/ManowarMurshidabad.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Manowar Murshidabad';
+  src: url('/fonts/ManowarMurshidabad.ttf') format('truetype');
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Manowar Murshidabad';
+  src: url('/fonts/ManowarMurshidabad.ttf') format('truetype');
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Manowar Murshidabad Italic */
+@font-face {
+  font-family: 'Manowar Murshidabad';
   src: url('/fonts/ManowarMurshidabad-Italic.ttf') format('truetype');
-  font-weight: normal;
+  font-weight: 300;
   font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Manowar Murshidabad';
+  src: url('/fonts/ManowarMurshidabad-Italic.ttf') format('truetype');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Manowar Murshidabad';
+  src: url('/fonts/ManowarMurshidabad-Italic.ttf') format('truetype');
+  font-weight: 500;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Manowar Murshidabad';
+  src: url('/fonts/ManowarMurshidabad-Italic.ttf') format('truetype');
+  font-weight: 600;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Manowar Murshidabad';
+  src: url('/fonts/ManowarMurshidabad-Italic.ttf') format('truetype');
+  font-weight: 700;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Manowar Murshidabad';
+  src: url('/fonts/ManowarMurshidabad-Italic.ttf') format('truetype');
+  font-weight: 800;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Manowar Murshidabad';
+  src: url('/fonts/ManowarMurshidabad-Italic.ttf') format('truetype');
+  font-weight: 900;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* Prothom Alo */
+@font-face {
+  font-family: 'Prothom Alo';
+  src: url('/fonts/ProthomAlo.ttf') format('truetype');
+  font-weight: 300;
+  font-style: normal;
   font-display: swap;
 }
 @font-face {
   font-family: 'Prothom Alo';
   src: url('/fonts/ProthomAlo.ttf') format('truetype');
-  font-weight: normal;
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Prothom Alo';
+  src: url('/fonts/ProthomAlo.ttf') format('truetype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Prothom Alo';
+  src: url('/fonts/ProthomAlo.ttf') format('truetype');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Prothom Alo';
+  src: url('/fonts/ProthomAlo.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Prothom Alo';
+  src: url('/fonts/ProthomAlo.ttf') format('truetype');
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Prothom Alo';
+  src: url('/fonts/ProthomAlo.ttf') format('truetype');
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Prothoma Regular */
+@font-face {
+  font-family: 'Prothoma';
+  src: url('/fonts/Prothoma.ttf') format('truetype');
+  font-weight: 300;
   font-style: normal;
   font-display: swap;
 }
 @font-face {
   font-family: 'Prothoma';
   src: url('/fonts/Prothoma.ttf') format('truetype');
-  font-weight: normal;
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Prothoma';
+  src: url('/fonts/Prothoma.ttf') format('truetype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Prothoma';
+  src: url('/fonts/Prothoma.ttf') format('truetype');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Prothoma';
+  src: url('/fonts/Prothoma.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Prothoma';
+  src: url('/fonts/Prothoma.ttf') format('truetype');
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Prothoma';
+  src: url('/fonts/Prothoma.ttf') format('truetype');
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Prothoma Italic */
+@font-face {
+  font-family: 'Prothoma';
+  src: url('/fonts/Prothoma.ttf') format('truetype');
+  font-weight: 300;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Prothoma';
+  src: url('/fonts/Prothoma.ttf') format('truetype');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Prothoma';
+  src: url('/fonts/Prothoma.ttf') format('truetype');
+  font-weight: 500;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Prothoma';
+  src: url('/fonts/Prothoma.ttf') format('truetype');
+  font-weight: 600;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Prothoma';
+  src: url('/fonts/Prothoma.ttf') format('truetype');
+  font-weight: 700;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Prothoma';
+  src: url('/fonts/Prothoma.ttf') format('truetype');
+  font-weight: 800;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Prothoma';
+  src: url('/fonts/Prothoma.ttf') format('truetype');
+  font-weight: 900;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* Kalpurush Regular */
+@font-face {
+  font-family: 'Kalpurush';
+  src: url('/fonts/AbuJMAkkas.ttf') format('truetype');
+  font-weight: 300;
   font-style: normal;
   font-display: swap;
 }
 @font-face {
   font-family: 'Kalpurush';
   src: url('/fonts/AbuJMAkkas.ttf') format('truetype');
-  font-weight: normal;
+  font-weight: 400;
   font-style: normal;
   font-display: swap;
 }
 @font-face {
   font-family: 'Kalpurush';
+  src: url('/fonts/AbuJMAkkas.ttf') format('truetype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Kalpurush';
+  src: url('/fonts/AbuJMAkkas.ttf') format('truetype');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Kalpurush';
+  src: url('/fonts/AbuJMAkkas.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Kalpurush';
+  src: url('/fonts/AbuJMAkkas.ttf') format('truetype');
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Kalpurush';
+  src: url('/fonts/AbuJMAkkas.ttf') format('truetype');
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Kalpurush Italic */
+@font-face {
+  font-family: 'Kalpurush';
   src: url('/fonts/AbuJMAkkas-Italic.ttf') format('truetype');
-  font-weight: normal;
+  font-weight: 300;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Kalpurush';
+  src: url('/fonts/AbuJMAkkas-Italic.ttf') format('truetype');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Kalpurush';
+  src: url('/fonts/AbuJMAkkas-Italic.ttf') format('truetype');
+  font-weight: 500;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Kalpurush';
+  src: url('/fonts/AbuJMAkkas-Italic.ttf') format('truetype');
+  font-weight: 600;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Kalpurush';
+  src: url('/fonts/AbuJMAkkas-Italic.ttf') format('truetype');
+  font-weight: 700;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Kalpurush';
+  src: url('/fonts/AbuJMAkkas-Italic.ttf') format('truetype');
+  font-weight: 800;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Kalpurush';
+  src: url('/fonts/AbuJMAkkas-Italic.ttf') format('truetype');
+  font-weight: 900;
   font-style: italic;
   font-display: swap;
 }
