@@ -9,6 +9,7 @@ const config: Config = {
   theme: {
     extend: {
       fontFamily: {
+        sans: ['Prothoma', 'Kalpurush', 'Hind Siliguri', 'sans-serif'],
         'playfair': ['Playfair Display', 'serif'],
         'source-serif': ['Source Serif 4', 'serif'],
         'noto-bengali': ['Noto Serif Bengali', 'serif'],

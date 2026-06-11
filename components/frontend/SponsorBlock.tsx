@@ -68,7 +68,7 @@ export default function SponsorBlock({
       {/* Tagline */}
       <p
         style={{
-          fontFamily: "'Source Serif 4', 'Kalpurush', serif",
+          fontFamily: "var(--font-body)",
           fontStyle: 'italic',
           fontWeight: 300,
           fontSize: 11,
