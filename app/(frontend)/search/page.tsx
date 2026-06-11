@@ -2,8 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
-import ArticleCard from '@/components/ArticleCard';
-import Masthead from '@/components/Masthead';
+import ArticleCard from '@/components/frontend/ArticleCard';
+import Masthead from '@/components/frontend/Masthead';
 
 interface SearchResult {
   id: number;

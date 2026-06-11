@@ -1,8 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import ArticleCard from '@/components/ArticleCard';
-import Masthead from '@/components/Masthead';
+import ArticleCard from '@/components/frontend/ArticleCard';
+import Masthead from '@/components/frontend/Masthead';
 
 interface Article {
   id: number;

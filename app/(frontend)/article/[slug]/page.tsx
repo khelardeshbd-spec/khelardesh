@@ -3,9 +3,9 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 import { supabaseAdmin } from '@/lib/supabase';
 import { formatDatetime, timeAgo } from '@/lib/timeAgo';
-import ScoresStrip from '@/components/ScoresStrip';
-import BriefsColumn from '@/components/BriefsColumn';
-import BookmarkButton from '@/components/BookmarkButton';
+import ScoresStrip from '@/components/frontend/ScoresStrip';
+import BriefsColumn from '@/components/frontend/BriefsColumn';
+import BookmarkButton from '@/components/frontend/BookmarkButton';
 
 export const dynamic = 'force-dynamic';
 

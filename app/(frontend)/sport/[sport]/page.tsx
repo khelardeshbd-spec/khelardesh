@@ -1,12 +1,12 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { supabaseAdmin } from '@/lib/supabase';
-import LeadStory from '@/components/LeadStory';
-import ArticleCard from '@/components/ArticleCard';
-import SponsorBlock from '@/components/SponsorBlock';
-import Sidebar from '@/components/Sidebar';
-import Masthead from '@/components/Masthead';
-import BriefsColumn from '@/components/BriefsColumn';
+import LeadStory from '@/components/frontend/LeadStory';
+import ArticleCard from '@/components/frontend/ArticleCard';
+import SponsorBlock from '@/components/frontend/SponsorBlock';
+import Sidebar from '@/components/frontend/Sidebar';
+import Masthead from '@/components/frontend/Masthead';
+import BriefsColumn from '@/components/frontend/BriefsColumn';
 
 export const dynamic = 'force-dynamic';
 

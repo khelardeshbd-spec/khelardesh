@@ -1,14 +1,14 @@
 import type { Metadata } from 'next';
 import { supabaseAdmin } from '@/lib/supabase';
-import LeadStory from '@/components/LeadStory';
-import HomeSlider from '@/components/HomeSlider';
-import ArticleCard from '@/components/ArticleCard';
-import ScoresStrip from '@/components/ScoresStrip';
-import SponsorBlock from '@/components/SponsorBlock';
-import Sidebar from '@/components/Sidebar';
-import SkeletonCard from '@/components/SkeletonCard';
-import Masthead from '@/components/Masthead';
-import BriefsColumn from '@/components/BriefsColumn';
+import LeadStory from '@/components/frontend/LeadStory';
+import HomeSlider from '@/components/frontend/HomeSlider';
+import ArticleCard from '@/components/frontend/ArticleCard';
+import ScoresStrip from '@/components/frontend/ScoresStrip';
+import SponsorBlock from '@/components/frontend/SponsorBlock';
+import Sidebar from '@/components/frontend/Sidebar';
+import SkeletonCard from '@/components/frontend/SkeletonCard';
+import Masthead from '@/components/frontend/Masthead';
+import BriefsColumn from '@/components/frontend/BriefsColumn';
 
 export const dynamic = 'force-dynamic';
 

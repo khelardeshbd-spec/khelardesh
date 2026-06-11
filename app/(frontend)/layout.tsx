@@ -1,9 +1,9 @@
 import type { Metadata } from 'next';
 import '@/styles/globals.css';
-import SmartHeader from '@/components/SmartHeader';
-import BottomNav from '@/components/BottomNav';
-import LiveTicker from '@/components/LiveTicker';
-import Footer from '@/components/Footer';
+import SmartHeader from '@/components/frontend/SmartHeader';
+import BottomNav from '@/components/frontend/BottomNav';
+import LiveTicker from '@/components/frontend/LiveTicker';
+import Footer from '@/components/frontend/Footer';
 
 export const metadata: Metadata = {
   title: {

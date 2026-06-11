@@ -1,4 +1,4 @@
-import Masthead from '@/components/Masthead';
+import Masthead from '@/components/frontend/Masthead';
 
 export const metadata = {
   title: 'সতর্কতা — খেলারদেশ',
