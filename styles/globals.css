@@ -36,6 +36,13 @@
   font-display: swap;
 }
 @font-face {
+  font-family: 'Prothoma';
+  src: url('/fonts/Prothoma.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
   font-family: 'Kalpurush';
   src: url('/fonts/AbuJMAkkas.ttf') format('truetype');
   font-weight: normal;
@@ -61,7 +68,7 @@
 
 /* Fallback / Base — applied on <html> and overridden by data-theme */
 :root {
-  --font-body: 'Prothom Alo', var(--font-body);
+  --font-body: 'Prothoma', 'Kalpurush', 'Hind Siliguri', sans-serif;
   --font-headline: 'Manowar Murshidabad', 'Noto Serif Bengali', serif;
   
   --bg-page:      #F8F1E3;
