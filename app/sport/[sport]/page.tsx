@@ -65,6 +65,7 @@ export default async function SportPage({ params }: PageProps) {
     supabaseAdmin
       .from('ScoreCard')
       .select('*')
+      .eq('is_visible', true)
       .order('isLive', { ascending: false })
       .order('displayOrder', { ascending: true }),
     supabaseAdmin

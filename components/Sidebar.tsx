@@ -13,6 +13,8 @@ interface Score {
   status: string;
   isLive: boolean;
   displayOrder: number;
+  home_team_logo?: string;
+  away_team_logo?: string;
 }
 
 interface Sponsor {
@@ -107,6 +109,8 @@ export default function Sidebar({ scores, sponsors }: SidebarProps) {
                 winnerTeam={score.winnerTeam}
                 status={score.status}
                 isLive={score.isLive}
+                home_team_logo={score.home_team_logo}
+                away_team_logo={score.away_team_logo}
               />
             ))}
           </div>

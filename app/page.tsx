@@ -45,6 +45,7 @@ export default async function HomePage() {
     supabaseAdmin
       .from('ScoreCard')
       .select('*')
+      .eq('is_visible', true)
       .order('isLive', { ascending: false })
       .order('displayOrder', { ascending: true }),
     supabaseAdmin

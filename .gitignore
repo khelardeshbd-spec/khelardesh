@@ -46,3 +46,4 @@ dev.db
 *.log
 out.html
 scripts/create-sidebar-table.mjs
+scripts/alter-scores-table.mjs

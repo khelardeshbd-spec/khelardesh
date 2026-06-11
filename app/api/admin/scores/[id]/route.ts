@@ -18,23 +18,21 @@ export async function PUT(
 
   try {
     const id = parseInt(params.id, 10)
-    const body = await request.json() as any
-    const {
-      league, teamA, scoreA, teamB, scoreB,
-      winnerTeam, status, isLive,
-      sofascoreId, displayOrder,
-    } = body
+    const body = await request.json() as any;
+    
+    // Allow partial updates
+    const updateData: any = { updatedAt: new Date().toISOString() };
+    const allowedFields = ['league', 'teamA', 'scoreA', 'teamB', 'scoreB', 'winnerTeam', 'status', 'isLive', 'sofascoreId', 'displayOrder', 'is_visible', 'is_pinned', 'sport_type'];
+    
+    for (const field of allowedFields) {
+      if (body[field] !== undefined) {
+        updateData[field] = body[field];
+      }
+    }
 
     const { data: score, error } = await supabaseAdmin
       .from('ScoreCard')
-      .update({
-        league, teamA, scoreA, teamB, scoreB,
-        winnerTeam: winnerTeam || null,
-        status, isLive,
-        sofascoreId: sofascoreId || null,
-        displayOrder,
-        updatedAt: new Date().toISOString(),
-      })
+      .update(updateData)
       .eq('id', id)
       .select()
       .single()

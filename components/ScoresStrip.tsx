@@ -12,6 +12,8 @@ interface Score {
   status: string;
   isLive: boolean;
   displayOrder: number;
+  home_team_logo?: string;
+  away_team_logo?: string;
 }
 
 interface ScoresStripProps {
@@ -93,6 +95,8 @@ export default function ScoresStrip({ scores }: ScoresStripProps) {
               winnerTeam={score.winnerTeam}
               status={score.status}
               isLive={score.isLive}
+              home_team_logo={score.home_team_logo}
+              away_team_logo={score.away_team_logo}
             />
           ))}
         </div>

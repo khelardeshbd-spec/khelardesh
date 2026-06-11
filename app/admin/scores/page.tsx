@@ -12,39 +12,36 @@ interface ScoreCard {
   winnerTeam?: string | null;
   status: string;
   isLive: boolean;
-  sofascoreId?: string | null;
   displayOrder: number;
+  sport_type?: string;
+  home_team_logo?: string;
+  away_team_logo?: string;
+  last_synced_at?: string;
+  is_pinned?: boolean;
+  is_visible?: boolean;
+  source_match_id?: string;
 }
 
-interface SofaScoreSearchResult {
-  id: number;
-  homeTeam: { name: string };
-  awayTeam: { name: string };
-  homeScore?: { current: number };
-  awayScore?: { current: number };
-  status: { type: string; description: string };
-  tournament: { name: string };
-  time?: { played: number };
+const EN_TO_BN_DIGITS: Record<string, string> = {
+  '0': '০', '1': '১', '2': '২', '3': '৩', '4': '৪',
+  '5': '৫', '6': '৬', '7': '৭', '8': '৮', '9': '৯'
+};
+
+function toBengaliDigits(str: string | number): string {
+  return String(str).replace(/[0-9]/g, (digit) => EN_TO_BN_DIGITS[digit]);
 }
 
-/**
- * Score Manager — Section 11.4
- * Two sections: Manual entry form + SofaScore Quick-Add
- * Lists all score cards with edit/delete
- */
 export default function AdminScoresPage() {
   const [scores, setScores] = useState<ScoreCard[]>([]);
   const [loading, setLoading] = useState(true);
+  const [syncing, setSyncing] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
-  const [editId, setEditId] = useState<number | null>(null);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [searchResults, setSearchResults] = useState<SofaScoreSearchResult[]>([]);
-  const [searching, setSearching] = useState(false);
-
+  
+  // Manual entry form
   const [form, setForm] = useState({
     league: '', teamA: '', scoreA: '0', teamB: '', scoreB: '0',
-    winnerTeam: '', status: '', isLive: false, sofascoreId: '', displayOrder: 0,
+    status: '', isLive: false, sport_type: 'football'
   });
 
   useEffect(() => { loadScores(); }, []);
@@ -56,44 +53,50 @@ export default function AdminScoresPage() {
     setLoading(false);
   }
 
-  function resetForm() {
-    setForm({ league: '', teamA: '', scoreA: '0', teamB: '', scoreB: '0', winnerTeam: '', status: '', isLive: false, sofascoreId: '', displayOrder: 0 });
-    setEditId(null);
-  }
-
-  function editScore(s: ScoreCard) {
-    setEditId(s.id);
-    setForm({
-      league: s.league, teamA: s.teamA, scoreA: s.scoreA, teamB: s.teamB,
-      scoreB: s.scoreB, winnerTeam: s.winnerTeam ?? '', status: s.status,
-      isLive: s.isLive, sofascoreId: s.sofascoreId ?? '', displayOrder: s.displayOrder,
-    });
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }
-
-  async function handleSubmit(e: React.FormEvent) {
+  async function handleManualSubmit(e: React.FormEvent) {
     e.preventDefault();
     setSaving(true);
     setError('');
     try {
-      const url = editId ? `/api/admin/scores/${editId}` : '/api/admin/scores';
-      const method = editId ? 'PUT' : 'POST';
-      const res = await fetch(url, {
-        method,
+      const res = await fetch('/api/admin/scores', {
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...form, winnerTeam: form.winnerTeam || null, sofascoreId: form.sofascoreId || null }),
+        body: JSON.stringify(form),
       });
-      if (!res.ok) {
-        const err = await res.json() as any;
-        throw new Error(err.error);
-      }
-      resetForm();
+      if (!res.ok) throw new Error('Failed to save manual score');
+      setForm({ league: '', teamA: '', scoreA: '0', teamB: '', scoreB: '0', status: '', isLive: false, sport_type: 'football' });
       await loadScores();
-    } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : 'Error');
+    } catch (err: any) {
+      setError(err.message);
     } finally {
       setSaving(false);
     }
+  }
+
+  async function handleSync() {
+    setSyncing(true);
+    setError('');
+    try {
+      const res = await fetch('/api/cron/sync-scores', {
+        headers: { 'x-cron-secret': 'generate-a-random-string-here' }
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Sync failed');
+      await loadScores();
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setSyncing(false);
+    }
+  }
+
+  async function updateScoreFlags(id: number, updates: Partial<ScoreCard>) {
+    await fetch(`/api/admin/scores/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(updates),
+    });
+    setScores(prev => prev.map(s => s.id === id ? { ...s, ...updates } : s));
   }
 
   async function handleDelete(id: number) {
@@ -102,38 +105,20 @@ export default function AdminScoresPage() {
     await loadScores();
   }
 
-  async function handleSearch() {
-    if (!searchQuery.trim()) return;
-    setSearching(true);
-    try {
-      const res = await fetch(`/api/proxy/sofascore?endpoint=/search/all?q=${encodeURIComponent(searchQuery)}`);
-      const data = await res.json() as any;
-      setSearchResults(data.results?.events ?? []);
-    } catch {
-      setSearchResults([]);
-    } finally {
-      setSearching(false);
-    }
-  }
+  const groupedScores = scores.reduce((acc, score) => {
+    const sport = score.sport_type || 'other';
+    if (!acc[sport]) acc[sport] = [];
+    acc[sport].push(score);
+    return acc;
+  }, {} as Record<string, ScoreCard[]>);
 
-  function fillFromSofaScore(event: SofaScoreSearchResult) {
-    const isLive = event.status.type === 'inprogress';
-    const statusText = isLive ? `${event.time?.played ?? '?'}'` : event.status.description;
-    setForm({
-      league: event.tournament.name,
-      teamA: event.homeTeam.name,
-      scoreA: String(event.homeScore?.current ?? 0),
-      teamB: event.awayTeam.name,
-      scoreB: String(event.awayScore?.current ?? 0),
-      winnerTeam: '',
-      status: statusText,
-      isLive,
-      sofascoreId: String(event.id),
-      displayOrder: 0,
-    });
-    setSearchResults([]);
-    setSearchQuery('');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+  // Calculate last synced
+  let lastSyncedText = 'কখনো সিঙ্ক হয়নি';
+  const syncedTimes = scores.map(s => s.last_synced_at ? new Date(s.last_synced_at).getTime() : 0).filter(t => t > 0);
+  if (syncedTimes.length > 0) {
+    const latest = Math.max(...syncedTimes);
+    const minsAgo = Math.floor((Date.now() - latest) / 60000);
+    lastSyncedText = `${toBengaliDigits(minsAgo)} মিনিট আগে`;
   }
 
   const labelStyle = { fontFamily: "'Hind Siliguri', sans-serif", fontSize: 10, fontWeight: 500, letterSpacing: '0.1em', textTransform: 'uppercase' as const, color: 'var(--ink-muted)', display: 'block', marginBottom: 4 };
@@ -143,176 +128,138 @@ export default function AdminScoresPage() {
 
   return (
     <div style={{ minHeight: '100vh', backgroundColor: 'var(--bg-page)', padding: '24px' }}>
-      <div style={{ maxWidth: 900, margin: '0 auto' }}>
+      <div style={{ maxWidth: 1000, margin: '0 auto' }}>
         <div className="flex items-center justify-between mb-6">
-          <h1 style={{ fontFamily: "Georgia, 'Times New Roman', Times, serif", fontWeight: 700, fontSize: 24, color: 'var(--ink)' }}>
-            Score Manager
+          <h1 style={{ fontFamily: "Kalpurush, sans-serif", fontWeight: 700, fontSize: 24, color: 'var(--ink)' }}>
+            স্কোর ম্যানেজমেন্ট
           </h1>
           <a href="/admin/dashboard" className="admin-btn-secondary">← Dashboard</a>
         </div>
 
         {error && <div style={{ color: '#C0392B', fontFamily: "'Hind Siliguri', sans-serif", fontSize: 13, marginBottom: 12 }}>{error}</div>}
 
-        {/* Manual Score Entry */}
-        <section style={{ marginBottom: 32, padding: 20, backgroundColor: 'var(--bg-surface)', border: '1px solid var(--ink-border)', borderRadius: 2 }}>
-          <h2 style={{ fontFamily: "'Hind Siliguri', sans-serif", fontSize: 10, fontWeight: 500, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--ink-muted)', marginBottom: 16 }}>
-            {editId ? `Editing Score #${editId}` : 'Manual Score Entry'}
-          </h2>
-          <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-            <div>
-              <label style={labelStyle}>League</label>
-              <input type="text" style={inputStyle} value={form.league} onChange={(e) => setForm({ ...form, league: e.target.value })} required lang="bn" />
+        {/* Sync Controls */}
+        <section className="mb-8 p-5 bg-[var(--bg-surface)] border border-[var(--ink-border)] flex items-center justify-between">
+          <div>
+            <h2 style={labelStyle}>Sofascore Sync System</h2>
+            <div className="text-sm font-['Hind_Siliguri'] text-[var(--ink)]">
+              সর্বশেষ সিঙ্ক: <strong>{lastSyncedText}</strong>
+            </div>
+          </div>
+          <button onClick={handleSync} disabled={syncing} className="admin-btn-primary bg-blue-700 border-blue-700 text-white">
+            {syncing ? 'সিঙ্ক হচ্ছে...' : 'এখনই সিঙ্ক করুন'}
+          </button>
+        </section>
+
+        {/* Manual Addition */}
+        <details className="mb-8 p-5 bg-[var(--bg-surface)] border border-[var(--ink-border)] cursor-pointer">
+          <summary style={labelStyle} className="mb-0 text-sm font-bold">ম্যানুয়াল স্কোর যোগ করুন (Local Matches)</summary>
+          <form onSubmit={handleManualSubmit} className="flex flex-col gap-4 mt-4 cursor-default" onClick={e => e.stopPropagation()}>
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label style={labelStyle}>Sport</label>
+                <select style={inputStyle} value={form.sport_type} onChange={e => setForm({...form, sport_type: e.target.value})}>
+                  <option value="football">Football</option>
+                  <option value="bd-football">BD Football</option>
+                  <option value="cricket">Cricket</option>
+                  <option value="bd-cricket">BD Cricket</option>
+                </select>
+              </div>
+              <div>
+                <label style={labelStyle}>League / Tournament</label>
+                <input type="text" style={inputStyle} value={form.league} onChange={e => setForm({...form, league: e.target.value})} required lang="bn" />
+              </div>
             </div>
             <div className="grid grid-cols-2 gap-3">
               <div>
                 <label style={labelStyle}>Team A</label>
-                <input type="text" style={inputStyle} value={form.teamA} onChange={(e) => setForm({ ...form, teamA: e.target.value })} required lang="bn" />
+                <input type="text" style={inputStyle} value={form.teamA} onChange={e => setForm({...form, teamA: e.target.value})} required lang="bn" />
               </div>
               <div>
                 <label style={labelStyle}>Score A</label>
-                <input type="text" style={inputStyle} value={form.scoreA} onChange={(e) => setForm({ ...form, scoreA: e.target.value })} />
+                <input type="text" style={inputStyle} value={form.scoreA} onChange={e => setForm({...form, scoreA: e.target.value})} />
               </div>
             </div>
             <div className="grid grid-cols-2 gap-3">
               <div>
                 <label style={labelStyle}>Team B</label>
-                <input type="text" style={inputStyle} value={form.teamB} onChange={(e) => setForm({ ...form, teamB: e.target.value })} required lang="bn" />
+                <input type="text" style={inputStyle} value={form.teamB} onChange={e => setForm({...form, teamB: e.target.value})} required lang="bn" />
               </div>
               <div>
                 <label style={labelStyle}>Score B</label>
-                <input type="text" style={inputStyle} value={form.scoreB} onChange={(e) => setForm({ ...form, scoreB: e.target.value })} />
+                <input type="text" style={inputStyle} value={form.scoreB} onChange={e => setForm({...form, scoreB: e.target.value})} />
               </div>
             </div>
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label style={labelStyle}>Winner</label>
-                <div className="flex gap-3 pt-1">
-                  {['A', 'B', ''].map((w) => (
-                    <label key={w || 'draw'} className="flex items-center gap-1 cursor-pointer">
-                      <input type="radio" name="winnerTeam" value={w} checked={form.winnerTeam === w} onChange={() => setForm({ ...form, winnerTeam: w })} />
-                      <span style={{ fontFamily: "'Hind Siliguri', sans-serif", fontSize: 12, color: 'var(--ink)' }}>
-                        {w === '' ? 'Draw' : `Team ${w}`}
-                      </span>
-                    </label>
-                  ))}
-                </div>
+                <label style={labelStyle}>Status (e.g. 67&apos; / Full Time)</label>
+                <input type="text" style={inputStyle} value={form.status} onChange={e => setForm({...form, status: e.target.value})} />
               </div>
-              <div>
-                <label style={labelStyle}>Status</label>
-                <input type="text" style={inputStyle} value={form.status} onChange={(e) => setForm({ ...form, status: e.target.value })} placeholder="Full Time / 67' / Upcoming" />
+              <div className="flex items-center pt-5">
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input type="checkbox" checked={form.isLive} onChange={e => setForm({...form, isLive: e.target.checked})} />
+                  <span style={{ fontFamily: "'Hind Siliguri', sans-serif", fontSize: 12, color: 'var(--ink)' }}>Live Match</span>
+                </label>
               </div>
             </div>
-            <div className="grid grid-cols-2 gap-3">
-              <div>
-                <label style={labelStyle}>SofaScore ID — optional</label>
-                <input type="text" style={inputStyle} value={form.sofascoreId} onChange={(e) => setForm({ ...form, sofascoreId: e.target.value })} />
-              </div>
-              <div>
-                <label style={labelStyle}>Order</label>
-                <input type="number" style={inputStyle} value={form.displayOrder} onChange={(e) => setForm({ ...form, displayOrder: parseInt(e.target.value, 10) })} />
-              </div>
-            </div>
-            <div>
-              <label className="flex items-center gap-2 cursor-pointer">
-                <input type="checkbox" checked={form.isLive} onChange={(e) => setForm({ ...form, isLive: e.target.checked })} />
-                <span style={{ fontFamily: "'Hind Siliguri', sans-serif", fontSize: 12, color: 'var(--ink)' }}>Live</span>
-              </label>
-            </div>
-            <div className="flex gap-2">
-              <button type="submit" className="admin-btn-primary" disabled={saving}>
-                {saving ? 'Saving...' : editId ? 'Update Score' : 'Save Score'}
-              </button>
-              {editId && <button type="button" onClick={resetForm} className="admin-btn-secondary">Cancel Edit</button>}
-            </div>
-          </form>
-        </section>
-
-        {/* SofaScore Quick-Add */}
-        <section style={{ marginBottom: 32, padding: 20, backgroundColor: 'var(--bg-surface)', border: '1px solid var(--ink-border)', borderRadius: 2 }}>
-          <h2 style={{ fontFamily: "'Hind Siliguri', sans-serif", fontSize: 10, fontWeight: 500, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--ink-muted)', marginBottom: 12 }}>
-            SofaScore Quick-Add
-          </h2>
-          <div className="flex gap-2 mb-3">
-            <input
-              type="text"
-              style={{ ...inputStyle, flex: 1 }}
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search match..."
-              onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
-            />
-            <button onClick={handleSearch} className="admin-btn-secondary" disabled={searching}>
-              {searching ? '...' : 'Search SofaScore'}
+            <button type="submit" className="admin-btn-primary self-start" disabled={saving}>
+              {saving ? 'Saving...' : 'Add Score'}
             </button>
-          </div>
-          {searchResults.length > 0 && (
-            <div style={{ maxHeight: 240, overflowY: 'auto', border: '1px solid var(--ink-border)', borderRadius: 1 }}>
-              {searchResults.map((event) => (
-                <div
-                  key={event.id}
-                  onClick={() => fillFromSofaScore(event)}
-                  style={{
-                    padding: '8px 12px', cursor: 'pointer',
-                    borderBottom: '0.5px solid var(--ink-border)',
-                    fontFamily: "'Hind Siliguri', sans-serif", fontSize: 12,
-                    color: 'var(--ink)',
-                  }}
-                  className="hover:opacity-70"
-                >
-                  <span style={{ color: 'var(--ink-muted)', fontSize: 10, marginRight: 6 }}>{event.tournament.name}</span>
-                  {event.homeTeam.name} {event.homeScore?.current ?? '—'} – {event.awayScore?.current ?? '—'} {event.awayTeam.name}
-                  <span style={{ color: 'var(--ink-ghost)', fontSize: 9, marginLeft: 8 }}>ID: {event.id}</span>
-                </div>
-              ))}
-            </div>
-          )}
-        </section>
+          </form>
+        </details>
 
-        {/* Score cards table */}
-        <section>
-          <h2 style={{ fontFamily: "'Hind Siliguri', sans-serif", fontSize: 10, fontWeight: 500, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--ink-muted)', marginBottom: 12 }}>
-            All Score Cards
-          </h2>
-          {loading ? (
-            <p style={{ color: 'var(--ink-muted)', fontFamily: "'Hind Siliguri', sans-serif", fontSize: 12 }}>Loading...</p>
-          ) : (
-            <div style={{ overflowX: 'auto' }}>
+        {/* Grouped Scores */}
+        {loading ? <p className="text-sm">Loading...</p> : Object.entries(groupedScores).map(([sport, items]) => (
+          <section key={sport} className="mb-8">
+            <h2 className="font-['Hind_Siliguri'] font-bold uppercase tracking-wider text-lg mb-2 text-[var(--ink)]">{sport}</h2>
+            <div className="overflow-x-auto bg-white shadow-sm border border-[var(--ink-border)]">
               <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                 <thead>
                   <tr>
+                    <th style={thStyle}>Match</th>
                     <th style={thStyle}>League</th>
-                    <th style={thStyle}>Teams</th>
-                    <th style={thStyle}>Score</th>
                     <th style={thStyle}>Status</th>
-                    <th style={thStyle}>Live</th>
                     <th style={thStyle}>Order</th>
+                    <th style={thStyle}>Visible</th>
+                    <th style={thStyle}>Pin</th>
                     <th style={thStyle}>Actions</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {scores.map((s) => (
-                    <tr key={s.id} style={{ backgroundColor: editId === s.id ? 'var(--bg-surface)' : 'transparent' }}>
-                      <td style={tdStyle} lang="bn">{s.league}</td>
-                      <td style={tdStyle} lang="bn">{s.teamA} vs {s.teamB}</td>
-                      <td style={tdStyle}>{s.scoreA}–{s.scoreB}</td>
-                      <td style={{ ...tdStyle, color: 'var(--ink-muted)' }}>{s.status}</td>
+                  {items.map(s => (
+                    <tr key={s.id}>
                       <td style={tdStyle}>
-                        {s.isLive ? <span className="live-dot" /> : <span style={{ color: 'var(--ink-ghost)' }}>—</span>}
-                      </td>
-                      <td style={{ ...tdStyle, color: 'var(--ink-muted)' }}>{s.displayOrder}</td>
-                      <td style={tdStyle}>
-                        <div className="flex gap-2">
-                          <button onClick={() => editScore(s)} style={{ color: 'var(--ink)', fontSize: 13, cursor: 'pointer', background: 'none', border: 'none' }}>✎</button>
-                          <button onClick={() => handleDelete(s.id)} style={{ color: '#C0392B', fontSize: 13, cursor: 'pointer', background: 'none', border: 'none' }}>✕</button>
+                        <div className="flex items-center gap-2 font-['Kalpurush'] text-sm">
+                          {s.home_team_logo ? <img src={s.home_team_logo} width={24} height={24} className="rounded-full" alt="logo" /> : <div className="w-6 h-6 rounded-full bg-gray-200 flex items-center justify-center text-[10px]">{s.teamA.charAt(0)}</div>}
+                          <span>{s.teamA}</span>
+                          <span className="font-bold">{s.scoreA} - {s.scoreB}</span>
+                          <span>{s.teamB}</span>
+                          {s.away_team_logo ? <img src={s.away_team_logo} width={24} height={24} className="rounded-full" alt="logo" /> : <div className="w-6 h-6 rounded-full bg-gray-200 flex items-center justify-center text-[10px]">{s.teamB.charAt(0)}</div>}
                         </div>
+                      </td>
+                      <td style={tdStyle} className="font-['Kalpurush']">{s.league}</td>
+                      <td style={tdStyle} className="font-['Kalpurush'] text-[var(--live-red)]">
+                        {s.isLive && <span className="live-dot" />} {s.status}
+                      </td>
+                      <td style={tdStyle}>
+                        <input type="number" className="w-16 p-1 border rounded" value={s.displayOrder} onChange={e => updateScoreFlags(s.id, { displayOrder: parseInt(e.target.value) || 0 })} />
+                      </td>
+                      <td style={tdStyle}>
+                        <input type="checkbox" checked={s.is_visible ?? true} onChange={e => updateScoreFlags(s.id, { is_visible: e.target.checked })} />
+                      </td>
+                      <td style={tdStyle}>
+                        <input type="checkbox" checked={s.is_pinned ?? false} onChange={e => updateScoreFlags(s.id, { is_pinned: e.target.checked })} />
+                      </td>
+                      <td style={tdStyle}>
+                        {!s.source_match_id && <button onClick={() => handleDelete(s.id)} className="text-red-500 hover:underline">Delete</button>}
                       </td>
                     </tr>
                   ))}
                 </tbody>
               </table>
             </div>
-          )}
-        </section>
+          </section>
+        ))}
       </div>
     </div>
   );

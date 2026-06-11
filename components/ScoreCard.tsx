@@ -17,6 +17,8 @@ interface ScoreCardProps {
   winnerTeam?: string | null;  // "A" | "B" | null
   status: string;
   isLive: boolean;
+  home_team_logo?: string;
+  away_team_logo?: string;
 }
 
 export default function ScoreCard({
@@ -28,6 +30,8 @@ export default function ScoreCard({
   winnerTeam,
   status,
   isLive,
+  home_team_logo,
+  away_team_logo,
 }: ScoreCardProps) {
   const winnerA = winnerTeam === 'A';
   const winnerB = winnerTeam === 'B';
@@ -69,22 +73,28 @@ export default function ScoreCard({
 
       {/* Team A row */}
       <div className="flex items-center justify-between gap-2 mb-1.5">
-        <span
-          style={{
-            fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif",
-            fontSize: 12,
-            fontWeight: winnerA ? 700 : 400,
-            color: winnerA ? 'var(--ink)' : isDraw ? 'var(--ink-muted)' : 'var(--ink-muted)',
-            flex: 1,
-            minWidth: 0,
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-            whiteSpace: 'nowrap',
-          }}
-          lang="bn"
-        >
-          {teamA}
-        </span>
+        <div className="flex items-center gap-2 flex-1 min-w-0">
+          {home_team_logo ? (
+            <img src={home_team_logo} alt={teamA} width={16} height={16} className="rounded-full flex-shrink-0" onError={(e) => { e.currentTarget.style.display = 'none'; e.currentTarget.nextElementSibling?.classList.remove('hidden'); }} />
+          ) : null}
+          <div className={`w-4 h-4 rounded-full bg-gray-200 flex items-center justify-center text-[8px] flex-shrink-0 ${home_team_logo ? 'hidden' : ''}`}>
+            {teamA.charAt(0)}
+          </div>
+          <span
+            style={{
+              fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif",
+              fontSize: 12,
+              fontWeight: winnerA ? 700 : 400,
+              color: winnerA ? 'var(--ink)' : isDraw ? 'var(--ink-muted)' : 'var(--ink-muted)',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap',
+            }}
+            lang="bn"
+          >
+            {teamA}
+          </span>
+        </div>
         <span
           style={{
             fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif",
@@ -102,22 +112,28 @@ export default function ScoreCard({
 
       {/* Team B row */}
       <div className="flex items-center justify-between gap-2 mb-2.5">
-        <span
-          style={{
-            fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif",
-            fontSize: 12,
-            fontWeight: winnerB ? 700 : 400,
-            color: winnerB ? 'var(--ink)' : isDraw ? 'var(--ink-muted)' : 'var(--ink-muted)',
-            flex: 1,
-            minWidth: 0,
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-            whiteSpace: 'nowrap',
-          }}
-          lang="bn"
-        >
-          {teamB}
-        </span>
+        <div className="flex items-center gap-2 flex-1 min-w-0">
+          {away_team_logo ? (
+            <img src={away_team_logo} alt={teamB} width={16} height={16} className="rounded-full flex-shrink-0" onError={(e) => { e.currentTarget.style.display = 'none'; e.currentTarget.nextElementSibling?.classList.remove('hidden'); }} />
+          ) : null}
+          <div className={`w-4 h-4 rounded-full bg-gray-200 flex items-center justify-center text-[8px] flex-shrink-0 ${away_team_logo ? 'hidden' : ''}`}>
+            {teamB.charAt(0)}
+          </div>
+          <span
+            style={{
+              fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif",
+              fontSize: 12,
+              fontWeight: winnerB ? 700 : 400,
+              color: winnerB ? 'var(--ink)' : isDraw ? 'var(--ink-muted)' : 'var(--ink-muted)',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap',
+            }}
+            lang="bn"
+          >
+            {teamB}
+          </span>
+        </div>
         <span
           style={{
             fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif",
