@@ -48,15 +48,14 @@ export default function ScoreCard({
     <motion.div
       whileHover={{ y: -2 }}
       transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+      className="clay-card"
       style={{
         position: 'relative',
-        backgroundColor: 'var(--bg-surface)',
         padding: '10px 12px',
-        borderRadius: 10,
         minWidth: 160,
         maxWidth: 200,
         flexShrink: 0,
-        border: isLive ? '1.5px solid rgba(220,38,38,0.2)' : '0.5px solid var(--ink-border)',
+        border: isLive ? '1.5px solid rgba(220,38,38,0.4)' : undefined,
       }}
     >
       {/* Status badge (Absolute Top Right) */}

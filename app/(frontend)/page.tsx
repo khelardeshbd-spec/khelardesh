@@ -7,7 +7,6 @@ import ScoresStrip from '@/components/frontend/ScoresStrip';
 import SponsorBlock from '@/components/frontend/SponsorBlock';
 import Sidebar from '@/components/frontend/Sidebar';
 import SkeletonCard from '@/components/frontend/SkeletonCard';
-import Masthead from '@/components/frontend/Masthead';
 import BriefsColumn from '@/components/frontend/BriefsColumn';
 import { MotionDiv } from '@/components/frontend/MotionDiv';
 import { staggerContainer, fadeUp } from '@/lib/animations';
@@ -77,10 +76,7 @@ export default async function HomePage() {
           className="flex flex-col h-screen sticky top-0 pb-4 gap-4"
           style={{ overflow: 'hidden' }}
         >
-          <div className="flex-shrink-0 pt-2">
-            <Masthead />
-          </div>
-          <div className="flex-grow overflow-y-auto scrollbar-none pr-1">
+          <div className="flex-grow overflow-y-auto scrollbar-none pr-1 mt-6">
             <BriefsColumn articles={articles} />
           </div>
         </div>

@@ -184,10 +184,10 @@ export default function NavStrip({ noBorder = false, vertical = false, onNavigat
                 <Link
                   href={href}
                   lang="bn"
-                  className="flex items-center px-3 py-3 whitespace-nowrap transition-colors duration-150"
+                  className="flex items-center px-2 py-2.5 whitespace-nowrap transition-colors duration-150"
                   style={{
                     fontFamily: "'Kalpurush', 'Hind Siliguri', sans-serif",
-                    fontSize: 14,
+                    fontSize: 13,
                     fontWeight: 600,
                     backgroundColor: active ? 'var(--ink)' : 'transparent',
                     color: active ? 'var(--bg-page)' : 'var(--ink)',

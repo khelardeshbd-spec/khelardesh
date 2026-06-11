@@ -64,13 +64,11 @@ export default function ArticleCard({ article }: ArticleCardProps) {
       initial="hidden"
       whileInView="visible"
       viewport={{ once: true, margin: '-40px' }}
-      style={{
-        borderBottom: '0.5px solid var(--ink-border)',
-      }}
+      className="clay-card mb-4 overflow-hidden"
     >
       <Link
         href={`/article/${slug}`}
-        className="flex gap-3 py-3 px-0 hover:opacity-80 transition-opacity duration-150"
+        className="flex gap-3 p-3 hover:opacity-80 transition-opacity duration-150"
         aria-label={`পড়ুন: ${displayHeadline}`}
       >
         {/* Thumbnail */}

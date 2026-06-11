@@ -61,6 +61,10 @@
   --ink-ghost:    #D4C9B0;
   --ink-border:   #C8BAA0;
   --live-red:     #C0392B;
+  --clay-shadow-outer: rgba(0,0,0,0.06);
+  --clay-highlight-outer: rgba(255,255,255,0.6);
+  --clay-highlight-inner: rgba(255,255,255,0.4);
+  --clay-shadow-inner: rgba(0,0,0,0.03);
 }
 
 /* Theme 1 — Light (Default warm white) */
@@ -73,18 +77,26 @@
   --ink-border:   #D4D2CB;
   --live-red:     #C0392B;
   --logo-filter:  brightness(0) saturate(100%) invert(14%) sepia(31%) saturate(2283%) hue-rotate(114deg) brightness(93%) contrast(106%); /* Dark Green matches brand */
+  --clay-shadow-outer: rgba(0,0,0,0.05);
+  --clay-highlight-outer: rgba(255,255,255,0.8);
+  --clay-highlight-inner: rgba(255,255,255,0.5);
+  --clay-shadow-inner: rgba(0,0,0,0.02);
 }
 
 /* Theme 2 — Paper (Apple Books "Bold" / Sepia-adjacent — PROJECT DEFAULT) */
 [data-theme="paper"] {
-  --bg-page:      #F8F1E3;    /* warm cream — the exact Books "Bold" colour */
-  --bg-surface:   #EFE7D3;    /* slightly deeper cream for cards */
-  --ink:          #2C1E0F;    /* warm dark brown, not black */
-  --ink-muted:    #7A6A52;    /* muted brown for secondary text */
-  --ink-ghost:    #D4C9B0;    /* borders */
-  --ink-border:   #C8BAA0;
-  --live-red:     #C0392B;
+  --bg-page:      #F4EFE6;    /* soothing warm paper */
+  --bg-surface:   #EBE4D8;    /* deeper soothing cream */
+  --ink:          #312519;    /* very dark warm brown */
+  --ink-muted:    #80705E;
+  --ink-ghost:    #D4CAB7;
+  --ink-border:   #C8BCA6;
+  --live-red:     #D33F3F;
   --logo-filter:  brightness(0) saturate(100%) invert(14%) sepia(31%) saturate(2283%) hue-rotate(114deg) brightness(93%) contrast(106%); /* Keep beautiful dark green on paper background */
+  --clay-shadow-outer: rgba(0,0,0,0.06);
+  --clay-highlight-outer: rgba(255,255,255,0.7);
+  --clay-highlight-inner: rgba(255,255,255,0.4);
+  --clay-shadow-inner: rgba(0,0,0,0.02);
 }
 
 /* Theme 3 — Night (Dark) */
@@ -97,6 +109,10 @@
   --ink-border:   #363330;
   --live-red:     #E74C3C;
   --logo-filter:  brightness(0) saturate(100%) invert(88%) sepia(9%) saturate(415%) hue-rotate(331deg) brightness(95%) contrast(92%); /* Bright cream to match text in night theme */
+  --clay-shadow-outer: rgba(0,0,0,0.5);
+  --clay-highlight-outer: rgba(255,255,255,0.03);
+  --clay-highlight-inner: rgba(255,255,255,0.06);
+  --clay-shadow-inner: rgba(0,0,0,0.25);
 }
 
 /* ---------------------------------------------------------------------------
@@ -279,6 +295,19 @@ ul, ol {
 /* ---------------------------------------------------------------------------
    6. Component Helpers
    --------------------------------------------------------------------------- */
+
+/* Claymorphism */
+.clay-card {
+  background-color: var(--bg-surface);
+  border-radius: 12px;
+  border: 1px solid var(--ink-ghost);
+  box-shadow: 
+    6px 6px 14px var(--clay-shadow-outer),
+    -6px -6px 14px var(--clay-highlight-outer),
+    inset 2px 2px 4px var(--clay-highlight-inner),
+    inset -2px -2px 4px var(--clay-shadow-inner);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
 
 /* Scrollbar hide utility */
 .scrollbar-none {

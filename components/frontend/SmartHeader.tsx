@@ -226,9 +226,22 @@ export default function SmartHeader() {
             )}
           </div>
 
-          {/* Right: ThemeToggle + Search button */}
-          <div className="flex items-center justify-end gap-4 border-b border-[var(--ink-border)] pb-2">
+          {/* Right: ThemeToggle + Saved + Search button */}
+          <div className="flex items-center justify-end gap-3 border-b border-[var(--ink-border)] pb-2">
             <ThemeToggle />
+
+            {/* Desktop Saved Folder Button */}
+            <Link
+              href="/saved"
+              aria-label="সেভ করা খবর"
+              className="flex items-center justify-center hover:opacity-75 transition-opacity"
+              style={{ color: 'var(--ink)' }}
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
+              </svg>
+            </Link>
+
             <button
               onClick={() => { setIsSearchOpen(!isSearchOpen); setSearchQuery(''); }}
               aria-label="খবর খুঁজুন"
