@@ -179,41 +179,41 @@ export default async function HomePage() {
         </div>
 
         {/* TEASER ROW */}
-        <div className="grid grid-cols-3 gap-0 border-b border-[#e2e2e2] pb-3 mb-3">
+        <div className="grid grid-cols-3 gap-0 border-b border-[#e2e2e2] pb-2 mb-2">
           {/* Teaser 1 */}
-          <div className="text-center px-6 border-r border-[#e2e2e2]">
-            <h3 className="text-sm font-bold mb-1.5 text-[#121212]">মাসের ফোটোগ্যালারী</h3>
-            <h2 style={{ fontFamily: 'var(--font-headline)' }} className="text-2xl font-bold mb-1.5 leading-tight text-[#121212]">{articles[0]?.headlineBn || 'ল্যার্স ওয়ায়েস্টফেল্ট'}</h2>
+          <div className="text-center px-3 border-r border-[#e2e2e2]">
+            <h3 className="text-sm font-bold mb-0.5 text-[#121212]">মাসের ফোটোগ্যালারী</h3>
+            <h2 style={{ fontFamily: 'var(--font-headline)' }} className="text-2xl font-bold mb-1 leading-tight text-[#121212]">{articles[0]?.headlineBn || 'ল্যার্স ওয়ায়েস্টফেল্ট'}</h2>
             <p className="text-xs text-justify leading-relaxed font-normal text-[#555]">
               সার্থ ওয়ায়েস্টফেল্ট জীবন ও কাজের কথা নিয়ে একটি সুন্দর ফোটোগ্রাফিক প্রবন্ধ, সুইডেনের স্ক্যানেস্টার স্ক্যানার এবং ডিজাইনের ক্ষেত্রে উদ্ভূত। ছবি তোলার মাধ্যমে জীবনশৈলীর চিত্রগুলো যেন বাস্তবতার ছোঁয়া দেয়।
             </p>
-            <div className="text-right mt-2">
+            <div className="text-right mt-1">
               <Link href={`/article/${articles[0]?.slug || '#'}`} className="text-[11px] font-bold text-[#d33f3f] hover:underline">
                 আরো পড়ুন
               </Link>
             </div>
           </div>
           {/* Teaser 2 */}
-          <div className="text-center px-6 border-r border-[#e2e2e2]">
-            <h3 className="text-sm font-bold mb-1.5 text-[#121212]">ব্রিটিশ বিপ্লব</h3>
-            <h2 style={{ fontFamily: 'var(--font-headline)' }} className="text-2xl font-bold mb-1.5 leading-tight text-[#121212]">{articles[1]?.headlineBn || 'পিজে হার্ভে'}</h2>
+          <div className="text-center px-3 border-r border-[#e2e2e2]">
+            <h3 className="text-sm font-bold mb-0.5 text-[#121212]">ব্রিটিশ বিপ্লব</h3>
+            <h2 style={{ fontFamily: 'var(--font-headline)' }} className="text-2xl font-bold mb-1 leading-tight text-[#121212]">{articles[1]?.headlineBn || 'পিজে হার্ভে'}</h2>
             <p className="text-xs text-justify leading-relaxed font-normal text-[#555]">
               বেশ কয়েক বছর ধরে পিজে হার্ভে, যিনি নিজেকে সঙ্গীত দুনিয়ায় এক অনন্য স্থানে নিয়ে গেছেন, তার নতুন অ্যালবামটি নিয়ে আমরা আলোচনা করব। এই অ্যালবামটি আধুনিক সঙ্গীতের নতুন দিগন্ত উন্মোচন করে।
             </p>
-            <div className="text-right mt-2">
+            <div className="text-right mt-1">
               <Link href={`/article/${articles[1]?.slug || '#'}`} className="text-[11px] font-bold text-[#d33f3f] hover:underline">
                 আরো পড়ুন
               </Link>
             </div>
           </div>
           {/* Teaser 3 */}
-          <div className="text-center px-6">
-            <h3 className="text-sm font-bold mb-1.5 text-[#121212]">সিমা পরিপূরক</h3>
-            <h2 style={{ fontFamily: 'var(--font-headline)' }} className="text-2xl font-bold mb-1.5 leading-tight text-[#121212]">{articles[2]?.headlineBn || 'মার্সেল জামা'}</h2>
+          <div className="text-center px-3">
+            <h3 className="text-sm font-bold mb-0.5 text-[#121212]">সিমা পরিপূরক</h3>
+            <h2 style={{ fontFamily: 'var(--font-headline)' }} className="text-2xl font-bold mb-1 leading-tight text-[#121212]">{articles[2]?.headlineBn || 'মার্সেল জামা'}</h2>
             <p className="text-xs text-justify leading-relaxed font-normal text-[#555]">
               মার্সেল জামা এমন একজন প্রতিভাধর শিল্পী, যার চিত্রকর্মগুলো অত্যন্ত যত্ন সহকারে আঁকা। তার কাজের মধ্যে দিয়ে আমরা এক ভিন্ন জগতকে অনুভব করতে পারি যা অত্যন্ত বাস্তব ও মনোমুগ্ধকর।
             </p>
-            <div className="text-right mt-2">
+            <div className="text-right mt-1">
               <Link href={`/article/${articles[2]?.slug || '#'}`} className="text-[11px] font-bold text-[#d33f3f] hover:underline">
                 আরো পড়ুন
               </Link>
