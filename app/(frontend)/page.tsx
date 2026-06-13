@@ -254,6 +254,13 @@ export default async function HomePage() {
           </div>
         </div>
 
+        {/* SCORES STRIP */}
+        {scores.length > 0 && (
+          <div className="mb-4">
+            <ScoresStrip scores={scores} />
+          </div>
+        )}
+
         {/* LOWER SECTION */}
         <div className="grid grid-cols-3 gap-0">
           {/* Column 1 */}
