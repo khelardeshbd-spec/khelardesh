@@ -4,37 +4,42 @@ import Link from 'next/link';
 import ScoreCard from './ScoreCard';
 import { motion } from 'framer-motion';
 import { staggerContainer, slideInRight } from '@/lib/animations';
+import { useLiveScores } from '@/hooks/useLiveScores';
 
-interface Score {
-  id: number;
-  league: string;
-  teamA: string;
-  scoreA: string;
-  teamB: string;
-  scoreB: string;
-  winnerTeam?: string | null;
-  status: string;
-  isLive: boolean;
-  displayOrder: number;
-  home_team_logo?: string;
-  away_team_logo?: string;
+function formatUtcTime(utcTimeStr?: string) {
+  if (!utcTimeStr) return '';
+  try {
+    const date = new Date(utcTimeStr);
+    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  } catch (e) {
+    return '';
+  }
 }
 
 interface ScoresStripProps {
-  scores: Score[];
+  scores?: any[];
 }
 
-/**
- * ScoresStrip — Section 4 (mobile)
- * Horizontal scroll strip of score cards
- * Sort: Live first, then by displayOrder
- */
-export default function ScoresStrip({ scores }: ScoresStripProps) {
-  // Sort: live first, then by displayOrder
-  const sorted = [...scores].sort((a, b) => {
+export default function ScoresStrip({}: ScoresStripProps) {
+  const { data, isLoading, isError, source } = useLiveScores();
+
+  if (isLoading || isError || !data || data.length === 0) {
+    return null;
+  }
+
+  // Flatten the match cards to render them in a scrollable horizontal strip
+  const allMatches = data.flatMap((leagueData) =>
+    leagueData.matches.map((match) => ({
+      ...match,
+      league: leagueData.league,
+    }))
+  );
+
+  // Sort matches: live first
+  const sorted = [...allMatches].sort((a, b) => {
     if (a.isLive && !b.isLive) return -1;
     if (!a.isLive && b.isLive) return 1;
-    return a.displayOrder - b.displayOrder;
+    return 0;
   });
 
   if (sorted.length === 0) return null;
@@ -93,22 +98,34 @@ export default function ScoresStrip({ scores }: ScoresStripProps) {
           initial="hidden"
           animate="visible"
         >
-          {sorted.map((score) => (
-            <motion.div variants={slideInRight} key={score.id}>
-              <ScoreCard
-                league={score.league}
-                teamA={score.teamA}
-                scoreA={score.scoreA}
-                teamB={score.teamB}
-                scoreB={score.scoreB}
-                winnerTeam={score.winnerTeam}
-                status={score.status}
-                isLive={score.isLive}
-                home_team_logo={score.home_team_logo}
-                away_team_logo={score.away_team_logo}
-              />
-            </motion.div>
-          ))}
+          {sorted.map((match) => {
+            const homeScoreStr = match.homeScore !== null ? String(match.homeScore) : '-';
+            const awayScoreStr = match.awayScore !== null ? String(match.awayScore) : '-';
+            const status = match.isLive
+              ? (match.minute || 'Live')
+              : (match.homeScore === null
+                  ? formatUtcTime(match.utcTime)
+                  : 'পূর্ণ সময়');
+
+            const winnerTeam = match.homeScore !== null && match.awayScore !== null
+              ? (match.homeScore > match.awayScore ? 'A' : match.homeScore < match.awayScore ? 'B' : null)
+              : null;
+
+            return (
+              <motion.div variants={slideInRight} key={match.id}>
+                <ScoreCard
+                  league={match.league}
+                  teamA={match.home}
+                  scoreA={homeScoreStr}
+                  teamB={match.away}
+                  scoreB={awayScoreStr}
+                  winnerTeam={winnerTeam}
+                  status={status}
+                  isLive={match.isLive}
+                />
+              </motion.div>
+            );
+          })}
         </motion.div>
       </div>
     </section>

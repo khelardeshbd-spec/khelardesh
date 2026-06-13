@@ -8,5 +8,8 @@ const nextConfig = {
       },
     ],
   },
+  experimental: {
+    serverComponentsExternalPackages: ['@max-xoo/fotmob'],
+  },
 }
 module.exports = nextConfig
