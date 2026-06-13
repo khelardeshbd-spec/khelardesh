@@ -117,9 +117,9 @@ export default async function HomePage() {
           </div>
 
           {/* Tier 2: Controls & Info Bar */}
-          <div className="flex justify-between items-center border-b border-[#e2e2e2] pb-1.5 mb-1.5 text-xs font-semibold uppercase">
+          <div className="grid grid-cols-3 items-center border-b border-[#e2e2e2] pb-1.5 mb-1.5 text-xs font-semibold uppercase">
             {/* Left: Icons */}
-            <div className="flex items-center gap-5">
+            <div className="flex items-center gap-5 justify-start">
               {/* Search */}
               <button className="hover:opacity-75 transition-opacity text-[#121212]" aria-label="Search">
                 <svg className="w-[21px] h-[21px]" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
@@ -130,13 +130,13 @@ export default async function HomePage() {
             </div>
 
             {/* Center: Bengali Date Info */}
-            <div className="flex flex-col items-center text-center text-[11px] text-[#121212]">
+            <div className="flex flex-col items-center text-center text-[11px] text-[#121212] justify-center">
               <span className="font-bold">শনিবার, ১৩ জুন, ২০২৬</span>
               <span className="text-gray-500 text-[10px] mt-0.5">আজকের পত্রিকা</span>
             </div>
 
             {/* Right: Subscribe & Login buttons in Bengali */}
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-3 justify-end">
               <button className="border border-[#326891] text-[#326891] hover:bg-[#326891] hover:text-white transition-colors duration-150 px-4 py-1.5 rounded-[3px] font-extrabold text-[11px] tracking-wide">
                 সাবস্ক্রিপশন
               </button>
