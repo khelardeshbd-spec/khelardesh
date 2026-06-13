@@ -18,9 +18,11 @@ interface ESPNCompetitor {
 interface ESPNEvent {
   id: string;
   name: string;
+  date: string;
   season?: { slug?: string; year?: number };
-  league?: { name?: string; abbreviation?: string; slug?: string };
+  league?: { name?: string; abbreviation?: string; slug?: string; logos?: { href: string }[] };
   competitions: {
+    date: string;
     status: {
       type: {
         state: string; // "pre", "in", "post"
@@ -122,9 +124,13 @@ export async function GET() {
         topLeagueName ||
         'International';
 
+      const leagueLogo = event.league?.logos?.[0]?.href || '';
+
       return {
         id: event.id,
         league: normalizeLeague(rawLeague),
+        leagueLogo,
+        startTime: comp.date || event.date || '',
         home: {
           name: homeComp.team.displayName || homeComp.team.abbreviation,
           score: homeComp.score !== undefined ? parseInt(homeComp.score, 10) : null,
