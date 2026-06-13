@@ -342,7 +342,7 @@ export default async function HomePage() {
           <InfiniteArticleFeed
             skipIds={[
               ...(leads.map((l: { id: number }) => l.id)),
-              ...(articles.slice(0, 6).map((a: { id: number }) => a.id)),
+              ...(articles.slice(0, 4).map((a: { id: number }) => a.id)),
             ]}
           />
         </div>
