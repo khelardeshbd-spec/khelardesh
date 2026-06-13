@@ -75,7 +75,7 @@ export default async function ArticlePage({ params }: PageProps) {
   const categoryLabel = sport ? sport.toUpperCase() : (kicker || 'খেলাধুলা');
 
   return (
-    <div style={{ backgroundColor: '#ffffff', minHeight: '100vh', color: '#121212' }}>
+    <div style={{ backgroundColor: 'var(--bg-page)', minHeight: '100vh', color: 'var(--ink)' }}>
       {/* Scroll Progress Bar at the top */}
       <ReadingProgressBar />
 
@@ -83,7 +83,7 @@ export default async function ArticlePage({ params }: PageProps) {
       <div className="w-full max-w-[1140px] mx-auto px-4 lg:px-6 pt-6 pb-2">
         <Link 
           href="/"
-          className="inline-flex items-center gap-1.5 text-xs font-semibold tracking-wider uppercase text-gray-500 hover:text-black transition-colors"
+          className="inline-flex items-center gap-1.5 text-xs font-semibold tracking-wider uppercase text-[var(--ink-muted)] hover:text-[var(--ink)] transition-colors"
           style={{ fontFamily: 'var(--font-body)' }}
         >
           <span>←</span> Back to home
@@ -114,7 +114,7 @@ export default async function ArticlePage({ params }: PageProps) {
               fontSize: 'clamp(32px, 5vw, 48px)',
               lineHeight: 1.12,
               letterSpacing: '-0.02em',
-              color: '#121212',
+              color: 'var(--ink)',
               marginBottom: '16px',
             }}
           >
@@ -129,7 +129,7 @@ export default async function ArticlePage({ params }: PageProps) {
                 fontFamily: "var(--font-headline)",
                 fontWeight: 400,
                 fontSize: 'clamp(18px, 2vw, 21px)',
-                color: '#555555',
+                color: 'var(--ink-muted)',
                 lineHeight: 1.5,
                 marginBottom: '24px',
               }}
@@ -139,21 +139,28 @@ export default async function ArticlePage({ params }: PageProps) {
           )}
 
           {/* Byline and Timestamp row */}
-          <div className="flex items-center justify-between border-t border-b border-gray-100 py-3.5 mb-8">
+          <div className="flex items-center justify-between border-t border-b border-[var(--ink-border)] py-3.5 mb-8">
             <div className="flex items-center gap-3">
               {/* Author circular avatar */}
-              <div className="w-9 h-9 rounded-full bg-gray-100 flex items-center justify-center border border-gray-200 overflow-hidden text-xs font-bold text-gray-600">
+              <div 
+                className="w-9 h-9 rounded-full flex items-center justify-center border overflow-hidden text-xs font-bold"
+                style={{ 
+                  backgroundColor: 'var(--bg-surface)', 
+                  borderColor: 'var(--ink-border)',
+                  color: 'var(--ink)'
+                }}
+              >
                 {byline ? byline.slice(0, 2) : 'KD'}
               </div>
               <div className="flex flex-col">
                 <span 
-                  className="text-sm font-bold text-gray-900 leading-tight" 
+                  className="text-sm font-bold text-[var(--ink)] leading-tight" 
                   style={{ fontFamily: 'var(--font-body)' }}
                 >
                   {byline || 'খেলারদেশ প্রতিনিধি'}
                 </span>
                 <span 
-                  className="text-xs text-gray-500 flex items-center gap-1.5 mt-0.5" 
+                  className="text-xs text-[var(--ink-muted)] flex items-center gap-1.5 mt-0.5" 
                   style={{ fontFamily: 'var(--font-body)' }}
                 >
                   <span>{time}</span>
@@ -171,8 +178,12 @@ export default async function ArticlePage({ params }: PageProps) {
           {/* Hero Image / Video */}
           <div className="w-full mb-6">
             <div
-              className="w-full relative rounded-md overflow-hidden bg-gray-50 border border-gray-100"
-              style={{ aspectRatio: '16/9' }}
+              className="w-full relative rounded-md overflow-hidden border"
+              style={{ 
+                aspectRatio: '16/9',
+                backgroundColor: 'var(--bg-surface)',
+                borderColor: 'var(--ink-border)'
+              }}
             >
               {isVideo ? (
                 <video
@@ -194,7 +205,7 @@ export default async function ArticlePage({ params }: PageProps) {
             </div>
             {mediaCaption && (
               <p
-                className="mt-3 text-xs text-gray-500 leading-relaxed italic"
+                className="mt-3 text-xs text-[var(--ink-muted)] leading-relaxed italic"
                 style={{ fontFamily: "var(--font-body)" }}
                 lang="bn"
               >
@@ -219,7 +230,7 @@ export default async function ArticlePage({ params }: PageProps) {
                       fontWeight: 400, // Explicit normal weight per user guidance
                       fontSize: '19px',
                       lineHeight: '1.75',
-                      color: '#292929',
+                      color: 'var(--ink)',
                       marginBottom: '1.6em',
                       letterSpacing: '0.01em',
                     }}
@@ -228,11 +239,17 @@ export default async function ArticlePage({ params }: PageProps) {
                   </p>
 
                   {showRecirculation && (
-                    <div className="my-8 p-5 border-y border-x border-gray-100 bg-gray-50/50 rounded-lg flex flex-col gap-1.5">
-                      <span className="text-[10px] font-bold tracking-wider uppercase text-gray-400">WHAT TO READ NEXT</span>
+                    <div 
+                      className="my-8 p-5 border rounded-lg flex flex-col gap-1.5"
+                      style={{
+                        borderColor: 'var(--ink-border)',
+                        backgroundColor: 'var(--bg-surface)'
+                      }}
+                    >
+                      <span className="text-[10px] font-bold tracking-wider uppercase text-[var(--ink-muted)]">WHAT TO READ NEXT</span>
                       <Link 
                         href={`/article/${recircleArticle.slug}`} 
-                        className="text-base font-bold text-gray-900 hover:text-[#1a5c2e] transition-colors leading-snug"
+                        className="text-base font-bold text-[var(--ink)] hover:text-[#1a5c2e] transition-colors leading-snug"
                         style={{ fontFamily: 'var(--font-headline)' }}
                       >
                         {recircleArticle.headlineBn || recircleArticle.headline}
@@ -245,21 +262,29 @@ export default async function ArticlePage({ params }: PageProps) {
           </div>
 
           {/* Bottom bio info */}
-          <div className="mt-12 pt-8 border-t border-gray-100 flex items-start gap-4">
-            <div className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center border border-gray-200 overflow-hidden text-sm font-bold text-gray-600 flex-shrink-0">
+          <div className="mt-12 pt-8 border-t border-[var(--ink-border)] flex items-start gap-4">
+            <div 
+              className="w-12 h-12 rounded-full flex items-center justify-center border overflow-hidden text-sm font-bold flex-shrink-0"
+              style={{
+                backgroundColor: 'var(--bg-surface)',
+                borderColor: 'var(--ink-border)',
+                color: 'var(--ink)'
+              }}
+            >
               {byline ? byline.slice(0, 2) : 'KD'}
             </div>
             <div>
-              <h4 className="text-sm font-bold text-gray-950" style={{ fontFamily: 'var(--font-body)' }}>
+              <h4 className="text-sm font-bold text-[var(--ink)]" style={{ fontFamily: 'var(--font-body)' }}>
                 {byline || 'খেলারদেশ রিপোর্টার'}
               </h4>
-              <p className="text-xs text-gray-500 mt-1 leading-relaxed" style={{ fontFamily: 'var(--font-body)' }}>
+              <p className="text-xs text-[var(--ink-muted)] mt-1 leading-relaxed" style={{ fontFamily: 'var(--font-body)' }}>
                 খেলাধুলার সব খবর ও বিশ্লেষণ সবার আগে পেতে চোখ রাখুন খেলারদেশে।
               </p>
             </div>
           </div>
 
         </article>
+
 
         {/* Right Sidebar */}
         <div className="hidden lg:block pt-4">
