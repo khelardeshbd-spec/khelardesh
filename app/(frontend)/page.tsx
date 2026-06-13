@@ -120,15 +120,6 @@ export default async function HomePage() {
           <div className="flex justify-between items-center border-b border-[#e2e2e2] pb-1.5 mb-1.5 text-xs font-semibold uppercase">
             {/* Left: Icons */}
             <div className="flex items-center gap-5">
-              {/* Sections / Hamburger */}
-              <button className="hover:opacity-75 transition-opacity text-[#121212]" aria-label="Sections">
-                <svg className="w-[21px] h-[21px]" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-                  <line x1="3" y1="12" x2="21" y2="12"></line>
-                  <line x1="3" y1="6" x2="21" y2="6"></line>
-                  <line x1="3" y1="18" x2="21" y2="18"></line>
-                </svg>
-              </button>
-              
               {/* Search */}
               <button className="hover:opacity-75 transition-opacity text-[#121212]" aria-label="Search">
                 <svg className="w-[21px] h-[21px]" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
@@ -146,10 +137,10 @@ export default async function HomePage() {
 
             {/* Right: Subscribe & Login buttons in Bengali */}
             <div className="flex items-center gap-3">
-              <button className="bg-[#326891] text-white hover:bg-[#275272] transition-colors px-4 py-1.5 rounded-[3px] font-extrabold text-[11px] tracking-wide">
+              <button className="border border-[#326891] text-[#326891] hover:bg-[#326891] hover:text-white transition-colors duration-150 px-4 py-1.5 rounded-[3px] font-extrabold text-[11px] tracking-wide">
                 সাবস্ক্রিপশন
               </button>
-              <button className="bg-[#121212] text-white hover:bg-[#222222] transition-colors px-4 py-1.5 rounded-[3px] font-extrabold text-[11px] tracking-wide">
+              <button className="border border-[#121212] text-[#121212] hover:bg-[#121212] hover:text-white transition-colors duration-150 px-4 py-1.5 rounded-[3px] font-extrabold text-[11px] tracking-wide">
                 লগইন
               </button>
             </div>
@@ -190,14 +181,12 @@ export default async function HomePage() {
         {/* TEASER ROW */}
         <div className="grid grid-cols-3 gap-0 border-b border-[#e2e2e2] pb-3 mb-3">
           {/* Teaser 1 */}
-          <div className="text-center px-6 border-r border-[#e2e2e2] flex flex-col justify-between">
-            <div>
-              <h3 className="text-sm font-bold mb-1.5 text-[#121212]">মাসের ফোটোগ্যালারী</h3>
-              <h2 style={{ fontFamily: 'var(--font-headline)' }} className="text-2xl font-bold mb-1.5 leading-tight text-[#121212]">{articles[0]?.headlineBn || 'ল্যার্স ওয়ায়েস্টফেল্ট'}</h2>
-              <p className="text-xs text-justify leading-relaxed font-normal text-[#555]">
-                সার্থ ওয়ায়েস্টফেল্ট জীবন ও কাজের কথা নিয়ে একটি সুন্দর ফোটোগ্রাফিক প্রবন্ধ, সুইডেনের স্ক্যানেস্টার স্ক্যানার এবং ডিজাইনের ক্ষেত্রে উদ্ভূত। ছবি তোলার মাধ্যমে জীবনশৈলীর চিত্রগুলো যেন বাস্তবতার ছোঁয়া দেয়।
-              </p>
-            </div>
+          <div className="text-center px-6 border-r border-[#e2e2e2]">
+            <h3 className="text-sm font-bold mb-1.5 text-[#121212]">মাসের ফোটোগ্যালারী</h3>
+            <h2 style={{ fontFamily: 'var(--font-headline)' }} className="text-2xl font-bold mb-1.5 leading-tight text-[#121212]">{articles[0]?.headlineBn || 'ল্যার্স ওয়ায়েস্টফেল্ট'}</h2>
+            <p className="text-xs text-justify leading-relaxed font-normal text-[#555]">
+              সার্থ ওয়ায়েস্টফেল্ট জীবন ও কাজের কথা নিয়ে একটি সুন্দর ফোটোগ্রাফিক প্রবন্ধ, সুইডেনের স্ক্যানেস্টার স্ক্যানার এবং ডিজাইনের ক্ষেত্রে উদ্ভূত। ছবি তোলার মাধ্যমে জীবনশৈলীর চিত্রগুলো যেন বাস্তবতার ছোঁয়া দেয়।
+            </p>
             <div className="text-right mt-2">
               <Link href={`/article/${articles[0]?.slug || '#'}`} className="text-[11px] font-bold text-[#d33f3f] hover:underline">
                 আরো পড়ুন
@@ -205,14 +194,12 @@ export default async function HomePage() {
             </div>
           </div>
           {/* Teaser 2 */}
-          <div className="text-center px-6 border-r border-[#e2e2e2] flex flex-col justify-between">
-            <div>
-              <h3 className="text-sm font-bold mb-1.5 text-[#121212]">ব্রিটিশ বিপ্লব</h3>
-              <h2 style={{ fontFamily: 'var(--font-headline)' }} className="text-2xl font-bold mb-1.5 leading-tight text-[#121212]">{articles[1]?.headlineBn || 'পিজে হার্ভে'}</h2>
-              <p className="text-xs text-justify leading-relaxed font-normal text-[#555]">
-                বেশ কয়েক বছর ধরে পিজে হার্ভে, যিনি নিজেকে সঙ্গীত দুনিয়ায় এক অনন্য স্থানে নিয়ে গেছেন, তার নতুন অ্যালবামটি নিয়ে আমরা আলোচনা করব। এই অ্যালবামটি আধুনিক সঙ্গীতের নতুন দিগন্ত উন্মোচন করে।
-              </p>
-            </div>
+          <div className="text-center px-6 border-r border-[#e2e2e2]">
+            <h3 className="text-sm font-bold mb-1.5 text-[#121212]">ব্রিটিশ বিপ্লব</h3>
+            <h2 style={{ fontFamily: 'var(--font-headline)' }} className="text-2xl font-bold mb-1.5 leading-tight text-[#121212]">{articles[1]?.headlineBn || 'পিজে হার্ভে'}</h2>
+            <p className="text-xs text-justify leading-relaxed font-normal text-[#555]">
+              বেশ কয়েক বছর ধরে পিজে হার্ভে, যিনি নিজেকে সঙ্গীত দুনিয়ায় এক অনন্য স্থানে নিয়ে গেছেন, তার নতুন অ্যালবামটি নিয়ে আমরা আলোচনা করব। এই অ্যালবামটি আধুনিক সঙ্গীতের নতুন দিগন্ত উন্মোচন করে।
+            </p>
             <div className="text-right mt-2">
               <Link href={`/article/${articles[1]?.slug || '#'}`} className="text-[11px] font-bold text-[#d33f3f] hover:underline">
                 আরো পড়ুন
@@ -220,14 +207,12 @@ export default async function HomePage() {
             </div>
           </div>
           {/* Teaser 3 */}
-          <div className="text-center px-6 flex flex-col justify-between">
-            <div>
-              <h3 className="text-sm font-bold mb-1.5 text-[#121212]">সিমা পরিপূরক</h3>
-              <h2 style={{ fontFamily: 'var(--font-headline)' }} className="text-2xl font-bold mb-1.5 leading-tight text-[#121212]">{articles[2]?.headlineBn || 'মার্সেল জামা'}</h2>
-              <p className="text-xs text-justify leading-relaxed font-normal text-[#555]">
-                মার্সেল জামা এমন একজন প্রতিভাধর শিল্পী, যার চিত্রকর্মগুলো অত্যন্ত যত্ন সহকারে আঁকা। তার কাজের মধ্যে দিয়ে আমরা এক ভিন্ন জগতকে অনুভব করতে পারি যা অত্যন্ত বাস্তব ও মনোমুগ্ধকর।
-              </p>
-            </div>
+          <div className="text-center px-6">
+            <h3 className="text-sm font-bold mb-1.5 text-[#121212]">সিমা পরিপূরক</h3>
+            <h2 style={{ fontFamily: 'var(--font-headline)' }} className="text-2xl font-bold mb-1.5 leading-tight text-[#121212]">{articles[2]?.headlineBn || 'মার্সেল জামা'}</h2>
+            <p className="text-xs text-justify leading-relaxed font-normal text-[#555]">
+              মার্সেল জামা এমন একজন প্রতিভাধর শিল্পী, যার চিত্রকর্মগুলো অত্যন্ত যত্ন সহকারে আঁকা। তার কাজের মধ্যে দিয়ে আমরা এক ভিন্ন জগতকে অনুভব করতে পারি যা অত্যন্ত বাস্তব ও মনোমুগ্ধকর।
+            </p>
             <div className="text-right mt-2">
               <Link href={`/article/${articles[2]?.slug || '#'}`} className="text-[11px] font-bold text-[#d33f3f] hover:underline">
                 আরো পড়ুন
@@ -271,24 +256,22 @@ export default async function HomePage() {
         {/* LOWER SECTION */}
         <div className="grid grid-cols-3 gap-0">
           {/* Column 1 */}
-          <div className="border-r border-[#e2e2e2] pr-6 flex flex-col justify-between">
-             <div>
-               <h3 className="font-bold text-lg mb-3 border-b-2 border-[#121212] pb-1 uppercase tracking-wider">সিনেমা</h3>
-               <div className="w-full h-48 mb-4 border border-[#e2e2e2] p-1">
-                 {articles[3]?.mediaUrl ? (
-                    <img src={articles[3].mediaUrl} className="w-full h-full object-cover" alt="Cinema" />
-                 ) : (
-                    <div className="w-full h-full bg-gray-200" />
-                 )}
-               </div>
-               <h2 style={{ fontFamily: 'var(--font-headline)' }} className="text-[1.75rem] font-bold mb-3 leading-tight">
-                 {articles[3]?.headlineBn || 'ল\'একুমে দেস জোউর্স: ফরাসি মিশেল গন্ড্রির কাঙ্ক্ষিত প্রত্যাবর্তন'}
-               </h2>
-               <p className="text-sm font-bold italic mb-3">জুলিয়ান বেলট্রেন দ্বারা</p>
-               <p className="text-xs text-justify leading-relaxed">
-                 মিশেল গন্ড্রি, যিনি তার অভিনব এবং পরাবাস্তব শৈলীর জন্য পরিচিত, অবশেষে &apos;ল&apos;একুমে দেস জোউর্স&apos;-এর মাধ্যমে আবার রূপালী পর্দায় ফিরে এসেছেন। বোরিস ভিয়ানের বিখ্যাত উপন্যাসের উপর ভিত্তি করে নির্মিত এই চলচ্চিত্রটি একটি স্বপ্নময় অথচ করুণ প্রেমের গল্প বলে। গন্ড্রির জাদুকরী পরিচালনায় এই ছবিটি দর্শকদের এক ভিন্ন জগতে নিয়ে যায়।
-               </p>
+          <div className="border-r border-[#e2e2e2] pr-6">
+             <h3 className="font-bold text-lg mb-3 border-b-2 border-[#121212] pb-1 uppercase tracking-wider">সিনেমা</h3>
+             <div className="w-full h-48 mb-4 border border-[#e2e2e2] p-1">
+               {articles[3]?.mediaUrl ? (
+                  <img src={articles[3].mediaUrl} className="w-full h-full object-cover" alt="Cinema" />
+               ) : (
+                  <div className="w-full h-full bg-gray-200" />
+               )}
              </div>
+             <h2 style={{ fontFamily: 'var(--font-headline)' }} className="text-[1.75rem] font-bold mb-3 leading-tight">
+               {articles[3]?.headlineBn || 'ল\'একুমে দেস জোউর্স: ফরাসি মিশেল গন্ড্রির কাঙ্ক্ষিত প্রত্যাবর্তন'}
+             </h2>
+             <p className="text-sm font-bold italic mb-3">জুলিয়ান বেলট্রেন দ্বারা</p>
+             <p className="text-xs text-justify leading-relaxed">
+               মিশেল গন্ড্রি, যিনি তার অভিনব এবং পরাবাস্তব শৈলীর জন্য পরিচিত, অবশেষে &apos;ল&apos;একুমে দেস জোউর্স&apos;-এর মাধ্যমে আবার রূপালী পর্দায় ফিরে এসেছেন। বোরিস ভিয়ানের বিখ্যাত উপন্যাসের উপর ভিত্তি করে নির্মিত এই চলচ্চিত্রটি একটি স্বপ্নময় অথচ করুণ প্রেমের গল্প বলে। গন্ড্রির জাদুকরী পরিচালনায় এই ছবিটি দর্শকদের এক ভিন্ন জগতে নিয়ে যায়।
+             </p>
              <div className="text-right mt-3">
                <Link href={`/article/${articles[3]?.slug || '#'}`} className="text-[11px] font-bold text-[#d33f3f] hover:underline">
                  আরো পড়ুন
@@ -297,18 +280,16 @@ export default async function HomePage() {
           </div>
           
           {/* Column 2 */}
-          <div className="border-r border-[#e2e2e2] px-6 flex flex-col justify-between">
-             <div>
-               <h3 className="font-bold text-lg mb-3 border-b-2 border-[#121212] pb-1 uppercase tracking-wider">সঙ্গীত</h3>
-               <h2 style={{ fontFamily: 'var(--font-headline)' }} className="text-[2.2rem] font-bold mb-3 leading-[1.1]">
-                 জার্মান শিল্পী কিটনের নতুন বই
-               </h2>
-               <p className="text-sm font-bold italic mb-4">মার্টিন লিক দ্বারা</p>
-               <div className="text-[11px] text-justify columns-2 gap-4 leading-relaxed">
-                 <p className="mb-2">জার্মান শিল্পী কিটন সম্প্রতি তার নতুন বইটি প্রকাশ করেছেন, যা শিল্পপ্রেমীদের মধ্যে ব্যাপক সাড়া ফেলেছে। এই বইটিতে তার জীবনের নানা অভিজ্ঞতা, সৃজনশীলতার উৎস এবং শিল্পের প্রতি তার গভীর অনুরাগের কথা বর্ণনা করা হয়েছে।</p>
-                 <p className="mb-2">বইটিতে অনেক অপ্রকাশিত ছবি and স্কেচ রয়েছে, যা তার কাজের পেছনের পরিশ্রমকে তুলে ধরে। কিটনের মতে, শিল্প কেবল একটি পেশা নয়, এটি আত্মপ্রকাশের একটি মাধ্যম।</p>
-                 <p>তার এই নতুন বইটি কেবল শিল্পীদের জন্যই নয়, সাধারণ মানুষের জন্যও অনুপ্রেরণামূলক হতে পারে বলে সমালোচকরা মত প্রকাশ করেছেন।</p>
-               </div>
+          <div className="border-r border-[#e2e2e2] px-6">
+             <h3 className="font-bold text-lg mb-3 border-b-2 border-[#121212] pb-1 uppercase tracking-wider">সঙ্গীত</h3>
+             <h2 style={{ fontFamily: 'var(--font-headline)' }} className="text-[2.2rem] font-bold mb-3 leading-[1.1]">
+               জার্মান শিল্পী কিটনের নতুন বই
+             </h2>
+             <p className="text-sm font-bold italic mb-4">মার্টিন লিক দ্বারা</p>
+             <div className="text-[11px] text-justify columns-2 gap-4 leading-relaxed">
+               <p className="mb-2">জার্মান শিল্পী কিটন সম্প্রতি তার নতুন বইটি প্রকাশ করেছেন, যা শিল্পপ্রেমীদের মধ্যে ব্যাপক সাড়া ফেলেছে। এই বইটিতে তার জীবনের নানা অভিজ্ঞতা, সৃজনশীলতার উৎস এবং শিল্পের প্রতি তার গভীর অনুরাগের কথা বর্ণনা করা হয়েছে।</p>
+               <p className="mb-2">বইটিতে অনেক অপ্রকাশিত ছবি and স্কেচ রয়েছে, যা তার কাজের পেছনের পরিশ্রমকে তুলে ধরে। কিটনের মতে, শিল্প কেবল একটি পেশা নয়, এটি আত্মপ্রকাশের একটি মাধ্যম।</p>
+               <p>তার এই নতুন বইটি কেবল শিল্পীদের জন্যই নয়, সাধারণ মানুষের জন্যও অনুপ্রেরণামূলক হতে পারে বলে সমালোচকরা মত প্রকাশ করেছেন।</p>
              </div>
              <div className="text-right mt-3">
                <Link href="#" className="text-[11px] font-bold text-[#d33f3f] hover:underline">
@@ -318,24 +299,22 @@ export default async function HomePage() {
           </div>
           
           {/* Column 3 */}
-          <div className="pl-6 flex flex-col justify-between">
-             <div>
-               <h3 className="font-bold text-lg mb-3 border-b-2 border-[#121212] pb-1 uppercase tracking-wider">সরাসরি</h3>
-               <div className="w-full h-40 mb-4 border border-[#e2e2e2] p-1">
-                 {articles[4]?.mediaUrl ? (
-                    <img src={articles[4].mediaUrl} className="w-full h-full object-cover" alt="Live Event" />
-                 ) : (
-                    <div className="w-full h-full bg-gray-200" />
-                 )}
-               </div>
-               <h2 style={{ fontFamily: 'var(--font-headline)' }} className="text-[1.75rem] font-bold mb-3 leading-tight">
-                 {articles[4]?.headlineBn || 'গ্রান রেক্সে দ্য ডিসেম্ব্রিস্টস'}
-               </h2>
-               <p className="text-sm font-bold italic mb-3">ক্যানিয়া কাওন দ্বারা</p>
-               <p className="text-xs text-justify leading-relaxed">
-                 দ্য ডিসেম্ব্রিস্টস ব্যান্ডের সরাসরি পারফরম্যান্স সবসময়ই এক অনন্য অভিজ্ঞতা। গ্রান রেক্সে তাদের সাম্প্রতিক কনসার্টটি ছিল জাদুকরী। মঞ্চের সজ্জা, আলোর খেলা এবং তাদের মনোমুগ্ধকর সঙ্গীত দর্শকদের আবিষ্ট করে রেখেছিল। ব্যান্ডের লিড সিঙ্গার তার আবেগপূর্ণ কণ্ঠ দিয়ে প্রতিটি গানকে জীবন্ত করে তুলেছিলেন। এটি নিঃসন্দেহে বছরের অন্যতম সেরা কনসার্ট ছিল।
-               </p>
+          <div className="pl-6">
+             <h3 className="font-bold text-lg mb-3 border-b-2 border-[#121212] pb-1 uppercase tracking-wider">সরাসরি</h3>
+             <div className="w-full h-40 mb-4 border border-[#e2e2e2] p-1">
+               {articles[4]?.mediaUrl ? (
+                  <img src={articles[4].mediaUrl} className="w-full h-full object-cover" alt="Live Event" />
+               ) : (
+                  <div className="w-full h-full bg-gray-200" />
+               )}
              </div>
+             <h2 style={{ fontFamily: 'var(--font-headline)' }} className="text-[1.75rem] font-bold mb-3 leading-tight">
+               {articles[4]?.headlineBn || 'গ্রান রেক্সে দ্য ডিসেম্ব্রিস্টস'}
+             </h2>
+             <p className="text-sm font-bold italic mb-3">ক্যানিয়া কাওন দ্বারা</p>
+             <p className="text-xs text-justify leading-relaxed">
+               দ্য ডিসেম্ব্রিস্টস ব্যান্ডের সরাসরি পারফরম্যান্স সবসময়ই এক অনন্য অভিজ্ঞতা। গ্রান রেক্সে তাদের সাম্প্রতিক কনসার্টটি ছিল জাদুকরী। মঞ্চের সজ্জা, আলোর খেলা এবং তাদের মনোমুগ্ধকর সঙ্গীত দর্শকদের আবিষ্ট করে রেখেছিল। ব্যান্ডের লিড সিঙ্গার তার আবেগপূর্ণ কণ্ঠ দিয়ে প্রতিটি গানকে জীবন্ত করে তুলেছিলেন। এটি নিঃসন্দেহে বছরের অন্যতম সেরা কনসার্ট ছিল।
+             </p>
              <div className="text-right mt-3">
                <Link href={`/article/${articles[4]?.slug || '#'}`} className="text-[11px] font-bold text-[#d33f3f] hover:underline">
                  আরো পড়ুন
