@@ -14,104 +14,18 @@
    * 2. Primary / Display  →  Kalpurush  →  Bengali headlines / display text 
    * 3. Secondary / Body   →  Kalpurush  →  Bengali body / UI text 
    --------------------------------------------------------------------------- */
-/* Manowar Murshidabad Regular */
+/* MAK Zakigonj */
 @font-face {
-  font-family: 'Manowar Murshidabad';
-  src: url('/fonts/ManowarMurshidabad.ttf') format('truetype');
-  font-weight: 300;
+  font-family: 'MAK Zakigonj';
+  src: url('/fonts/LiMAKZakigonjUnicode-Regular.ttf') format('truetype');
+  font-weight: normal;
   font-style: normal;
   font-display: swap;
 }
 @font-face {
-  font-family: 'Manowar Murshidabad';
-  src: url('/fonts/ManowarMurshidabad.ttf') format('truetype');
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: 'Manowar Murshidabad';
-  src: url('/fonts/ManowarMurshidabad.ttf') format('truetype');
-  font-weight: 500;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: 'Manowar Murshidabad';
-  src: url('/fonts/ManowarMurshidabad.ttf') format('truetype');
-  font-weight: 600;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: 'Manowar Murshidabad';
-  src: url('/fonts/ManowarMurshidabad.ttf') format('truetype');
-  font-weight: 700;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: 'Manowar Murshidabad';
-  src: url('/fonts/ManowarMurshidabad.ttf') format('truetype');
-  font-weight: 800;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: 'Manowar Murshidabad';
-  src: url('/fonts/ManowarMurshidabad.ttf') format('truetype');
-  font-weight: 900;
-  font-style: normal;
-  font-display: swap;
-}
-
-/* Manowar Murshidabad Italic */
-@font-face {
-  font-family: 'Manowar Murshidabad';
-  src: url('/fonts/ManowarMurshidabad-Italic.ttf') format('truetype');
-  font-weight: 300;
-  font-style: italic;
-  font-display: swap;
-}
-@font-face {
-  font-family: 'Manowar Murshidabad';
-  src: url('/fonts/ManowarMurshidabad-Italic.ttf') format('truetype');
-  font-weight: 400;
-  font-style: italic;
-  font-display: swap;
-}
-@font-face {
-  font-family: 'Manowar Murshidabad';
-  src: url('/fonts/ManowarMurshidabad-Italic.ttf') format('truetype');
-  font-weight: 500;
-  font-style: italic;
-  font-display: swap;
-}
-@font-face {
-  font-family: 'Manowar Murshidabad';
-  src: url('/fonts/ManowarMurshidabad-Italic.ttf') format('truetype');
-  font-weight: 600;
-  font-style: italic;
-  font-display: swap;
-}
-@font-face {
-  font-family: 'Manowar Murshidabad';
-  src: url('/fonts/ManowarMurshidabad-Italic.ttf') format('truetype');
-  font-weight: 700;
-  font-style: italic;
-  font-display: swap;
-}
-@font-face {
-  font-family: 'Manowar Murshidabad';
-  src: url('/fonts/ManowarMurshidabad-Italic.ttf') format('truetype');
-  font-weight: 800;
-  font-style: italic;
-  font-display: swap;
-}
-@font-face {
-  font-family: 'Manowar Murshidabad';
-  src: url('/fonts/ManowarMurshidabad-Italic.ttf') format('truetype');
-  font-weight: 900;
+  font-family: 'MAK Zakigonj';
+  src: url('/fonts/LiMAKZakigonjUnicode-Italic.ttf') format('truetype');
+  font-weight: normal;
   font-style: italic;
   font-display: swap;
 }
@@ -383,7 +297,7 @@
 /* Fallback / Base — applied on <html> and overridden by data-theme */
 :root {
   --font-body: 'Prothoma', 'Kalpurush', 'Noto Serif Bengali', 'Hind Siliguri', sans-serif;
-  --font-headline: 'Manowar Murshidabad', 'Noto Serif Bengali', serif;
+  --font-headline: 'MAK Zakigonj', 'Noto Serif Bengali', serif;
   
   --bg-page:      #F8F1E3;
   --bg-surface:   #EFE7D3;
