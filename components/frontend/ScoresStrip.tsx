@@ -1,63 +1,49 @@
 'use client';
 
 import Link from 'next/link';
+import ScoreCard from './ScoreCard';
 import { useLiveScores } from '@/hooks/useLiveScores';
 
-function formatStatus(isLive: boolean, minute: string | null, utcTime?: string, homeScore?: number | null) {
-  if (isLive) {
-    return {
-      text: minute || 'Live',
-      isLive: true
-    };
-  }
-  
-  if (homeScore !== null) {
-    return {
-      text: 'পূর্ণ সময়',
-      isLive: false
-    };
-  }
-
-  if (!utcTime) return { text: '', isLive: false };
-
-  try {
-    const date = new Date(utcTime);
-    // Format to e.g., "3:00 PM"
-    return {
-      text: date.toLocaleTimeString('bn-BD', { hour: '2-digit', minute: '2-digit', hour12: true }),
-      isLive: false
-    };
-  } catch (e) {
-    return { text: '', isLive: false };
-  }
+function toBengaliNumerals(numStr: string | number | null): string {
+  if (numStr === null || numStr === undefined) return '';
+  const bnNumerals = ['০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯'];
+  return String(numStr).replace(/[0-9]/g, w => bnNumerals[parseInt(w, 10)]);
 }
 
-export default function ScoresStrip({ scores }: { scores?: any[] }) {
+function translateStatus(status: string): string {
+  const s = status.toLowerCase();
+  if (s === 'ft' || s === 'full time') return 'পূর্ণ সময়';
+  if (s === 'ht' || s === 'half time') return 'বিরতি';
+  if (s === 'scheduled') return 'আসন্ন';
+  if (s === 'live') return 'লাইভ';
+  if (s.includes("'")) return toBengaliNumerals(s);
+  return status; // fallback
+}
+
+export default function ScoresStrip() {
   const { data, isLoading, isError } = useLiveScores();
 
   if (isLoading || isError || !data || data.length === 0) {
     return null;
   }
 
-  // Flatten the match cards to render them in a clean vertical-border layout
-  const allMatches = data.flatMap((leagueData) =>
-    leagueData.matches.map((match) => ({
-      ...match,
-      league: leagueData.league,
-    }))
-  );
-
   // Sort matches: live first
-  const sorted = [...allMatches].sort((a, b) => {
+  const sorted = [...data].sort((a, b) => {
     if (a.isLive && !b.isLive) return -1;
     if (!a.isLive && b.isLive) return 1;
+    // active games over finished games
+    if (!a.isFinished && b.isFinished) return -1;
+    if (a.isFinished && !b.isFinished) return 1;
     return 0;
   });
 
   if (sorted.length === 0) return null;
 
   // Format today's date in Bengali (e.g. "১৩ জুনের খেলাসমূহ")
-  const todayStr = new Date().toLocaleDateString('bn-BD', { day: 'numeric', month: 'long' }) + '-এর খেলাসমূহ';
+  const bnMonths = ['জানুয়ারি', 'ফেব্রুয়ারি', 'মার্চ', 'এপ্রিল', 'মে', 'জুন', 'জুলাই', 'আগস্ট', 'সেপ্টেম্বর', 'অক্টোবর', 'নভেম্বর', 'ডিসেম্বর'];
+  const d = new Date();
+  const dayBn = toBengaliNumerals(d.getDate());
+  const todayStr = `${dayBn} ${bnMonths[d.getMonth()]}-এর খেলাসমূহ`;
 
   return (
     <section 
@@ -71,67 +57,34 @@ export default function ScoresStrip({ scores }: { scores?: any[] }) {
       </h2>
 
       {/* Horizontal Scroll Area */}
-      <div className="scrollbar-none overflow-x-auto flex gap-6 items-start">
+      <div className="scrollbar-none overflow-x-auto flex gap-6 items-start pb-2">
         {sorted.map((match, idx) => {
-          const statusInfo = formatStatus(match.isLive, match.minute, match.utcTime, match.homeScore);
-          const showScore = match.homeScore !== null && match.awayScore !== null;
+          let winnerTeam: "A" | "B" | null = null;
+          if (match.isFinished) {
+             if (match.home.isWinner) winnerTeam = "A";
+             if (match.away.isWinner) winnerTeam = "B";
+          }
 
           return (
-            <div 
+            <ScoreCard
               key={match.id}
-              className={`flex-shrink-0 min-w-[200px] flex flex-col gap-2 ${
-                idx > 0 ? 'border-l border-[#e2e2e2] pl-6' : ''
-              }`}
-            >
-              {/* Kickoff time or Status */}
-              <div className="flex items-center gap-1.5">
-                {statusInfo.isLive && (
-                  <span className="w-1.5 h-1.5 rounded-full bg-red-600 animate-pulse flex-shrink-0" />
-                )}
-                <span className={`text-[11px] font-semibold tracking-wide ${
-                  statusInfo.isLive ? 'text-red-600' : 'text-[#666666]'
-                }`}>
-                  {statusInfo.text}
-                </span>
-              </div>
-
-              {/* Teams List */}
-              <div className="flex flex-col gap-1.5">
-                {/* Home Team */}
-                <div className="flex items-center justify-between text-[13px] font-medium text-[#222222]">
-                  <div className="flex items-center gap-2 overflow-hidden mr-2">
-                    {/* Placeholder flag/circle */}
-                    <div className="w-4 h-4 rounded-sm bg-[#e2e2e2] flex items-center justify-center text-[9px] font-bold text-[#555] flex-shrink-0">
-                      {match.home.charAt(0)}
-                    </div>
-                    <span className="truncate" title={match.home}>{match.home}</span>
-                  </div>
-                  {showScore && (
-                    <span className="font-bold text-[#121212] ml-auto">{match.homeScore}</span>
-                  )}
-                </div>
-
-                {/* Away Team */}
-                <div className="flex items-center justify-between text-[13px] font-medium text-[#222222]">
-                  <div className="flex items-center gap-2 overflow-hidden mr-2">
-                    {/* Placeholder flag/circle */}
-                    <div className="w-4 h-4 rounded-sm bg-[#e2e2e2] flex items-center justify-center text-[9px] font-bold text-[#555] flex-shrink-0">
-                      {match.away.charAt(0)}
-                    </div>
-                    <span className="truncate" title={match.away}>{match.away}</span>
-                  </div>
-                  {showScore && (
-                    <span className="font-bold text-[#121212] ml-auto">{match.awayScore}</span>
-                  )}
-                </div>
-              </div>
-            </div>
+              league={match.league}
+              teamA={match.home.name}
+              scoreA={match.home.score !== null ? toBengaliNumerals(match.home.score) : '-'}
+              teamB={match.away.name}
+              scoreB={match.away.score !== null ? toBengaliNumerals(match.away.score) : '-'}
+              status={translateStatus(match.statusText)}
+              isLive={match.isLive}
+              winnerTeam={winnerTeam}
+              home_team_logo={match.home.logo}
+              away_team_logo={match.away.logo}
+            />
           );
         })}
       </div>
 
       {/* Footer bar */}
-      <div className="flex items-center justify-between mt-4 pt-3 border-t border-[#f0f0f0]">
+      <div className="flex items-center justify-between mt-2 pt-3 border-t border-[#f0f0f0]">
         <Link
           href="/scores"
           className="text-[11px] font-semibold text-[#121212] hover:underline"

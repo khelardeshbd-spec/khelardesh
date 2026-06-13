@@ -2,21 +2,24 @@
 
 import useSWR from 'swr'
 
-export type Match = {
+export type ESPNMatch = {
   id: string
-  home: string
-  away: string
-  homeScore: number | null
-  awayScore: number | null
-  isLive: boolean
-  minute: string | null
-  utcTime?: string
-}
-
-export type ScoreData = {
   league: string
-  leagueId: number
-  matches: Match[]
+  home: {
+    name: string
+    score: number | null
+    logo: string
+    isWinner: boolean
+  }
+  away: {
+    name: string
+    score: number | null
+    logo: string
+    isWinner: boolean
+  }
+  isLive: boolean
+  isFinished: boolean
+  statusText: string
 }
 
 const fetcher = (url: string) => fetch(url).then((res) => {
@@ -33,28 +36,14 @@ export function useLiveScores() {
     dedupingInterval: 25000,
   })
 
-  // Format data to ScoreData[] shape regardless of the source
-  let formattedData: ScoreData[] | undefined = undefined
-
-  if (response) {
-    if (response.source === 'fotmob') {
-      formattedData = response.data
-    } else if (response.source === 'flashscore') {
-      const flashscoreMatches = response.data?.matches || []
-      formattedData = [
-        {
-          league: 'Live Scores',
-          leagueId: 0,
-          matches: flashscoreMatches,
-        },
-      ]
-    }
+  let matches: ESPNMatch[] = []
+  if (response?.matches) {
+    matches = response.matches
   }
 
   return {
-    data: formattedData,
+    data: matches,
     isLoading,
     isError: !!error,
-    source: response?.source as 'fotmob' | 'flashscore' | undefined,
   }
 }

@@ -248,11 +248,9 @@ export default async function ArticlePage({ params }: PageProps) {
         {/* Right Sidebar (36%) */}
         <div className="px-4 lg:px-0 pt-8 lg:pt-0">
           <div className="sticky top-[120px] max-h-[calc(100vh-140px)] overflow-y-auto scrollbar-none flex flex-col gap-6">
-            {scoresList.length > 0 && (
-              <div>
-                <ScoresStrip scores={scoresList} />
-              </div>
-            )}
+            <div>
+              <ScoresStrip />
+            </div>
             <BriefsColumn articles={articlesList} />
           </div>
         </div>
