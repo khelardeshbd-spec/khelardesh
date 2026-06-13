@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import '@/styles/globals.css';
 import SmartHeader from '@/components/frontend/SmartHeader';
+import StickyScrollHeader from '@/components/frontend/StickyScrollHeader';
 import BottomNav from '@/components/frontend/BottomNav';
 import LiveTicker from '@/components/frontend/LiveTicker';
 import Footer from '@/components/frontend/Footer';
@@ -42,6 +43,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body className="has-bottom-nav">
         {/* <SmartHeader /> removed as per user request */}
+        <StickyScrollHeader />
         <LiveTicker />
         <main id="main-content" tabIndex={-1}>
           {children}

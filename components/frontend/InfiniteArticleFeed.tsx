@@ -66,19 +66,19 @@ function ArticleRow({ article }: { article: Article }) {
         className="group block"
         aria-label={`পড়ুন: ${displayHeadline}`}
       >
-        {/* Big image */}
-        {article.mediaUrl && (
-          <div
-            style={{
-              width: '100%',
-              aspectRatio: '16 / 9',
-              overflow: 'hidden',
-              marginBottom: '0.75rem',
-              border: '1px solid #e2e2e2',
-              padding: '3px',
-              backgroundColor: '#f5f5f5',
-            }}
-          >
+        {/* Uniform image area */}
+        <div
+          style={{
+            width: '100%',
+            aspectRatio: '16 / 9',
+            overflow: 'hidden',
+            marginBottom: '0.75rem',
+            border: '1px solid #e2e2e2',
+            padding: '3px',
+            backgroundColor: '#f5f5f5',
+          }}
+        >
+          {article.mediaUrl ? (
             <img
               src={article.mediaUrl}
               alt={displayHeadline}
@@ -92,8 +92,12 @@ function ArticleRow({ article }: { article: Article }) {
               }}
               className="group-hover:scale-[1.02]"
             />
-          </div>
-        )}
+          ) : (
+            <div className="w-full h-full bg-[#f3f1ec] flex items-center justify-center text-gray-400 italic text-xs font-normal">
+              ছবি নেই
+            </div>
+          )}
+        </div>
 
         {/* Category label */}
         <span
@@ -112,43 +116,47 @@ function ArticleRow({ article }: { article: Article }) {
           {sportLabel}
         </span>
 
-        {/* Headline */}
+        {/* Headline — Uniformly sized & clamped */}
         <h2
           lang="bn"
           style={{
             fontFamily: 'var(--font-headline)',
             fontWeight: 700,
-            fontSize: '1.6rem',
-            lineHeight: 1.2,
+            fontSize: '1.4rem',
+            lineHeight: 1.3,
             color: '#121212',
             marginBottom: '0.5rem',
             letterSpacing: '-0.01em',
+            display: '-webkit-box',
+            WebkitLineClamp: 2,
+            WebkitBoxOrient: 'vertical',
+            overflow: 'hidden',
+            height: '2.6em',
           }}
           className="group-hover:underline"
         >
           {displayHeadline}
         </h2>
 
-        {/* Deck */}
-        {article.deck && (
-          <p
-            lang="bn"
-            style={{
-              fontFamily: 'var(--font-body)',
-              fontWeight: 400,
-              fontSize: 14,
-              color: '#555555',
-              lineHeight: 1.6,
-              marginBottom: '0.6rem',
-              display: '-webkit-box',
-              WebkitLineClamp: 3,
-              WebkitBoxOrient: 'vertical',
-              overflow: 'hidden',
-            }}
-          >
-            {article.deck}
-          </p>
-        )}
+        {/* Deck — Uniformly sized & clamped, strictly normal weight */}
+        <p
+          lang="bn"
+          style={{
+            fontFamily: 'var(--font-body)',
+            fontWeight: 400,
+            fontSize: 14,
+            color: '#555555',
+            lineHeight: 1.6,
+            marginBottom: '0.6rem',
+            display: '-webkit-box',
+            WebkitLineClamp: 3,
+            WebkitBoxOrient: 'vertical',
+            overflow: 'hidden',
+            height: '4.8em',
+          }}
+        >
+          {article.deck || 'খেলারদেশ স্পোর্টস নিউজ ডেস্ক থেকে বিস্তারিত খবর আসছে...'}
+        </p>
 
         {/* Byline + time */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -156,6 +164,7 @@ function ArticleRow({ article }: { article: Article }) {
             style={{
               fontFamily: 'var(--font-body)',
               fontSize: 11,
+              fontWeight: 400,
               color: '#888888',
             }}
             title={exactTime}
@@ -255,14 +264,14 @@ export default function InfiniteArticleFeed({ skipIds = [], initialPage = 1 }: P
           lang="bn"
           style={{
             fontFamily: 'var(--font-body)',
-            fontSize: 13,
+            fontSize: 16,
             fontWeight: 700,
             letterSpacing: '0.08em',
             textTransform: 'uppercase',
             color: '#121212',
           }}
         >
-          সর্বশেষ খবর
+          আরও খবর -
         </h2>
         <span
           lang="bn"
