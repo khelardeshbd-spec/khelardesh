@@ -3,8 +3,6 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 import { supabaseAdmin } from '@/lib/supabase';
 import { formatDatetime, timeAgo } from '@/lib/timeAgo';
-import ScoresStrip from '@/components/frontend/ScoresStrip';
-import BriefsColumn from '@/components/frontend/BriefsColumn';
 import BookmarkButton from '@/components/frontend/BookmarkButton';
 import ReadingProgressBar from './ReadingProgressBar';
 
@@ -26,24 +24,18 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 }
 
 export default async function ArticlePage({ params }: PageProps) {
-  const [{ data: article }, { data: scores }, { data: articles }] = await Promise.all([
+  const [{ data: article }, { data: articles }] = await Promise.all([
     supabaseAdmin
       .from('Article')
       .select('*')
       .eq('slug', params.slug)
       .single(),
     supabaseAdmin
-      .from('ScoreCard')
-      .select('*')
-      .eq('is_visible', true)
-      .order('isLive', { ascending: false })
-      .order('displayOrder', { ascending: true }),
-    supabaseAdmin
       .from('Article')
       .select('id, slug, headline, headlineBn, deck, sport, mediaType, mediaUrl, byline, publishedAt')
       .eq('isLead', false)
       .order('publishedAt', { ascending: false })
-      .limit(20)
+      .limit(5)
   ]);
 
   if (!article) notFound();
@@ -63,15 +55,12 @@ export default async function ArticlePage({ params }: PageProps) {
     id, slug, headline, headlineBn, deck, sport, mediaType, mediaUrl, byline, publishedAt
   };
 
-  // Parse body into paragraphs
   const paragraphs = (body || '')
     .split(/\n\n+/)
     .map((p: string) => p.trim())
     .filter(Boolean);
 
   const articlesList = articles ?? [];
-
-  // Get a readable sport/category label
   const categoryLabel = sport ? sport.toUpperCase() : (kicker || 'খেলাধুলা');
 
   return (
@@ -80,7 +69,7 @@ export default async function ArticlePage({ params }: PageProps) {
       <ReadingProgressBar />
 
       {/* Back button */}
-      <div className="w-full max-w-[1140px] mx-auto px-4 lg:px-6 pt-6 pb-2">
+      <div className="w-full max-w-[680px] mx-auto px-4 pt-6 pb-2">
         <Link 
           href="/"
           className="inline-flex items-center gap-1.5 text-xs font-semibold tracking-wider uppercase text-[var(--ink-muted)] hover:text-[var(--ink)] transition-colors"
@@ -90,13 +79,13 @@ export default async function ArticlePage({ params }: PageProps) {
         </Link>
       </div>
 
-      <div className="max-w-[1140px] mx-auto px-4 lg:px-6 lg:grid lg:grid-cols-[680px_1fr] gap-12 pb-16">
+      <div className="max-w-[680px] mx-auto px-4 pb-16">
         
         {/* Main Editorial Article Column */}
         <article className="min-w-0">
           
           {/* Category/Kicker */}
-          <div className="mb-3">
+          <div className="mb-3 mt-4">
             <span 
               className="text-xs font-bold uppercase tracking-wider text-[#1a5c2e]" 
               style={{ fontFamily: 'var(--font-body)' }}
@@ -217,7 +206,6 @@ export default async function ArticlePage({ params }: PageProps) {
           {/* Paragraphs in Athletic Style */}
           <div className="editorial-body">
             {paragraphs.map((para: string, i: number) => {
-              // Inject a subtle inline recirculation box after the second paragraph if we have enough paragraphs
               const showRecirculation = i === 1 && articlesList.length > 0;
               const recircleArticle = articlesList[0];
 
@@ -227,7 +215,7 @@ export default async function ArticlePage({ params }: PageProps) {
                     lang="bn"
                     style={{
                       fontFamily: "var(--font-body)",
-                      fontWeight: 400, // Explicit normal weight per user guidance
+                      fontWeight: 400,
                       fontSize: '19px',
                       lineHeight: '1.75',
                       color: 'var(--ink)',
@@ -284,17 +272,6 @@ export default async function ArticlePage({ params }: PageProps) {
           </div>
 
         </article>
-
-
-        {/* Right Sidebar */}
-        <div className="hidden lg:block pt-4">
-          <div className="sticky top-[100px] max-h-[calc(100vh-120px)] overflow-y-auto scrollbar-none flex flex-col gap-8">
-            <div>
-              <ScoresStrip />
-            </div>
-            <BriefsColumn articles={articlesList} />
-          </div>
-        </div>
 
       </div>
     </div>
