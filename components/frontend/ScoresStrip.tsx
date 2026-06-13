@@ -42,12 +42,6 @@ export default function ScoresStrip() {
 
   if (sorted.length === 0) return null;
 
-  // Format today's date in Bengali (e.g. "১৩ জুনের খেলাসমূহ")
-  const bnMonths = ['জানুয়ারি', 'ফেব্রুয়ারি', 'মার্চ', 'এপ্রিল', 'মে', 'জুন', 'জুলাই', 'আগস্ট', 'সেপ্টেম্বর', 'অক্টোবর', 'নভেম্বর', 'ডিসেম্বর'];
-  const d = new Date();
-  const dayBn = toBengaliNumerals(d.getDate());
-  const todayStr = `${dayBn} ${bnMonths[d.getMonth()]}-এর খেলাসমূহ`;
-
   return (
     <section 
       aria-label="খেলাসমূহ" 
@@ -56,7 +50,7 @@ export default function ScoresStrip() {
     >
       {/* Header */}
       <h2 className="text-[17px] font-bold text-[#121212] mb-4">
-        {todayStr}
+        লাইভ ও সাম্প্রতিক খেলাসমূহ
       </h2>
 
       {/* Horizontal Scroll Area */}
