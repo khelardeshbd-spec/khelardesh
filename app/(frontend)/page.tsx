@@ -67,35 +67,111 @@ export default async function HomePage() {
     <div style={{ backgroundColor: '#f4ece2', color: '#1a1a1a', minHeight: '100vh', padding: '24px 0', fontFamily: 'var(--font-body)' }}>
       <div className="max-w-[1100px] mx-auto bg-[#f4ece2] px-8 py-6 shadow-2xl" style={{ border: '1px solid #d3c9b8' }}>
         
-        {/* MASTHEAD */}
-        <div className="flex justify-between items-center border-b-[6px] border-t-2 border-[#1a1a1a] pb-4 pt-4 mb-6">
-          <div className="w-1/4 text-center border-r-[1.5px] border-[#1a1a1a] pr-4 h-full flex flex-col justify-center">
-            <div className="text-xl font-bold mb-1">$১০.৫০</div>
-            <div className="text-[10px] leading-tight">কানাডিয়ান, প্রিন্ট এবং যা কিছু<br/>অন্তর্ভুক্ত সিরিজের জন্য অতিরিক্ত চার্জ<br/>প্রযোজ্য হতে পারে</div>
-          </div>
-          <div className="w-2/4 text-center px-4">
-            <img src="/images/khelardesh_logo.png" alt="খেলারদেশ" className="mx-auto mb-2" style={{ maxWidth: '100%', height: 'auto', maxHeight: '120px' }} />
-            <div className="border-t-[1px] border-b-[1px] border-[#1a1a1a] py-2 mt-3">
-              <p className="text-[11px] font-bold tracking-wide">
-                নিজের সম্পর্কে তিনি কী বলেন তা নিয়ে পুনরায় ভাবুন, তিনি নিজেকে কতটা প্রশংসা করেন, যত বেশি প্রশংসা পান, তত বেশি তিনি ক্ষুদ্র হন।
-              </p>
-              <div className="flex flex-wrap justify-center gap-x-4 gap-y-1 mt-2 text-[10px] font-bold uppercase tracking-wider">
-                {['মাঠ', 'ফুটবল', 'বাংলাদেশের ফুটবল', 'ক্রিকেট', 'বাংলাদেশের ক্রিকেট', 'ইন্টারভিউ', 'ফিচার', 'খেলার দেশ বিশেষ', 'অতিথি কলাম', 'অন্যান্য'].map((cat, idx) => (
-                  <span key={idx} className="cursor-pointer hover:underline text-[#1a1a1a]">{cat}</span>
-                ))}
+        {/* MASTHEAD: 3-TIER NYT-INSPIRED */}
+        <div className="w-full text-[#1a1a1a] mb-6">
+          {/* Tier 1: Top Bar */}
+          <div className="flex justify-between items-center border-b border-[#1a1a1a] pb-2 mb-4 text-xs font-semibold tracking-wider uppercase">
+            <div className="flex items-center gap-6">
+              {/* Sections / Hamburger */}
+              <button className="flex items-center gap-1.5 hover:opacity-75 transition-opacity">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                  <line x1="3" y1="12" x2="21" y2="12"></line>
+                  <line x1="3" y1="6" x2="21" y2="6"></line>
+                  <line x1="3" y1="18" x2="21" y2="18"></line>
+                </svg>
+                <span>SECTIONS</span>
+              </button>
+              
+              {/* Search */}
+              <div className="relative flex items-center group">
+                <button className="flex items-center gap-1.5 hover:opacity-75 transition-opacity">
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                  </svg>
+                  <span>SEARCH</span>
+                </button>
               </div>
             </div>
-          </div>
-          <div className="w-1/4 text-center border-l-[1.5px] border-[#1a1a1a] pl-4 h-full flex flex-col justify-center items-center">
-            <div className="mb-3">
-              <button className="flex items-center gap-1 text-[11px] font-bold uppercase border border-[#1a1a1a] px-3 py-1 hover:bg-[#1a1a1a] hover:text-[#f4ece2] transition-colors">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-                অনুসন্ধান
+
+            {/* Right: Subscribe & Account */}
+            <div className="flex items-center gap-4">
+              <div className="hidden sm:flex items-center gap-2 border-r border-[#1a1a1a] pr-4">
+                <div className="text-right">
+                  <span className="block font-bold text-[10px] text-red-600 animate-pulse">SUBSCRIBE NOW</span>
+                  <span className="block text-[9px] text-[#555] lowercase font-normal">১ মাস ফ্রি ট্রায়াল</span>
+                </div>
+                <div className="w-7 h-9 border border-[#1a1a1a] flex items-center justify-center bg-white text-[8px] font-bold shadow-sm">
+                  KHEL
+                </div>
+              </div>
+              <button className="flex items-center gap-2 hover:opacity-75 transition-opacity">
+                <span className="text-[11px] font-bold">LOG IN</span>
+                <div className="w-7 h-7 rounded-full bg-[#1a1a1a] text-[#f4ece2] flex items-center justify-center font-bold text-[10px]">
+                  K
+                </div>
               </button>
             </div>
-            <div className="text-sm font-bold mb-1">সাপ্তাহিক সংবাদপত্র</div>
-            <div className="text-sm mb-1">রবিবার ৯ সেপ্টেম্বর ২০২৩</div>
-            <div className="text-xs">বর্ষ ২ | সংখ্যা: # ০০০১</div>
+          </div>
+
+          {/* Tier 2: Logo and Promos */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-center mb-4">
+            {/* Left Promo Block */}
+            <div className="hidden lg:flex lg:col-span-3 h-[90px] bg-black text-[#f4ece2] p-3 flex-col justify-between border border-[#1a1a1a]">
+              <div className="text-[10px] font-bold tracking-widest text-gray-400">THE DAILY 360</div>
+              <div className="text-xs font-semibold leading-tight">বিশ্ব ক্রীড়াঙ্গনের সব খবর এক নজরে প্রতিদিন</div>
+            </div>
+
+            {/* Center Logo */}
+            <div className="col-span-1 lg:col-span-6 text-center flex flex-col items-center">
+              <img src="/images/khelardesh_logo.png" alt="খেলারদেশ" className="mx-auto mb-2 select-none" style={{ maxWidth: '100%', height: 'auto', maxHeight: '110px' }} />
+            </div>
+
+            {/* Right Promo Block */}
+            <div className="hidden lg:flex lg:col-span-3 h-[90px] bg-white text-black p-3 flex-col justify-between border border-[#1a1a1a] shadow-sm">
+              <div className="text-[9px] font-bold tracking-wider text-gray-500 uppercase font-sans">SPORTS JOURNALISM BY</div>
+              <div className="text-sm font-bold tracking-tight leading-none uppercase">খেলারদেশ</div>
+              <div className="text-[8px] text-gray-500 uppercase font-sans">Powered by Next.js & Supabase</div>
+            </div>
+          </div>
+
+          {/* Date & Info Strip */}
+          <div className="border-t border-b border-[#1a1a1a] py-1.5 mb-5 flex flex-wrap justify-between items-center text-[11px] font-medium text-[#222]">
+            <div className="flex items-center gap-3">
+              <span className="font-bold">রবিবার, ৯ সেপ্টেম্বর ২০২৩</span>
+              <span className="text-gray-400">|</span>
+              <span className="hover:underline cursor-pointer">আজকের পত্রিকা</span>
+              <span className="text-gray-400">|</span>
+              <span className="hover:underline cursor-pointer">ভিডিও</span>
+            </div>
+            
+            <div className="flex items-center gap-4 mt-1 sm:mt-0 font-semibold">
+              <span className="flex items-center gap-1">
+                <span className="inline-block w-2 h-2 rounded-full bg-red-600 animate-ping"></span>
+                <span className="text-red-600 font-bold uppercase tracking-wider text-[10px]">LIVE</span>
+                <span className="text-xs">বাংলাদেশ ২ - ১ ভারত</span>
+              </span>
+              <span className="text-gray-400">|</span>
+              <span>ঢাকা ৩০°C ☀️</span>
+              <span className="text-gray-400">|</span>
+              <span className="text-xs uppercase tracking-wider">সংখ্যা: # ০০০১</span>
+            </div>
+          </div>
+
+          {/* Quote Banner */}
+          <div className="text-center px-4 mb-4">
+            <p className="text-[11px] font-medium tracking-wide italic text-gray-700">
+              “নিজের সম্পর্কে তিনি কী বলেন তা নিয়ে পুনরায় ভাবুন, তিনি নিজেকে কতটা প্রশংসা করেন, যত বেশি প্রশংসা পান, তত বেশি তিনি ক্ষুদ্র হন।”
+            </p>
+          </div>
+
+          {/* Tier 3: Category Navigation Strip */}
+          <div className="border-t-2 border-b-[4px] border-[#1a1a1a] py-2">
+            <div className="flex flex-wrap justify-center gap-x-6 gap-y-2 text-xs font-bold uppercase tracking-wider">
+              {['মাঠ', 'ফুটবল', 'বাংলাদেশের ফুটবল', 'ক্রিকেট', 'বাংলাদেশের ক্রিকেট', 'ইন্টারভিউ', 'ফিচার', 'খেলার দেশ বিশেষ', 'অতিথি কলাম', 'অন্যান্য'].map((cat, idx) => (
+                <span key={idx} className="cursor-pointer hover:underline text-[#1a1a1a]">{cat}</span>
+              ))}
+            </div>
           </div>
         </div>
 
