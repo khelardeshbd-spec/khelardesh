@@ -241,7 +241,7 @@ export default async function HomePage() {
           <div className="col-span-4 flex flex-col justify-between">
             <div>
               <h3 className="text-sm font-bold mb-2">যুক্তরাষ্ট্র থেকে</h3>
-              <h1 style={{ fontFamily: 'var(--font-headline)', fontSize: '2.2rem', lineHeight: '1.15', marginBottom: '8px', letterSpacing: '-0.01em' }}>
+              <h1 style={{ fontFamily: 'var(--font-headline)', fontSize: '1.7rem', lineHeight: '1.15', marginBottom: '8px', letterSpacing: '-0.01em' }}>
                 {leads[0]?.headlineBn || 'বিশেষ: ভিভিয়ান মেয়ার, সবচেয়ে বড় গোপন রহস্য'}
               </h1>
               <p className="text-sm font-bold italic mb-3">জেরেমি ওয়াটার দ্বারা</p>
@@ -256,7 +256,7 @@ export default async function HomePage() {
             </div>
           </div>
           <div className="col-span-8">
-            <div className="w-full h-[320px] lg:h-[360px] bg-gray-200 overflow-hidden border border-[#e2e2e2] p-1">
+            <div className="w-full h-[240px] lg:h-[280px] bg-gray-200 overflow-hidden border border-[#e2e2e2] p-1">
                {leads[0]?.slug === 'madrid-unravel-final-ten' ? (
                  <img src="/images/madrid_defeat_hero.png" className="w-full h-full object-cover" alt="Hero Image" />
                ) : leads[0]?.mediaUrl ? (
