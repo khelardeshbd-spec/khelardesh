@@ -69,9 +69,50 @@ export default async function HomePage() {
         
         {/* MASTHEAD: LOGO ON TOP & REORGANIZED CONTROLS */}
         <div className="w-full text-[#121212] mb-4">
-          {/* Tier 1: Logo on the very top */}
-          <div className="flex justify-center items-center border-b border-[#e2e2e2] pb-3 mb-2">
-            <img src="/images/khelardesh_logo.png" alt="খেলারদেশ" className="mx-auto select-none" style={{ maxWidth: '100%', height: 'auto', maxHeight: '75px' }} />
+          {/* Tier 1: Logo and Sponsors (Symmetrical Layout) */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-center border-b border-[#e2e2e2] pb-3 mb-2">
+            {/* Left Sponsor Block */}
+            <div className="hidden lg:flex lg:col-span-3 h-[75px] bg-[#fafafa] text-[#121212] p-2 flex-col justify-center items-center border border-[#e2e2e2] rounded-[3px]">
+              {sponsors[0] ? (
+                <a href={sponsors[0].linkUrl || '#'} target="_blank" rel="noopener noreferrer" className="w-full h-full flex flex-col justify-center items-center">
+                  {sponsors[0].logoUrl ? (
+                    <img src={sponsors[0].logoUrl} alt={sponsors[0].name} className="max-h-[40px] w-auto object-contain" />
+                  ) : (
+                    <span className="text-xs font-bold">{sponsors[0].name}</span>
+                  )}
+                  <span className="text-[8px] text-gray-400 mt-1 uppercase font-sans">Sponsor</span>
+                </a>
+              ) : (
+                <div className="flex flex-col items-center">
+                  <span className="text-[10px] font-bold text-gray-400 font-sans tracking-wider">ADVERTISEMENT</span>
+                  <span className="text-[9px] text-gray-300 font-sans mt-0.5">বিজ্ঞাপন দিন</span>
+                </div>
+              )}
+            </div>
+
+            {/* Center Logo */}
+            <div className="col-span-1 lg:col-span-6 text-center flex flex-col items-center">
+              <img src="/images/khelardesh_logo.png" alt="খেলারদেশ" className="mx-auto select-none" style={{ maxWidth: '100%', height: 'auto', maxHeight: '75px' }} />
+            </div>
+
+            {/* Right Sponsor Block */}
+            <div className="hidden lg:flex lg:col-span-3 h-[75px] bg-[#fafafa] text-[#121212] p-2 flex-col justify-center items-center border border-[#e2e2e2] rounded-[3px]">
+              {sponsors[1] ? (
+                <a href={sponsors[1].linkUrl || '#'} target="_blank" rel="noopener noreferrer" className="w-full h-full flex flex-col justify-center items-center">
+                  {sponsors[1].logoUrl ? (
+                    <img src={sponsors[1].logoUrl} alt={sponsors[1].name} className="max-h-[40px] w-auto object-contain" />
+                  ) : (
+                    <span className="text-xs font-bold">{sponsors[1].name}</span>
+                  )}
+                  <span className="text-[8px] text-gray-400 mt-1 uppercase font-sans">Sponsor</span>
+                </a>
+              ) : (
+                <div className="flex flex-col items-center">
+                  <span className="text-[10px] font-bold text-gray-400 font-sans tracking-wider">ADVERTISEMENT</span>
+                  <span className="text-[9px] text-gray-300 font-sans mt-0.5">বিজ্ঞাপন দিন</span>
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Tier 2: Controls & Info Bar */}
