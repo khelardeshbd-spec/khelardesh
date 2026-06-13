@@ -50,7 +50,7 @@ export default function ScoresStrip() {
     >
       {/* Header */}
       <h2 className="text-[17px] font-bold text-[#121212] mb-4">
-        লাইভ ও সাম্প্রতিক খেলাসমূহ
+        Live &amp; Recent Scores
       </h2>
 
       {/* Horizontal Scroll Area */}
@@ -86,7 +86,7 @@ export default function ScoresStrip() {
           href="/scores"
           className="text-[11px] font-semibold text-[#121212] hover:underline"
         >
-          সব স্কোর দেখুন ›
+          View All Scores ›
         </Link>
         <span className="text-[10px] text-[#888888]">
           আপডেট করা হয়েছে: {new Date().toLocaleTimeString('bn-BD', { hour: '2-digit', minute: '2-digit' })}
