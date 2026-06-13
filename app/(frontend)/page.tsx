@@ -256,7 +256,7 @@ export default async function HomePage() {
             </div>
           </div>
           <div className="col-span-8">
-            <div className="w-full aspect-[16/20] bg-gray-200 overflow-hidden border border-[#e2e2e2] p-1">
+            <div className="w-full aspect-[16/9] bg-gray-200 overflow-hidden border border-[#e2e2e2] p-1">
                {leads[0]?.slug === 'madrid-unravel-final-ten' ? (
                  <img src="/images/madrid_defeat_hero.png" className="w-full h-full object-cover" alt="Hero Image" />
                ) : leads[0]?.mediaUrl ? (
