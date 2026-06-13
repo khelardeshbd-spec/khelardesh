@@ -23,123 +23,8 @@ interface Props {
   initialPage?: number;
 }
 
-// ─── Per-category dummy articles ────────────────────────────────────────────
-const DUMMY: Record<string, Article[]> = {
-  cinema: [
-    {
-      id: -101,
-      slug: '#',
-      headline: 'Pedro Almodóvar Returns with a Raw New Drama',
-      headlineBn: 'পেদ্রো আলমোদোভারের নতুন ছবি: আবেগ ও বাস্তবতার মেলবন্ধন',
-      deck: 'স্প্যানিশ পরিচালকের নতুন কাজ ভেনিস চলচ্চিত্র উৎসবে দারুণ সাড়া ফেলেছে।',
-      sport: 'cinema',
-      mediaType: 'image',
-      mediaUrl: 'https://images.unsplash.com/photo-1524985069026-dd778a71c7b4?w=800&q=80',
-      byline: 'রাহেলা পারভীন',
-      publishedAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
-    },
-    {
-      id: -102,
-      slug: '#',
-      headline: 'Cannes 2026: The Best Films You Might Have Missed',
-      headlineBn: 'কান ২০২৬: যে ছবিগুলো আপনি মিস করেছেন',
-      deck: 'এই বছরের কান উৎসবে প্রদর্শিত সেরা পাঁচটি অপ্রচলিত ছবির বিশেষ পর্যালোচনা।',
-      sport: 'cinema',
-      mediaType: 'image',
-      mediaUrl: 'https://images.unsplash.com/photo-1440404653325-ab127d49abc1?w=800&q=80',
-      byline: 'জুলিয়ান বেলট্রেন',
-      publishedAt: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000).toISOString(),
-    },
-    {
-      id: -103,
-      slug: '#',
-      headline: 'Animation Reimagined: Studio Ghibli\'s Bold New Direction',
-      headlineBn: 'স্টুডিও ঘিবলির সাহসী নতুন অ্যানিমেশন জগৎ',
-      deck: 'জাপানের কিংবদন্তি অ্যানিমেশন স্টুডিও এবার তাদের সবচেয়ে উচ্চাকাঙ্ক্ষী প্রকল্পে হাত দিয়েছে।',
-      sport: 'cinema',
-      mediaType: 'image',
-      mediaUrl: 'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=800&q=80',
-      byline: 'মার্তিন সাঁতিয়াগো',
-      publishedAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
-    },
-  ],
-  music: [
-    {
-      id: -201,
-      slug: '#',
-      headline: 'Billie Eilish Announces Surprise Album Drop',
-      headlineBn: 'বিলি আইলিশের অপ্রত্যাশিত নতুন অ্যালবাম প্রকাশ',
-      deck: 'মাত্র ৪৮ ঘণ্টার নোটিশে মুক্তি পেল বিলির পঞ্চম স্টুডিও অ্যালবাম, ভক্তরা রীতিমতো হতবাক।',
-      sport: 'music',
-      mediaType: 'image',
-      mediaUrl: 'https://images.unsplash.com/photo-1501386761578-eac5c94b800a?w=800&q=80',
-      byline: 'নাদিয়া রহমান',
-      publishedAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
-    },
-    {
-      id: -202,
-      slug: '#',
-      headline: 'The Rise of Bangladeshi Indie Music on Global Platforms',
-      headlineBn: 'গ্লোবাল স্ট্রিমিং প্ল্যাটফর্মে বাংলাদেশি ইন্ডি সংগীতের উত্থান',
-      deck: 'স্পটিফাই ও অ্যাপল মিউজিকে বাংলাদেশি শিল্পীদের শ্রোতা সংখ্যা গত বছরে ২৩০% বেড়েছে।',
-      sport: 'music',
-      mediaType: 'image',
-      mediaUrl: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=800&q=80',
-      byline: 'তানভীর আহমেদ',
-      publishedAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
-    },
-    {
-      id: -203,
-      slug: '#',
-      headline: 'Jazz Festival Dhaka 2026: A Night to Remember',
-      headlineBn: 'জ্যাজ ফেস্টিভ্যাল ঢাকা ২০২৬: এক অবিস্মরণীয় সন্ধ্যা',
-      deck: 'পুরান ঢাকার ঐতিহাসিক প্রেক্ষাপটে আন্তর্জাতিক জ্যাজ শিল্পীদের এই আয়োজন হয়ে উঠেছিল এক অনন্য অভিজ্ঞতা।',
-      sport: 'music',
-      mediaType: 'image',
-      mediaUrl: 'https://images.unsplash.com/photo-1415201364774-f6f0bb35f28f?w=800&q=80',
-      byline: 'কামরুল হাসান',
-      publishedAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
-    },
-  ],
-  live: [
-    {
-      id: -301,
-      slug: '#',
-      headline: 'Real Madrid vs Man City: Champions League Final Preview',
-      headlineBn: 'রিয়াল মাদ্রিদ বনাম ম্যান সিটি: চ্যাম্পিয়নস লিগ ফাইনালের আগাম পর্যালোচনা',
-      deck: 'আজ রাত ১১টায় শুরু হবে মৌসুমের সবচেয়ে বড় ম্যাচ — আমাদের বিশ্লেষণ পড়ুন।',
-      sport: 'live',
-      mediaType: 'image',
-      mediaUrl: 'https://images.unsplash.com/photo-1522778119026-d647f0596c20?w=800&q=80',
-      byline: 'সিফো মখিজি',
-      publishedAt: new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString(),
-    },
-    {
-      id: -302,
-      slug: '#',
-      headline: 'World Athletics Championships: Day 3 Highlights',
-      headlineBn: 'বিশ্ব অ্যাথলেটিক্স চ্যাম্পিয়নশিপ: তৃতীয় দিনের সেরা মুহূর্তগুলো',
-      deck: '১০০ মিটার হার্ডলসে নতুন বিশ্বরেকর্ড এবং হাই জাম্পে অবাক করা ফলাফল।',
-      sport: 'live',
-      mediaType: 'image',
-      mediaUrl: 'https://images.unsplash.com/photo-1541252260730-0412e8e2108e?w=800&q=80',
-      byline: 'আনা পেরেজ',
-      publishedAt: new Date(Date.now() - 12 * 60 * 60 * 1000).toISOString(),
-    },
-    {
-      id: -303,
-      slug: '#',
-      headline: 'Wimbledon 2026: Nadal\'s Fairytale Comeback Continues',
-      headlineBn: 'উইম্বলডন ২০২৬: নাদালের রূপকথার প্রত্যাবর্তন অব্যাহত',
-      deck: 'তৃতীয় রাউন্ডে টপ সিডকে হারিয়ে নাদাল আবার প্রমাণ করলেন কেন তিনি কিংবদন্তি।',
-      sport: 'live',
-      mediaType: 'image',
-      mediaUrl: 'https://images.unsplash.com/photo-1595435742656-5272d0b3fa82?w=800&q=80',
-      byline: 'লুইস ফার্নান্দো',
-      publishedAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
-    },
-  ],
-};
+// CategoryColumnFeed loads real database articles for specified sport/sport-section
+
 
 function ColumnArticleCard({ article }: { article: Article }) {
   const displayHeadline = article.headlineBn || article.headline;
@@ -266,12 +151,9 @@ export default function CategoryColumnFeed({ category, skipIds = [], initialPage
         (a: Article) => !skipIds.includes(a.id)
       );
 
-      if (incoming.length === 0 && page === 1 && !usedFallback) {
-        // No real articles found — show dummy placeholder content
-        const dummies = (DUMMY[category] ?? []).filter((a) => !skipIds.includes(a.id));
-        setArticles(dummies);
+      if (incoming.length === 0 && page === 1) {
+        setArticles([]);
         setHasMore(false);
-        setUsedFallback(true);
       } else {
         setArticles((prev) => {
           const existingIds = new Set(prev.map((a) => a.id));
@@ -282,12 +164,6 @@ export default function CategoryColumnFeed({ category, skipIds = [], initialPage
         setPage((p) => p + 1);
       }
     } catch {
-      // On error, show dummy content if nothing loaded yet
-      if (articles.length === 0) {
-        const dummies = (DUMMY[category] ?? []).filter((a) => !skipIds.includes(a.id));
-        setArticles(dummies);
-        setUsedFallback(true);
-      }
       setHasMore(false);
     } finally {
       setLoading(false);
@@ -350,7 +226,7 @@ export default function CategoryColumnFeed({ category, skipIds = [], initialPage
       )}
 
       {/* End of feed */}
-      {!hasMore && articles.length > 0 && !usedFallback && (
+      {!hasMore && articles.length > 0 && (
         <p
           lang="bn"
           style={{
@@ -365,25 +241,7 @@ export default function CategoryColumnFeed({ category, skipIds = [], initialPage
           — আর কোনো খবর নেই —
         </p>
       )}
-
-      {/* Fallback notice */}
-      {usedFallback && (
-        <p
-          lang="bn"
-          style={{
-            fontFamily: 'var(--font-body)',
-            textAlign: 'center',
-            fontSize: 10,
-            color: '#cccccc',
-            paddingTop: '0.75rem',
-            paddingBottom: '0.75rem',
-            borderTop: '1px dashed #e8e8e8',
-            marginTop: '1rem',
-          }}
-        >
-          — নমুনা প্রবন্ধ —
-        </p>
-      )}
     </div>
   );
 }
+
