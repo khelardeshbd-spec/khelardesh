@@ -263,83 +263,94 @@ export default async function HomePage() {
         <div className="grid grid-cols-3 gap-0">
           {/* Column 1 */}
           <div className="border-r border-[#e2e2e2] pr-6">
-             <h3 className="font-bold text-lg mb-3 border-b-2 border-[#121212] pb-1 uppercase tracking-wider">সিনেমা</h3>
+             <h3 className="font-bold text-lg mb-3 border-b-2 border-[#121212] pb-1 uppercase tracking-wider">ফুটবল</h3>
              <div className="w-full h-48 mb-4 border border-[#e2e2e2] p-1">
-               {articles[3]?.mediaUrl ? (
-                  <img src={articles[3].mediaUrl} className="w-full h-full object-cover" alt="Cinema" />
+               {articles[0]?.mediaUrl ? (
+                  <img src={articles[0].mediaUrl} className="w-full h-full object-cover" alt="Football" />
                ) : (
                   <div className="w-full h-full bg-gray-200" />
                )}
              </div>
              <h2 style={{ fontFamily: 'var(--font-headline)' }} className="text-[1.75rem] font-bold mb-3 leading-tight">
-               {articles[3]?.headlineBn || 'ল\'একুমে দেস জোউর্স: ফরাসি মিশেল গন্ড্রির কাঙ্ক্ষিত প্রত্যাবর্তন'}
+               <Link href={`/article/${articles[0]?.slug || '#'}`}>
+                 {articles[0]?.headlineBn || articles[0]?.headline}
+               </Link>
              </h2>
-             <p className="text-sm font-bold italic mb-3 text-[#888888]">জুলিয়ান বেলট্রেন দ্বারা</p>
-             <p className="text-xs text-justify leading-relaxed">
-               মিশেল গন্ড্রি, যিনি তার অভিনব এবং পরাবাস্তব শৈলীর জন্য পরিচিত, অবশেষে &apos;ল&apos;একুমে দেস জোউর্স&apos;-এর মাধ্যমে আবার রূপালী পর্দায় ফিরে এসেছেন। বোরিস ভিয়ানের বিখ্যাত উপন্যাসের উপর ভিত্তি করে নির্মিত এই চলচ্চিত্রটি একটি স্বপ্নময় অথচ করুণ প্রেমের গল্প বলে। গন্ড্রির জাদুকরী পরিচালনায় এই ছবিটি দর্শকদের এক ভিন্ন জগতে নিয়ে যায়।
+             <p className="text-sm font-bold italic mb-3 text-[#888888]">{articles[0]?.byline || 'Staff Reporter'}</p>
+             <p className="text-xs text-justify leading-relaxed line-clamp-4">
+               {articles[0]?.deck || 'বিস্তারিত খবর আসছে...'}
              </p>
              <div className="text-right mt-3 mb-6">
-               <Link href={`/article/${articles[3]?.slug || '#'}`} className="text-[11px] font-bold text-[#d33f3f] hover:underline">
+               <Link href={`/article/${articles[0]?.slug || '#'}`} className="text-[11px] font-bold text-[#d33f3f] hover:underline">
                  আরো পড়ুন
                </Link>
              </div>
 
              {/* Additional Article Previews */}
              <div className="border-t border-[#e2e2e2] pt-1 flex flex-col gap-4">
-               <CategoryColumnFeed category="cinema" skipIds={articles[3] ? [articles[3].id] : []} />
+               <CategoryColumnFeed category="football" skipIds={articles[0] ? [articles[0].id] : []} />
              </div>
           </div>
           
           {/* Column 2 */}
           <div className="border-r border-[#e2e2e2] px-6">
-             <h3 className="font-bold text-lg mb-3 border-b-2 border-[#121212] pb-1 uppercase tracking-wider">সঙ্গীত</h3>
-             <h2 style={{ fontFamily: 'var(--font-headline)' }} className="text-[2.2rem] font-bold mb-3 leading-[1.1]">
-               জার্মান শিল্পী কিটনের নতুন বই
-             </h2>
-             <p className="text-sm font-bold italic mb-4 text-[#888888]">মার্টিন লিক দ্বারা</p>
-             <div className="text-[11px] text-justify columns-2 gap-4 leading-relaxed mb-6">
-               <p className="mb-2">জার্মান শিল্পী কিটন সম্প্রতি তার নতুন বইটি প্রকাশ করেছেন, যা শিল্পপ্রেমীদের মধ্যে ব্যাপক সাড়া ফেলেছে। এই বইটিতে তার জীবনের নানা অভিজ্ঞতা, সৃজনশীলতার উৎস এবং শিল্পের প্রতি তার গভীর অনুরাগের কথা বর্ণনা করা হয়েছে।</p>
-               <p className="mb-2">বইটিতে অনেক অপ্রকাশিত ছবি and স্কেচ রয়েছে, যা তার কাজের পেছনের পরিশ্রমকে তুলে ধরে। কিটনের মতে, শিল্প কেবল একটি পেশা নয়, এটি আত্মপ্রকাশের একটি মাধ্যম।</p>
-               <p>তার এই নতুন বইটি কেবল শিল্পীদের জন্যই নয়, সাধারণ মানুষের জন্যও অনুপ্রেরণামূলক হতে পারে বলে সমালোচকরা মত প্রকাশ করেছেন।</p>
-             </div>
-             <div className="text-right mt-3 mb-6">
-               <Link href="#" className="text-[11px] font-bold text-[#d33f3f] hover:underline">
-                 আরো পড়ুন
-               </Link>
-             </div>
-
-             {/* Additional Article Previews */}
-             <div className="border-t border-[#e2e2e2] pt-1 flex flex-col gap-4">
-               <CategoryColumnFeed category="music" skipIds={[]} />
-             </div>
-          </div>
-          
-          {/* Column 3 */}
-          <div className="pl-6">
-             <h3 className="font-bold text-lg mb-3 border-b-2 border-[#121212] pb-1 uppercase tracking-wider">সরাসরি</h3>
-             <div className="w-full h-40 mb-4 border border-[#e2e2e2] p-1">
-               {articles[4]?.mediaUrl ? (
-                  <img src={articles[4].mediaUrl} className="w-full h-full object-cover" alt="Live Event" />
+             <h3 className="font-bold text-lg mb-3 border-b-2 border-[#121212] pb-1 uppercase tracking-wider">ক্রিকেট</h3>
+             <div className="w-full h-48 mb-4 border border-[#e2e2e2] p-1">
+               {articles[1]?.mediaUrl ? (
+                  <img src={articles[1].mediaUrl} className="w-full h-full object-cover" alt="Cricket" />
                ) : (
                   <div className="w-full h-full bg-gray-200" />
                )}
              </div>
              <h2 style={{ fontFamily: 'var(--font-headline)' }} className="text-[1.75rem] font-bold mb-3 leading-tight">
-               {articles[4]?.headlineBn || 'গ্রান রেক্সে দ্য ডিসেম্ব্রিস্টস'}
+               <Link href={`/article/${articles[1]?.slug || '#'}`}>
+                 {articles[1]?.headlineBn || articles[1]?.headline}
+               </Link>
              </h2>
-             <p className="text-sm font-bold italic mb-3 text-[#888888]">ক্যানিয়া কাওন দ্বারা</p>
-             <p className="text-xs text-justify leading-relaxed">
-               দ্য ডিসেম্ব্রিস্টস ব্যান্ডের সরাসরি পারফরম্যান্স সবসময়ই এক অনন্য অভিজ্ঞতা। গ্রান রেক্সে তাদের সাম্প্রতিক কনসার্টটি ছিল জাদুকরী। মঞ্চের সজ্জা, আলোর খেলা এবং তাদের মনোমুগ্ধকর সঙ্গীত দর্শকদের আবিষ্ট করে রেখেছিল। ব্যান্ডের লিড সিঙ্গার তার আবেগপূর্ণ কণ্ঠ দিয়ে প্রতিটি গানকে জীবন্ত করে তুলেছিলেন। এটি নিঃসন্দেহে বছরের অন্যতম সেরা কনসার্ট ছিল।
+             <p className="text-sm font-bold italic mb-3 text-[#888888]">{articles[1]?.byline || 'Staff Reporter'}</p>
+             <p className="text-xs text-justify leading-relaxed line-clamp-4">
+               {articles[1]?.deck || 'বিস্তারিত খবর আসছে...'}
              </p>
              <div className="text-right mt-3 mb-6">
-               <Link href={`/article/${articles[4]?.slug || '#'}`} className="text-[11px] font-bold text-[#d33f3f] hover:underline">
+               <Link href={`/article/${articles[1]?.slug || '#'}`} className="text-[11px] font-bold text-[#d33f3f] hover:underline">
                  আরো পড়ুন
                </Link>
              </div>
 
              {/* Additional Article Previews */}
              <div className="border-t border-[#e2e2e2] pt-1 flex flex-col gap-4">
-               <CategoryColumnFeed category="live" skipIds={articles[4] ? [articles[4].id] : []} />
+               <CategoryColumnFeed category="cricket" skipIds={articles[1] ? [articles[1].id] : []} />
+             </div>
+          </div>
+          
+          {/* Column 3 */}
+          <div className="pl-6">
+             <h3 className="font-bold text-lg mb-3 border-b-2 border-[#121212] pb-1 uppercase tracking-wider">অন্যান্য</h3>
+             <div className="w-full h-48 mb-4 border border-[#e2e2e2] p-1">
+               {articles[2]?.mediaUrl ? (
+                  <img src={articles[2].mediaUrl} className="w-full h-full object-cover" alt="Other Sports" />
+               ) : (
+                  <div className="w-full h-full bg-gray-200" />
+               )}
+             </div>
+             <h2 style={{ fontFamily: 'var(--font-headline)' }} className="text-[1.75rem] font-bold mb-3 leading-tight">
+               <Link href={`/article/${articles[2]?.slug || '#'}`}>
+                 {articles[2]?.headlineBn || articles[2]?.headline}
+               </Link>
+             </h2>
+             <p className="text-sm font-bold italic mb-3 text-[#888888]">{articles[2]?.byline || 'Staff Reporter'}</p>
+             <p className="text-xs text-justify leading-relaxed line-clamp-4">
+               {articles[2]?.deck || 'বিস্তারিত খবর আসছে...'}
+             </p>
+             <div className="text-right mt-3 mb-6">
+               <Link href={`/article/${articles[2]?.slug || '#'}`} className="text-[11px] font-bold text-[#d33f3f] hover:underline">
+                 আরো পড়ুন
+               </Link>
+             </div>
+
+             {/* Additional Article Previews */}
+             <div className="border-t border-[#e2e2e2] pt-1 flex flex-col gap-4">
+               <CategoryColumnFeed category="other" skipIds={articles[2] ? [articles[2].id] : []} />
              </div>
           </div>
         </div>
