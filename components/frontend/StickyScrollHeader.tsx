@@ -52,18 +52,13 @@ export default function StickyScrollHeader() {
       }}
     >
       <div className="max-w-[1200px] mx-auto px-6 py-2.5 flex items-center justify-between">
-        {/* Left Brand Identity: Very clean & small logo/text link */}
-        <Link href="/" className="flex items-center gap-2 flex-shrink-0">
-          <span 
-            style={{ 
-              fontFamily: 'var(--font-headline)', 
-              fontWeight: 'bold', 
-              fontSize: '1.2rem',
-              color: 'var(--live-red)' 
-            }}
-          >
-            খেলারদেশ
-          </span>
+        {/* Left Brand Identity: logo */}
+        <Link href="/" className="flex items-center flex-shrink-0" aria-label="খেলারদেশ নীড়পাতা">
+          <img
+            src="/images/khelardesh_logo.png"
+            alt="খেলারদেশ"
+            style={{ height: 36, width: 'auto', objectFit: 'contain', filter: 'var(--logo-filter, none)' }}
+          />
         </Link>
 
         {/* Center: Navigation Menu (Scrollable on mobile) */}
