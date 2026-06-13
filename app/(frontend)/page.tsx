@@ -12,6 +12,7 @@ import BriefsColumn from '@/components/frontend/BriefsColumn';
 import { MotionDiv } from '@/components/frontend/MotionDiv';
 import { staggerContainer, fadeUp } from '@/lib/animations';
 import CategoryColumnFeed from '@/components/frontend/CategoryColumnFeed';
+import InfiniteArticleFeed from '@/components/frontend/InfiniteArticleFeed';
 
 export const dynamic = 'force-dynamic';
 
