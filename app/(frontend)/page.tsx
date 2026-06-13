@@ -272,10 +272,34 @@ export default async function HomePage() {
              <p className="text-xs text-justify leading-relaxed">
                মিশেল গন্ড্রি, যিনি তার অভিনব এবং পরাবাস্তব শৈলীর জন্য পরিচিত, অবশেষে &apos;ল&apos;একুমে দেস জোউর্স&apos;-এর মাধ্যমে আবার রূপালী পর্দায় ফিরে এসেছেন। বোরিস ভিয়ানের বিখ্যাত উপন্যাসের উপর ভিত্তি করে নির্মিত এই চলচ্চিত্রটি একটি স্বপ্নময় অথচ করুণ প্রেমের গল্প বলে। গন্ড্রির জাদুকরী পরিচালনায় এই ছবিটি দর্শকদের এক ভিন্ন জগতে নিয়ে যায়।
              </p>
-             <div className="text-right mt-3">
+             <div className="text-right mt-3 mb-6">
                <Link href={`/article/${articles[3]?.slug || '#'}`} className="text-[11px] font-bold text-[#d33f3f] hover:underline">
                  আরো পড়ুন
                </Link>
+             </div>
+
+             {/* Additional Article Previews */}
+             <div className="border-t border-[#e2e2e2] pt-4 flex flex-col gap-4">
+               <div>
+                 <Link href="/article/cannes-top-films" className="hover:text-[#d33f3f] transition-colors">
+                   <h4 style={{ fontFamily: 'var(--font-headline)' }} className="text-lg font-bold mb-1 leading-snug">কান চলচ্চিত্র উৎসবের সেরা পাঁচ ছবি</h4>
+                 </Link>
+                 <span className="text-[10px] text-gray-400 block mb-1">স্টাফ রিপোর্টার · ৩ দিন আগে</span>
+                 <p className="text-xs text-justify text-[#555] line-clamp-2 leading-relaxed">
+                   চলতি বছরের কান চলচ্চিত্র উৎসবে বিশ্ব চলচ্চিত্রের অন্যতম সেরা কিছু কাজ প্রদর্শিত হয়েছে। তার মধ্যে যে ৫টি চলচ্চিত্র দর্শকদের হৃদয় কেড়েছে তা নিয়ে আমাদের বিশেষ পর্যালোচনা।
+                 </p>
+                 <Link href="/article/cannes-top-films" className="text-[10px] font-bold text-[#d33f3f] hover:underline block text-right mt-1">আরো পড়ুন</Link>
+               </div>
+               <div className="border-t border-dashed border-[#e2e2e2] pt-3">
+                 <Link href="/article/hollywood-new-scifi" className="hover:text-[#d33f3f] transition-colors">
+                   <h4 style={{ fontFamily: 'var(--font-headline)' }} className="text-lg font-bold mb-1 leading-snug">হলিউডের নতুন সাই-ফাই রোমাঞ্চকর সিনেমা</h4>
+                 </Link>
+                 <span className="text-[10px] text-gray-400 block mb-1">স্টাফ রিপোর্টার · ৪ দিন আগে</span>
+                 <p className="text-xs text-justify text-[#555] line-clamp-2 leading-relaxed">
+                   কল্পবিজ্ঞানের এক নতুন যুগ সৃষ্টি করতে আসছে হলিউডের এই নতুন মুভি। অনন্য ভিজ্যুয়াল এফেক্ট এবং শক্তিশালী চিত্রনাট্যের মাধ্যমে এটি দর্শকদের এক চমৎকার অভিজ্ঞতা দেবে।
+                 </p>
+                 <Link href="/article/hollywood-new-scifi" className="text-[10px] font-bold text-[#d33f3f] hover:underline block text-right mt-1">আরো পড়ুন</Link>
+               </div>
              </div>
           </div>
           
@@ -286,15 +310,39 @@ export default async function HomePage() {
                জার্মান শিল্পী কিটনের নতুন বই
              </h2>
              <p className="text-sm font-bold italic mb-4">মার্টিন লিক দ্বারা</p>
-             <div className="text-[11px] text-justify columns-2 gap-4 leading-relaxed">
+             <div className="text-[11px] text-justify columns-2 gap-4 leading-relaxed mb-6">
                <p className="mb-2">জার্মান শিল্পী কিটন সম্প্রতি তার নতুন বইটি প্রকাশ করেছেন, যা শিল্পপ্রেমীদের মধ্যে ব্যাপক সাড়া ফেলেছে। এই বইটিতে তার জীবনের নানা অভিজ্ঞতা, সৃজনশীলতার উৎস এবং শিল্পের প্রতি তার গভীর অনুরাগের কথা বর্ণনা করা হয়েছে।</p>
                <p className="mb-2">বইটিতে অনেক অপ্রকাশিত ছবি and স্কেচ রয়েছে, যা তার কাজের পেছনের পরিশ্রমকে তুলে ধরে। কিটনের মতে, শিল্প কেবল একটি পেশা নয়, এটি আত্মপ্রকাশের একটি মাধ্যম।</p>
                <p>তার এই নতুন বইটি কেবল শিল্পীদের জন্যই নয়, সাধারণ মানুষের জন্যও অনুপ্রেরণামূলক হতে পারে বলে সমালোচকরা মত প্রকাশ করেছেন।</p>
              </div>
-             <div className="text-right mt-3">
+             <div className="text-right mt-3 mb-6">
                <Link href="#" className="text-[11px] font-bold text-[#d33f3f] hover:underline">
                  আরো পড়ুন
                </Link>
+             </div>
+
+             {/* Additional Article Previews */}
+             <div className="border-t border-[#e2e2e2] pt-4 flex flex-col gap-4">
+               <div>
+                 <Link href="/article/bangla-bands-history" className="hover:text-[#d33f3f] transition-colors">
+                   <h4 style={{ fontFamily: 'var(--font-headline)' }} className="text-lg font-bold mb-1 leading-snug">বাংলা ব্যান্ডের ৫০ বছর ও নতুন রূপ</h4>
+                 </Link>
+                 <span className="text-[10px] text-gray-400 block mb-1">স্টাফ রিপোর্টার · ১ সপ্তাহ আগে</span>
+                 <p className="text-xs text-justify text-[#555] line-clamp-2 leading-relaxed">
+                   বাংলা ব্যান্ড সংগীতের পথচলা শুরু হয়েছিল অনেক বছর আগে। সময়ের সাথে সাথে এর রূপ কিরূপে পরিবর্তিত হয়েছে এবং বর্তমান তরুণ প্রজন্মের কাছে এর জনপ্রিয়তা কেমন তা নিয়ে বিশেষ প্রতিবেদন।
+                 </p>
+                 <Link href="/article/bangla-bands-history" className="text-[10px] font-bold text-[#d33f3f] hover:underline block text-right mt-1">আরো পড়ুন</Link>
+               </div>
+               <div className="border-t border-dashed border-[#e2e2e2] pt-3">
+                 <Link href="/article/coldplay-world-tour" className="hover:text-[#d33f3f] transition-colors">
+                   <h4 style={{ fontFamily: 'var(--font-headline)' }} className="text-lg font-bold mb-1 leading-snug">কোল্ডপ্লে-র বিশ্বভ্রমণ কনসার্ট রেকর্ড</h4>
+                 </Link>
+                 <span className="text-[10px] text-gray-400 block mb-1">স্টাফ রিপোর্টার · ২ সপ্তাহ আগে</span>
+                 <p className="text-xs text-justify text-[#555] line-clamp-2 leading-relaxed">
+                   বিশ্বখ্যাত ব্রিটিশ ব্যান্ড কোল্ডপ্লে তাদের সাম্প্রতিক বিশ্ব সফরে বেশ কিছু নতুন মাইলফলক স্পর্শ করেছে। টিকিট বিক্রির দিক থেকে এবং দর্শকদের উপস্থিতিতে এটি সব রেকর্ড ছাড়িয়েছে।
+                 </p>
+                 <Link href="/article/coldplay-world-tour" className="text-[10px] font-bold text-[#d33f3f] hover:underline block text-right mt-1">আরো পড়ুন</Link>
+               </div>
              </div>
           </div>
           
@@ -315,10 +363,34 @@ export default async function HomePage() {
              <p className="text-xs text-justify leading-relaxed">
                দ্য ডিসেম্ব্রিস্টস ব্যান্ডের সরাসরি পারফরম্যান্স সবসময়ই এক অনন্য অভিজ্ঞতা। গ্রান রেক্সে তাদের সাম্প্রতিক কনসার্টটি ছিল জাদুকরী। মঞ্চের সজ্জা, আলোর খেলা এবং তাদের মনোমুগ্ধকর সঙ্গীত দর্শকদের আবিষ্ট করে রেখেছিল। ব্যান্ডের লিড সিঙ্গার তার আবেগপূর্ণ কণ্ঠ দিয়ে প্রতিটি গানকে জীবন্ত করে তুলেছিলেন। এটি নিঃসন্দেহে বছরের অন্যতম সেরা কনসার্ট ছিল।
              </p>
-             <div className="text-right mt-3">
+             <div className="text-right mt-3 mb-6">
                <Link href={`/article/${articles[4]?.slug || '#'}`} className="text-[11px] font-bold text-[#d33f3f] hover:underline">
                  আরো পড়ুন
                </Link>
+             </div>
+
+             {/* Additional Article Previews */}
+             <div className="border-t border-[#e2e2e2] pt-4 flex flex-col gap-4">
+               <div>
+                 <Link href={`/article/${articles[5]?.slug || '#'}`} className="hover:text-[#d33f3f] transition-colors">
+                   <h4 style={{ fontFamily: 'var(--font-headline)' }} className="text-lg font-bold mb-1 leading-snug">{articles[5]?.headlineBn || 'রোহিত শর্মার টেস্ট অবসর ঘোষণা'}</h4>
+                 </Link>
+                 <span className="text-[10px] text-gray-400 block mb-1">স্টাফ রিপোর্টার · ৫ দিন আগে</span>
+                 <p className="text-xs text-justify text-[#555] line-clamp-2 leading-relaxed">
+                   {articles[5]?.deck || 'রোহিত শর্মা ক্রিকেট ইতিহাসে এক অনন্য নাম। টেস্ট ফরম্যাট থেকে তার বিদায় ঘোষণা নিয়ে বিশেষ বিশ্লেষণমূলক প্রতিবেদন এবং পরবর্তী পরিকল্পনার ওপর আলোকপাত।'}
+                 </p>
+                 <Link href={`/article/${articles[5]?.slug || '#'}`} className="text-[10px] font-bold text-[#d33f3f] hover:underline block text-right mt-1">আরো পড়ুন</Link>
+               </div>
+               <div className="border-t border-dashed border-[#e2e2e2] pt-3">
+                 <Link href="/article/olympic-preparations" className="hover:text-[#d33f3f] transition-colors">
+                   <h4 style={{ fontFamily: 'var(--font-headline)' }} className="text-lg font-bold mb-1 leading-snug">অলিম্পিক উদ্বোধনী অনুষ্ঠানের প্রস্তুতি</h4>
+                 </Link>
+                 <span className="text-[10px] text-gray-400 block mb-1">স্টাফ রিপোর্টার · ৬ দিন আগে</span>
+                 <p className="text-xs text-justify text-[#555] line-clamp-2 leading-relaxed">
+                   আগামী মাসে শুরু হতে যাওয়া অলিম্পিক গেমসের উদ্বোধনী অনুষ্ঠানকে ঘিরে প্রস্তুতি তুঙ্গে। একটি জমকালো এবং স্মরণীয় অনুষ্ঠান উপহার দিতে কাজ করছে বিশ্বখ্যাত শিল্পীরা।
+                 </p>
+                 <Link href="/article/olympic-preparations" className="text-[10px] font-bold text-[#d33f3f] hover:underline block text-right mt-1">আরো পড়ুন</Link>
+               </div>
              </div>
           </div>
         </div>
