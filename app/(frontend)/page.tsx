@@ -255,11 +255,24 @@ export default async function HomePage() {
         </div>
 
         {/* SCORES STRIP */}
-        {scores.length > 0 && (
-          <div className="mb-4">
-            <ScoresStrip scores={scores} />
-          </div>
-        )}
+        {(() => {
+          const DUMMY_SCORES = [
+            { id: -1,  league: 'UEFA Champions League', teamA: 'Real Madrid',   scoreA: '২', teamB: 'Man City',      scoreB: '১', winnerTeam: 'A', status: 'পূর্ণ সময়', isLive: false, displayOrder: 1, home_team_logo: 'https://upload.wikimedia.org/wikipedia/en/thumb/5/56/Real_Madrid_CF.svg/200px-Real_Madrid_CF.svg.png', away_team_logo: 'https://upload.wikimedia.org/wikipedia/en/thumb/e/eb/Manchester_City_FC_badge.svg/200px-Manchester_City_FC_badge.svg.png' },
+            { id: -2,  league: 'FIFA World Cup 2026',  teamA: 'Brazil',        scoreA: '৩', teamB: 'Argentina',    scoreB: '২', winnerTeam: 'A', status: '৮৭\'',     isLive: true,  displayOrder: 2, home_team_logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Flag_of_Brazil.svg/200px-Flag_of_Brazil.svg.png', away_team_logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/24701-soccer-argentina.svg/200px-24701-soccer-argentina.svg.png' },
+            { id: -3,  league: 'Premier League',       teamA: 'Arsenal',       scoreA: '১', teamB: 'Liverpool',    scoreB: '১', winnerTeam: '',  status: '৬৩\'',     isLive: true,  displayOrder: 3, home_team_logo: 'https://upload.wikimedia.org/wikipedia/en/thumb/5/53/Arsenal_FC.svg/200px-Arsenal_FC.svg.png', away_team_logo: 'https://upload.wikimedia.org/wikipedia/en/thumb/0/0c/Liverpool_FC.svg/200px-Liverpool_FC.svg.png' },
+            { id: -4,  league: 'La Liga',              teamA: 'Barcelona',     scoreA: '০', teamB: 'Atletico',     scoreB: '০', winnerTeam: '',  status: '২১:০০',    isLive: false, displayOrder: 4, home_team_logo: 'https://upload.wikimedia.org/wikipedia/en/thumb/4/47/FC_Barcelona_%28crest%29.svg/200px-FC_Barcelona_%28crest%29.svg.png', away_team_logo: 'https://upload.wikimedia.org/wikipedia/en/thumb/f/f4/Atletico_Madrid_2017_logo.svg/200px-Atletico_Madrid_2017_logo.svg.png' },
+            { id: -5,  league: 'Serie A',              teamA: 'Inter Milan',   scoreA: '২', teamB: 'AC Milan',     scoreB: '০', winnerTeam: 'A', status: 'পূর্ণ সময়', isLive: false, displayOrder: 5, home_team_logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/FC_Internazionale_Milano_2021.svg/200px-FC_Internazionale_Milano_2021.svg.png', away_team_logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/Logo_of_AC_Milan.svg/200px-Logo_of_AC_Milan.svg.png' },
+            { id: -6,  league: 'Bundesliga',           teamA: 'Bayern Munich', scoreA: '৪', teamB: 'Dortmund',     scoreB: '১', winnerTeam: 'A', status: 'পূর্ণ সময়', isLive: false, displayOrder: 6, home_team_logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/FC_Bayern_M%C3%BCnchen_logo_%282002%E2%80%932017%29.svg/200px-FC_Bayern_M%C3%BCnchen_logo_%282002%E2%80%932017%29.svg.png', away_team_logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/67/Borussia_Dortmund_logo.svg/200px-Borussia_Dortmund_logo.svg.png' },
+            { id: -7,  league: 'IPL 2026',             teamA: 'MI',            scoreA: '১৮৫', teamB: 'CSK',       scoreB: '১৬২', winnerTeam: 'A', status: 'পূর্ণ', isLive: false, displayOrder: 7, home_team_logo: '', away_team_logo: '' },
+            { id: -8,  league: 'ATP Wimbledon',        teamA: 'Djokovic',      scoreA: '২', teamB: 'Nadal',       scoreB: '১', winnerTeam: 'A', status: 'পূর্ণ সময়', isLive: false, displayOrder: 8, home_team_logo: '', away_team_logo: '' },
+          ];
+          const displayScores = scores.length > 0 ? scores : DUMMY_SCORES;
+          return (
+            <div className="mb-4">
+              <ScoresStrip scores={displayScores} />
+            </div>
+          );
+        })()}
 
         {/* LOWER SECTION */}
         <div className="grid grid-cols-3 gap-0">
