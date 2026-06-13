@@ -67,17 +67,26 @@ async function fromFotMob(dateStr: string): Promise<LeagueData[]> {
 async function fromFlashscore() {
   console.log('[fromFlashscore] Fetching matches from Flashscore fallback')
   const url = 'https://local.flashscore.com/x/feed/f_1_0_1_en_1'
-  const response = await fetch(url, {
-    headers: {
-      'X-Fsign': 'SW9D1eZo',
-      'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
-      'Referer': 'https://www.flashscore.com/',
-      'Accept': 'text/plain',
-    },
-  })
+  const headers = {
+    'X-Fsign': 'SW9D1eZo',
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
+    'Referer': 'https://www.flashscore.com/',
+    'Accept': 'text/plain',
+  }
 
-  if (!response.ok) {
-    throw new Error(`Flashscore fetch failed with status: ${response.status}`)
+  let response: Response;
+  try {
+    response = await fetch(url, { headers })
+    if (!response.ok) {
+      throw new Error(`Local fetch failed with status: ${response.status}`)
+    }
+  } catch (err) {
+    console.warn('[fromFlashscore] local.flashscore.com failed, trying www.flashscore.com fallback:', err)
+    const backupUrl = 'https://www.flashscore.com/x/feed/f_1_0_1_en_1'
+    response = await fetch(backupUrl, { headers })
+    if (!response.ok) {
+      throw new Error(`Flashscore backup fetch failed with status: ${response.status}`)
+    }
   }
 
   const text = await response.text()
@@ -100,11 +109,9 @@ async function fromFlashscore() {
     let status = ''
 
     for (const field of fields) {
-      const key = field.slice(0, 2)
-      let val = field.slice(2)
-      if (val.startsWith('÷')) {
-        val = val.slice(1)
-      }
+      const parts = field.split('÷')
+      const key = parts[0]
+      const val = parts.slice(1).join('÷')
 
       if (key === 'AE') {
         home = val
