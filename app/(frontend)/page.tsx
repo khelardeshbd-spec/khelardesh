@@ -11,7 +11,7 @@ import SkeletonCard from '@/components/frontend/SkeletonCard';
 import BriefsColumn from '@/components/frontend/BriefsColumn';
 import { MotionDiv } from '@/components/frontend/MotionDiv';
 import { staggerContainer, fadeUp } from '@/lib/animations';
-import InfiniteArticleFeed from '@/components/frontend/InfiniteArticleFeed';
+import CategoryColumnFeed from '@/components/frontend/CategoryColumnFeed';
 
 export const dynamic = 'force-dynamic';
 
@@ -182,10 +182,10 @@ export default async function HomePage() {
         {/* TEASER ROW */}
         <div className="grid grid-cols-3 gap-0 border-b border-[#e2e2e2] pb-2 mb-2">
           {/* Teaser 1 */}
-          <div className="text-center px-3 border-r border-[#e2e2e2] flex flex-col justify-start">
+          <div className="text-center px-3 border-r border-[#e2e2e2]">
             <h3 style={{ fontFamily: 'var(--font-body)' }} className="text-sm font-bold mb-0.5 text-gray-400">মাসের ফোটোগ্যালারী</h3>
             <h2 style={{ fontFamily: 'var(--font-headline)' }} className="text-2xl font-bold mb-1 leading-tight text-[#121212]">{articles[0]?.headlineBn || 'ল্যার্স ওয়ায়েস্টফেল্ট'}</h2>
-            <p className="text-xs text-justify leading-relaxed font-normal text-[#555] mb-2">
+            <p className="text-xs text-justify leading-relaxed font-normal text-[#555]">
               সার্থ ওয়ায়েস্টফেল্ট জীবন ও কাজের কথা নিয়ে একটি সুন্দর ফোটোগ্রাফিক প্রবন্ধ, সুইডেনের স্ক্যানেস্টার স্ক্যানার এবং ডিজাইনের ক্ষেত্রে উদ্ভূত। ছবি তোলার মাধ্যমে জীবনশৈলীর চিত্রগুলো যেন বাস্তবতার ছোঁয়া দেয়।
             </p>
             <div className="text-right mt-1">
@@ -195,10 +195,10 @@ export default async function HomePage() {
             </div>
           </div>
           {/* Teaser 2 */}
-          <div className="text-center px-3 border-r border-[#e2e2e2] flex flex-col justify-start">
+          <div className="text-center px-3 border-r border-[#e2e2e2]">
             <h3 style={{ fontFamily: 'var(--font-body)' }} className="text-sm font-bold mb-0.5 text-gray-400">ব্রিটিশ বিপ্লব</h3>
             <h2 style={{ fontFamily: 'var(--font-headline)' }} className="text-2xl font-bold mb-1 leading-tight text-[#121212]">{articles[1]?.headlineBn || 'পিজে হার্ভে'}</h2>
-            <p className="text-xs text-justify leading-relaxed font-normal text-[#555] mb-2">
+            <p className="text-xs text-justify leading-relaxed font-normal text-[#555]">
               বেশ কয়েক বছর ধরে পিজে হার্ভে, যিনি নিজেকে সঙ্গীত দুনিয়ায় এক অনন্য স্থানে নিয়ে গেছেন, তার নতুন অ্যালবামটি নিয়ে আমরা আলোচনা করব। এই অ্যালবামটি আধুনিক সঙ্গীতের নতুন দিগন্ত উন্মোচন করে।
             </p>
             <div className="text-right mt-1">
@@ -208,10 +208,10 @@ export default async function HomePage() {
             </div>
           </div>
           {/* Teaser 3 */}
-          <div className="text-center px-3 flex flex-col justify-start">
+          <div className="text-center px-3">
             <h3 style={{ fontFamily: 'var(--font-body)' }} className="text-sm font-bold mb-0.5 text-gray-400">সিমা পরিপূরক</h3>
             <h2 style={{ fontFamily: 'var(--font-headline)' }} className="text-2xl font-bold mb-1 leading-tight text-[#121212]">{articles[2]?.headlineBn || 'মার্সেল জামা'}</h2>
-            <p className="text-xs text-justify leading-relaxed font-normal text-[#555] mb-2">
+            <p className="text-xs text-justify leading-relaxed font-normal text-[#555]">
               মার্সেল জামা এমন একজন প্রতিভাধর শিল্পী, যার চিত্রকর্মগুলো অত্যন্ত যত্ন সহকারে আঁকা। তার কাজের মধ্যে দিয়ে আমরা এক ভিন্ন জগতকে অনুভব করতে পারি যা অত্যন্ত বাস্তব ও মনোমুগ্ধকর।
             </p>
             <div className="text-right mt-1">
@@ -241,7 +241,7 @@ export default async function HomePage() {
               </Link>
             </div>
           </div>
-          <div className="col-span-8 flex flex-col items-end">
+          <div className="col-span-8">
             <div className="w-full h-[320px] lg:h-[395px] bg-gray-200 overflow-hidden border border-[#e2e2e2] p-1">
                {leads[0]?.slug === 'madrid-unravel-final-ten' ? (
                  <img src="/images/madrid_defeat_hero.png" className="w-full h-full object-cover" alt="Hero Image" />
@@ -251,7 +251,6 @@ export default async function HomePage() {
                  <div className="w-full h-full flex items-center justify-center text-gray-500 italic">ছবি নেই</div>
                )}
             </div>
-            <span className="text-[9px] text-gray-400 mt-1 font-sans mr-1">{leads[0]?.mediaCaption || 'ছবি: নিউ ইয়র্ক টাইমস'}</span>
           </div>
         </div>
 
@@ -260,15 +259,12 @@ export default async function HomePage() {
           {/* Column 1 */}
           <div className="border-r border-[#e2e2e2] pr-6">
              <h3 className="font-bold text-lg mb-3 border-b-2 border-[#121212] pb-1 uppercase tracking-wider">সিনেমা</h3>
-             <div className="w-full h-48 mb-1 border border-[#e2e2e2] p-1">
+             <div className="w-full h-48 mb-4 border border-[#e2e2e2] p-1">
                {articles[3]?.mediaUrl ? (
                   <img src={articles[3].mediaUrl} className="w-full h-full object-cover" alt="Cinema" />
                ) : (
                   <div className="w-full h-full bg-gray-200" />
                )}
-             </div>
-             <div className="text-[9px] text-gray-400 text-right mt-0.5 mb-3 font-sans">
-               ছবি: সংগৃহীত
              </div>
              <h2 style={{ fontFamily: 'var(--font-headline)' }} className="text-[1.75rem] font-bold mb-3 leading-tight">
                {articles[3]?.headlineBn || 'ল\'একুমে দেস জোউর্স: ফরাসি মিশেল গন্ড্রির কাঙ্ক্ষিত প্রত্যাবর্তন'}
@@ -281,19 +277,18 @@ export default async function HomePage() {
                <Link href={`/article/${articles[3]?.slug || '#'}`} className="text-[11px] font-bold text-[#d33f3f] hover:underline">
                  আরো পড়ুন
                </Link>
-              </div>
-           </div>
+             </div>
+
+             {/* Additional Article Previews */}
+             <div className="border-t border-[#e2e2e2] pt-1 flex flex-col gap-4">
+               <CategoryColumnFeed category="cinema" skipIds={articles[3] ? [articles[3].id] : []} />
+             </div>
+          </div>
           
           {/* Column 2 */}
           <div className="border-r border-[#e2e2e2] px-6">
              <h3 className="font-bold text-lg mb-3 border-b-2 border-[#121212] pb-1 uppercase tracking-wider">সঙ্গীত</h3>
-             <div className="w-full h-48 mb-1 border border-[#e2e2e2] p-1">
-                <img src="/media/placeholder-bpl.jpg" className="w-full h-full object-cover" alt="Music" />
-             </div>
-             <div className="text-[9px] text-gray-400 text-right mt-0.5 mb-3 font-sans">
-               ছবি: সংগৃহীত
-             </div>
-             <h2 style={{ fontFamily: 'var(--font-headline)' }} className="text-[1.75rem] font-bold mb-3 leading-tight">
+             <h2 style={{ fontFamily: 'var(--font-headline)' }} className="text-[2.2rem] font-bold mb-3 leading-[1.1]">
                জার্মান শিল্পী কিটনের নতুন বই
              </h2>
              <p className="text-sm font-bold italic mb-4 text-[#888888]">মার্টিন লিক দ্বারা</p>
@@ -307,20 +302,22 @@ export default async function HomePage() {
                  আরো পড়ুন
                </Link>
              </div>
-           </div>
+
+             {/* Additional Article Previews */}
+             <div className="border-t border-[#e2e2e2] pt-1 flex flex-col gap-4">
+               <CategoryColumnFeed category="music" skipIds={[]} />
+             </div>
+          </div>
           
           {/* Column 3 */}
           <div className="pl-6">
              <h3 className="font-bold text-lg mb-3 border-b-2 border-[#121212] pb-1 uppercase tracking-wider">সরাসরি</h3>
-             <div className="w-full h-40 mb-1 border border-[#e2e2e2] p-1">
+             <div className="w-full h-40 mb-4 border border-[#e2e2e2] p-1">
                {articles[4]?.mediaUrl ? (
                   <img src={articles[4].mediaUrl} className="w-full h-full object-cover" alt="Live Event" />
                ) : (
                   <div className="w-full h-full bg-gray-200" />
                )}
-             </div>
-             <div className="text-[9px] text-gray-400 text-right mt-0.5 mb-3 font-sans">
-               ছবি: গেটি ইমেজ
              </div>
              <h2 style={{ fontFamily: 'var(--font-headline)' }} className="text-[1.75rem] font-bold mb-3 leading-tight">
                {articles[4]?.headlineBn || 'গ্রান রেক্সে দ্য ডিসেম্ব্রিস্টস'}
@@ -333,19 +330,15 @@ export default async function HomePage() {
                <Link href={`/article/${articles[4]?.slug || '#'}`} className="text-[11px] font-bold text-[#d33f3f] hover:underline">
                  আরো পড়ুন
                </Link>
-              </div>
-           </div>
+             </div>
+
+             {/* Additional Article Previews */}
+             <div className="border-t border-[#e2e2e2] pt-1 flex flex-col gap-4">
+               <CategoryColumnFeed category="live" skipIds={articles[4] ? [articles[4].id] : []} />
+             </div>
+          </div>
         </div>
 
-        {/* INFINITE SCROLL FEED — sorted by date, big images */}
-        <div className="mt-10 border-t-[3px] border-[#121212] pt-2">
-          <InfiniteArticleFeed
-            skipIds={[
-              ...(leads.map((l: { id: number }) => l.id)),
-              ...(articles.slice(0, 4).map((a: { id: number }) => a.id)),
-            ]}
-          />
-        </div>
       </div>
     </div>
   );
