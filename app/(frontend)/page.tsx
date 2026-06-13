@@ -64,121 +64,83 @@ export default async function HomePage() {
   const inlineSponsors = sponsors.filter((s) => s.placement === 'inline');
 
   return (
-    <div style={{ backgroundColor: '#f4ece2', color: '#1a1a1a', minHeight: '100vh', padding: '24px 0', fontFamily: 'var(--font-body)' }}>
-      <div className="max-w-[1100px] mx-auto bg-[#f4ece2] px-8 py-6 shadow-2xl" style={{ border: '1px solid #d3c9b8' }}>
+    <div style={{ backgroundColor: '#ffffff', color: '#121212', minHeight: '100vh', padding: '12px 0', fontFamily: 'var(--font-body)' }}>
+      <div className="max-w-[1200px] mx-auto bg-[#ffffff] px-6 py-4">
         
         {/* MASTHEAD: 3-TIER NYT-INSPIRED */}
-        <div className="w-full text-[#1a1a1a] mb-6">
+        <div className="w-full text-[#121212] mb-6">
           {/* Tier 1: Top Bar */}
-          <div className="flex justify-between items-center border-b border-[#1a1a1a] pb-2 mb-4 text-xs font-semibold tracking-wider uppercase">
+          <div className="flex justify-between items-center border-b border-[#e2e2e2] pb-3 mb-4 text-xs font-semibold tracking-wider uppercase">
             <div className="flex items-center gap-6">
               {/* Sections / Hamburger */}
-              <button className="flex items-center gap-1.5 hover:opacity-75 transition-opacity">
+              <button className="flex items-center gap-1.5 hover:opacity-75 transition-opacity text-[#121212]">
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
                   <line x1="3" y1="12" x2="21" y2="12"></line>
                   <line x1="3" y1="6" x2="21" y2="6"></line>
                   <line x1="3" y1="18" x2="21" y2="18"></line>
                 </svg>
-                <span>SECTIONS</span>
+                <span className="font-sans font-bold tracking-tight">SECTIONS</span>
               </button>
               
               {/* Search */}
               <div className="relative flex items-center group">
-                <button className="flex items-center gap-1.5 hover:opacity-75 transition-opacity">
+                <button className="flex items-center gap-1.5 hover:opacity-75 transition-opacity text-[#121212]">
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
                     <circle cx="11" cy="11" r="8"></circle>
                     <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
                   </svg>
-                  <span>SEARCH</span>
+                  <span className="font-sans font-bold tracking-tight">SEARCH</span>
                 </button>
               </div>
             </div>
 
             {/* Right: Subscribe & Account */}
-            <div className="flex items-center gap-4">
-              <div className="hidden sm:flex items-center gap-2 border-r border-[#1a1a1a] pr-4">
-                <div className="text-right">
-                  <span className="block font-bold text-[10px] text-red-600 animate-pulse">SUBSCRIBE NOW</span>
-                  <span className="block text-[9px] text-[#555] lowercase font-normal">১ মাস ফ্রি ট্রায়াল</span>
-                </div>
-                <div className="w-7 h-9 border border-[#1a1a1a] flex items-center justify-center bg-white text-[8px] font-bold shadow-sm">
-                  KHEL
-                </div>
-              </div>
-              <button className="flex items-center gap-2 hover:opacity-75 transition-opacity">
-                <span className="text-[11px] font-bold">LOG IN</span>
-                <div className="w-7 h-7 rounded-full bg-[#1a1a1a] text-[#f4ece2] flex items-center justify-center font-bold text-[10px]">
-                  K
-                </div>
+            <div className="flex items-center gap-3">
+              <button className="bg-[#326891] text-white hover:bg-[#275272] transition-colors px-4 py-1.5 rounded-[3px] font-sans font-extrabold text-[11px] tracking-wide">
+                SUBSCRIBE FOR $0.25/WEEK
+              </button>
+              <button className="bg-[#121212] text-white hover:bg-[#222222] transition-colors px-4 py-1.5 rounded-[3px] font-sans font-extrabold text-[11px] tracking-wide">
+                LOG IN
               </button>
             </div>
           </div>
 
           {/* Tier 2: Logo and Promos */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-center mb-4">
-            {/* Left Promo Block */}
-            <div className="hidden lg:flex lg:col-span-3 h-[90px] bg-black text-[#f4ece2] p-3 flex-col justify-between border border-[#1a1a1a]">
-              <div className="text-[10px] font-bold tracking-widest text-gray-400">THE DAILY 360</div>
-              <div className="text-xs font-semibold leading-tight">বিশ্ব ক্রীড়াঙ্গনের সব খবর এক নজরে প্রতিদিন</div>
+            {/* Left Info: Date */}
+            <div className="hidden lg:flex lg:col-span-3 flex-col text-left text-[11px] text-[#121212]">
+              <span className="font-bold font-sans">Saturday, June 13, 2026</span>
+              <span className="text-gray-500 font-sans mt-0.5">Today&apos;s Paper</span>
             </div>
 
             {/* Center Logo */}
             <div className="col-span-1 lg:col-span-6 text-center flex flex-col items-center">
-              <img src="/images/khelardesh_logo.png" alt="খেলারদেশ" className="mx-auto mb-2 select-none" style={{ maxWidth: '100%', height: 'auto', maxHeight: '110px' }} />
+              <img src="/images/khelardesh_logo.png" alt="খেলারদেশ" className="mx-auto mb-1 select-none" style={{ maxWidth: '100%', height: 'auto', maxHeight: '110px' }} />
             </div>
 
-            {/* Right Promo Block */}
-            <div className="hidden lg:flex lg:col-span-3 h-[90px] bg-white text-black p-3 flex-col justify-between border border-[#1a1a1a] shadow-sm">
-              <div className="text-[9px] font-bold tracking-wider text-gray-500 uppercase font-sans">SPORTS JOURNALISM BY</div>
-              <div className="text-sm font-bold tracking-tight leading-none uppercase">খেলারদেশ</div>
-              <div className="text-[8px] text-gray-500 uppercase font-sans">Powered by Next.js & Supabase</div>
-            </div>
-          </div>
-
-          {/* Date & Info Strip */}
-          <div className="border-t border-b border-[#1a1a1a] py-1.5 mb-5 flex flex-wrap justify-between items-center text-[11px] font-medium text-[#222]">
-            <div className="flex items-center gap-3">
-              <span className="font-bold">রবিবার, ৯ সেপ্টেম্বর ২০২৩</span>
-              <span className="text-gray-400">|</span>
-              <span className="hover:underline cursor-pointer">আজকের পত্রিকা</span>
-              <span className="text-gray-400">|</span>
-              <span className="hover:underline cursor-pointer">ভিডিও</span>
-            </div>
-            
-            <div className="flex items-center gap-4 mt-1 sm:mt-0 font-semibold">
-              <span className="flex items-center gap-1">
-                <span className="inline-block w-2 h-2 rounded-full bg-red-600 animate-ping"></span>
-                <span className="text-red-600 font-bold uppercase tracking-wider text-[10px]">LIVE</span>
-                <span className="text-xs">বাংলাদেশ ২ - ১ ভারত</span>
+            {/* Right Info: Dow/Stock info */}
+            <div className="hidden lg:flex lg:col-span-3 flex-col text-right text-[11px] font-sans text-[#121212]">
+              <span className="font-bold flex items-center justify-end gap-1">
+                <span>Dow</span>
+                <span className="text-green-600">+0.7% ▲</span>
               </span>
-              <span className="text-gray-400">|</span>
-              <span>ঢাকা ৩০°C ☀️</span>
-              <span className="text-gray-400">|</span>
-              <span className="text-xs uppercase tracking-wider">সংখ্যা: # ০০০১</span>
             </div>
-          </div>
-
-          {/* Quote Banner */}
-          <div className="text-center px-4 mb-4">
-            <p className="text-[11px] font-medium tracking-wide italic text-gray-700">
-              “নিজের সম্পর্কে তিনি কী বলেন তা নিয়ে পুনরায় ভাবুন, তিনি নিজেকে কতটা প্রশংসা করেন, যত বেশি প্রশংসা পান, তত বেশি তিনি ক্ষুদ্র হন।”
-            </p>
           </div>
 
           {/* Tier 3: Category Navigation Strip */}
-          <div className="border-t-2 border-b-[4px] border-[#1a1a1a] py-2">
-            <div className="flex flex-wrap justify-center gap-x-6 gap-y-2 text-xs font-bold uppercase tracking-wider">
+          <div className="border-t border-b border-[#e2e2e2] py-2.5">
+            <div className="flex flex-wrap justify-center gap-x-6 gap-y-2 text-xs font-semibold text-[#121212]">
               {['মাঠ', 'ফুটবল', 'বাংলাদেশের ফুটবল', 'ক্রিকেট', 'বাংলাদেশের ক্রিকেট', 'ইন্টারভিউ', 'ফিচার', 'খেলার দেশ বিশেষ', 'অতিথি কলাম', 'অন্যান্য'].map((cat, idx) => (
-                <span key={idx} className="cursor-pointer hover:underline text-[#1a1a1a]">{cat}</span>
+                <span key={idx} className="cursor-pointer hover:underline">{cat}</span>
               ))}
             </div>
           </div>
         </div>
 
         {/* TEASER ROW */}
-        <div className="grid grid-cols-3 gap-0 border-b-[3px] border-[#1a1a1a] pb-6 mb-6">
+        <div className="grid grid-cols-3 gap-0 border-b border-[#e2e2e2] pb-6 mb-6">
           {/* Teaser 1 */}
-          <div className="text-center px-6 border-r-[1.5px] border-[#1a1a1a]">
+          <div className="text-center px-6 border-r border-[#e2e2e2]">
             <h3 className="text-sm font-bold mb-2">মাসের ফোটোগ্যালারী</h3>
             <h2 style={{ fontFamily: 'var(--font-headline)' }} className="text-2xl font-bold mb-3 leading-tight">{articles[0]?.headlineBn || 'ল্যার্স ওয়ায়েস্টফেল্ট'}</h2>
             <p className="text-xs text-justify leading-relaxed">
@@ -186,7 +148,7 @@ export default async function HomePage() {
             </p>
           </div>
           {/* Teaser 2 */}
-          <div className="text-center px-6 border-r-[1.5px] border-[#1a1a1a]">
+          <div className="text-center px-6 border-r border-[#e2e2e2]">
             <h3 className="text-sm font-bold mb-2">ব্রিটিশ বিপ্লব</h3>
             <h2 style={{ fontFamily: 'var(--font-headline)' }} className="text-2xl font-bold mb-3 leading-tight">{articles[1]?.headlineBn || 'পিজে হার্ভে'}</h2>
             <p className="text-xs text-justify leading-relaxed">
@@ -204,7 +166,7 @@ export default async function HomePage() {
         </div>
 
         {/* HERO SECTION */}
-        <div className="grid grid-cols-12 gap-8 border-b-[3px] border-[#1a1a1a] pb-8 mb-8">
+        <div className="grid grid-cols-12 gap-8 border-b border-[#e2e2e2] pb-8 mb-8">
           <div className="col-span-4 flex flex-col">
             <h3 className="text-sm font-bold mb-3">যুক্তরাষ্ট্র থেকে</h3>
             <h1 style={{ fontFamily: 'var(--font-headline)', fontSize: '3.8rem', lineHeight: '1.05', marginBottom: '16px', letterSpacing: '-0.01em' }}>
@@ -216,9 +178,9 @@ export default async function HomePage() {
             </p>
           </div>
           <div className="col-span-8">
-            <div className="w-full h-full min-h-[450px] bg-gray-200 overflow-hidden border border-[#1a1a1a] p-1">
+            <div className="w-full h-full min-h-[450px] bg-gray-200 overflow-hidden border border-[#e2e2e2] p-1">
                {leads[0]?.mediaUrl ? (
-                 <img src={leads[0].mediaUrl} className="w-full h-full object-cover grayscale sepia-[.3] contrast-125" alt="Hero Image" />
+                 <img src={leads[0].mediaUrl} className="w-full h-full object-cover" alt="Hero Image" />
                ) : (
                  <div className="w-full h-full flex items-center justify-center text-gray-500 italic">ছবি নেই</div>
                )}
@@ -229,11 +191,11 @@ export default async function HomePage() {
         {/* LOWER SECTION */}
         <div className="grid grid-cols-3 gap-0">
           {/* Column 1 */}
-          <div className="border-r-[1.5px] border-[#1a1a1a] pr-6">
-             <h3 className="font-bold text-lg mb-3 border-b-2 border-[#1a1a1a] pb-1 uppercase tracking-wider">সিনেমা</h3>
-             <div className="w-full h-48 mb-4 border border-[#1a1a1a] p-1">
+          <div className="border-r border-[#e2e2e2] pr-6">
+             <h3 className="font-bold text-lg mb-3 border-b-2 border-[#121212] pb-1 uppercase tracking-wider">সিনেমা</h3>
+             <div className="w-full h-48 mb-4 border border-[#e2e2e2] p-1">
                {articles[3]?.mediaUrl ? (
-                  <img src={articles[3].mediaUrl} className="w-full h-full object-cover grayscale sepia-[.3] contrast-125" alt="Cinema" />
+                  <img src={articles[3].mediaUrl} className="w-full h-full object-cover" alt="Cinema" />
                ) : (
                   <div className="w-full h-full bg-gray-200" />
                )}
@@ -248,8 +210,8 @@ export default async function HomePage() {
           </div>
           
           {/* Column 2 */}
-          <div className="border-r-[1.5px] border-[#1a1a1a] px-6">
-             <h3 className="font-bold text-lg mb-3 border-b-2 border-[#1a1a1a] pb-1 uppercase tracking-wider">সঙ্গীত</h3>
+          <div className="border-r border-[#e2e2e2] px-6">
+             <h3 className="font-bold text-lg mb-3 border-b-2 border-[#121212] pb-1 uppercase tracking-wider">সঙ্গীত</h3>
              <h2 style={{ fontFamily: 'var(--font-headline)' }} className="text-[2.2rem] font-bold mb-3 leading-[1.1]">
                জার্মান শিল্পী কিটনের নতুন বই
              </h2>
@@ -263,10 +225,10 @@ export default async function HomePage() {
           
           {/* Column 3 */}
           <div className="pl-6">
-             <h3 className="font-bold text-lg mb-3 border-b-2 border-[#1a1a1a] pb-1 uppercase tracking-wider">সরাসরি</h3>
-             <div className="w-full h-40 mb-4 border border-[#1a1a1a] p-1">
+             <h3 className="font-bold text-lg mb-3 border-b-2 border-[#121212] pb-1 uppercase tracking-wider">সরাসরি</h3>
+             <div className="w-full h-40 mb-4 border border-[#e2e2e2] p-1">
                {articles[4]?.mediaUrl ? (
-                  <img src={articles[4].mediaUrl} className="w-full h-full object-cover grayscale sepia-[.3] contrast-125" alt="Live Event" />
+                  <img src={articles[4].mediaUrl} className="w-full h-full object-cover" alt="Live Event" />
                ) : (
                   <div className="w-full h-full bg-gray-200" />
                )}
