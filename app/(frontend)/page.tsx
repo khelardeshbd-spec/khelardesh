@@ -67,10 +67,16 @@ export default async function HomePage() {
     <div style={{ backgroundColor: '#ffffff', color: '#121212', minHeight: '100vh', padding: '8px 0', fontFamily: 'var(--font-body)' }}>
       <div className="max-w-[1200px] mx-auto bg-[#ffffff] px-6 py-2">
         
-        {/* MASTHEAD: 3-TIER NYT-INSPIRED */}
+        {/* MASTHEAD: LOGO ON TOP & REORGANIZED CONTROLS */}
         <div className="w-full text-[#121212] mb-4">
-          {/* Tier 1: Top Bar */}
-          <div className="flex justify-between items-center border-b border-[#e2e2e2] pb-2 mb-2 text-xs font-semibold tracking-wider uppercase">
+          {/* Tier 1: Logo on the very top */}
+          <div className="flex justify-center items-center border-b border-[#e2e2e2] pb-3 mb-2">
+            <img src="/images/khelardesh_logo.png" alt="খেলারদেশ" className="mx-auto select-none" style={{ maxWidth: '100%', height: 'auto', maxHeight: '75px' }} />
+          </div>
+
+          {/* Tier 2: Controls & Info Bar */}
+          <div className="flex justify-between items-center border-b border-[#e2e2e2] pb-2 mb-2 text-xs font-semibold uppercase">
+            {/* Left: Icons */}
             <div className="flex items-center gap-5">
               {/* Sections / Hamburger */}
               <button className="hover:opacity-75 transition-opacity text-[#121212]" aria-label="Sections">
@@ -90,41 +96,25 @@ export default async function HomePage() {
               </button>
             </div>
 
-            {/* Right: Subscribe & Account */}
+            {/* Center: Bengali Date Info */}
+            <div className="flex flex-col items-center text-center text-[11px] text-[#121212]">
+              <span className="font-bold">শনিবার, ১৩ জুন, ২০২৬</span>
+              <span className="text-gray-500 text-[10px] mt-0.5">আজকের পত্রিকা</span>
+            </div>
+
+            {/* Right: Subscribe & Login buttons in Bengali */}
             <div className="flex items-center gap-3">
-              <button className="bg-[#326891] text-white hover:bg-[#275272] transition-colors px-4 py-1.5 rounded-[3px] font-sans font-extrabold text-[11px] tracking-wide">
-                SUBSCRIBE FOR $0.25/WEEK
+              <button className="bg-[#326891] text-white hover:bg-[#275272] transition-colors px-4 py-1.5 rounded-[3px] font-extrabold text-[11px] tracking-wide">
+                সাবস্ক্রিপশন
               </button>
-              <button className="bg-[#121212] text-white hover:bg-[#222222] transition-colors px-4 py-1.5 rounded-[3px] font-sans font-extrabold text-[11px] tracking-wide">
-                LOG IN
+              <button className="bg-[#121212] text-white hover:bg-[#222222] transition-colors px-4 py-1.5 rounded-[3px] font-extrabold text-[11px] tracking-wide">
+                লগইন
               </button>
-            </div>
-          </div>
-
-          {/* Tier 2: Logo and Promos */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-center mb-2">
-            {/* Left Info: Date */}
-            <div className="hidden lg:flex lg:col-span-3 flex-col text-left text-[11px] text-[#121212]">
-              <span className="font-bold font-sans">Saturday, June 13, 2026</span>
-              <span className="text-gray-500 font-sans mt-0.5">Today&apos;s Paper</span>
-            </div>
-
-            {/* Center Logo */}
-            <div className="col-span-1 lg:col-span-6 text-center flex flex-col items-center">
-              <img src="/images/khelardesh_logo.png" alt="খেলারদেশ" className="mx-auto select-none" style={{ maxWidth: '100%', height: 'auto', maxHeight: '65px' }} />
-            </div>
-
-            {/* Right Info: Dow/Stock info */}
-            <div className="hidden lg:flex lg:col-span-3 flex-col text-right text-[11px] font-sans text-[#121212]">
-              <span className="font-bold flex items-center justify-end gap-1">
-                <span>Dow</span>
-                <span className="text-green-600 font-sans">+0.7% ▲</span>
-              </span>
             </div>
           </div>
 
           {/* Tier 3: Category Navigation Strip */}
-          <div className="border-t border-b border-[#e2e2e2] py-1.5">
+          <div className="border-b border-[#e2e2e2] pb-2">
             <div className="flex flex-wrap justify-center gap-x-6 gap-y-2 text-xs font-semibold text-[#121212]">
               {['মাঠ', 'ফুটবল', 'বাংলাদেশের ফুটবল', 'ক্রিকেট', 'বাংলাদেশের ক্রিকেট', 'ইন্টারভিউ', 'ফিচার', 'খেলার দেশ বিশেষ', 'অতিথি কলাম', 'অন্যান্য'].map((cat, idx) => (
                 <span key={idx} className="cursor-pointer hover:underline">{cat}</span>
