@@ -41,7 +41,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
       </head>
       <body className="has-bottom-nav">
-        <SmartHeader />
+        {/* <SmartHeader /> removed as per user request */}
         <LiveTicker />
         <main id="main-content" tabIndex={-1}>
           {children}

@@ -75,11 +75,24 @@ export default async function HomePage() {
           </div>
           <div className="w-2/4 text-center px-4">
             <img src="/images/khelardesh_logo.png" alt="খেলারদেশ" className="mx-auto mb-2" style={{ maxWidth: '100%', height: 'auto', maxHeight: '120px' }} />
-            <p className="text-[11px] font-bold border-t-[1px] border-b-[1px] border-[#1a1a1a] py-1 mt-3 tracking-wide">
-              নিজের সম্পর্কে তিনি কী বলেন তা নিয়ে পুনরায় ভাবুন, তিনি নিজেকে কতটা প্রশংসা করেন, যত বেশি প্রশংসা পান, তত বেশি তিনি ক্ষুদ্র হন।
-            </p>
+            <div className="border-t-[1px] border-b-[1px] border-[#1a1a1a] py-2 mt-3">
+              <p className="text-[11px] font-bold tracking-wide">
+                নিজের সম্পর্কে তিনি কী বলেন তা নিয়ে পুনরায় ভাবুন, তিনি নিজেকে কতটা প্রশংসা করেন, যত বেশি প্রশংসা পান, তত বেশি তিনি ক্ষুদ্র হন।
+              </p>
+              <div className="flex flex-wrap justify-center gap-x-4 gap-y-1 mt-2 text-[10px] font-bold uppercase tracking-wider">
+                {['মাঠ', 'ফুটবল', 'বাংলাদেশের ফুটবল', 'ক্রিকেট', 'বাংলাদেশের ক্রিকেট', 'ইন্টারভিউ', 'ফিচার', 'খেলার দেশ বিশেষ', 'অতিথি কলাম', 'অন্যান্য'].map((cat, idx) => (
+                  <span key={idx} className="cursor-pointer hover:underline text-[#1a1a1a]">{cat}</span>
+                ))}
+              </div>
+            </div>
           </div>
-          <div className="w-1/4 text-center border-l-[1.5px] border-[#1a1a1a] pl-4 h-full flex flex-col justify-center">
+          <div className="w-1/4 text-center border-l-[1.5px] border-[#1a1a1a] pl-4 h-full flex flex-col justify-center items-center">
+            <div className="mb-3">
+              <button className="flex items-center gap-1 text-[11px] font-bold uppercase border border-[#1a1a1a] px-3 py-1 hover:bg-[#1a1a1a] hover:text-[#f4ece2] transition-colors">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                অনুসন্ধান
+              </button>
+            </div>
             <div className="text-sm font-bold mb-1">সাপ্তাহিক সংবাদপত্র</div>
             <div className="text-sm mb-1">রবিবার ৯ সেপ্টেম্বর ২০২৩</div>
             <div className="text-xs">বর্ষ ২ | সংখ্যা: # ০০০১</div>
