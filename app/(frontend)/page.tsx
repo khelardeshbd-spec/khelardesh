@@ -11,6 +11,7 @@ import SkeletonCard from '@/components/frontend/SkeletonCard';
 import BriefsColumn from '@/components/frontend/BriefsColumn';
 import { MotionDiv } from '@/components/frontend/MotionDiv';
 import { staggerContainer, fadeUp } from '@/lib/animations';
+import InfiniteArticleFeed from '@/components/frontend/InfiniteArticleFeed';
 
 export const dynamic = 'force-dynamic';
 
@@ -280,46 +281,8 @@ export default async function HomePage() {
                <Link href={`/article/${articles[3]?.slug || '#'}`} className="text-[11px] font-bold text-[#d33f3f] hover:underline">
                  আরো পড়ুন
                </Link>
-             </div>
-
-             {/* Additional Article Previews */}
-             <div className="border-t border-[#e2e2e2] pt-4 flex flex-col gap-4">
-               <div className="flex gap-3 items-start justify-between">
-                 <div className="flex-1">
-                   <Link href="/article/cannes-top-films" className="hover:text-[#d33f3f] transition-colors">
-                     <h4 style={{ fontFamily: 'var(--font-headline)' }} className="text-lg font-bold mb-1 leading-snug">কান চলচ্চিত্র উৎসবের সেরা পাঁচ ছবি</h4>
-                   </Link>
-                   <span className="text-[10px] text-gray-400 block mb-1">স্টাফ রিপোর্টার · ৩ দিন আগে</span>
-                   <p className="text-xs text-justify text-[#555] line-clamp-2 leading-relaxed">
-                     চলতি বছরের কান চলচ্চিত্র উৎসবে বিশ্ব চলচ্চিত্রের অন্যতম সেরা কিছু কাজ প্রদর্শিত হয়েছে। তার মধ্যে যে ৫টি চলচ্চিত্র দর্শকদের হৃদয় কেড়েছে তা নিয়ে আমাদের বিশেষ পর্যালোচনা।
-                   </p>
-                 </div>
-                 <div className="flex flex-col items-end flex-shrink-0">
-                   <div className="w-[80px] h-[80px] bg-gray-100 border border-[#e2e2e2] p-0.5 mt-1 overflow-hidden">
-                     <img src="/media/placeholder-tennis.jpg" className="w-full h-full object-cover" alt="Cannes" />
-                   </div>
-                   <span className="text-[8px] text-gray-400 mt-0.5 font-sans">ছবি: সংগৃহীত</span>
-                 </div>
-               </div>
-               <div className="border-t border-dashed border-[#e2e2e2] pt-3 flex gap-3 items-start justify-between">
-                 <div className="flex-1">
-                   <Link href="/article/hollywood-new-scifi" className="hover:text-[#d33f3f] transition-colors">
-                     <h4 style={{ fontFamily: 'var(--font-headline)' }} className="text-lg font-bold mb-1 leading-snug">হলিউডের নতুন সাই-ফাই রোমাঞ্চকর সিনেমা</h4>
-                   </Link>
-                   <span className="text-[10px] text-gray-400 block mb-1">স্টাফ রিপোর্টার · ৪ দিন আগে</span>
-                   <p className="text-xs text-justify text-[#555] line-clamp-2 leading-relaxed">
-                     কল্পবিজ্ঞানের এক নতুন যুগ সৃষ্টি করতে আসছে হলিউডের এই নতুন মুভি। অনন্য ভিজ্যুয়াল এফেক্ট এবং শক্তিশালী চিত্রনাট্যের মাধ্যমে এটি দর্শকদের এক চমৎকার অভিজ্ঞতা দেবে।
-                   </p>
-                 </div>
-                 <div className="flex flex-col items-end flex-shrink-0">
-                   <div className="w-[80px] h-[80px] bg-gray-100 border border-[#e2e2e2] p-0.5 mt-1 overflow-hidden">
-                     <img src="/media/placeholder-f1.jpg" className="w-full h-full object-cover" alt="Sci-fi" />
-                   </div>
-                   <span className="text-[8px] text-gray-400 mt-0.5 font-sans">ছবি: সংগৃহীত</span>
-                 </div>
-               </div>
-             </div>
-          </div>
+              </div>
+           </div>
           
           {/* Column 2 */}
           <div className="border-r border-[#e2e2e2] px-6">
@@ -344,45 +307,7 @@ export default async function HomePage() {
                  আরো পড়ুন
                </Link>
              </div>
-
-             {/* Additional Article Previews */}
-             <div className="border-t border-[#e2e2e2] pt-4 flex flex-col gap-4">
-               <div className="flex gap-3 items-start justify-between">
-                 <div className="flex-1">
-                   <Link href="/article/bangla-bands-history" className="hover:text-[#d33f3f] transition-colors">
-                     <h4 style={{ fontFamily: 'var(--font-headline)' }} className="text-lg font-bold mb-1 leading-snug">বাংলা ব্যান্ডের ৫০ বছর ও নতুন রূপ</h4>
-                   </Link>
-                   <span className="text-[10px] text-gray-400 block mb-1">স্টাফ রিপোর্টার · ১ সপ্তাহ আগে</span>
-                   <p className="text-xs text-justify text-[#555] line-clamp-2 leading-relaxed">
-                     বাংলা ব্যান্ড সংগীতের পথচলা শুরু হয়েছিল অনেক বছর আগে। সময়ের সাথে সাথে এর রূপ কিরূপে পরিবর্তিত হয়েছে এবং বর্তমান তরুণ প্রজন্মের কাছে এর জনপ্রিয়তা কেমন তা নিয়ে বিশেষ প্রতিবেদন।
-                   </p>
-                 </div>
-                 <div className="flex flex-col items-end flex-shrink-0">
-                   <div className="w-[80px] h-[80px] bg-gray-100 border border-[#e2e2e2] p-0.5 mt-1 overflow-hidden">
-                     <img src="/media/placeholder-rugby.jpg" className="w-full h-full object-cover" alt="Bands" />
-                   </div>
-                   <span className="text-[8px] text-gray-400 mt-0.5 font-sans">ছবি: সংগৃহীত</span>
-                 </div>
-               </div>
-               <div className="border-t border-dashed border-[#e2e2e2] pt-3 flex gap-3 items-start justify-between">
-                 <div className="flex-1">
-                   <Link href="/article/coldplay-world-tour" className="hover:text-[#d33f3f] transition-colors">
-                     <h4 style={{ fontFamily: 'var(--font-headline)' }} className="text-lg font-bold mb-1 leading-snug">কোল্ডপ্লে-র বিশ্বভ্রমণ কনসার্ট রেকর্ড</h4>
-                   </Link>
-                   <span className="text-[10px] text-gray-400 block mb-1">স্টাফ রিপোর্টার · ২ সপ্তাহ আগে</span>
-                   <p className="text-xs text-justify text-[#555] line-clamp-2 leading-relaxed">
-                     বিশ্বখ্যাত ব্রিটিশ ব্যান্ড কোল্ডপ্লে তাদের সাম্প্রতিক বিশ্ব সফরে বেশ কিছু নতুন মাইলফলক স্পর্শ করেছে। টিকিট বিক্রির দিক থেকে এবং দর্শকদের উপস্থিতিতে এটি সব রেকর্ড ছাড়িয়েছে।
-                   </p>
-                 </div>
-                 <div className="flex flex-col items-end flex-shrink-0">
-                   <div className="w-[80px] h-[80px] bg-gray-100 border border-[#e2e2e2] p-0.5 mt-1 overflow-hidden">
-                     <img src="/media/placeholder-basketball.jpg" className="w-full h-full object-cover" alt="Coldplay" />
-                   </div>
-                   <span className="text-[8px] text-gray-400 mt-0.5 font-sans">ছবি: সংগৃহীত</span>
-                 </div>
-               </div>
-             </div>
-          </div>
+           </div>
           
           {/* Column 3 */}
           <div className="pl-6">
@@ -408,46 +333,18 @@ export default async function HomePage() {
                <Link href={`/article/${articles[4]?.slug || '#'}`} className="text-[11px] font-bold text-[#d33f3f] hover:underline">
                  আরো পড়ুন
                </Link>
-             </div>
+              </div>
+           </div>
+        </div>
 
-             {/* Additional Article Previews */}
-             <div className="border-t border-[#e2e2e2] pt-4 flex flex-col gap-4">
-               <div className="flex gap-3 items-start justify-between">
-                 <div className="flex-1">
-                   <Link href={`/article/${articles[5]?.slug || '#'}`} className="hover:text-[#d33f3f] transition-colors">
-                     <h4 style={{ fontFamily: 'var(--font-headline)' }} className="text-lg font-bold mb-1 leading-snug">{articles[5]?.headlineBn || 'রोहित শর্মার টেস্ট অবসর ঘোষণা'}</h4>
-                   </Link>
-                   <span className="text-[10px] text-gray-400 block mb-1">স্টাফ রিপোর্টার · ৫ দিন আগে</span>
-                   <p className="text-xs text-justify text-[#555] line-clamp-2 leading-relaxed">
-                     {articles[5]?.deck || 'রोहित শর্মা ক্রিকেট ইতিহাসে এক অনন্য নাম। টেস্ট ফরম্যাট থেকে তার বিদায় ঘোষণা নিয়ে বিশেষ বিশ্লেষণমূলক প্রতিবেদন এবং পরবর্তী পরিকল্পনার ওপর আলোকপাত।'}
-                   </p>
-                 </div>
-                 <div className="flex flex-col items-end flex-shrink-0">
-                   <div className="w-[80px] h-[80px] bg-gray-100 border border-[#e2e2e2] p-0.5 mt-1 overflow-hidden">
-                     <img src="/media/placeholder-cricket2.jpg" className="w-full h-full object-cover" alt="Rohit" />
-                   </div>
-                   <span className="text-[8px] text-gray-400 mt-0.5 font-sans">ছবি: সংগৃহীত</span>
-                 </div>
-               </div>
-               <div className="border-t border-dashed border-[#e2e2e2] pt-3 flex gap-3 items-start justify-between">
-                 <div className="flex-1">
-                   <Link href="/article/olympic-preparations" className="hover:text-[#d33f3f] transition-colors">
-                     <h4 style={{ fontFamily: 'var(--font-headline)' }} className="text-lg font-bold mb-1 leading-snug">অলিম্পিক উদ্বোধনী অনুষ্ঠানের প্রস্তুতি</h4>
-                   </Link>
-                   <span className="text-[10px] text-gray-400 block mb-1">স্টাফ রিপোর্টার · ৬ দিন আগে</span>
-                   <p className="text-xs text-justify text-[#555] line-clamp-2 leading-relaxed">
-                     আগামী মাসে শুরু হতে যাওয়া অলিম্পিক গেমসের উদ্বোধনী অনুষ্ঠানকে ঘিরে প্রস্তুতি তুঙ্গে। একটি জমকালো এবং স্মরণীয় অনুষ্ঠান উপহার দিতে কাজ করছে বিশ্বখ্যাত শিল্পীরা।
-                   </p>
-                 </div>
-                 <div className="flex flex-col items-end flex-shrink-0">
-                   <div className="w-[80px] h-[80px] bg-gray-100 border border-[#e2e2e2] p-0.5 mt-1 overflow-hidden">
-                     <img src="/media/placeholder-basketball.jpg" className="w-full h-full object-cover" alt="Olympic" />
-                   </div>
-                   <span className="text-[8px] text-gray-400 mt-0.5 font-sans">ছবি: সংগৃহীত</span>
-                 </div>
-               </div>
-             </div>
-          </div>
+        {/* INFINITE SCROLL FEED — sorted by date, big images */}
+        <div className="mt-10 border-t-[3px] border-[#121212] pt-2">
+          <InfiniteArticleFeed
+            skipIds={[
+              ...(leads.map((l: { id: number }) => l.id)),
+              ...(articles.slice(0, 6).map((a: { id: number }) => a.id)),
+            ]}
+          />
         </div>
       </div>
     </div>
