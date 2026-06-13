@@ -88,7 +88,7 @@ export default async function SportPage({ params }: PageProps) {
 
       {/* Desktop */}
       <div 
-        className="hidden lg:grid max-w-[1440px] mx-auto px-6 pb-12 gap-6"
+        className="hidden lg:grid max-w-[1200px] mx-auto px-6 pb-12 gap-6"
         style={{ gridTemplateColumns: '18fr 64fr 18fr' }}
       >
         {/* Left Column (18%): Logo at top & BriefsColumn */}

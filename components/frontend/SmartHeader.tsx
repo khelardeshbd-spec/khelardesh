@@ -145,7 +145,7 @@ export default function SmartHeader() {
       >
         {/* ── DESKTOP TOPBAR ── */}
         <div
-          className="hidden lg:grid max-w-[1440px] mx-auto px-6 gap-6 pt-3"
+          className="hidden lg:grid max-w-[1200px] mx-auto px-6 gap-6 pt-3"
           style={{ gridTemplateColumns: '160px 1fr 180px' }}
         >
           {/* Left spacer */}

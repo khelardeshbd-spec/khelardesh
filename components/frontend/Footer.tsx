@@ -6,7 +6,7 @@ export default function Footer() {
       className="w-full border-t border-[var(--ink-border)] bg-[var(--bg-surface)] mt-12"
       style={{ paddingBottom: 'max(80px, env(safe-area-inset-bottom))' }}
     >
-      <div className="max-w-[1440px] mx-auto px-6 py-8 flex flex-col md:flex-row items-center justify-between gap-6">
+      <div className="max-w-[1200px] mx-auto px-6 py-8 flex flex-col md:flex-row items-center justify-between gap-6">
         
         {/* Logo & Copyright */}
         <div className="flex flex-col items-center md:items-start gap-3">

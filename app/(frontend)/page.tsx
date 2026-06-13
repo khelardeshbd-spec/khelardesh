@@ -66,7 +66,7 @@ export default async function HomePage() {
 
   return (
     <div style={{ backgroundColor: '#ffffff', color: '#121212', minHeight: '100vh', padding: '8px 0', fontFamily: 'var(--font-body)' }}>
-      <div className="max-w-[1440px] mx-auto bg-[#ffffff] px-6 py-2">
+      <div className="max-w-[1200px] mx-auto bg-[#ffffff] px-6 py-2">
         
         {/* MASTHEAD: LOGO ON TOP & REORGANIZED CONTROLS */}
         <div className="w-full text-[#121212] mb-2">

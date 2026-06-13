@@ -91,7 +91,7 @@ export default function LiveTicker() {
     <>
       {/* Desktop ticker */}
       <div
-        className="hidden lg:grid max-w-[1440px] mx-auto px-6 gap-6"
+        className="hidden lg:grid max-w-[1200px] mx-auto px-6 gap-6"
         style={{
           position: 'absolute',
           top: '72px',
