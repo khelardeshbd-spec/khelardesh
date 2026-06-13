@@ -169,7 +169,10 @@ export default function ArticleCard({ article }: ArticleCardProps) {
             }}>
               {time} · {article.byline}
             </span>
-            <BookmarkButton article={article} />
+            <div className="flex items-center gap-3">
+              <span className="text-[11px] font-bold text-[#d33f3f]">আরো পড়ুন</span>
+              <BookmarkButton article={article} />
+            </div>
           </div>
         </div>
       </Link>
