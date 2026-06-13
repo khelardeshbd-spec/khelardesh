@@ -189,8 +189,8 @@ export default function NavStrip({ noBorder = false, vertical = false, onNavigat
                     fontFamily: "var(--font-body)",
                     fontSize: 12.5,
                     fontWeight: 600,
-                    backgroundColor: active ? 'var(--ink)' : 'transparent',
-                    color: active ? 'var(--bg-page)' : 'var(--ink)',
+                    backgroundColor: 'transparent',
+                    color: active ? 'var(--live-red)' : 'var(--ink)',
                   }}
                   aria-current={active ? 'page' : undefined}
                   onClick={closeDropdown}

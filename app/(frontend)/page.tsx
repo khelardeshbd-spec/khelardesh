@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Link from 'next/link';
 import { supabaseAdmin } from '@/lib/supabase';
 import LeadStory from '@/components/frontend/LeadStory';
 import HomeSlider from '@/components/frontend/HomeSlider';
@@ -156,10 +157,32 @@ export default async function HomePage() {
 
           {/* Tier 3: Category Navigation Strip */}
           <div className="border-b border-[#e2e2e2] pb-2">
-            <div className="flex flex-wrap justify-center gap-x-6 gap-y-2 text-xs font-semibold text-[#121212]">
-              {['মাঠ', 'ফুটবল', 'বাংলাদেশের ফুটবল', 'ক্রিকেট', 'বাংলাদেশের ক্রিকেট', 'ইন্টারভিউ', 'ফিচার', 'খেলার দেশ বিশেষ', 'অতিথি কলাম', 'অন্যান্য'].map((cat, idx) => (
-                <span key={idx} className="cursor-pointer hover:underline">{cat}</span>
-              ))}
+            <div className="flex flex-wrap justify-center gap-x-6 gap-y-2 text-xs font-semibold">
+              {[
+                { label: 'মাঠ', slug: '' },
+                { label: 'ফুটবল', slug: 'football' },
+                { label: 'বাংলাদেশের ফুটবল', slug: 'bd-football' },
+                { label: 'ক্রিকেট', slug: 'cricket' },
+                { label: 'বাংলাদেশের ক্রিকেট', slug: 'bd-cricket' },
+                { label: 'ইন্টারভিউ', slug: 'interview' },
+                { label: 'ফিচার', slug: 'feature' },
+                { label: 'খেলার দেশ বিশেষ', slug: 'special' },
+                { label: 'অতিথি কলাম', slug: 'guest-column' },
+                { label: 'অন্যান্য', slug: 'others' }
+              ].map((item, idx) => {
+                const isActive = item.slug === ''; // 'মাঠ' is active on homepage
+                const href = item.slug === '' ? '/' : `/sport/${item.slug}`;
+                return (
+                  <Link 
+                    key={idx} 
+                    href={href}
+                    className="cursor-pointer hover:underline"
+                    style={{ color: isActive ? 'var(--live-red)' : '#121212' }}
+                  >
+                    {item.label}
+                  </Link>
+                );
+              })}
             </div>
           </div>
         </div>
