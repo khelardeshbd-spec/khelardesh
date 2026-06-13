@@ -71,27 +71,23 @@ export default async function HomePage() {
         <div className="w-full text-[#121212] mb-4">
           {/* Tier 1: Top Bar */}
           <div className="flex justify-between items-center border-b border-[#e2e2e2] pb-2 mb-2 text-xs font-semibold tracking-wider uppercase">
-            <div className="flex items-center gap-6">
+            <div className="flex items-center gap-5">
               {/* Sections / Hamburger */}
-              <button className="flex items-center gap-1.5 hover:opacity-75 transition-opacity text-[#121212]">
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+              <button className="hover:opacity-75 transition-opacity text-[#121212]" aria-label="Sections">
+                <svg className="w-[21px] h-[21px]" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
                   <line x1="3" y1="12" x2="21" y2="12"></line>
                   <line x1="3" y1="6" x2="21" y2="6"></line>
                   <line x1="3" y1="18" x2="21" y2="18"></line>
                 </svg>
-                <span className="font-sans font-bold tracking-tight">SECTIONS</span>
               </button>
               
               {/* Search */}
-              <div className="relative flex items-center group">
-                <button className="flex items-center gap-1.5 hover:opacity-75 transition-opacity text-[#121212]">
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-                    <circle cx="11" cy="11" r="8"></circle>
-                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                  </svg>
-                  <span className="font-sans font-bold tracking-tight">SEARCH</span>
-                </button>
-              </div>
+              <button className="hover:opacity-75 transition-opacity text-[#121212]" aria-label="Search">
+                <svg className="w-[21px] h-[21px]" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                  <circle cx="11" cy="11" r="8"></circle>
+                  <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+              </button>
             </div>
 
             {/* Right: Subscribe & Account */}
