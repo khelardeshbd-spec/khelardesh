@@ -64,13 +64,13 @@ export default async function HomePage() {
   const inlineSponsors = sponsors.filter((s) => s.placement === 'inline');
 
   return (
-    <div style={{ backgroundColor: '#ffffff', color: '#121212', minHeight: '100vh', padding: '12px 0', fontFamily: 'var(--font-body)' }}>
-      <div className="max-w-[1200px] mx-auto bg-[#ffffff] px-6 py-4">
+    <div style={{ backgroundColor: '#ffffff', color: '#121212', minHeight: '100vh', padding: '8px 0', fontFamily: 'var(--font-body)' }}>
+      <div className="max-w-[1200px] mx-auto bg-[#ffffff] px-6 py-2">
         
         {/* MASTHEAD: 3-TIER NYT-INSPIRED */}
-        <div className="w-full text-[#121212] mb-6">
+        <div className="w-full text-[#121212] mb-4">
           {/* Tier 1: Top Bar */}
-          <div className="flex justify-between items-center border-b border-[#e2e2e2] pb-3 mb-4 text-xs font-semibold tracking-wider uppercase">
+          <div className="flex justify-between items-center border-b border-[#e2e2e2] pb-2 mb-2 text-xs font-semibold tracking-wider uppercase">
             <div className="flex items-center gap-6">
               {/* Sections / Hamburger */}
               <button className="flex items-center gap-1.5 hover:opacity-75 transition-opacity text-[#121212]">
@@ -106,7 +106,7 @@ export default async function HomePage() {
           </div>
 
           {/* Tier 2: Logo and Promos */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-center mb-4">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-center mb-2">
             {/* Left Info: Date */}
             <div className="hidden lg:flex lg:col-span-3 flex-col text-left text-[11px] text-[#121212]">
               <span className="font-bold font-sans">Saturday, June 13, 2026</span>
@@ -115,20 +115,20 @@ export default async function HomePage() {
 
             {/* Center Logo */}
             <div className="col-span-1 lg:col-span-6 text-center flex flex-col items-center">
-              <img src="/images/khelardesh_logo.png" alt="খেলারদেশ" className="mx-auto mb-1 select-none" style={{ maxWidth: '100%', height: 'auto', maxHeight: '110px' }} />
+              <img src="/images/khelardesh_logo.png" alt="খেলারদেশ" className="mx-auto select-none" style={{ maxWidth: '100%', height: 'auto', maxHeight: '65px' }} />
             </div>
 
             {/* Right Info: Dow/Stock info */}
             <div className="hidden lg:flex lg:col-span-3 flex-col text-right text-[11px] font-sans text-[#121212]">
               <span className="font-bold flex items-center justify-end gap-1">
                 <span>Dow</span>
-                <span className="text-green-600">+0.7% ▲</span>
+                <span className="text-green-600 font-sans">+0.7% ▲</span>
               </span>
             </div>
           </div>
 
           {/* Tier 3: Category Navigation Strip */}
-          <div className="border-t border-b border-[#e2e2e2] py-2.5">
+          <div className="border-t border-b border-[#e2e2e2] py-1.5">
             <div className="flex flex-wrap justify-center gap-x-6 gap-y-2 text-xs font-semibold text-[#121212]">
               {['মাঠ', 'ফুটবল', 'বাংলাদেশের ফুটবল', 'ক্রিকেট', 'বাংলাদেশের ক্রিকেট', 'ইন্টারভিউ', 'ফিচার', 'খেলার দেশ বিশেষ', 'অতিথি কলাম', 'অন্যান্য'].map((cat, idx) => (
                 <span key={idx} className="cursor-pointer hover:underline">{cat}</span>
@@ -141,25 +141,25 @@ export default async function HomePage() {
         <div className="grid grid-cols-3 gap-0 border-b border-[#e2e2e2] pb-6 mb-6">
           {/* Teaser 1 */}
           <div className="text-center px-6 border-r border-[#e2e2e2]">
-            <h3 className="text-sm font-bold mb-2">মাসের ফোটোগ্যালারী</h3>
-            <h2 style={{ fontFamily: 'var(--font-headline)' }} className="text-2xl font-bold mb-3 leading-tight">{articles[0]?.headlineBn || 'ল্যার্স ওয়ায়েস্টফেল্ট'}</h2>
-            <p className="text-xs text-justify leading-relaxed">
+            <h3 className="text-sm font-bold mb-2 text-[#121212]">মাসের ফোটোগ্যালারী</h3>
+            <h2 style={{ fontFamily: 'var(--font-headline)' }} className="text-2xl font-bold mb-3 leading-tight text-[#121212]">{articles[0]?.headlineBn || 'ল্যার্স ওয়ায়েস্টফেল্ট'}</h2>
+            <p className="text-xs text-justify leading-relaxed font-normal text-[#555]">
               সার্থ ওয়ায়েস্টফেল্ট জীবন ও কাজের কথা নিয়ে একটি সুন্দর ফোটোগ্রাফিক প্রবন্ধ, সুইডেনের স্ক্যানেস্টার স্ক্যানার এবং ডিজাইনের ক্ষেত্রে উদ্ভূত। ছবি তোলার মাধ্যমে জীবনশৈলীর চিত্রগুলো যেন বাস্তবতার ছোঁয়া দেয়।
             </p>
           </div>
           {/* Teaser 2 */}
           <div className="text-center px-6 border-r border-[#e2e2e2]">
-            <h3 className="text-sm font-bold mb-2">ব্রিটিশ বিপ্লব</h3>
-            <h2 style={{ fontFamily: 'var(--font-headline)' }} className="text-2xl font-bold mb-3 leading-tight">{articles[1]?.headlineBn || 'পিজে হার্ভে'}</h2>
-            <p className="text-xs text-justify leading-relaxed">
+            <h3 className="text-sm font-bold mb-2 text-[#121212]">ব্রিটিশ বিপ্লব</h3>
+            <h2 style={{ fontFamily: 'var(--font-headline)' }} className="text-2xl font-bold mb-3 leading-tight text-[#121212]">{articles[1]?.headlineBn || 'পিজে হার্ভে'}</h2>
+            <p className="text-xs text-justify leading-relaxed font-normal text-[#555]">
               বেশ কয়েক বছর ধরে পিজে হার্ভে, যিনি নিজেকে সঙ্গীত দুনিয়ায় এক অনন্য স্থানে নিয়ে গেছেন, তার নতুন অ্যালবামটি নিয়ে আমরা আলোচনা করব। এই অ্যালবামটি আধুনিক সঙ্গীতের নতুন দিগন্ত উন্মোচন করে।
             </p>
           </div>
           {/* Teaser 3 */}
           <div className="text-center px-6">
-            <h3 className="text-sm font-bold mb-2">সিমা পরিপূরক</h3>
-            <h2 style={{ fontFamily: 'var(--font-headline)' }} className="text-2xl font-bold mb-3 leading-tight">{articles[2]?.headlineBn || 'মার্সেল জামা'}</h2>
-            <p className="text-xs text-justify leading-relaxed">
+            <h3 className="text-sm font-bold mb-2 text-[#121212]">সিমা পরিপূরক</h3>
+            <h2 style={{ fontFamily: 'var(--font-headline)' }} className="text-2xl font-bold mb-3 leading-tight text-[#121212]">{articles[2]?.headlineBn || 'মার্সেল জামা'}</h2>
+            <p className="text-xs text-justify leading-relaxed font-normal text-[#555]">
               মার্সেল জামা এমন একজন প্রতিভাধর শিল্পী, যার চিত্রকর্মগুলো অত্যন্ত যত্ন সহকারে আঁকা। তার কাজের মধ্যে দিয়ে আমরা এক ভিন্ন জগতকে অনুভব করতে পারি যা অত্যন্ত বাস্তব ও মনোমুগ্ধকর।
             </p>
           </div>
