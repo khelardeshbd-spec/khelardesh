@@ -165,7 +165,7 @@ export default function ArticleCard({ article }: ArticleCardProps) {
             <span style={{
               fontFamily: "var(--font-body)",
               fontSize: 10,
-              color: 'var(--ink-ghost)',
+              color: '#888888',
             }}>
               {time} · {article.byline}
             </span>

@@ -66,7 +66,7 @@ export default async function HomePage() {
 
   return (
     <div style={{ backgroundColor: '#ffffff', color: '#121212', minHeight: '100vh', padding: '8px 0', fontFamily: 'var(--font-body)' }}>
-      <div className="max-w-[1200px] mx-auto bg-[#ffffff] px-6 py-2">
+      <div className="max-w-[1440px] mx-auto bg-[#ffffff] px-6 py-2">
         
         {/* MASTHEAD: LOGO ON TOP & REORGANIZED CONTROLS */}
         <div className="w-full text-[#121212] mb-2">
@@ -182,7 +182,7 @@ export default async function HomePage() {
         <div className="grid grid-cols-3 gap-0 border-b border-[#e2e2e2] pb-2 mb-2">
           {/* Teaser 1 */}
           <div className="text-center px-3 border-r border-[#e2e2e2]">
-            <h3 className="text-sm font-bold mb-0.5 text-[#121212]">মাসের ফোটোগ্যালারী</h3>
+            <h3 style={{ fontFamily: 'var(--font-body)' }} className="text-sm font-bold mb-0.5 text-gray-400">মাসের ফোটোগ্যালারী</h3>
             <h2 style={{ fontFamily: 'var(--font-headline)' }} className="text-2xl font-bold mb-1 leading-tight text-[#121212]">{articles[0]?.headlineBn || 'ল্যার্স ওয়ায়েস্টফেল্ট'}</h2>
             <p className="text-xs text-justify leading-relaxed font-normal text-[#555]">
               সার্থ ওয়ায়েস্টফেল্ট জীবন ও কাজের কথা নিয়ে একটি সুন্দর ফোটোগ্রাফিক প্রবন্ধ, সুইডেনের স্ক্যানেস্টার স্ক্যানার এবং ডিজাইনের ক্ষেত্রে উদ্ভূত। ছবি তোলার মাধ্যমে জীবনশৈলীর চিত্রগুলো যেন বাস্তবতার ছোঁয়া দেয়।
@@ -195,7 +195,7 @@ export default async function HomePage() {
           </div>
           {/* Teaser 2 */}
           <div className="text-center px-3 border-r border-[#e2e2e2]">
-            <h3 className="text-sm font-bold mb-0.5 text-[#121212]">ব্রিটিশ বিপ্লব</h3>
+            <h3 style={{ fontFamily: 'var(--font-body)' }} className="text-sm font-bold mb-0.5 text-gray-400">ব্রিটিশ বিপ্লব</h3>
             <h2 style={{ fontFamily: 'var(--font-headline)' }} className="text-2xl font-bold mb-1 leading-tight text-[#121212]">{articles[1]?.headlineBn || 'পিজে হার্ভে'}</h2>
             <p className="text-xs text-justify leading-relaxed font-normal text-[#555]">
               বেশ কয়েক বছর ধরে পিজে হার্ভে, যিনি নিজেকে সঙ্গীত দুনিয়ায় এক অনন্য স্থানে নিয়ে গেছেন, তার নতুন অ্যালবামটি নিয়ে আমরা আলোচনা করব। এই অ্যালবামটি আধুনিক সঙ্গীতের নতুন দিগন্ত উন্মোচন করে।
@@ -208,7 +208,7 @@ export default async function HomePage() {
           </div>
           {/* Teaser 3 */}
           <div className="text-center px-3">
-            <h3 className="text-sm font-bold mb-0.5 text-[#121212]">সিমা পরিপূরক</h3>
+            <h3 style={{ fontFamily: 'var(--font-body)' }} className="text-sm font-bold mb-0.5 text-gray-400">সিমা পরিপূরক</h3>
             <h2 style={{ fontFamily: 'var(--font-headline)' }} className="text-2xl font-bold mb-1 leading-tight text-[#121212]">{articles[2]?.headlineBn || 'মার্সেল জামা'}</h2>
             <p className="text-xs text-justify leading-relaxed font-normal text-[#555]">
               মার্সেল জামা এমন একজন প্রতিভাধর শিল্পী, যার চিত্রকর্মগুলো অত্যন্ত যত্ন সহকারে আঁকা। তার কাজের মধ্যে দিয়ে আমরা এক ভিন্ন জগতকে অনুভব করতে পারি যা অত্যন্ত বাস্তব ও মনোমুগ্ধকর।
@@ -225,11 +225,11 @@ export default async function HomePage() {
         <div className="grid grid-cols-12 gap-4 border-b border-[#e2e2e2] pb-4 mb-4">
           <div className="col-span-4 flex flex-col justify-between">
             <div>
-              <h3 className="text-sm font-bold mb-2">যুক্তরাষ্ট্র থেকে</h3>
+              <h3 style={{ fontFamily: 'var(--font-body)' }} className="text-sm font-bold mb-2 text-gray-400">যুক্তরাষ্ট্র থেকে</h3>
               <h1 style={{ fontFamily: 'var(--font-headline)', fontSize: '1.7rem', lineHeight: '1.15', marginBottom: '8px', letterSpacing: '-0.01em' }}>
                 {leads[0]?.headlineBn || 'বিশেষ: ভিভিয়ান মেয়ার, সবচেয়ে বড় গোপন রহস্য'}
               </h1>
-              <p className="text-sm font-bold italic mb-3">জেরেমি ওয়াটার দ্বারা</p>
+              <p className="text-sm font-bold italic mb-3 text-gray-400">জেরেমি ওয়াটার দ্বারা</p>
               <p className="text-sm text-justify leading-relaxed columns-1">
                 ভিভিয়ান মেয়ারের নাম, একজন নারী যিনি চিত্রকর হওয়ার পাশাপাশি একজন অসামান্য ফোটোগ্রাফার ছিলেন, তার সম্পর্কে অনেক কথাই জানা যায়নি। তার কাজগুলো দীর্ঘকাল ধরে লুকিয়ে ছিল। হঠাৎ করেই তার শত শত ফোটোগ্রাফ আবিষ্কার হয়, যা ফোটোগ্রাফি জগতে আলোড়ন সৃষ্টি করে। তার ছবিগুলোর মধ্যে এক অদ্ভুত গভীরতা ও অনুভূতি রয়েছে যা সাধারণ মানুষের জীবনযাত্রাকে নিপুণভাবে তুলে ধরে। এই আবিষ্কারের পর থেকে তাকে নিয়ে নানা রহস্য ও আলোচনা শুরু হয়েছে।
               </p>
@@ -268,7 +268,7 @@ export default async function HomePage() {
              <h2 style={{ fontFamily: 'var(--font-headline)' }} className="text-[1.75rem] font-bold mb-3 leading-tight">
                {articles[3]?.headlineBn || 'ল\'একুমে দেস জোউর্স: ফরাসি মিশেল গন্ড্রির কাঙ্ক্ষিত প্রত্যাবর্তন'}
              </h2>
-             <p className="text-sm font-bold italic mb-3">জুলিয়ান বেলট্রেন দ্বারা</p>
+             <p className="text-sm font-bold italic mb-3 text-[#888888]">জুলিয়ান বেলট্রেন দ্বারা</p>
              <p className="text-xs text-justify leading-relaxed">
                মিশেল গন্ড্রি, যিনি তার অভিনব এবং পরাবাস্তব শৈলীর জন্য পরিচিত, অবশেষে &apos;ল&apos;একুমে দেস জোউর্স&apos;-এর মাধ্যমে আবার রূপালী পর্দায় ফিরে এসেছেন। বোরিস ভিয়ানের বিখ্যাত উপন্যাসের উপর ভিত্তি করে নির্মিত এই চলচ্চিত্রটি একটি স্বপ্নময় অথচ করুণ প্রেমের গল্প বলে। গন্ড্রির জাদুকরী পরিচালনায় এই ছবিটি দর্শকদের এক ভিন্ন জগতে নিয়ে যায়।
              </p>
@@ -309,7 +309,7 @@ export default async function HomePage() {
              <h2 style={{ fontFamily: 'var(--font-headline)' }} className="text-[2.2rem] font-bold mb-3 leading-[1.1]">
                জার্মান শিল্পী কিটনের নতুন বই
              </h2>
-             <p className="text-sm font-bold italic mb-4">মার্টিন লিক দ্বারা</p>
+             <p className="text-sm font-bold italic mb-4 text-[#888888]">মার্টিন লিক দ্বারা</p>
              <div className="text-[11px] text-justify columns-2 gap-4 leading-relaxed mb-6">
                <p className="mb-2">জার্মান শিল্পী কিটন সম্প্রতি তার নতুন বইটি প্রকাশ করেছেন, যা শিল্পপ্রেমীদের মধ্যে ব্যাপক সাড়া ফেলেছে। এই বইটিতে তার জীবনের নানা অভিজ্ঞতা, সৃজনশীলতার উৎস এবং শিল্পের প্রতি তার গভীর অনুরাগের কথা বর্ণনা করা হয়েছে।</p>
                <p className="mb-2">বইটিতে অনেক অপ্রকাশিত ছবি and স্কেচ রয়েছে, যা তার কাজের পেছনের পরিশ্রমকে তুলে ধরে। কিটনের মতে, শিল্প কেবল একটি পেশা নয়, এটি আত্মপ্রকাশের একটি মাধ্যম।</p>
@@ -359,7 +359,7 @@ export default async function HomePage() {
              <h2 style={{ fontFamily: 'var(--font-headline)' }} className="text-[1.75rem] font-bold mb-3 leading-tight">
                {articles[4]?.headlineBn || 'গ্রান রেক্সে দ্য ডিসেম্ব্রিস্টস'}
              </h2>
-             <p className="text-sm font-bold italic mb-3">ক্যানিয়া কাওন দ্বারা</p>
+             <p className="text-sm font-bold italic mb-3 text-[#888888]">ক্যানিয়া কাওন দ্বারা</p>
              <p className="text-xs text-justify leading-relaxed">
                দ্য ডিসেম্ব্রিস্টস ব্যান্ডের সরাসরি পারফরম্যান্স সবসময়ই এক অনন্য অভিজ্ঞতা। গ্রান রেক্সে তাদের সাম্প্রতিক কনসার্টটি ছিল জাদুকরী। মঞ্চের সজ্জা, আলোর খেলা এবং তাদের মনোমুগ্ধকর সঙ্গীত দর্শকদের আবিষ্ট করে রেখেছিল। ব্যান্ডের লিড সিঙ্গার তার আবেগপূর্ণ কণ্ঠ দিয়ে প্রতিটি গানকে জীবন্ত করে তুলেছিলেন। এটি নিঃসন্দেহে বছরের অন্যতম সেরা কনসার্ট ছিল।
              </p>

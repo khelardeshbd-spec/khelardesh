@@ -167,7 +167,7 @@ export default function LeadStory({ article }: LeadStoryProps) {
                 fontWeight: 400,
                 letterSpacing: '0.1em',
                 textTransform: 'uppercase',
-                color: 'var(--ink-ghost)',
+                color: '#888888',
               }}
             >
               {byline}
