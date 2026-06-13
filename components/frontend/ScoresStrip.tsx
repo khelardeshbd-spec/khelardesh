@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import ScoreCard from './ScoreCard';
 import { useLiveScores } from '@/hooks/useLiveScores';
+import { translateTeamName } from '@/lib/teamTranslations';
 
 function toBengaliNumerals(numStr: string | number | null): string {
   if (numStr === null || numStr === undefined) return '';
@@ -16,6 +17,8 @@ function translateStatus(status: string): string {
   if (s === 'ht' || s === 'half time') return 'বিরতি';
   if (s === 'scheduled') return 'আসন্ন';
   if (s === 'live') return 'লাইভ';
+  if (s === 'postponed') return 'স্থগিত';
+  if (s === 'canceled' || s === 'cancelled') return 'বাতিল';
   if (s.includes("'")) return toBengaliNumerals(s);
   return status; // fallback
 }
@@ -69,9 +72,9 @@ export default function ScoresStrip() {
             <ScoreCard
               key={match.id}
               league={match.league}
-              teamA={match.home.name}
+              teamA={translateTeamName(match.home.name)}
               scoreA={match.home.score !== null ? toBengaliNumerals(match.home.score) : '-'}
-              teamB={match.away.name}
+              teamB={translateTeamName(match.away.name)}
               scoreB={match.away.score !== null ? toBengaliNumerals(match.away.score) : '-'}
               status={translateStatus(match.statusText)}
               isLive={match.isLive}

@@ -43,6 +43,7 @@ export default function ScoreCard({
 
   // Determine status badge display
   const statusIsMinute = /^\d+'?$/.test(status.trim());
+  const isEnglish = (str: string) => /[a-zA-Z]/.test(str);
 
   return (
     <motion.div
@@ -68,14 +69,14 @@ export default function ScoreCard({
         )}
         <span
           style={{
-            fontFamily: "var(--font-body)",
+            fontFamily: isEnglish(status) ? 'sans-serif' : "var(--font-body)",
             fontSize: 9,
             fontWeight: 600,
             color: isLive ? 'var(--live-red)' : 'var(--ink-ghost)',
             lineHeight: 1,
             letterSpacing: statusIsMinute ? 0 : '0.04em',
           }}
-          lang="bn"
+          lang={isEnglish(status) ? "en" : "bn"}
         >
           {status}
         </span>
@@ -84,7 +85,7 @@ export default function ScoreCard({
       {/* League label */}
       <p
         style={{
-          fontFamily: "var(--font-body)",
+          fontFamily: isEnglish(league) ? 'sans-serif' : "var(--font-body)",
           fontSize: 8.5,
           fontWeight: 500,
           letterSpacing: '0.06em',
@@ -95,7 +96,7 @@ export default function ScoreCard({
           whiteSpace: 'nowrap',
           paddingRight: 40,
         }}
-        lang="bn"
+        lang={isEnglish(league) ? "en" : "bn"}
         title={league}
       >
         {league}
@@ -112,7 +113,7 @@ export default function ScoreCard({
           </div>
           <span
             style={{
-              fontFamily: "var(--font-body)",
+              fontFamily: isEnglish(teamA) ? 'sans-serif' : "var(--font-body)",
               fontSize: 12,
               fontWeight: winnerA ? 700 : 400,
               color: winnerA ? 'var(--ink)' : isDraw ? 'var(--ink-muted)' : 'var(--ink-ghost)',
@@ -120,7 +121,7 @@ export default function ScoreCard({
               textOverflow: 'ellipsis',
               whiteSpace: 'nowrap',
             }}
-            lang="bn"
+            lang={isEnglish(teamA) ? "en" : "bn"}
           >
             {teamA}
           </span>
@@ -151,7 +152,7 @@ export default function ScoreCard({
           </div>
           <span
             style={{
-              fontFamily: "var(--font-body)",
+              fontFamily: isEnglish(teamB) ? 'sans-serif' : "var(--font-body)",
               fontSize: 12,
               fontWeight: winnerB ? 700 : 400,
               color: winnerB ? 'var(--ink)' : isDraw ? 'var(--ink-muted)' : 'var(--ink-ghost)',
@@ -159,7 +160,7 @@ export default function ScoreCard({
               textOverflow: 'ellipsis',
               whiteSpace: 'nowrap',
             }}
-            lang="bn"
+            lang={isEnglish(teamB) ? "en" : "bn"}
           >
             {teamB}
           </span>
