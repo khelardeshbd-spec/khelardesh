@@ -363,13 +363,9 @@
 /* ---------------------------------------------------------------------------
    3. Font Language Logic — Section 5
    --------------------------------------------------------------------------- */
-body:lang(bn),
-div:lang(bn),
-p:lang(bn),
-span:lang(bn),
-a:lang(bn),
-li:lang(bn) {
-  font-family: var(--font-body);   /* Body typography variables */
+:lang(bn),
+[data-lang="bn"] {
+  font-family: var(--font-body);   /* Bengali body / UI chrome universally */
 }
 
 h1, h2, h3, h4, h5, h6,
@@ -383,6 +379,7 @@ h6:lang(bn),
 .type-lead-bn {
   font-family: var(--font-headline) !important;
 }
+
 
 
 /* ---------------------------------------------------------------------------

@@ -189,7 +189,8 @@ export default async function HomePage() {
                         {item.label}
                         <span className="text-[9px]">▼</span>
                       </Link>
-                      <div className="absolute left-0 mt-1 hidden group-hover:block bg-[#ffffff] border border-[#e2e2e2] shadow-md rounded-[3px] py-1 min-w-[150px] z-50">
+                      <div className="absolute left-0 top-[100%] hidden group-hover:block bg-[#ffffff] border border-[#e2e2e2] shadow-md rounded-[3px] py-1 min-w-[150px] z-50">
+
                         {item.subItems.map((sub, sIdx) => (
                           <Link
                             key={sIdx}
