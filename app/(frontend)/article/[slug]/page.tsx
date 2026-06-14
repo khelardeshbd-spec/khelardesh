@@ -68,16 +68,22 @@ export default async function ArticlePage({ params }: PageProps) {
       {/* Scroll Progress Bar at the top */}
       <ReadingProgressBar />
 
-      {/* Back button */}
+      {/* Back button / Breadcrumbs */}
       <div className="w-full max-w-[680px] mx-auto px-4 pt-6 pb-2">
-        <Link 
-          href="/"
-          className="inline-flex items-center gap-1.5 text-xs font-semibold tracking-wider uppercase text-[var(--ink-muted)] hover:text-[var(--ink)] transition-colors"
+        <div 
+          className="flex items-center gap-1.5 text-xs font-semibold tracking-wider uppercase text-[var(--ink-muted)]"
           style={{ fontFamily: 'var(--font-body)' }}
         >
-          <span>←</span> Back to home
-        </Link>
+          <Link href="/" className="hover:text-[var(--ink)] transition-colors">
+            মাঠ
+          </Link>
+          <span>/</span>
+          <Link href={sport ? `/sport/${sport}` : '#'} className="text-[#1a5c2e] hover:text-[var(--ink)] transition-colors">
+            {categoryLabel}
+          </Link>
+        </div>
       </div>
+
 
       <div className="max-w-[680px] mx-auto px-4 pb-16">
         

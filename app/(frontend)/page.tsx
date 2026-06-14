@@ -133,8 +133,8 @@ export default async function HomePage() {
             {/* Center: Bengali Date Info */}
             <div className="flex flex-col items-center text-center text-[11px] text-[#121212] justify-center">
               <span className="font-bold">শনিবার, ১৩ জুন, ২০২৬</span>
-              <span className="text-gray-500 text-[10px] mt-0.5">আজকের পত্রিকা</span>
             </div>
+
 
             {/* Right: Subscribe & Login buttons in Bengali */}
             <div className="flex items-center gap-3 justify-end">
@@ -152,18 +152,57 @@ export default async function HomePage() {
             <div className="flex flex-wrap justify-center gap-x-6 gap-y-2 text-xs font-semibold">
               {[
                 { label: 'মাঠ', slug: '' },
-                { label: 'ফুটবল', slug: 'football' },
-                { label: 'বাংলাদেশের ফুটবল', slug: 'bd-football' },
-                { label: 'ক্রিকেট', slug: 'cricket' },
-                { label: 'বাংলাদেশের ক্রিকেট', slug: 'bd-cricket' },
+                { 
+                  label: 'ফুটবল', 
+                  slug: 'football',
+                  subItems: [
+                    { label: 'দেশের ফুটবল', slug: 'bd-football' },
+                    { label: 'বিদেশের ফুটবল', slug: 'international-football' },
+                    { label: 'পাড়া মহল্লার ফুটবল', slug: 'club-football' }
+                  ]
+                },
+                { 
+                  label: 'ক্রিকেট', 
+                  slug: 'cricket',
+                  subItems: [
+                    { label: 'দেশের ক্রিকেট', slug: 'bd-cricket' },
+                    { label: 'বিদেশের ক্রিকেট', slug: 'international-cricket' },
+                    { label: 'পাড়া মহল্লার ক্রিকেট', slug: 'local-cricket' }
+                  ]
+                },
                 { label: 'ইন্টারভিউ', slug: 'interview' },
                 { label: 'ফিচার', slug: 'feature' },
                 { label: 'খেলার দেশ বিশেষ', slug: 'special' },
                 { label: 'অতিথি কলাম', slug: 'guest-column' },
                 { label: 'অন্যান্য', slug: 'others' }
               ].map((item, idx) => {
-                const isActive = item.slug === ''; // 'মাঠ' is active on homepage
+                const isActive = item.slug === '';
                 const href = item.slug === '' ? '/' : `/sport/${item.slug}`;
+                if (item.subItems) {
+                  return (
+                    <div key={idx} className="relative group">
+                      <Link 
+                        href={href}
+                        className="cursor-pointer hover:underline flex items-center gap-1"
+                        style={{ color: isActive ? 'var(--live-red)' : '#121212' }}
+                      >
+                        {item.label}
+                        <span className="text-[9px]">▼</span>
+                      </Link>
+                      <div className="absolute left-0 mt-1 hidden group-hover:block bg-[#ffffff] border border-[#e2e2e2] shadow-md rounded-[3px] py-1 min-w-[150px] z-50">
+                        {item.subItems.map((sub, sIdx) => (
+                          <Link
+                            key={sIdx}
+                            href={`/sport/${sub.slug}`}
+                            className="block px-4 py-2 text-xs font-bold text-[#121212] hover:bg-gray-100 transition-colors"
+                          >
+                            {sub.label}
+                          </Link>
+                        ))}
+                      </div>
+                    </div>
+                  );
+                }
                 return (
                   <Link 
                     key={idx} 
@@ -179,12 +218,17 @@ export default async function HomePage() {
           </div>
         </div>
 
+
         {/* TEASER ROW */}
         <div className="grid grid-cols-3 gap-0 border-b border-[#e2e2e2] pb-2 mb-2">
           {/* Teaser 1 */}
           <div className="text-center px-3 border-r border-[#e2e2e2]">
             <h3 style={{ fontFamily: 'var(--font-body)' }} className="text-sm font-bold mb-0.5 text-gray-400">মাসের ফোটোগ্যালারী</h3>
-            <h2 style={{ fontFamily: 'var(--font-headline)' }} className="text-2xl font-bold mb-1 leading-tight text-[#121212]">{articles[0]?.headlineBn || 'ল্যার্স ওয়ায়েস্টফেল্ট'}</h2>
+            <h2 style={{ fontFamily: 'var(--font-headline)' }} className="text-2xl font-bold mb-1 leading-tight text-[#121212] hover:underline">
+              <Link href={`/article/${articles[0]?.slug || '#'}`}>
+                {articles[0]?.headlineBn || 'ল্যার্স ওয়ায়েস্টফেল্ট'}
+              </Link>
+            </h2>
             <p className="text-xs text-justify leading-relaxed font-normal text-[#555]">
               {('সার্থ ওয়ায়েস্টফেল্ট জীবন ও কাজের কথা নিয়ে একটি সুন্দর ফোটোগ্রাফিক প্রবন্ধ, সুইডেনের স্ক্যানেস্টার স্ক্যানার এবং ডিজাইনের ক্ষেত্রে উদ্ভূত। ছবি তোলার মাধ্যমে জীবনশৈলীর চিত্রগুলো যেন বাস্তবতার ছোঁয়া দেয়।').slice(0, 100)}...
             </p>
@@ -197,7 +241,11 @@ export default async function HomePage() {
           {/* Teaser 2 */}
           <div className="text-center px-3 border-r border-[#e2e2e2]">
             <h3 style={{ fontFamily: 'var(--font-body)' }} className="text-sm font-bold mb-0.5 text-gray-400">ব্রিটিশ বিপ্লব</h3>
-            <h2 style={{ fontFamily: 'var(--font-headline)' }} className="text-2xl font-bold mb-1 leading-tight text-[#121212]">{articles[1]?.headlineBn || 'পিজে হার্ভে'}</h2>
+            <h2 style={{ fontFamily: 'var(--font-headline)' }} className="text-2xl font-bold mb-1 leading-tight text-[#121212] hover:underline">
+              <Link href={`/article/${articles[1]?.slug || '#'}`}>
+                {articles[1]?.headlineBn || 'পিজে হার্ভে'}
+              </Link>
+            </h2>
             <p className="text-xs text-justify leading-relaxed font-normal text-[#555]">
               {('বেশ কয়েক বছর ধরে পিজে হার্ভে, যিনি নিজেকে সঙ্গীত দুনিয়ায় এক অনন্য স্থানে নিয়ে গেছেন, তার নতুন অ্যালবামটি নিয়ে আমরা আলোচনা করব। এই অ্যালবামটি আধুনিক সঙ্গীতের নতুন দিগন্ত উন্মোচন করে।').slice(0, 100)}...
             </p>
@@ -210,7 +258,11 @@ export default async function HomePage() {
           {/* Teaser 3 */}
           <div className="text-center px-3">
             <h3 style={{ fontFamily: 'var(--font-body)' }} className="text-sm font-bold mb-0.5 text-gray-400">সিমা পরিপূরক</h3>
-            <h2 style={{ fontFamily: 'var(--font-headline)' }} className="text-2xl font-bold mb-1 leading-tight text-[#121212]">{articles[2]?.headlineBn || 'মার্সেল জামা'}</h2>
+            <h2 style={{ fontFamily: 'var(--font-headline)' }} className="text-2xl font-bold mb-1 leading-tight text-[#121212] hover:underline">
+              <Link href={`/article/${articles[2]?.slug || '#'}`}>
+                {articles[2]?.headlineBn || 'মার্সেল জামা'}
+              </Link>
+            </h2>
             <p className="text-xs text-justify leading-relaxed font-normal text-[#555]">
               {('মার্সেল জামা এমন একজন প্রতিভাধর শিল্পী, যার চিত্রকর্মগুলো অত্যন্ত যত্ন সহকারে আঁকা। তার কাজের মধ্যে দিয়ে আমরা এক ভিন্ন জগতকে অনুভব করতে পারি যা অত্যন্ত বাস্তব ও মনোমুগ্ধকর।').slice(0, 100)}...
             </p>
@@ -221,6 +273,7 @@ export default async function HomePage() {
             </div>
           </div>
         </div>
+
 
 
         {/* HERO SECTION */}
