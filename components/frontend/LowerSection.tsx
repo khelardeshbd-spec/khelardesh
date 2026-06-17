@@ -150,42 +150,46 @@ function BlockHorizontal({ article }: { article: Article }) {
 function BlockTextOnly({ article }: { article: Article }) {
   const headline = article.headlineBn || article.headline;
   return (
-    <div style={{ gridArea: 'text', borderBottom: '1px solid var(--ink-border)', paddingBottom: 8 }}>
+    <div style={{ gridArea: 'text', borderBottom: '1px solid var(--ink-border)', paddingBottom: 16 }}>
       <Kicker sport={article.sport} />
-      {article.mediaUrl && (
-        <div style={{ width: '30%', flexShrink: 0, aspectRatio: '3/2', overflow: 'hidden', border: '1px solid var(--ink-border)', marginRight: 8 }}>
-          <img src={article.mediaUrl} alt={headline} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+      <Link href={`/article/${article.slug}`} style={{ textDecoration: 'none', display: 'flex', gap: 12, alignItems: 'flex-start' }}>
+        {article.mediaUrl && (
+          <div style={{ width: '35%', flexShrink: 0, aspectRatio: '4/3', overflow: 'hidden', border: '1px solid var(--ink-border)' }}>
+            <img src={article.mediaUrl} alt={headline} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+          </div>
+        )}
+        <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column' }}>
+          <h3 style={{
+            fontFamily: 'var(--font-headline)',
+            fontSize: 'clamp(1.05rem, 1.4vw, 1.25rem)',
+            fontWeight: 700,
+            lineHeight: 1.25,
+            color: 'var(--ink)',
+            marginBottom: 8,
+            fontStyle: 'italic',
+          }}>
+            {headline}
+          </h3>
+          {article.deck && (
+            <p style={{
+              fontFamily: 'var(--font-body)',
+              fontSize: 12,
+              lineHeight: 1.6,
+              color: 'var(--ink)',
+              opacity: 0.8,
+              WebkitLineClamp: 3,
+              display: '-webkit-box',
+              WebkitBoxOrient: 'vertical',
+              overflow: 'hidden',
+            }}>
+              {article.deck}
+            </p>
+          )}
+          <span style={{ fontFamily: 'var(--font-body)', fontSize: 10, color: 'var(--ink-muted)', fontStyle: 'italic', marginTop: 12 }}>
+            {article.byline || 'স্টাফ রিপোর্টার'}
+          </span>
         </div>
-      )}
-      <Link href={`/article/${article.slug}`} style={{ textDecoration: 'none', display: 'flex', flexDirection: 'column' }}>
-        <h3 style={{
-          fontFamily: 'var(--font-headline)',
-          fontSize: 'clamp(1rem, 1.4vw, 1.25rem)',
-          fontWeight: 700,
-          lineHeight: 1.25,
-          color: 'var(--ink)',
-          marginBottom: 10,
-          fontStyle: 'italic',
-        }}>
-          {headline}
-        </h3>
       </Link>
-      {article.deck && (
-        <p style={{
-          fontFamily: 'var(--font-body)',
-          fontSize: 12,
-          lineHeight: 1.8,
-          color: 'var(--ink)',
-          opacity: 0.8,
-        }}>
-          {article.deck}
-        </p>
-      )}
-      <div style={{ marginTop: 12, borderTop: '1px solid var(--ink-border)', paddingTop: 8 }}>
-        <span style={{ fontFamily: 'var(--font-body)', fontSize: 10, color: 'var(--ink-muted)', fontStyle: 'italic' }}>
-          {article.byline || 'স্টাফ রিপোর্টার'}
-        </span>
-      </div>
     </div>
   );
 }
@@ -228,7 +232,7 @@ function BlockStrip({ articles }: { articles: Article[] }) {
                 }}
               >
                 {article.mediaUrl && (
-                  <div style={{ width: 40, height: 40, overflow: 'hidden', borderRadius: 4, border: '1px solid var(--ink-border)' }}>
+                  <div style={{ width: 40, height: 40, flexShrink: 0, overflow: 'hidden', borderRadius: 4, border: '1px solid var(--ink-border)' }}>
                     <img src={article.mediaUrl} alt={headline} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                   </div>
                 )}
