@@ -92,7 +92,7 @@ export default async function HomePage() {
 
   return (
     <div style={{ backgroundColor: '#ffffff', color: '#121212', minHeight: '100vh', padding: '8px 0', fontFamily: 'var(--font-body)' }}>
-      <div className="max-w-[1200px] mx-auto bg-[#ffffff] px-6 py-2 pb-[160px]" id="main-constrained">
+      <div className="max-w-[1200px] mx-auto bg-[#ffffff] px-6 py-2" id="main-constrained">
 
         {/* MASTHEAD: LOGO ON TOP & REORGANIZED CONTROLS */}
         <div className="w-full text-[#121212] mb-2">
@@ -265,26 +265,16 @@ export default async function HomePage() {
 
         <HeroSlideshow articles={leads.slice(0, 3)} />
 
+        {/* SCORES STRIP */}
+        <div className="mb-4">
+          <ScoresStrip />
+        </div>
+
         {/* LOWER SECTION */}
         <LowerSection articles={articles} />
 
       </div>
-
-      {/* SCORES STRIP — full viewport width, outside constrained container */}
-      <div
-        style={{
-          position: 'fixed',
-          bottom: '56px',
-          left: 0,
-          right: 0,
-          zIndex: 40,
-          backgroundColor: '#ffffff',
-          borderTop: '1px solid #e2e2e2',
-          borderBottom: '1px solid #e2e2e2',
-        }}
-      >
-        <ScoresStrip />
-      </div>
     </div>
   );
 }
+
