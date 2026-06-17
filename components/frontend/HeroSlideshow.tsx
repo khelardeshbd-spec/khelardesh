@@ -71,9 +71,10 @@ export default function HeroSlideshow({ articles }: HeroSlideshowProps) {
         // Calculate offset for each slide (-100%, 0%, 100%, etc.)
         const offset = (idx - currentIndex) * 100;
         return (
-          <div 
+          <Link 
             key={idx} 
-            className="absolute top-0 left-0 w-full h-full grid grid-cols-12 gap-4 transition-transform duration-500 ease-in-out"
+            href={`/article/${article.slug}`}
+            className="absolute top-0 left-0 w-full h-full grid grid-cols-12 gap-4 transition-transform duration-500 ease-in-out cursor-pointer text-inherit hover:no-underline"
             style={{ transform: `translateX(${offset}%)` }}
           >
             {/* TEXT COLUMN */}
@@ -91,9 +92,9 @@ export default function HeroSlideshow({ articles }: HeroSlideshowProps) {
                 </p>
               </div>
               <div className="text-right mt-2 flex justify-end items-center mb-8 md:mb-12">
-                <Link href={`/article/${article.slug}`} className="text-[11px] font-bold text-[#d33f3f] hover:underline">
+                <span className="text-[11px] font-bold text-[#d33f3f] hover:underline">
                   আরো পড়ুন
-                </Link>
+                </span>
               </div>
             </div>
             
@@ -109,7 +110,7 @@ export default function HeroSlideshow({ articles }: HeroSlideshowProps) {
                  )}
               </div>
             </div>
-          </div>
+          </Link>
         );
       })}
       
