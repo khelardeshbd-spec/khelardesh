@@ -62,6 +62,28 @@ export default async function HomePage() {
   ]);
 
   const leads = leadResult.status === 'fulfilled' ? (leadResult.value.data ?? []) : [];
+  
+  // TODO: Remove this mock data after testing the slideshow
+  if (leads.length > 0 && leads.length < 3) {
+    leads.push({
+      ...leads[0],
+      id: 998,
+      slug: 'test-cricket-match',
+      headlineBn: 'বাংলাদেশ বনাম ভারত: মিরপুরে রোমাঞ্চকর জয়',
+      deck: 'মিরপুর শেরেবাংলা স্টেডিয়ামে ভারতের বিপক্ষে দুর্দান্ত জয় পেয়েছে বাংলাদেশ। শেষ ওভারে দরকার ছিল ১২ রান, এবং চমৎকার ব্যাটিংয়ে সেই লক্ষ্য পূরণ করে টাইগাররা।',
+      sport: 'cricket',
+      mediaUrl: 'https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?q=80&w=2862&auto=format&fit=crop'
+    });
+    leads.push({
+      ...leads[0],
+      id: 999,
+      slug: 'test-football-messi',
+      headlineBn: 'মেসির নতুন ম্যাজিক, ইন্টার মায়ামির জয়',
+      deck: 'মেজর লিগ সকারে আবারও লিওনেল মেসির পায়ের জাদু। তার দুর্দান্ত ফ্রি-কিক গোলে নিশ্চিত পরাজয় থেকে রক্ষা পেল ইন্টার মায়ামি।',
+      sport: 'football',
+      mediaUrl: 'https://images.unsplash.com/photo-1518605368461-1e1296cb3b5e?q=80&w=2940&auto=format&fit=crop'
+    });
+  }
   const articles = articlesResult.status === 'fulfilled' ? (articlesResult.value.data ?? []) : [];
   const scores = scoresResult.status === 'fulfilled' ? (scoresResult.value.data ?? []) : [];
   const sponsors = sponsorsResult.status === 'fulfilled' ? (sponsorsResult.value.data ?? []) : [];
