@@ -11,6 +11,7 @@ export default function ScoresStrip() {
   
   const containerRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
+  const xRef = useRef(0);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -18,21 +19,31 @@ export default function ScoresStrip() {
     if (!container || !track || !data || data.length === 0) return;
 
     let frameId: number;
-    let x = 0; // current position
+    let x = xRef.current; // start with the persisted position
     let startX = 0;
     let dragStartX = 0;
     let isDragging = false;
+    let lastTime = performance.now();
 
-    const step = () => {
+    const speed = 40; // Pixels per second scroll speed
+
+    const step = (time: number) => {
       if (!isDragging) {
-        x -= 0.65; // slow auto scroll speed
+        const delta = (time - lastTime) / 1000;
+        // Cap delta to prevent huge jumps (e.g., if tab is hidden/suspended)
+        const cappedDelta = Math.min(delta, 0.1);
+        x -= speed * cappedDelta;
 
         const halfWidth = track.scrollWidth / 2;
-        if (Math.abs(x) >= halfWidth) {
-          x = 0; // wrap around seamlessly
+        if (halfWidth > 0) {
+          if (Math.abs(x) >= halfWidth) {
+            x = 0; // Wrap around seamlessly
+          }
         }
         track.style.transform = `translate3d(${x}px, 0, 0)`;
+        xRef.current = x; // Persist updated position
       }
+      lastTime = time;
       frameId = requestAnimationFrame(step);
     };
 
@@ -52,18 +63,24 @@ export default function ScoresStrip() {
 
       // Wrap around boundary limits seamlessly during manual drag
       const halfWidth = track.scrollWidth / 2;
-      if (x > 0) {
-        x = -halfWidth + x;
-      } else if (Math.abs(x) >= halfWidth) {
-        x = x + halfWidth;
+      if (halfWidth > 0) {
+        if (x > 0) {
+          x = -halfWidth + x;
+        } else if (Math.abs(x) >= halfWidth) {
+          x = x + halfWidth;
+        }
       }
 
       track.style.transform = `translate3d(${x}px, 0, 0)`;
+      xRef.current = x; // Persist position
     };
 
     // Drag end
     const onEnd = () => {
-      isDragging = false;
+      if (isDragging) {
+        isDragging = false;
+        lastTime = performance.now(); // Reset lastTime so step() has correct starting baseline
+      }
     };
 
     // Desktop events
@@ -80,6 +97,7 @@ export default function ScoresStrip() {
 
     return () => {
       cancelAnimationFrame(frameId);
+      xRef.current = x; // Ensure last frame position is saved
       
       container.removeEventListener('mousedown', onStart);
       window.removeEventListener('mousemove', onMove);
