@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import CategoryColumnFeed from './CategoryColumnFeed';
 
 interface Article {
@@ -59,11 +60,12 @@ function CardLead({ article }: { article: Article }) {
       <Kicker sport={article.sport} />
       <Link href={`/article/${article.slug}`} style={{ textDecoration: 'none', display: 'block', marginBottom: 12 }}>
         {article.mediaUrl && (
-          <div style={{ width: '100%', aspectRatio: '16/9', overflow: 'hidden', border: '1px solid var(--ink-border)', marginBottom: 12 }}>
-            <img
+          <div style={{ width: '100%', aspectRatio: '16/9', overflow: 'hidden', border: '1px solid var(--ink-border)', marginBottom: 12, position: 'relative' }}>
+            <Image
               src={article.mediaUrl}
-              alt={headline}
-              style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+              alt={headline || 'Image'}
+              fill
+              style={{ objectFit: 'cover' }}
             />
           </div>
         )}
@@ -107,11 +109,12 @@ function CardStandard({ article, area }: { article: Article, area: string }) {
       <Kicker sport={article.sport} />
       <Link href={`/article/${article.slug}`} style={{ textDecoration: 'none', display: 'block', marginBottom: 12 }}>
         {article.mediaUrl && (
-          <div style={{ width: '100%', aspectRatio: '16/9', overflow: 'hidden', border: '1px solid var(--ink-border)', marginBottom: 12 }}>
-            <img
+          <div style={{ width: '100%', aspectRatio: '16/9', overflow: 'hidden', border: '1px solid var(--ink-border)', marginBottom: 12, position: 'relative' }}>
+            <Image
               src={article.mediaUrl}
-              alt={headline}
-              style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+              alt={headline || 'Image'}
+              fill
+              style={{ objectFit: 'cover' }}
             />
           </div>
         )}
@@ -168,8 +171,8 @@ function CardList({ articles }: { articles: Article[] }) {
             }}
           >
             {article.mediaUrl && (
-              <div style={{ width: 64, height: 64, flexShrink: 0, overflow: 'hidden', border: '1px solid var(--ink-border)' }}>
-                <img src={article.mediaUrl} alt={headline} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+              <div style={{ width: 64, height: 64, flexShrink: 0, overflow: 'hidden', border: '1px solid var(--ink-border)', position: 'relative' }}>
+                <Image src={article.mediaUrl} alt={headline || 'Image'} fill style={{ objectFit: 'cover' }} />
               </div>
             )}
             <div style={{ flex: 1, minWidth: 0 }}>
@@ -323,9 +326,9 @@ export default function LowerSection({ articles }: LowerSectionProps) {
           </div>
           <div style={{ paddingLeft: 4 }}>
             <span style={{ fontFamily: 'var(--font-body)', fontSize: 9, fontWeight: 700, letterSpacing: '0.15em', textTransform: 'uppercase', color: 'var(--ink-muted)', display: 'block', marginBottom: 12 }}>
-              অন্যান্য
+              খেলার দেশ বিশেষ
             </span>
-            <CategoryColumnFeed category="other" skipIds={[a[0]?.id, a[1]?.id, a[2]?.id, a[3]?.id, a[4]?.id, a[5]?.id, a[6]?.id, a[7]?.id].filter(Boolean) as number[]} />
+            <CategoryColumnFeed category="special" skipIds={[a[0]?.id, a[1]?.id, a[2]?.id, a[3]?.id, a[4]?.id, a[5]?.id, a[6]?.id, a[7]?.id].filter(Boolean) as number[]} />
           </div>
         </div>
       </div>

@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import Image from 'next/image';
 import { supabaseAdmin } from '@/lib/supabase';
 import LeadStory from '@/components/frontend/LeadStory';
 import HomeSlider from '@/components/frontend/HomeSlider';
@@ -133,7 +134,15 @@ export default async function HomePage() {
 
             {/* Center: Bengali Date Info */}
             <div className="flex flex-col items-center text-center text-[11px] text-[#121212] justify-center">
-              <span className="font-bold">শনিবার, ১৩ জুন, ২০২৬</span>
+              <span className="font-bold">
+                {new Intl.DateTimeFormat('bn-BD', {
+                  weekday: 'long',
+                  day: 'numeric',
+                  month: 'long',
+                  year: 'numeric',
+                  timeZone: 'Asia/Dhaka',
+                }).format(new Date())}
+              </span>
             </div>
 
 
@@ -150,7 +159,7 @@ export default async function HomePage() {
 
           {/* Tier 3: Category Navigation Strip */}
           <div className="border-b border-[#e2e2e2] pb-1.5">
-            <div className="flex flex-wrap justify-center gap-x-6 gap-y-2 text-xs font-semibold">
+            <div className="flex flex-wrap justify-center items-center gap-x-6 gap-y-2 text-xs font-semibold">
               {[
                 { label: 'মাঠ', slug: '' },
                 { 
@@ -241,11 +250,11 @@ export default async function HomePage() {
             </div>
           </div>
           <div className="col-span-12 md:col-span-8 order-1 md:order-2">
-            <div className="w-full h-[240px] sm:h-[320px] lg:h-[395px] bg-gray-200 overflow-hidden border border-[#e2e2e2] p-1">
+            <div className="w-full h-[240px] sm:h-[320px] lg:h-[395px] bg-gray-200 overflow-hidden border border-[#e2e2e2] p-1 relative">
                {leads[0]?.slug === 'madrid-unravel-final-ten' ? (
-                 <img src="/images/madrid_defeat_hero.png" className="w-full h-full object-cover" alt="Hero Image" />
+                 <Image src="/images/madrid_defeat_hero.png" fill style={{ objectFit: 'cover' }} alt="Hero Image" />
                ) : leads[0]?.mediaUrl ? (
-                 <img src={leads[0].mediaUrl} className="w-full h-full object-cover" alt="Hero Image" />
+                 <Image src={leads[0].mediaUrl} fill style={{ objectFit: 'cover' }} alt="Hero Image" />
                ) : (
                  <div className="w-full h-full flex items-center justify-center text-gray-500 italic">ছবি নেই</div>
                )}
