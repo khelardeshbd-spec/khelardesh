@@ -37,15 +37,18 @@ export default function HeroSlideshow({ articles }: HeroSlideshowProps) {
   const currentArticle = articles[currentIndex];
 
   return (
-    <div className="border-b border-[#e2e2e2] pb-4 mb-4 relative overflow-hidden">
-      <div 
-        className="flex transition-transform duration-500 ease-in-out" 
-        style={{ transform: `translateX(-${currentIndex * 100}%)` }}
-      >
-        {articles.map((article, idx) => (
-          <div key={idx} className="min-w-full shrink-0 grid grid-cols-12 gap-4">
-            {/* TEXT COLUMN - Fixed Height & Line Clamps to prevent jumping */}
-            <div className="col-span-12 md:col-span-4 flex flex-col justify-between order-2 md:order-1 pt-2 h-[260px] sm:h-[280px] lg:h-[395px] pr-2">
+    <div className="border-b border-[#e2e2e2] pb-4 mb-4 relative overflow-hidden h-[480px] sm:h-[360px] md:h-[420px] lg:h-[430px]">
+      {articles.map((article, idx) => {
+        // Calculate offset for each slide (-100%, 0%, 100%, etc.)
+        const offset = (idx - currentIndex) * 100;
+        return (
+          <div 
+            key={idx} 
+            className="absolute top-0 left-0 w-full h-full grid grid-cols-12 gap-4 transition-transform duration-500 ease-in-out"
+            style={{ transform: `translateX(${offset}%)` }}
+          >
+            {/* TEXT COLUMN */}
+            <div className="col-span-12 md:col-span-4 flex flex-col justify-between order-2 md:order-1 pt-2 h-[220px] sm:h-[260px] md:h-full pr-2">
               <div className="overflow-hidden">
                 <p className="text-[#888888] font-bold text-[11px] mb-1.5 uppercase tracking-wider font-sans">
                   {article.sport === 'football' ? 'ফুটবল' : article.sport === 'cricket' ? 'ক্রিকেট' : 'খেলার দেশ'}
@@ -58,7 +61,7 @@ export default function HeroSlideshow({ articles }: HeroSlideshowProps) {
                   {article.deck}
                 </p>
               </div>
-              <div className="text-right mt-3 flex justify-end items-center mb-6 md:mb-0">
+              <div className="text-right mt-2 flex justify-end items-center mb-8 md:mb-12">
                 <Link href={`/article/${article.slug}`} className="text-[11px] font-bold text-[#d33f3f] hover:underline">
                   আরো পড়ুন
                 </Link>
@@ -67,7 +70,7 @@ export default function HeroSlideshow({ articles }: HeroSlideshowProps) {
             
             {/* IMAGE COLUMN */}
             <div className="col-span-12 md:col-span-8 order-1 md:order-2">
-              <div className="w-full h-[240px] sm:h-[320px] lg:h-[395px] bg-gray-200 overflow-hidden border border-[#e2e2e2] p-1 relative">
+              <div className="w-full h-[240px] sm:h-[320px] md:h-[360px] lg:h-[395px] bg-gray-200 overflow-hidden border border-[#e2e2e2] p-1 relative">
                  {article.slug === 'madrid-unravel-final-ten' ? (
                    <Image src="/images/madrid_defeat_hero.png" fill style={{ objectFit: 'cover' }} alt="Hero Image" priority={idx === 0} />
                  ) : article.mediaUrl ? (
@@ -78,11 +81,11 @@ export default function HeroSlideshow({ articles }: HeroSlideshowProps) {
               </div>
             </div>
           </div>
-        ))}
-      </div>
+        );
+      })}
       
-      {/* STATIC DOTS (Absolute positioned over the bottom-left of the text column on desktop) */}
-      <div className="absolute bottom-6 md:bottom-5 left-0 flex gap-2">
+      {/* STATIC DOTS */}
+      <div className="absolute bottom-2 md:bottom-6 left-0 flex gap-2 z-10">
         {articles.map((_, idx) => (
           <button
             key={idx}
