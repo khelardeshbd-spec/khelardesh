@@ -11,7 +11,7 @@ import { useTheme, type Theme } from '@/hooks/useTheme';
 
 const THEMES: { id: Theme; fill: string; border: string; label: string }[] = [
   { id: 'light', fill: '#FAFAF8', border: '#D4D2CB', label: 'Light theme' },
-  { id: 'paper', fill: '#F8F1E3', border: '#C8BAA0', label: 'Paper theme' },
+  { id: 'paper', fill: '#ffffff', border: '#e2e2e2', label: 'Paper theme' },
   { id: 'night', fill: '#141412', border: '#555555', label: 'Night theme' },
 ];
 
