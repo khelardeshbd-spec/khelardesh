@@ -1,113 +1,423 @@
 import Link from 'next/link';
 import CategoryColumnFeed from './CategoryColumnFeed';
 
-interface LowerSectionProps {
-  articles: any[];
+interface Article {
+  id: number;
+  slug: string;
+  headline: string;
+  headlineBn?: string | null;
+  deck?: string | null;
+  sport?: string | null;
+  mediaType?: string;
+  mediaUrl?: string | null;
+  byline?: string | null;
+  publishedAt?: string;
 }
 
-export default function LowerSection({ articles }: LowerSectionProps) {
+interface LowerSectionProps {
+  articles: Article[];
+}
+
+function sportLabel(sport?: string | null) {
+  if (!sport) return 'সাধারণ';
+  const map: Record<string, string> = {
+    football: 'ফুটবল',
+    cricket: 'ক্রিকেট',
+    basketball: 'বাস্কেটবল',
+    tennis: 'টেনিস',
+    feature: 'ফিচার',
+    interview: 'সাক্ষাৎকার',
+    special: 'বিশেষ',
+    others: 'অন্যান্য',
+  };
+  return map[sport.toLowerCase()] ?? sport;
+}
+
+/* ─── Kicker label ─────────────────────────────── */
+function Kicker({ sport }: { sport?: string | null }) {
   return (
-    <section 
-      aria-label="খেলাধুলা বিভাগসমূহ"
-      className="bg-[var(--bg-surface)] border border-[var(--ink-border)] rounded-[12px] p-6 md:p-8 transition-all duration-300 mb-6"
-    >
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-0">
-        {/* Column 1: Football */}
-        <div className="border-b md:border-b-0 md:border-r border-[var(--ink-border)] pb-6 md:pb-0 md:pr-6">
-          <h3 className="font-bold text-lg mb-4 border-b-2 border-[var(--ink)] pb-1.5 uppercase tracking-wider text-[var(--ink)]">
-            ফুটবল
-          </h3>
-          <div className="w-full h-48 mb-4 border border-[var(--ink-border)] rounded-[4px] overflow-hidden bg-[var(--bg-page)] p-1">
-            {articles[0]?.mediaUrl ? (
-              <img src={articles[0].mediaUrl} className="w-full h-full object-cover rounded-[2px]" alt="Football" />
-            ) : (
-              <div className="w-full h-full bg-gray-200" />
-            )}
-          </div>
-          <h2 style={{ fontFamily: 'var(--font-headline)' }} className="text-[1.6rem] font-bold mb-3 leading-tight text-[var(--ink)] hover:underline">
-            <Link href={`/article/${articles[0]?.slug || '#'}`}>
-              {articles[0]?.headlineBn || articles[0]?.headline}
-            </Link>
-          </h2>
-          <p className="text-xs font-bold italic mb-3 text-[var(--ink-muted)]">{articles[0]?.byline || 'Staff Reporter'}</p>
-          <p className="text-xs text-justify leading-relaxed line-clamp-4 text-[var(--ink)] opacity-90">
-            {articles[0]?.deck || 'বিস্তারিত খবর আসছে...'}
-          </p>
-          <div className="text-right mt-3 mb-6">
-            <Link href={`/article/${articles[0]?.slug || '#'}`} className="text-[11px] font-bold text-[var(--live-red)] hover:underline">
-              আরো পড়ুন
-            </Link>
-          </div>
+    <span style={{
+      fontFamily: 'var(--font-body)',
+      fontSize: 9,
+      fontWeight: 700,
+      letterSpacing: '0.15em',
+      textTransform: 'uppercase',
+      color: 'var(--ink-muted)',
+      display: 'block',
+      marginBottom: 7,
+    }}>
+      {sportLabel(sport)}
+    </span>
+  );
+}
 
-          {/* Additional Article Previews */}
-          <div className="border-t border-[var(--ink-border)] pt-4 flex flex-col gap-4">
-            <CategoryColumnFeed category="football" skipIds={articles[0] ? [articles[0].id] : []} />
-          </div>
+/* ─── Block A: Large Lead (image + big headline + deck) ─── */
+function BlockLead({ article }: { article: Article }) {
+  const headline = article.headlineBn || article.headline;
+  return (
+    <div style={{ gridArea: 'lead', borderTop: '3px solid var(--ink)', paddingTop: 12 }}>
+      <Kicker sport={article.sport} />
+      {article.mediaUrl && (
+        <div style={{ width: '100%', aspectRatio: '4/3', overflow: 'hidden', marginBottom: 14, border: '1px solid var(--ink-border)' }}>
+          <img
+            src={article.mediaUrl}
+            alt={headline}
+            style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+          />
         </div>
-        
-        {/* Column 2: Cricket */}
-        <div className="border-b md:border-b-0 md:border-r border-[var(--ink-border)] py-6 md:py-0 md:px-6">
-          <h3 className="font-bold text-lg mb-4 border-b-2 border-[var(--ink)] pb-1.5 uppercase tracking-wider text-[var(--ink)]">
-            ক্রিকেট
-          </h3>
-          <div className="w-full h-48 mb-4 border border-[var(--ink-border)] rounded-[4px] overflow-hidden bg-[var(--bg-page)] p-1">
-            {articles[1]?.mediaUrl ? (
-              <img src={articles[1].mediaUrl} className="w-full h-full object-cover rounded-[2px]" alt="Cricket" />
-            ) : (
-              <div className="w-full h-full bg-gray-200" />
-            )}
-          </div>
-          <h2 style={{ fontFamily: 'var(--font-headline)' }} className="text-[1.6rem] font-bold mb-3 leading-tight text-[var(--ink)] hover:underline">
-            <Link href={`/article/${articles[1]?.slug || '#'}`}>
-              {articles[1]?.headlineBn || articles[1]?.headline}
-            </Link>
-          </h2>
-          <p className="text-xs font-bold italic mb-3 text-[var(--ink-muted)]">{articles[1]?.byline || 'Staff Reporter'}</p>
-          <p className="text-xs text-justify leading-relaxed line-clamp-4 text-[var(--ink)] opacity-90">
-            {articles[1]?.deck || 'বিস্তারিত খবর আসছে...'}
-          </p>
-          <div className="text-right mt-3 mb-6">
-            <Link href={`/article/${articles[1]?.slug || '#'}`} className="text-[11px] font-bold text-[var(--live-red)] hover:underline">
-              আরো পড়ুন
-            </Link>
-          </div>
+      )}
+      <Link href={`/article/${article.slug}`} style={{ textDecoration: 'none' }}>
+        <h2 style={{
+          fontFamily: 'var(--font-headline)',
+          fontSize: 'clamp(1.65rem, 2.8vw, 2.2rem)',
+          fontWeight: 700,
+          lineHeight: 1.15,
+          color: 'var(--ink)',
+          marginBottom: 12,
+          letterSpacing: '-0.01em',
+        }}>
+          {headline}
+        </h2>
+      </Link>
+      {article.deck && (
+        <p style={{
+          fontFamily: 'var(--font-body)',
+          fontSize: 13,
+          lineHeight: 1.75,
+          color: 'var(--ink)',
+          opacity: 0.85,
+          marginBottom: 12,
+        }}>
+          {article.deck}
+        </p>
+      )}
+      <span style={{ fontFamily: 'var(--font-body)', fontSize: 10, color: 'var(--ink-muted)', fontStyle: 'italic' }}>
+        {article.byline || 'স্টাফ রিপোর্টার'}
+      </span>
+    </div>
+  );
+}
 
-          {/* Additional Article Previews */}
-          <div className="border-t border-[var(--ink-border)] pt-4 flex flex-col gap-4">
-            <CategoryColumnFeed category="cricket" skipIds={articles[1] ? [articles[1].id] : []} />
+/* ─── Block B: Horizontal Split (image left, text right) ─── */
+function BlockHorizontal({ article }: { article: Article }) {
+  const headline = article.headlineBn || article.headline;
+  return (
+    <div style={{ gridArea: 'mid', borderTop: '3px solid var(--ink)', paddingTop: 12, borderLeft: '1px solid var(--ink-border)', paddingLeft: 16 }}>
+      <Kicker sport={article.sport} />
+      <Link href={`/article/${article.slug}`} style={{ textDecoration: 'none', display: 'flex', gap: 12, alignItems: 'flex-start' }}>
+        {article.mediaUrl && (
+          <div style={{ width: '45%', flexShrink: 0, aspectRatio: '3/2', overflow: 'hidden', border: '1px solid var(--ink-border)' }}>
+            <img
+              src={article.mediaUrl}
+              alt={headline}
+              style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+            />
           </div>
+        )}
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <h3 style={{
+            fontFamily: 'var(--font-headline)',
+            fontSize: 'clamp(1.1rem, 1.5vw, 1.35rem)',
+            fontWeight: 700,
+            lineHeight: 1.2,
+            color: 'var(--ink)',
+            marginBottom: 8,
+          }}>
+            {headline}
+          </h3>
+          {article.deck && (
+            <p style={{
+              fontFamily: 'var(--font-body)',
+              fontSize: 11,
+              lineHeight: 1.6,
+              color: 'var(--ink)',
+              opacity: 0.75,
+              WebkitLineClamp: 3,
+              display: '-webkit-box',
+              WebkitBoxOrient: 'vertical',
+              overflow: 'hidden',
+            }}>
+              {article.deck}
+            </p>
+          )}
         </div>
-        
-        {/* Column 3: Others */}
-        <div className="pt-6 md:pt-0 md:pl-6">
-          <h3 className="font-bold text-lg mb-4 border-b-2 border-[var(--ink)] pb-1.5 uppercase tracking-wider text-[var(--ink)]">
-            অন্যান্য
-          </h3>
-          <div className="w-full h-48 mb-4 border border-[var(--ink-border)] rounded-[4px] overflow-hidden bg-[var(--bg-page)] p-1">
-            {articles[2]?.mediaUrl ? (
-              <img src={articles[2].mediaUrl} className="w-full h-full object-cover rounded-[2px]" alt="Other Sports" />
-            ) : (
-              <div className="w-full h-full bg-gray-200" />
-            )}
-          </div>
-          <h2 style={{ fontFamily: 'var(--font-headline)' }} className="text-[1.6rem] font-bold mb-3 leading-tight text-[var(--ink)] hover:underline">
-            <Link href={`/article/${articles[2]?.slug || '#'}`}>
-              {articles[2]?.headlineBn || articles[2]?.headline}
-            </Link>
-          </h2>
-          <p className="text-xs font-bold italic mb-3 text-[var(--ink-muted)]">{articles[2]?.byline || 'Staff Reporter'}</p>
-          <p className="text-xs text-justify leading-relaxed line-clamp-4 text-[var(--ink)] opacity-90">
-            {articles[2]?.deck || 'বিস্তারিত খবর আসছে...'}
-          </p>
-          <div className="text-right mt-3 mb-6">
-            <Link href={`/article/${articles[2]?.slug || '#'}`} className="text-[11px] font-bold text-[var(--live-red)] hover:underline">
-              আরো পড়ুন
-            </Link>
-          </div>
+      </Link>
+    </div>
+  );
+}
 
-          {/* Additional Article Previews */}
-          <div className="border-t border-[var(--ink-border)] pt-4 flex flex-col gap-4">
-            <CategoryColumnFeed category="other" skipIds={articles[2] ? [articles[2].id] : []} />
+/* ─── Block C: Text-Only Editorial (no image, drop-cap style) ─── */
+function BlockTextOnly({ article }: { article: Article }) {
+  const headline = article.headlineBn || article.headline;
+  return (
+    <div style={{ gridArea: 'text', borderTop: '1px solid var(--ink-border)', paddingTop: 12, borderLeft: '1px solid var(--ink-border)', paddingLeft: 16 }}>
+      <Kicker sport={article.sport} />
+      <Link href={`/article/${article.slug}`} style={{ textDecoration: 'none' }}>
+        <h3 style={{
+          fontFamily: 'var(--font-headline)',
+          fontSize: 'clamp(1rem, 1.4vw, 1.25rem)',
+          fontWeight: 700,
+          lineHeight: 1.25,
+          color: 'var(--ink)',
+          marginBottom: 10,
+          fontStyle: 'italic',
+        }}>
+          {headline}
+        </h3>
+      </Link>
+      {article.deck && (
+        <p style={{
+          fontFamily: 'var(--font-body)',
+          fontSize: 12,
+          lineHeight: 1.8,
+          color: 'var(--ink)',
+          opacity: 0.8,
+        }}>
+          {article.deck}
+        </p>
+      )}
+      <div style={{ marginTop: 12, borderTop: '1px solid var(--ink-border)', paddingTop: 8 }}>
+        <span style={{ fontFamily: 'var(--font-body)', fontSize: 10, color: 'var(--ink-muted)', fontStyle: 'italic' }}>
+          {article.byline || 'স্টাফ রিপোর্টার'}
+        </span>
+      </div>
+    </div>
+  );
+}
+
+/* ─── Block D: Sidebar Strip (headlines-only list) ─── */
+function BlockStrip({ articles }: { articles: Article[] }) {
+  return (
+    <div style={{
+      gridArea: 'strip',
+      borderLeft: '2px solid var(--ink)',
+      paddingLeft: 16,
+      borderTop: '3px solid var(--ink)',
+      paddingTop: 12,
+    }}>
+      <span style={{
+        fontFamily: 'var(--font-body)',
+        fontSize: 9,
+        fontWeight: 700,
+        letterSpacing: '0.15em',
+        textTransform: 'uppercase',
+        color: 'var(--ink-muted)',
+        display: 'block',
+        marginBottom: 14,
+      }}>
+        আরও খবর
+      </span>
+      <div style={{ display: 'flex', flexDirection: 'column' }}>
+        {articles.map((article, i) => {
+          const headline = article.headlineBn || article.headline;
+          return (
+            <div
+              key={article.id}
+              style={{
+                paddingBottom: 14,
+                marginBottom: 14,
+                borderBottom: i < articles.length - 1 ? '1px solid var(--ink-border)' : 'none',
+              }}
+            >
+              <Kicker sport={article.sport} />
+              <Link href={`/article/${article.slug}`} style={{ textDecoration: 'none' }}>
+                <h4 style={{
+                  fontFamily: 'var(--font-headline)',
+                  fontSize: '0.95rem',
+                  fontWeight: 700,
+                  lineHeight: 1.25,
+                  color: 'var(--ink)',
+                }}>
+                  {headline}
+                </h4>
+              </Link>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+/* ─── Block E: Wide Horizontal Banner ─── */
+function BlockWideBand({ article }: { article: Article }) {
+  const headline = article.headlineBn || article.headline;
+  return (
+    <div style={{ gridArea: 'band', borderTop: '2px solid var(--ink)', paddingTop: 12, borderRight: '1px solid var(--ink-border)', paddingRight: 16 }}>
+      <Kicker sport={article.sport} />
+      <Link href={`/article/${article.slug}`} style={{ textDecoration: 'none', display: 'flex', gap: 20, alignItems: 'center' }}>
+        {article.mediaUrl && (
+          <div style={{ width: '35%', flexShrink: 0, aspectRatio: '16/9', overflow: 'hidden', border: '1px solid var(--ink-border)' }}>
+            <img
+              src={article.mediaUrl}
+              alt={headline}
+              style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+            />
+          </div>
+        )}
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <h3 style={{
+            fontFamily: 'var(--font-headline)',
+            fontSize: 'clamp(1.2rem, 1.8vw, 1.5rem)',
+            fontWeight: 700,
+            lineHeight: 1.2,
+            color: 'var(--ink)',
+            marginBottom: 10,
+          }}>
+            {headline}
+          </h3>
+          {article.deck && (
+            <p style={{
+              fontFamily: 'var(--font-body)',
+              fontSize: 12,
+              lineHeight: 1.7,
+              color: 'var(--ink)',
+              opacity: 0.8,
+              WebkitLineClamp: 2,
+              display: '-webkit-box',
+              WebkitBoxOrient: 'vertical',
+              overflow: 'hidden',
+            }}>
+              {article.deck}
+            </p>
+          )}
+          <span style={{ fontFamily: 'var(--font-body)', fontSize: 10, color: 'var(--ink-muted)', fontStyle: 'italic', display: 'block', marginTop: 8 }}>
+            {article.byline || 'স্টাফ রিপোর্টার'}
+          </span>
+        </div>
+      </Link>
+    </div>
+  );
+}
+
+/* ─── Main Component ──────────────────────────── */
+export default function LowerSection({ articles }: LowerSectionProps) {
+  const a = articles;
+  if (!a || a.length === 0) return null;
+
+  // Assign articles to blocks: 0=Lead, 1=Horizontal, 2=TextOnly, 3-5=Strip, 6=WideBand
+  const lead     = a[0];
+  const horiz    = a[1];
+  const textOnly = a[2];
+  const strip    = a.slice(3, 7);
+  const band     = a[7] ?? a[3];
+
+  return (
+    <section aria-label="সংবাদ বিভাগ" style={{ marginBottom: 32 }}>
+      {/* ─── Responsive Grid Styles ─── */}
+      <style>{`
+        .ls-grid {
+          display: grid;
+          grid-template-columns: 1fr 1fr 1fr 220px;
+          grid-template-rows: auto auto auto;
+          grid-template-areas:
+            "lead lead mid  strip"
+            "lead lead text strip"
+            "band band band strip";
+          gap: 0 20px;
+          row-gap: 20px;
+        }
+        @media (max-width: 1023px) {
+          .ls-grid {
+            grid-template-columns: 1fr 1fr;
+            grid-template-areas:
+              "lead lead"
+              "mid  text"
+              "band band"
+              "strip strip";
+          }
+        }
+        @media (max-width: 639px) {
+          .ls-grid {
+            grid-template-columns: 1fr;
+            grid-template-areas:
+              "lead"
+              "mid"
+              "band"
+              "text"
+              "strip";
+          }
+        }
+        /* Tablet sidebar adjustments */
+        @media (max-width: 1023px) {
+          .ls-strip { border-left: none !important; padding-left: 0 !important; border-top: 3px solid var(--ink) !important; }
+        }
+      `}</style>
+
+      {/* ─── Section Header ─── */}
+      <div style={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: 12,
+        marginBottom: 20,
+        borderTop: '4px double var(--ink)',
+        paddingTop: 10,
+      }}>
+        <span style={{
+          fontFamily: 'var(--font-body)',
+          fontSize: 9,
+          fontWeight: 700,
+          letterSpacing: '0.2em',
+          textTransform: 'uppercase',
+          color: 'var(--ink)',
+          paddingRight: 12,
+          borderRight: '1px solid var(--ink-border)',
+        }}>
+          সর্বশেষ
+        </span>
+        <span style={{ flex: 1, height: 1, backgroundColor: 'var(--ink-border)' }} />
+      </div>
+
+      {/* ─── Editorial Grid ─── */}
+      <div className="ls-grid">
+        {lead     && <BlockLead      article={lead} />}
+        {horiz    && <BlockHorizontal article={horiz} />}
+        {textOnly && <BlockTextOnly   article={textOnly} />}
+        {strip.length > 0 && <BlockStrip articles={strip} />}
+        {band     && <BlockWideBand   article={band} />}
+      </div>
+
+      {/* ─── More Stories Below ─── */}
+      <div style={{ marginTop: 40, borderTop: '4px double var(--ink)', paddingTop: 12 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 20 }}>
+          <span style={{
+            fontFamily: 'var(--font-body)',
+            fontSize: 9,
+            fontWeight: 700,
+            letterSpacing: '0.2em',
+            textTransform: 'uppercase',
+            color: 'var(--ink)',
+            paddingRight: 12,
+            borderRight: '1px solid var(--ink-border)',
+          }}>
+            আরও পড়ুন
+          </span>
+          <span style={{ flex: 1, height: 1, backgroundColor: 'var(--ink-border)' }} />
+        </div>
+
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '0 24px' }} className="more-stories-grid">
+          <style>{`
+            @media (max-width: 767px) {
+              .more-stories-grid { grid-template-columns: 1fr !important; }
+            }
+          `}</style>
+          <div style={{ borderRight: '1px solid var(--ink-border)', paddingRight: 20 }}>
+            <span style={{ fontFamily: 'var(--font-body)', fontSize: 9, fontWeight: 700, letterSpacing: '0.15em', textTransform: 'uppercase', color: 'var(--ink-muted)', display: 'block', marginBottom: 12 }}>
+              ফুটবল
+            </span>
+            <CategoryColumnFeed category="football" skipIds={[a[0]?.id, a[1]?.id, a[2]?.id, a[3]?.id, a[4]?.id, a[5]?.id, a[6]?.id, a[7]?.id].filter(Boolean) as number[]} />
+          </div>
+          <div style={{ borderRight: '1px solid var(--ink-border)', paddingRight: 20, paddingLeft: 4 }}>
+            <span style={{ fontFamily: 'var(--font-body)', fontSize: 9, fontWeight: 700, letterSpacing: '0.15em', textTransform: 'uppercase', color: 'var(--ink-muted)', display: 'block', marginBottom: 12 }}>
+              ক্রিকেট
+            </span>
+            <CategoryColumnFeed category="cricket" skipIds={[a[0]?.id, a[1]?.id, a[2]?.id, a[3]?.id, a[4]?.id, a[5]?.id, a[6]?.id, a[7]?.id].filter(Boolean) as number[]} />
+          </div>
+          <div style={{ paddingLeft: 4 }}>
+            <span style={{ fontFamily: 'var(--font-body)', fontSize: 9, fontWeight: 700, letterSpacing: '0.15em', textTransform: 'uppercase', color: 'var(--ink-muted)', display: 'block', marginBottom: 12 }}>
+              অন্যান্য
+            </span>
+            <CategoryColumnFeed category="other" skipIds={[a[0]?.id, a[1]?.id, a[2]?.id, a[3]?.id, a[4]?.id, a[5]?.id, a[6]?.id, a[7]?.id].filter(Boolean) as number[]} />
           </div>
         </div>
       </div>
