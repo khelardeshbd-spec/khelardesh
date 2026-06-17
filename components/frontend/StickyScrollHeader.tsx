@@ -107,7 +107,7 @@ export default function StickyScrollHeader() {
                     <span className="text-[9px]">▼</span>
                   </Link>
                   {/* Dropdown menu */}
-                  <div className="absolute left-0 top-[100%] hidden group-hover:block bg-[var(--bg-surface)] border border-[var(--ink-border)] shadow-md rounded-[3px] py-1 min-w-[150px] z-50">
+                  <div className="absolute left-0 top-[100%] hidden group-hover:block bg-[var(--bg-surface)] border border-[var(--ink-border)] shadow-md rounded-[3px] py-1 min-w-[150px] z-50 dropdown-bridge">
 
                     {item.subItems.map((sub, sIdx) => (
                       <Link

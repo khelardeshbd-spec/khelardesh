@@ -21,6 +21,7 @@
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
+  unicode-range: U+0980-09FF;
 }
 @font-face {
   font-family: 'MAK Zakigonj';
@@ -28,6 +29,7 @@
   font-weight: 100 900;
   font-style: italic;
   font-display: swap;
+  unicode-range: U+0980-09FF;
 }
 
 /* Prothom Alo */
@@ -37,6 +39,7 @@
   font-weight: 300;
   font-style: normal;
   font-display: swap;
+  unicode-range: U+0980-09FF;
 }
 @font-face {
   font-family: 'Prothom Alo';
@@ -44,6 +47,7 @@
   font-weight: 400;
   font-style: normal;
   font-display: swap;
+  unicode-range: U+0980-09FF;
 }
 @font-face {
   font-family: 'Prothom Alo';
@@ -51,6 +55,7 @@
   font-weight: 500;
   font-style: normal;
   font-display: swap;
+  unicode-range: U+0980-09FF;
 }
 @font-face {
   font-family: 'Prothom Alo';
@@ -58,6 +63,7 @@
   font-weight: 600;
   font-style: normal;
   font-display: swap;
+  unicode-range: U+0980-09FF;
 }
 @font-face {
   font-family: 'Prothom Alo';
@@ -65,6 +71,7 @@
   font-weight: 700;
   font-style: normal;
   font-display: swap;
+  unicode-range: U+0980-09FF;
 }
 @font-face {
   font-family: 'Prothom Alo';
@@ -72,6 +79,7 @@
   font-weight: 800;
   font-style: normal;
   font-display: swap;
+  unicode-range: U+0980-09FF;
 }
 @font-face {
   font-family: 'Prothom Alo';
@@ -79,6 +87,7 @@
   font-weight: 900;
   font-style: normal;
   font-display: swap;
+  unicode-range: U+0980-09FF;
 }
 
 /* Prothoma Regular */
@@ -88,6 +97,7 @@
   font-weight: 300;
   font-style: normal;
   font-display: swap;
+  unicode-range: U+0980-09FF;
 }
 @font-face {
   font-family: 'Prothoma';
@@ -95,6 +105,7 @@
   font-weight: 400;
   font-style: normal;
   font-display: swap;
+  unicode-range: U+0980-09FF;
 }
 @font-face {
   font-family: 'Prothoma';
@@ -102,6 +113,7 @@
   font-weight: 500;
   font-style: normal;
   font-display: swap;
+  unicode-range: U+0980-09FF;
 }
 @font-face {
   font-family: 'Prothoma';
@@ -109,6 +121,7 @@
   font-weight: 600;
   font-style: normal;
   font-display: swap;
+  unicode-range: U+0980-09FF;
 }
 @font-face {
   font-family: 'Prothoma';
@@ -116,6 +129,7 @@
   font-weight: 700;
   font-style: normal;
   font-display: swap;
+  unicode-range: U+0980-09FF;
 }
 @font-face {
   font-family: 'Prothoma';
@@ -123,6 +137,7 @@
   font-weight: 800;
   font-style: normal;
   font-display: swap;
+  unicode-range: U+0980-09FF;
 }
 @font-face {
   font-family: 'Prothoma';
@@ -130,6 +145,7 @@
   font-weight: 900;
   font-style: normal;
   font-display: swap;
+  unicode-range: U+0980-09FF;
 }
 
 /* Prothoma Italic */
@@ -139,6 +155,7 @@
   font-weight: 300;
   font-style: italic;
   font-display: swap;
+  unicode-range: U+0980-09FF;
 }
 @font-face {
   font-family: 'Prothoma';
@@ -146,6 +163,7 @@
   font-weight: 400;
   font-style: italic;
   font-display: swap;
+  unicode-range: U+0980-09FF;
 }
 @font-face {
   font-family: 'Prothoma';
@@ -153,6 +171,7 @@
   font-weight: 500;
   font-style: italic;
   font-display: swap;
+  unicode-range: U+0980-09FF;
 }
 @font-face {
   font-family: 'Prothoma';
@@ -160,6 +179,7 @@
   font-weight: 600;
   font-style: italic;
   font-display: swap;
+  unicode-range: U+0980-09FF;
 }
 @font-face {
   font-family: 'Prothoma';
@@ -167,6 +187,7 @@
   font-weight: 700;
   font-style: italic;
   font-display: swap;
+  unicode-range: U+0980-09FF;
 }
 @font-face {
   font-family: 'Prothoma';
@@ -174,6 +195,7 @@
   font-weight: 800;
   font-style: italic;
   font-display: swap;
+  unicode-range: U+0980-09FF;
 }
 @font-face {
   font-family: 'Prothoma';
@@ -181,6 +203,7 @@
   font-weight: 900;
   font-style: italic;
   font-display: swap;
+  unicode-range: U+0980-09FF;
 }
 
 /* Kalpurush Regular */
@@ -190,6 +213,7 @@
   font-weight: 300;
   font-style: normal;
   font-display: swap;
+  unicode-range: U+0980-09FF;
 }
 @font-face {
   font-family: 'Kalpurush';
@@ -197,6 +221,7 @@
   font-weight: 400;
   font-style: normal;
   font-display: swap;
+  unicode-range: U+0980-09FF;
 }
 @font-face {
   font-family: 'Kalpurush';
@@ -204,6 +229,7 @@
   font-weight: 500;
   font-style: normal;
   font-display: swap;
+  unicode-range: U+0980-09FF;
 }
 @font-face {
   font-family: 'Kalpurush';
@@ -211,6 +237,7 @@
   font-weight: 600;
   font-style: normal;
   font-display: swap;
+  unicode-range: U+0980-09FF;
 }
 @font-face {
   font-family: 'Kalpurush';
@@ -218,6 +245,7 @@
   font-weight: 700;
   font-style: normal;
   font-display: swap;
+  unicode-range: U+0980-09FF;
 }
 @font-face {
   font-family: 'Kalpurush';
@@ -225,6 +253,7 @@
   font-weight: 800;
   font-style: normal;
   font-display: swap;
+  unicode-range: U+0980-09FF;
 }
 @font-face {
   font-family: 'Kalpurush';
@@ -232,6 +261,7 @@
   font-weight: 900;
   font-style: normal;
   font-display: swap;
+  unicode-range: U+0980-09FF;
 }
 
 /* Kalpurush Italic */
@@ -241,6 +271,7 @@
   font-weight: 300;
   font-style: italic;
   font-display: swap;
+  unicode-range: U+0980-09FF;
 }
 @font-face {
   font-family: 'Kalpurush';
@@ -248,6 +279,7 @@
   font-weight: 400;
   font-style: italic;
   font-display: swap;
+  unicode-range: U+0980-09FF;
 }
 @font-face {
   font-family: 'Kalpurush';
@@ -255,6 +287,7 @@
   font-weight: 500;
   font-style: italic;
   font-display: swap;
+  unicode-range: U+0980-09FF;
 }
 @font-face {
   font-family: 'Kalpurush';
@@ -262,6 +295,7 @@
   font-weight: 600;
   font-style: italic;
   font-display: swap;
+  unicode-range: U+0980-09FF;
 }
 @font-face {
   font-family: 'Kalpurush';
@@ -269,6 +303,7 @@
   font-weight: 700;
   font-style: italic;
   font-display: swap;
+  unicode-range: U+0980-09FF;
 }
 @font-face {
   font-family: 'Kalpurush';
@@ -276,6 +311,7 @@
   font-weight: 800;
   font-style: italic;
   font-display: swap;
+  unicode-range: U+0980-09FF;
 }
 @font-face {
   font-family: 'Kalpurush';
@@ -283,6 +319,7 @@
   font-weight: 900;
   font-style: italic;
   font-display: swap;
+  unicode-range: U+0980-09FF;
 }
 
 @tailwind base;
@@ -363,9 +400,10 @@
 /* ---------------------------------------------------------------------------
    3. Font Language Logic — Section 5
    --------------------------------------------------------------------------- */
-:lang(bn),
+html:lang(bn),
+body:lang(bn),
 [data-lang="bn"] {
-  font-family: var(--font-body);   /* Bengali body / UI chrome universally */
+  font-family: var(--font-body);   /* Bengali body / UI chrome universally via root inheritance */
 }
 
 h1, h2, h3, h4, h5, h6,
@@ -377,7 +415,32 @@ h5:lang(bn),
 h6:lang(bn),
 .type-story-bn,
 .type-lead-bn {
+  font-family: var(--font-headline);
+}
+
+/* Explicit overrides */
+.font-headline {
   font-family: var(--font-headline) !important;
+}
+
+.font-body {
+  font-family: var(--font-body) !important;
+}
+
+/* Transparent bridge to prevent absolute dropdown mouseout */
+.dropdown-bridge {
+  position: relative;
+}
+.dropdown-bridge::before {
+  content: '';
+  position: absolute;
+  top: -16px;
+  left: 0;
+  right: 0;
+  height: 16px;
+  background: transparent;
+  pointer-events: auto;
+  z-index: -1;
 }
 
 
@@ -544,17 +607,13 @@ ul, ol {
    6. Component Helpers
    --------------------------------------------------------------------------- */
 
-/* Claymorphism */
+/* Sleek flat cards */
 .clay-card {
   background-color: var(--bg-surface);
-  border-radius: 12px;
-  border: 1px solid var(--ink-ghost);
-  box-shadow: 
-    6px 6px 14px var(--clay-shadow-outer),
-    -6px -6px 14px var(--clay-highlight-outer),
-    inset 2px 2px 4px var(--clay-highlight-inner),
-    inset -2px -2px 4px var(--clay-shadow-inner);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  border-radius: 8px;
+  border: 1px solid var(--ink-border);
+  box-shadow: none;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
 }
 
 /* Scrollbar hide utility */

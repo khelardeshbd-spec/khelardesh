@@ -118,9 +118,9 @@ export default async function HomePage() {
           </div>
 
           {/* Tier 2: Controls & Info Bar */}
-          <div className="grid grid-cols-3 items-center border-b border-[#e2e2e2] pb-1.5 mb-1.5 text-xs font-semibold uppercase">
+          <div className="flex flex-col sm:grid sm:grid-cols-3 gap-2 sm:gap-0 items-center border-b border-[#e2e2e2] pb-2 mb-1.5 text-xs font-semibold uppercase">
             {/* Left: Icons */}
-            <div className="flex items-center gap-5 justify-start">
+            <div className="flex items-center gap-5 justify-center sm:justify-start w-full sm:w-auto">
               {/* Search */}
               <button className="hover:opacity-75 transition-opacity text-[#121212]" aria-label="Search">
                 <svg className="w-[21px] h-[21px]" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
@@ -137,11 +137,11 @@ export default async function HomePage() {
 
 
             {/* Right: Subscribe & Login buttons in Bengali */}
-            <div className="flex items-center gap-3 justify-end">
-              <button className="border border-[#326891] text-[#326891] hover:bg-[#326891] hover:text-white transition-colors duration-150 px-4 py-1.5 rounded-[3px] font-extrabold text-[11px] tracking-wide">
+            <div className="flex items-center gap-2 sm:gap-3 justify-center sm:justify-end w-full sm:w-auto">
+              <button className="border border-[#326891] text-[#326891] hover:bg-[#326891] hover:text-white transition-colors duration-150 px-3 sm:px-4 py-1 sm:py-1.5 rounded-[3px] font-extrabold text-[10px] sm:text-[11px] tracking-wide">
                 সাবস্ক্রিপশন
               </button>
-              <button className="border border-[#121212] text-[#121212] hover:bg-[#121212] hover:text-white transition-colors duration-150 px-4 py-1.5 rounded-[3px] font-extrabold text-[11px] tracking-wide">
+              <button className="border border-[#121212] text-[#121212] hover:bg-[#121212] hover:text-white transition-colors duration-150 px-3 sm:px-4 py-1 sm:py-1.5 rounded-[3px] font-extrabold text-[10px] sm:text-[11px] tracking-wide">
                 লগইন
               </button>
             </div>
@@ -189,7 +189,7 @@ export default async function HomePage() {
                         {item.label}
                         <span className="text-[9px]">▼</span>
                       </Link>
-                      <div className="absolute left-0 top-[100%] hidden group-hover:block bg-[#ffffff] border border-[#e2e2e2] shadow-md rounded-[3px] py-1 min-w-[150px] z-50">
+                      <div className="absolute left-0 top-[100%] hidden group-hover:block bg-[#ffffff] border border-[#e2e2e2] shadow-md rounded-[3px] py-1 min-w-[150px] z-50 dropdown-bridge">
 
                         {item.subItems.map((sub, sIdx) => (
                           <Link
@@ -221,9 +221,9 @@ export default async function HomePage() {
 
 
         {/* TEASER ROW */}
-        <div className="grid grid-cols-3 gap-0 border-b border-[#e2e2e2] pb-2 mb-2">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-0 border-b border-[#e2e2e2] pb-4 md:pb-2 mb-2">
           {/* Teaser 1 */}
-          <div className="text-center px-3 border-r border-[#e2e2e2]">
+          <div className="text-center px-3 border-b md:border-b-0 md:border-r border-[#e2e2e2] pb-4 md:pb-0">
             <h3 style={{ fontFamily: 'var(--font-body)' }} className="text-sm font-bold mb-0.5 text-gray-400">মাসের ফোটোগ্যালারী</h3>
             <h2 style={{ fontFamily: 'var(--font-headline)' }} className="text-2xl font-bold mb-1 leading-tight text-[#121212] hover:underline">
               <Link href={`/article/${articles[0]?.slug || '#'}`}>
@@ -240,7 +240,7 @@ export default async function HomePage() {
             </div>
           </div>
           {/* Teaser 2 */}
-          <div className="text-center px-3 border-r border-[#e2e2e2]">
+          <div className="text-center px-3 border-b md:border-b-0 md:border-r border-[#e2e2e2] pb-4 md:pb-0">
             <h3 style={{ fontFamily: 'var(--font-body)' }} className="text-sm font-bold mb-0.5 text-gray-400">ব্রিটিশ বিপ্লব</h3>
             <h2 style={{ fontFamily: 'var(--font-headline)' }} className="text-2xl font-bold mb-1 leading-tight text-[#121212] hover:underline">
               <Link href={`/article/${articles[1]?.slug || '#'}`}>
@@ -279,7 +279,7 @@ export default async function HomePage() {
 
         {/* HERO SECTION */}
         <div className="grid grid-cols-12 gap-4 border-b border-[#e2e2e2] pb-4 mb-4">
-          <div className="col-span-4 flex flex-col justify-between">
+          <div className="col-span-12 md:col-span-4 flex flex-col justify-between order-2 md:order-1">
             <div>
               <h3 style={{ fontFamily: 'var(--font-body)' }} className="text-sm font-bold mb-2 text-gray-400">যুক্তরাষ্ট্র থেকে</h3>
               <h1 style={{ fontFamily: 'var(--font-headline)', fontSize: '1.7rem', lineHeight: '1.15', marginBottom: '8px', letterSpacing: '-0.01em' }}>
@@ -296,8 +296,8 @@ export default async function HomePage() {
               </Link>
             </div>
           </div>
-          <div className="col-span-8">
-            <div className="w-full h-[320px] lg:h-[395px] bg-gray-200 overflow-hidden border border-[#e2e2e2] p-1">
+          <div className="col-span-12 md:col-span-8 order-1 md:order-2">
+            <div className="w-full h-[240px] sm:h-[320px] lg:h-[395px] bg-gray-200 overflow-hidden border border-[#e2e2e2] p-1">
                {leads[0]?.slug === 'madrid-unravel-final-ten' ? (
                  <img src="/images/madrid_defeat_hero.png" className="w-full h-full object-cover" alt="Hero Image" />
                ) : leads[0]?.mediaUrl ? (
@@ -315,9 +315,9 @@ export default async function HomePage() {
         </div>
 
         {/* LOWER SECTION */}
-        <div className="grid grid-cols-3 gap-0">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-0">
           {/* Column 1 */}
-          <div className="border-r border-[#e2e2e2] pr-6">
+          <div className="border-b md:border-b-0 md:border-r border-[#e2e2e2] pb-6 md:pb-0 md:pr-6">
              <h3 className="font-bold text-lg mb-3 border-b-2 border-[#121212] pb-1 uppercase tracking-wider">ফুটবল</h3>
              <div className="w-full h-48 mb-4 border border-[#e2e2e2] p-1">
                {articles[0]?.mediaUrl ? (
@@ -348,7 +348,7 @@ export default async function HomePage() {
           </div>
           
           {/* Column 2 */}
-          <div className="border-r border-[#e2e2e2] px-6">
+          <div className="border-b md:border-b-0 md:border-r border-[#e2e2e2] py-6 md:py-0 md:px-6">
              <h3 className="font-bold text-lg mb-3 border-b-2 border-[#121212] pb-1 uppercase tracking-wider">ক্রিকেট</h3>
              <div className="w-full h-48 mb-4 border border-[#e2e2e2] p-1">
                {articles[1]?.mediaUrl ? (
@@ -379,7 +379,7 @@ export default async function HomePage() {
           </div>
           
           {/* Column 3 */}
-          <div className="pl-6">
+          <div className="pt-6 md:pt-0 md:pl-6">
              <h3 className="font-bold text-lg mb-3 border-b-2 border-[#121212] pb-1 uppercase tracking-wider">অন্যান্য</h3>
              <div className="w-full h-48 mb-4 border border-[#e2e2e2] p-1">
                {articles[2]?.mediaUrl ? (
