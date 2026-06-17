@@ -167,11 +167,11 @@ export default function NavStrip({ noBorder = false, vertical = false, onNavigat
   return (
     <nav
       ref={navRef}
-      className="relative z-50 w-full scrollbar-none overflow-x-auto"
+      className="relative z-50 w-full scrollbar-none overflow-x-auto lg:overflow-visible"
       style={{ borderBottom: noBorder ? 'none' : '1.5px solid var(--ink)' }}
       aria-label="খেলার বিভাগ"
     >
-      <ul className="flex flex-nowrap items-center">
+      <ul className="flex flex-nowrap items-center lg:overflow-visible">
         {NAV_ITEMS.map((item) => {
           const active = isActive(item.slug);
           const href = item.slug === '' ? '/' : `/sport/${item.slug}`;

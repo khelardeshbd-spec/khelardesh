@@ -85,7 +85,7 @@ export default function StickyScrollHeader() {
 
         {/* Center: Navigation Menu */}
         <nav 
-          className="scrollbar-none overflow-x-auto flex items-center gap-x-6 ml-4 justify-end flex-1"
+          className="scrollbar-none overflow-x-auto lg:overflow-visible flex items-center gap-x-6 ml-4 justify-end flex-1"
           style={{ whiteSpace: 'nowrap' }}
         >
           {navItems.map((item, idx) => {
