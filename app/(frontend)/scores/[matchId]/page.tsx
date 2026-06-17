@@ -43,6 +43,15 @@ export default function MatchCenterPage({ params }: { params: { matchId: string 
         if (!res.ok) throw new Error('Failed to load match details');
         const data = await res.json();
         setMatch(data);
+
+        // Switch default tab to stats if lineups are empty but statistics are available
+        const homeR = data.rosters?.find((r: any) => r.teamId === data.home.id) || data.rosters?.[0];
+        const awayR = data.rosters?.find((r: any) => r.teamId === data.away.id) || data.rosters?.[1];
+        const hasLine = homeR?.starters?.length > 0 && awayR?.starters?.length > 0;
+        
+        if (!hasLine && data.stats && data.stats.length > 0) {
+          setActiveTab('stats');
+        }
       } catch (err) {
         console.error(err);
       } finally {
@@ -185,9 +194,18 @@ export default function MatchCenterPage({ params }: { params: { matchId: string 
           <div className="flex flex-col items-center">
             {hasLineup ? (
               <TacticalPitch homeRoster={homeRoster} awayRoster={awayRoster} />
+            ) : (!match.status.isLive && !match.status.isFinished && match.home.score === 0 && match.away.score === 0) ? (
+              <div className="py-16 px-4 text-center border border-[#e2e2e2] rounded-lg bg-gray-50 w-full">
+                <svg className="w-12 h-12 text-gray-300 mx-auto mb-3" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5m-9-6h.008v.008H12v-.008zM12 15h.008v.008H12V15zm0 2.25h.008v.008H12v-.008zM9.75 15h.008v.008H9.75V15zm0 2.25h.008v.008H9.75v-.008zM7.5 15h.008v.008H7.5V15zm0 2.25h.008v.008H7.5v-.008zM14.25 15h.008v.008h-.008V15zm0 2.25h.008v.008h-.008v-.008zm2.25-4.5h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V15z" />
+                </svg>
+                <p className="font-bold text-sm text-gray-700">ম্যাচটি এখনও শুরু হয়নি</p>
+                <p className="text-xs text-gray-400 mt-1">ম্যাচ শুরু হওয়ার ৩০-৬০ মিনিট আগে সাধারণত দলগুলোর লাইনআপ এবং ফরমেশন প্রকাশ করা হয়।</p>
+              </div>
             ) : (
-              <div className="py-16 text-center text-gray-400 text-sm">
-                এই ম্যাচের জন্য এখনও কোনো লাইনআপ বা ফরমেশন তথ্য পাওয়া যায়নি।
+              <div className="py-16 px-4 text-center border border-[#e2e2e2] rounded-lg bg-gray-50 w-full">
+                <p className="font-bold text-sm text-gray-700">লাইনআপ পাওয়া যায়নি</p>
+                <p className="text-xs text-gray-400 mt-1">এই ম্যাচের জন্য লাইনআপ বা ফরমেশনের তথ্য উপলব্ধ নেই। অনুগ্রহ করে পরিসংখ্যান ট্যাবটি দেখুন।</p>
               </div>
             )}
           </div>
