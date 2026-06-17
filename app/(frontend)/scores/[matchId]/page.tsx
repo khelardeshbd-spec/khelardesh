@@ -213,21 +213,114 @@ export default function MatchCenterPage({ params }: { params: { matchId: string 
       {/* TAB CONTENT */}
       <div>
         {activeTab === 'lineup' && (
-          <div className="flex flex-col items-center">
+          <div>
             {hasLineup ? (
-              <TacticalPitch homeRoster={homeRoster} awayRoster={awayRoster} />
+              <div>
+                {/* Formation badges */}
+                <div className="flex justify-between items-center mb-4 px-1">
+                  <div className="flex items-center gap-2">
+                    {match.home.logo && <img src={match.home.logo} alt="" className="w-5 h-5 object-contain" />}
+                    <span className="text-xs font-bold text-gray-700">{match.home.name}</span>
+                    <span className="text-[10px] bg-[#326891]/10 text-[#326891] font-bold px-2 py-0.5 rounded-full">{homeRoster?.formation}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-[10px] bg-[#d33f3f]/10 text-[#d33f3f] font-bold px-2 py-0.5 rounded-full">{awayRoster?.formation}</span>
+                    <span className="text-xs font-bold text-gray-700">{match.away.name}</span>
+                    {match.away.logo && <img src={match.away.logo} alt="" className="w-5 h-5 object-contain" />}
+                  </div>
+                </div>
+
+                {/* Column headers */}
+                <div className="grid grid-cols-2 gap-0 border border-[#e2e2e2] rounded-lg overflow-hidden">
+                  <div className="bg-[#326891] text-white text-[10px] font-bold uppercase tracking-wider px-3 py-2 text-center">
+                    {match.home.abbreviation}
+                  </div>
+                  <div className="bg-[#d33f3f] text-white text-[10px] font-bold uppercase tracking-wider px-3 py-2 text-center border-l border-white/20">
+                    {match.away.abbreviation}
+                  </div>
+
+                  {/* Starters header */}
+                  <div className="col-span-2 bg-gray-50 px-3 py-1.5 border-t border-[#e2e2e2]">
+                    <span className="text-[9px] font-black uppercase tracking-widest text-gray-400">Starting XI</span>
+                  </div>
+
+                  {/* Side-by-side starters */}
+                  {Array.from({ length: Math.max(homeRoster?.starters?.length || 0, awayRoster?.starters?.length || 0) }).map((_, i) => {
+                    const hp = homeRoster?.starters?.[i];
+                    const ap = awayRoster?.starters?.[i];
+                    return (
+                      <React.Fragment key={i}>
+                        {/* Home player */}
+                        <div className={`flex items-center gap-2 px-3 py-2 border-t border-[#f0f0f0] ${!hp ? 'opacity-0' : ''}`}>
+                          <span className="w-6 text-[10px] font-black text-[#326891] text-center flex-shrink-0">
+                            {hp?.jersey}
+                          </span>
+                          <div className="flex flex-col min-w-0">
+                            <span className="text-xs font-semibold text-gray-800 truncate">{hp?.name}</span>
+                            <span className="text-[9px] text-gray-400">{hp?.position}</span>
+                          </div>
+                        </div>
+                        {/* Away player */}
+                        <div className={`flex items-center gap-2 px-3 py-2 border-t border-l border-[#f0f0f0] justify-end text-right ${!ap ? 'opacity-0' : ''}`}>
+                          <div className="flex flex-col min-w-0">
+                            <span className="text-xs font-semibold text-gray-800 truncate">{ap?.name}</span>
+                            <span className="text-[9px] text-gray-400">{ap?.position}</span>
+                          </div>
+                          <span className="w-6 text-[10px] font-black text-[#d33f3f] text-center flex-shrink-0">
+                            {ap?.jersey}
+                          </span>
+                        </div>
+                      </React.Fragment>
+                    );
+                  })}
+
+                  {/* Bench header */}
+                  {((homeRoster?.bench?.length || 0) > 0 || (awayRoster?.bench?.length || 0) > 0) && (
+                    <div className="col-span-2 bg-gray-50 px-3 py-1.5 border-t border-[#e2e2e2]">
+                      <span className="text-[9px] font-black uppercase tracking-widest text-gray-400">Substitutes</span>
+                    </div>
+                  )}
+
+                  {Array.from({ length: Math.max(homeRoster?.bench?.length || 0, awayRoster?.bench?.length || 0) }).map((_, i) => {
+                    const hp = homeRoster?.bench?.[i];
+                    const ap = awayRoster?.bench?.[i];
+                    return (
+                      <React.Fragment key={`bench-${i}`}>
+                        <div className={`flex items-center gap-2 px-3 py-1.5 border-t border-[#f0f0f0] bg-gray-50/50 ${!hp ? 'opacity-0' : ''}`}>
+                          <span className="w-6 text-[10px] font-black text-gray-400 text-center flex-shrink-0">
+                            {hp?.jersey}
+                          </span>
+                          <div className="flex flex-col min-w-0">
+                            <span className="text-[11px] font-medium text-gray-600 truncate">{hp?.name}</span>
+                            <span className="text-[9px] text-gray-400">{hp?.position}</span>
+                          </div>
+                        </div>
+                        <div className={`flex items-center gap-2 px-3 py-1.5 border-t border-l border-[#f0f0f0] bg-gray-50/50 justify-end text-right ${!ap ? 'opacity-0' : ''}`}>
+                          <div className="flex flex-col min-w-0">
+                            <span className="text-[11px] font-medium text-gray-600 truncate">{ap?.name}</span>
+                            <span className="text-[9px] text-gray-400">{ap?.position}</span>
+                          </div>
+                          <span className="w-6 text-[10px] font-black text-gray-400 text-center flex-shrink-0">
+                            {ap?.jersey}
+                          </span>
+                        </div>
+                      </React.Fragment>
+                    );
+                  })}
+                </div>
+              </div>
             ) : isScheduled ? (
               <div className="py-16 px-4 text-center border border-[#e2e2e2] rounded-lg bg-gray-50 w-full">
                 <svg className="w-12 h-12 text-gray-300 mx-auto mb-3" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5m-9-6h.008v.008H12v-.008zM12 15h.008v.008H12V15zm0 2.25h.008v.008H12v-.008zM9.75 15h.008v.008H9.75V15zm0 2.25h.008v.008H9.75v-.008zM7.5 15h.008v.008H7.5V15zm0 2.25h.008v.008H7.5v-.008zM14.25 15h.008v.008h-.008V15zm0 2.25h.008v.008h-.008v-.008zm2.25-4.5h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V15z" />
                 </svg>
-                <p className="font-bold text-sm text-gray-700">ম্যাচটি এখনও শুরু হয়নি</p>
-                <p className="text-xs text-gray-400 mt-1">ম্যাচ শুরু হওয়ার ৩০-৬০ মিনিট আগে সাধারণত দলগুলোর লাইনআপ এবং ফরমেশন প্রকাশ করা হয়।</p>
+                <p className="font-bold text-sm text-gray-700">Match has not started yet</p>
+                <p className="text-xs text-gray-400 mt-1">Lineups are typically released 30–60 minutes before kick-off.</p>
               </div>
             ) : (
               <div className="py-16 px-4 text-center border border-[#e2e2e2] rounded-lg bg-gray-50 w-full">
-                <p className="font-bold text-sm text-gray-700">লাইনআপ পাওয়া যায়নি</p>
-                <p className="text-xs text-gray-400 mt-1">এই ম্যাচের জন্য লাইনআপ বা ফরমেশনের তথ্য উপলব্ধ নেই। অনুগ্রহ করে পরিসংখ্যান ট্যাবটি দেখুন।</p>
+                <p className="font-bold text-sm text-gray-700">Lineup not available</p>
+                <p className="text-xs text-gray-400 mt-1">Check the Stats tab for match statistics.</p>
               </div>
             )}
           </div>
