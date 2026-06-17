@@ -429,7 +429,6 @@ h6:lang(bn),
 
 /* Transparent bridge to prevent absolute dropdown mouseout */
 .dropdown-bridge {
-  position: relative;
 }
 .dropdown-bridge::before {
   content: '';
