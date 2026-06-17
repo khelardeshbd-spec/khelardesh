@@ -62,7 +62,7 @@ export default async function HomePage() {
   ]);
 
   const leads = leadResult.status === 'fulfilled' ? (leadResult.value.data ?? []) : [];
-  
+
   // TODO: Remove this mock data after testing the slideshow
   if (leads.length > 0 && leads.length < 3) {
     leads.push({
@@ -93,7 +93,7 @@ export default async function HomePage() {
   return (
     <div style={{ backgroundColor: '#ffffff', color: '#121212', minHeight: '100vh', padding: '8px 0', fontFamily: 'var(--font-body)' }}>
       <div className="max-w-[1200px] mx-auto bg-[#ffffff] px-6 py-2 pb-[160px]" id="main-constrained">
-        
+
         {/* MASTHEAD: LOGO ON TOP & REORGANIZED CONTROLS */}
         <div className="w-full text-[#121212] mb-2">
           {/* Tier 1: Logo and Sponsors (Symmetrical Layout) */}
@@ -196,8 +196,8 @@ export default async function HomePage() {
             <div className="flex flex-wrap justify-center items-center gap-x-6 gap-y-2 text-xs font-semibold">
               {[
                 { label: 'মাঠ', slug: '' },
-                { 
-                  label: 'ফুটবল', 
+                {
+                  label: 'ফুটবল',
                   slug: 'football',
                   subItems: [
                     { label: 'দেশের ফুটবল', slug: 'bd-football' },
@@ -205,8 +205,8 @@ export default async function HomePage() {
                     { label: 'পাড়া মহল্লার ফুটবল', slug: 'club-football' }
                   ]
                 },
-                { 
-                  label: 'ক্রিকেট', 
+                {
+                  label: 'ক্রিকেট',
                   slug: 'cricket',
                   subItems: [
                     { label: 'দেশের ক্রিকেট', slug: 'bd-cricket' },
@@ -225,7 +225,7 @@ export default async function HomePage() {
                 if (item.subItems) {
                   return (
                     <div key={idx} className="relative group h-full flex items-center">
-                      <Link 
+                      <Link
                         href={href}
                         className="cursor-pointer hover:underline flex items-center gap-1"
                         style={{ color: isActive ? 'var(--live-red)' : '#121212' }}
@@ -249,8 +249,8 @@ export default async function HomePage() {
                   );
                 }
                 return (
-                  <Link 
-                    key={idx} 
+                  <Link
+                    key={idx}
                     href={href}
                     className="cursor-pointer hover:underline"
                     style={{ color: isActive ? 'var(--live-red)' : '#121212' }}

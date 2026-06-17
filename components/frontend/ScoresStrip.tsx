@@ -140,12 +140,12 @@ export default function ScoresStrip() {
   return (
     <section 
       aria-label="খেলাসমূহ" 
-      className="w-full py-3 overflow-hidden"
+      className="-mx-6 py-4 overflow-hidden"
       style={{ fontFamily: 'var(--font-body)' }}
     >
       {/* Header */}
-      <div className="max-w-[1200px] mx-auto px-6">
-        <h2 className="text-[14px] font-bold text-[#121212] mb-3">
+      <div className="px-6">
+        <h2 className="text-[17px] font-bold text-[#121212] mb-4">
           Live &amp; Recent Scores
         </h2>
       </div>
@@ -214,8 +214,8 @@ export default function ScoresStrip() {
       </div>
 
       {/* Footer bar */}
-      <div className="max-w-[1200px] mx-auto px-6">
-        <div className="flex items-center justify-between mt-3 pt-2 border-t border-[#f0f0f0]">
+      <div className="px-6">
+        <div className="flex items-center justify-between mt-4 pt-3 border-t border-[#f0f0f0]">
           <Link
             href="/scores"
             className="text-[11px] font-semibold text-[#121212] hover:underline"
