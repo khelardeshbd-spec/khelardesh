@@ -24,11 +24,13 @@ export default function ScoresStrip() {
     let dragStartX = 0;
     let isDragging = false;
     let lastTime = performance.now();
+    let pausedUntil = 0; // timestamp to pause scrolling
 
     const speed = 40; // Pixels per second scroll speed
 
     const step = (time: number) => {
-      if (!isDragging) {
+      const now = Date.now();
+      if (!isDragging && now > pausedUntil) {
         const delta = (time - lastTime) / 1000;
         // Cap delta to prevent huge jumps (e.g., if tab is hidden/suspended)
         const cappedDelta = Math.min(delta, 0.1);
@@ -47,15 +49,21 @@ export default function ScoresStrip() {
       frameId = requestAnimationFrame(step);
     };
 
+    const triggerPause = () => {
+      pausedUntil = Date.now() + 4000;
+    };
+
     // Drag start
     const onStart = (e: MouseEvent | TouchEvent) => {
       isDragging = true;
+      triggerPause();
       startX = 'touches' in e ? e.touches[0].clientX : e.clientX;
       dragStartX = x;
     };
 
     // Drag move
     const onMove = (e: MouseEvent | TouchEvent) => {
+      triggerPause();
       if (!isDragging) return;
       const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX;
       const deltaX = clientX - startX;
@@ -79,12 +87,15 @@ export default function ScoresStrip() {
     const onEnd = () => {
       if (isDragging) {
         isDragging = false;
+        triggerPause();
         lastTime = performance.now(); // Reset lastTime so step() has correct starting baseline
       }
     };
 
     // Desktop events
     container.addEventListener('mousedown', onStart);
+    container.addEventListener('mouseenter', triggerPause);
+    container.addEventListener('mousemove', triggerPause);
     window.addEventListener('mousemove', onMove);
     window.addEventListener('mouseup', onEnd);
 
@@ -100,6 +111,8 @@ export default function ScoresStrip() {
       xRef.current = x; // Ensure last frame position is saved
       
       container.removeEventListener('mousedown', onStart);
+      container.removeEventListener('mouseenter', triggerPause);
+      container.removeEventListener('mousemove', triggerPause);
       window.removeEventListener('mousemove', onMove);
       window.removeEventListener('mouseup', onEnd);
 

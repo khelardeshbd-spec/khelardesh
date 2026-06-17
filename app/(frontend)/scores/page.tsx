@@ -58,14 +58,14 @@ function groupByLeague(matches: ESPNMatch[]): Map<string, ESPNMatch[]> {
 function MatchRow({ match }: { match: ESPNMatch }) {
   const isEnglish = (str: string) => /[a-zA-Z]/.test(str);
   const status = translateStatus(match.statusText);
-  const isMinute = /^[০-৯0-9]+'?$/.test(status.trim());
   const kickoff = formatKickoff(match.startTime);
 
   const winnerA = match.isFinished && match.home.isWinner;
   const winnerB = match.isFinished && match.away.isWinner;
 
   return (
-    <div
+    <Link
+      href={`/scores/${match.id}`}
       style={{
         display: 'grid',
         gridTemplateColumns: '54px 1fr 52px',
@@ -73,9 +73,11 @@ function MatchRow({ match }: { match: ESPNMatch }) {
         padding: '10px 16px',
         borderBottom: '1px solid var(--ink-border)',
         background: 'var(--bg-card, #fff)',
-        cursor: 'default',
+        cursor: 'pointer',
         transition: 'background 0.15s',
         gap: 8,
+        textDecoration: 'none',
+        color: 'inherit',
       }}
       onMouseEnter={(e) => (e.currentTarget.style.background = 'var(--bg-subtle, #f9f9f9)')}
       onMouseLeave={(e) => (e.currentTarget.style.background = 'var(--bg-card, #fff)')}
@@ -180,7 +182,7 @@ function MatchRow({ match }: { match: ESPNMatch }) {
           {match.away.score !== null ? toBn(match.away.score) : match.isFinished ? '০' : ''}
         </span>
       </div>
-    </div>
+    </Link>
   );
 }
 
