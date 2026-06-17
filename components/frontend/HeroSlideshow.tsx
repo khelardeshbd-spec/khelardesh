@@ -23,6 +23,10 @@ interface HeroSlideshowProps {
 
 export default function HeroSlideshow({ articles }: HeroSlideshowProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [touchStart, setTouchStart] = useState<number | null>(null);
+  const [touchEnd, setTouchEnd] = useState<number | null>(null);
+
+  const minSwipeDistance = 50;
 
   useEffect(() => {
     if (articles.length <= 1) return;
@@ -30,14 +34,39 @@ export default function HeroSlideshow({ articles }: HeroSlideshowProps) {
       setCurrentIndex((prev) => (prev + 1) % articles.length);
     }, 4000);
     return () => clearInterval(timer);
-  }, [articles.length]);
+  }, [articles.length, currentIndex]);
 
   if (!articles || articles.length === 0) return null;
 
-  const currentArticle = articles[currentIndex];
+  const onTouchStart = (e: React.TouchEvent) => {
+    setTouchEnd(null);
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const onTouchMove = (e: React.TouchEvent) => {
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  const onTouchEnd = () => {
+    if (!touchStart || !touchEnd) return;
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > minSwipeDistance;
+    const isRightSwipe = distance < -minSwipeDistance;
+    
+    if (isLeftSwipe) {
+      setCurrentIndex((prev) => (prev + 1) % articles.length);
+    } else if (isRightSwipe) {
+      setCurrentIndex((prev) => (prev - 1 + articles.length) % articles.length);
+    }
+  };
 
   return (
-    <div className="border-b border-[#e2e2e2] pb-4 mb-4 relative overflow-hidden h-[480px] sm:h-[360px] md:h-[420px] lg:h-[430px]">
+    <div 
+      onTouchStart={onTouchStart}
+      onTouchMove={onTouchMove}
+      onTouchEnd={onTouchEnd}
+      className="border-b border-[#e2e2e2] pb-4 mb-4 relative overflow-hidden h-[480px] sm:h-[360px] md:h-[420px] lg:h-[430px]"
+    >
       {articles.map((article, idx) => {
         // Calculate offset for each slide (-100%, 0%, 100%, etc.)
         const offset = (idx - currentIndex) * 100;
