@@ -143,9 +143,9 @@ export default async function HomePage() {
           </div>
 
           {/* Tier 2: Controls & Info Bar */}
-          <div className="flex flex-row justify-between items-center border-b border-[#e2e2e2] pb-2 mb-1.5 text-xs font-semibold uppercase">
+          <div className="grid grid-cols-3 items-center border-b border-[#e2e2e2] pb-2 mb-1.5 text-xs font-semibold uppercase w-full">
             {/* Left: Icons */}
-            <div className="flex items-center">
+            <div className="flex items-center justify-start">
               {/* Search */}
               <button className="hover:opacity-75 transition-opacity text-[#121212]" aria-label="Search">
                 <svg className="w-[21px] h-[21px]" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
@@ -156,29 +156,32 @@ export default async function HomePage() {
             </div>
 
             {/* Center: Bengali Date Info */}
-            <div className="flex flex-col items-center text-center text-[10px] sm:text-[11px] text-[#121212] justify-center hidden sm:flex">
-              <span className="font-bold">
-                {new Intl.DateTimeFormat('bn-BD', {
-                  weekday: 'long',
-                  day: 'numeric',
-                  month: 'long',
-                  year: 'numeric'
-                }).format(new Date())}
-              </span>
-            </div>
-            {/* Show short date on very small screens so it fits */}
-            <div className="flex flex-col items-center text-center text-[10px] text-[#121212] justify-center sm:hidden">
-              <span className="font-bold">
-                {new Intl.DateTimeFormat('bn-BD', {
-                  day: 'numeric',
-                  month: 'short',
-                  year: 'numeric'
-                }).format(new Date())}
-              </span>
+            <div className="flex justify-center items-center">
+              {/* Desktop version */}
+              <div className="flex flex-col items-center text-center text-[10px] sm:text-[11px] text-[#121212] justify-center hidden sm:flex">
+                <span className="font-bold">
+                  {new Intl.DateTimeFormat('bn-BD', {
+                    weekday: 'long',
+                    day: 'numeric',
+                    month: 'long',
+                    year: 'numeric'
+                  }).format(new Date())}
+                </span>
+              </div>
+              {/* Show short date on very small screens so it fits */}
+              <div className="flex flex-col items-center text-center text-[10px] text-[#121212] justify-center sm:hidden">
+                <span className="font-bold">
+                  {new Intl.DateTimeFormat('bn-BD', {
+                    day: 'numeric',
+                    month: 'short',
+                    year: 'numeric'
+                  }).format(new Date())}
+                </span>
+              </div>
             </div>
 
             {/* Right: Actions */}
-            <div className="flex items-center gap-1.5 sm:gap-3">
+            <div className="flex items-center justify-end gap-1.5 sm:gap-3">
               <button className="border border-[#326891] text-[#326891] hover:bg-[#326891] hover:text-white transition-colors duration-150 px-2 sm:px-4 py-1 sm:py-1.5 rounded-[3px] font-extrabold text-[9px] sm:text-[11px] tracking-wide">
                 সাবস্ক্রিপশন
               </button>

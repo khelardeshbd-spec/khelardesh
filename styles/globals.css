@@ -336,13 +336,13 @@
   --font-body: 'Prothoma', 'Kalpurush', 'Noto Serif Bengali', 'Hind Siliguri', sans-serif;
   --font-headline: 'MAK Zakigonj', 'Noto Serif Bengali', serif;
   
-  --bg-page:      #F8F1E3;
-  --bg-surface:   #EFE7D3;
-  --ink:          #2C1E0F;
-  --ink-muted:    #7A6A52;
-  --ink-ghost:    #D4C9B0;
-  --ink-border:   #C8BAA0;
-  --live-red:     #C0392B;
+  --bg-page:      #ffffff;
+  --bg-surface:   #fafafa;
+  --ink:          #121212;
+  --ink-muted:    #888888;
+  --ink-ghost:    #f5f5f5;
+  --ink-border:   #e2e2e2;
+  --live-red:     #D33F3F;
   --clay-shadow-outer: rgba(0,0,0,0.06);
   --clay-highlight-outer: rgba(255,255,255,0.6);
   --clay-highlight-inner: rgba(255,255,255,0.4);
@@ -367,12 +367,12 @@
 
 /* Theme 2 — Paper (Apple Books "Bold" / Sepia-adjacent — PROJECT DEFAULT) */
 [data-theme="paper"] {
-  --bg-page:      #F4EFE6;    /* soothing warm paper */
-  --bg-surface:   #EBE4D8;    /* deeper soothing cream */
-  --ink:          #312519;    /* very dark warm brown */
-  --ink-muted:    #80705E;
-  --ink-ghost:    #D4CAB7;
-  --ink-border:   #C8BCA6;
+  --bg-page:      #ffffff;    /* pure white to match homepage */
+  --bg-surface:   #fafafa;    /* clean surface */
+  --ink:          #121212;    /* clean ink */
+  --ink-muted:    #888888;
+  --ink-ghost:    #f5f5f5;
+  --ink-border:   #e2e2e2;
   --live-red:     #D33F3F;
   --logo-filter:  brightness(0) saturate(100%) invert(14%) sepia(31%) saturate(2283%) hue-rotate(114deg) brightness(93%) contrast(106%); /* Keep beautiful dark green on paper background */
   --clay-shadow-outer: rgba(0,0,0,0.06);
