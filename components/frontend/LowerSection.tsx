@@ -258,7 +258,7 @@ export default function LowerSection({ articles }: LowerSectionProps) {
         alignItems: 'center',
         gap: 8,
         marginBottom: 24,
-        borderTop: '4px double var(--ink)',
+        borderTop: '1px solid var(--ink-border)',
         paddingTop: 8,
       }}>
         <span style={{
@@ -289,7 +289,7 @@ export default function LowerSection({ articles }: LowerSectionProps) {
       </div>
 
       {/* ─── More Stories Below ─── */}
-      <div style={{ marginTop: 32, borderTop: '4px double var(--ink)', paddingTop: 8 }}>
+      <div style={{ marginTop: 32, borderTop: '1px solid var(--ink-border)', paddingTop: 8 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 20 }}>
           <span style={{
             fontFamily: 'var(--font-body)',

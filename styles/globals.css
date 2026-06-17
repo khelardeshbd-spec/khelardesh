@@ -744,7 +744,7 @@ html {
 
 /* Double bottom border for masthead */
 .masthead-border {
-  border-bottom: 3px double var(--ink);
+  border-bottom: 1.5px solid var(--ink-border);
 }
 
 /* Focus ring for accessibility */
