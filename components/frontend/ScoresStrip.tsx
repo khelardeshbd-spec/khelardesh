@@ -170,7 +170,7 @@ export default function ScoresStrip() {
             }
 
             return (
-              <div key={match.id} className="flex-shrink-0">
+              <Link key={match.id} href={`/scores/${match.id}`} className="flex-shrink-0 block hover:no-underline select-none">
                 <ScoreCard
                   league={match.league}
                   teamA={match.home.name}
@@ -183,7 +183,7 @@ export default function ScoresStrip() {
                   home_team_logo={match.home.logo}
                   away_team_logo={match.away.logo}
                 />
-              </div>
+              </Link>
             );
           })}
           {/* Duplicated set of cards for seamless infinite scroll */}
@@ -195,7 +195,7 @@ export default function ScoresStrip() {
             }
 
             return (
-              <div key={`${match.id}-dup`} className="flex-shrink-0">
+              <Link key={`${match.id}-dup`} href={`/scores/${match.id}`} className="flex-shrink-0 block hover:no-underline select-none">
                 <ScoreCard
                   league={match.league}
                   teamA={match.home.name}
@@ -208,10 +208,9 @@ export default function ScoresStrip() {
                   home_team_logo={match.home.logo}
                   away_team_logo={match.away.logo}
                 />
-              </div>
+              </Link>
             );
-          })}
-        </div>
+          })}        </div>
       </div>
 
       {/* Footer bar */}

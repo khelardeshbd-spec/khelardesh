@@ -223,8 +223,68 @@ export async function GET(
       }
     });
 
+    // Parse league details
+    const leagueData = header.league || {};
+    const leagueName = leagueData.name || 'International';
+    const leagueLogo = leagueData.logos?.[0]?.href || '';
+    
+    // Normalize league function (local copy)
+    const normalizeLeagueLocal = (raw: string): string => {
+      const name = raw.trim();
+      const lower = name.toLowerCase();
+      if (lower.includes('fifa world cup') || lower.includes('world cup')) return 'FIFA World Cup';
+      if (lower.includes('world cup qualifier') || lower.includes('conmebol') && lower.includes('qualifier')) return 'World Cup Qualifier';
+      if (lower.includes('fifa') && lower.includes('qualifier')) return 'FIFA Qualifier';
+      if (lower.includes('uefa champions league')) return 'UEFA Champions League';
+      if (lower.includes('uefa europa league') && lower.includes('conference')) return 'UEFA Conference League';
+      if (lower.includes('uefa europa league')) return 'UEFA Europa League';
+      if (lower.includes('uefa nations league')) return 'UEFA Nations League';
+      if (lower.includes('euro') && lower.includes('qualification')) return 'UEFA Euro Qualifier';
+      if (lower.includes('euro 20') || lower.includes('european championship')) return 'UEFA Euro';
+      if (lower.includes('english premier league') || lower.includes('premier league')) return 'Premier League';
+      if (lower.includes('la liga') || lower.includes('laliga')) return 'LaLiga';
+      if (lower.includes('bundesliga') && !lower.includes('2.')) return 'Bundesliga';
+      if (lower.includes('2. bundesliga') || lower.includes('2nd bundesliga')) return '2. Bundesliga';
+      if (lower.includes('ligue 1')) return 'Ligue 1';
+      if (lower.includes('serie a') && !lower.includes('brasileiro')) return 'Serie A';
+      if (lower.includes('eredivisie')) return 'Eredivisie';
+      if (lower.includes('primeira liga') || lower.includes('liga portugal')) return 'Primeira Liga';
+      if (lower.includes('super lig')) return 'Süper Lig';
+      if (lower.includes('copa america')) return 'Copa América';
+      if (lower.includes('copa libertadores')) return 'Copa Libertadores';
+      if (lower.includes('brasileirao') || lower.includes('série a brasileiro')) return 'Brasileirão';
+      if (lower.includes('afc asian cup') || (lower.includes('asian') && lower.includes('cup'))) return 'AFC Asian Cup';
+      if (lower.includes('afc') && lower.includes('qualifier')) return 'AFC Qualifier';
+      if (lower.includes('caf') || lower.includes('africa cup')) return 'AFCON';
+      if (lower.includes('concacaf')) return 'CONCACAF';
+      if (lower.includes('gold cup')) return 'Gold Cup';
+      if (lower.includes('international friendly') || lower.includes('friendly')) return 'International Friendly';
+      if (lower.includes('world soccer') || lower === 'all soccer') return 'International';
+      return name || 'Football';
+    };
+
+    const headerUid = header.uid || '';
+    const isFIFAOrInt = 
+      leagueName.toLowerCase().includes('fifa') || 
+      leagueName.toLowerCase().includes('world cup') || 
+      leagueName.toLowerCase().includes('friendly') || 
+      leagueName.toLowerCase().includes('nations league') || 
+      leagueName.toLowerCase().includes('euro') || 
+      leagueName.toLowerCase().includes('copa america') || 
+      leagueName.toLowerCase().includes('afcon') || 
+      leagueName.toLowerCase().includes('asian cup') ||
+      leagueName.toLowerCase().includes('international') ||
+      (header.season?.name && header.season.name.toLowerCase().includes('world cup')) ||
+      (headerUid && (headerUid.includes('l:606') || headerUid.includes('l:609') || headerUid.includes('l:612') || headerUid.includes('l:614') || headerUid.includes('l:600')));
+
+    const homeScoreParsed = homeComp.score !== undefined && homeComp.score !== null && homeComp.score !== '' && !isNaN(parseInt(homeComp.score, 10)) ? parseInt(homeComp.score, 10) : null;
+    const awayScoreParsed = awayComp.score !== undefined && awayComp.score !== null && awayComp.score !== '' && !isNaN(parseInt(awayComp.score, 10)) ? parseInt(awayComp.score, 10) : null;
+
     const matchDetails = {
       matchId,
+      league: normalizeLeagueLocal(leagueName),
+      category: isFIFAOrInt ? 'FIFA / International' : 'Club Match',
+      leagueLogo,
       status: {
         detail,
         displayClock,
@@ -235,14 +295,14 @@ export async function GET(
         id: homeComp.id,
         name: homeComp.team?.displayName || 'Home Team',
         abbreviation: homeComp.team?.abbreviation || 'HOME',
-        score: homeComp.score !== undefined ? parseInt(homeComp.score, 10) : 0,
+        score: homeScoreParsed,
         logo: homeComp.team?.logo || ''
       },
       away: {
         id: awayComp.id,
         name: awayComp.team?.displayName || 'Away Team',
         abbreviation: awayComp.team?.abbreviation || 'AWAY',
-        score: awayComp.score !== undefined ? parseInt(awayComp.score, 10) : 0,
+        score: awayScoreParsed,
         logo: awayComp.team?.logo || ''
       },
       scorers,

@@ -3,9 +3,11 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import TacticalPitch from '@/components/frontend/TacticalPitch';
-
 interface MatchDetails {
   matchId: string;
+  league: string;
+  category: string;
+  leagueLogo?: string;
   status: {
     detail: string;
     displayClock: string;
@@ -16,14 +18,14 @@ interface MatchDetails {
     id: string;
     name: string;
     abbreviation: string;
-    score: number;
+    score: number | null;
     logo: string;
   };
   away: {
     id: string;
     name: string;
     abbreviation: string;
-    score: number;
+    score: number | null;
     logo: string;
   };
   scorers: { teamId: string; athlete: string; time: string }[];
@@ -90,6 +92,7 @@ export default function MatchCenterPage({ params }: { params: { matchId: string 
   const awayRoster = match.rosters?.find(r => r.teamId === match.away.id) || match.rosters?.[1];
 
   const hasLineup = homeRoster?.starters?.length > 0 && awayRoster?.starters?.length > 0;
+  const isScheduled = !match.status.isLive && !match.status.isFinished;
 
   return (
     <div className="max-w-[700px] mx-auto px-4 py-6" style={{ backgroundColor: '#ffffff', color: '#121212', fontFamily: 'var(--font-body)' }}>
@@ -98,6 +101,21 @@ export default function MatchCenterPage({ params }: { params: { matchId: string 
         <Link href="/scores" className="text-xs font-bold text-gray-500 hover:text-[#121212] transition-colors">
           ← লাইভ স্কোরবোর্ড
         </Link>
+      </div>
+
+      {/* Match Category / League Header Badge */}
+      <div className="flex items-center gap-2 mb-4 bg-gray-50 border border-gray-100 rounded-lg p-3">
+        {match.leagueLogo && (
+          <img src={match.leagueLogo} alt="" className="w-6 h-6 object-contain" />
+        )}
+        <div className="flex flex-col">
+          <span className="text-xs font-bold text-gray-800 uppercase tracking-wider">
+            {match.league}
+          </span>
+          <span className="text-[9px] font-bold text-gray-400">
+            {match.category === 'FIFA / International' ? 'FIFA / International Match' : 'Club Match'}
+          </span>
+        </div>
       </div>
 
       {/* SCOREBOARD HEADER */}
@@ -119,9 +137,13 @@ export default function MatchCenterPage({ params }: { params: { matchId: string 
               {match.status.isLive ? 'LIVE' : match.status.isFinished ? 'FINAL' : 'SCHEDULED'}
             </span>
             <div className="flex items-center gap-3">
-              <span className="text-3xl font-black">{match.home.score}</span>
+              <span className="text-3xl font-black">
+                {match.home.score !== null ? match.home.score : '-'}
+              </span>
               <span className="text-gray-300 text-lg font-bold">:</span>
-              <span className="text-3xl font-black">{match.away.score}</span>
+              <span className="text-3xl font-black">
+                {match.away.score !== null ? match.away.score : '-'}
+              </span>
             </div>
             <span 
               className={`text-[11px] font-bold mt-2 px-2 py-0.5 rounded-full ${match.status.isLive ? 'bg-red-50 text-[var(--live-red)]' : 'bg-gray-100 text-gray-500'}`}
@@ -194,7 +216,7 @@ export default function MatchCenterPage({ params }: { params: { matchId: string 
           <div className="flex flex-col items-center">
             {hasLineup ? (
               <TacticalPitch homeRoster={homeRoster} awayRoster={awayRoster} />
-            ) : (!match.status.isLive && !match.status.isFinished && match.home.score === 0 && match.away.score === 0) ? (
+            ) : isScheduled ? (
               <div className="py-16 px-4 text-center border border-[#e2e2e2] rounded-lg bg-gray-50 w-full">
                 <svg className="w-12 h-12 text-gray-300 mx-auto mb-3" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5m-9-6h.008v.008H12v-.008zM12 15h.008v.008H12V15zm0 2.25h.008v.008H12v-.008zM9.75 15h.008v.008H9.75V15zm0 2.25h.008v.008H9.75v-.008zM7.5 15h.008v.008H7.5V15zm0 2.25h.008v.008H7.5v-.008zM14.25 15h.008v.008h-.008V15zm0 2.25h.008v.008h-.008v-.008zm2.25-4.5h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V15z" />

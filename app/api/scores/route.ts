@@ -17,6 +17,7 @@ interface ESPNCompetitor {
 
 interface ESPNEvent {
   id: string;
+  uid: string;
   name: string;
   date: string;
   season?: { slug?: string; year?: number };
@@ -84,6 +85,70 @@ function normalizeLeague(raw: string): string {
   return name || 'Football';
 }
 
+const LEAGUE_MAP: Record<string, { name: string; category: 'FIFA / International' | 'Club Match' }> = {
+  '606': { name: 'FIFA World Cup', category: 'FIFA / International' },
+  '609': { name: 'FIFA World Cup Qualifier', category: 'FIFA / International' },
+  '612': { name: 'FIFA World Cup Qualifier', category: 'FIFA / International' },
+  '614': { name: 'FIFA World Cup Qualifier', category: 'FIFA / International' },
+  '382': { name: 'Premier League', category: 'Club Match' },
+  '357': { name: 'LaLiga', category: 'Club Match' },
+  '268': { name: 'Bundesliga', category: 'Club Match' },
+  '384': { name: 'Serie A', category: 'Club Match' },
+  '379': { name: 'Ligue 1', category: 'Club Match' },
+  '388': { name: 'Major League Soccer', category: 'Club Match' },
+  '4002': { name: 'USL Championship', category: 'Club Match' },
+  '19915': { name: 'USL League One', category: 'Club Match' },
+  '19910': { name: 'USL League Two', category: 'Club Match' },
+  '9875': { name: 'Argentina Primera División', category: 'Club Match' },
+  '3903': { name: 'Argentina Primera Nacional', category: 'Club Match' },
+  '366': { name: 'English Championship', category: 'Club Match' },
+  '367': { name: 'English League One', category: 'Club Match' },
+  '368': { name: 'English League Two', category: 'Club Match' },
+  '380': { name: 'Eredivisie', category: 'Club Match' },
+  '381': { name: 'Primeira Liga', category: 'Club Match' },
+  '383': { name: 'Scottish Premiership', category: 'Club Match' },
+  '387': { name: 'Copa Libertadores', category: 'Club Match' },
+  '437': { name: 'UEFA Champions League', category: 'Club Match' },
+  '438': { name: 'UEFA Europa League', category: 'Club Match' },
+  '439': { name: 'UEFA Conference League', category: 'Club Match' },
+  '2300': { name: 'UEFA Euro', category: 'FIFA / International' },
+  '2298': { name: 'UEFA Nations League', category: 'FIFA / International' },
+  '2403': { name: 'AFC Asian Cup', category: 'FIFA / International' },
+  '2404': { name: 'AFCON', category: 'FIFA / International' },
+  '2396': { name: 'Copa América', category: 'FIFA / International' },
+  '2304': { name: 'CONCACAF Gold Cup', category: 'FIFA / International' },
+  '600': { name: 'International Friendlies', category: 'FIFA / International' }
+};
+
+function getLeagueInfo(uid: string, topLeagueName: string, eventName?: string): { name: string; category: 'FIFA / International' | 'Club Match' } {
+  const match = uid.match(/l:(\d+)/);
+  const leagueId = match ? match[1] : '';
+  
+  if (leagueId && LEAGUE_MAP[leagueId]) {
+    return LEAGUE_MAP[leagueId];
+  }
+
+  const rawName = topLeagueName || 'International';
+  const lowerName = rawName.toLowerCase();
+  
+  const isFIFAOrInt = 
+    lowerName.includes('fifa') || 
+    lowerName.includes('world cup') || 
+    lowerName.includes('friendly') || 
+    lowerName.includes('nations league') || 
+    lowerName.includes('euro') || 
+    lowerName.includes('copa america') || 
+    lowerName.includes('afcon') || 
+    lowerName.includes('asian cup') ||
+    lowerName.includes('international') ||
+    (eventName && (eventName.includes('at') || eventName.includes('vs')) && !eventName.includes('FC') && !eventName.includes('Club'));
+
+  return {
+    name: normalizeLeague(rawName),
+    category: isFIFAOrInt ? 'FIFA / International' : 'Club Match'
+  };
+}
+
 export async function GET() {
   try {
     const url = 'https://site.api.espn.com/apis/site/v2/sports/soccer/all/scoreboard';
@@ -98,7 +163,6 @@ export async function GET() {
     const data = await res.json();
     const events: ESPNEvent[] = data.events || [];
 
-    // ESPN may surface a top-level league name for the scoreboard
     const topLeagueName: string = data.leagues?.[0]?.name || data.league?.name || '';
 
     const matches = events.map((event: ESPNEvent) => {
@@ -118,28 +182,24 @@ export async function GET() {
         statusText = comp.status.displayClock || 'Live';
       }
 
-      // Extract real league name from event data
-      const rawLeague =
-        event.league?.name ||
-        topLeagueName ||
-        'International';
-
       const leagueLogo = event.league?.logos?.[0]?.href || '';
+      const leagueInfo = getLeagueInfo(event.uid, topLeagueName, event.name);
 
       return {
         id: event.id,
-        league: normalizeLeague(rawLeague),
+        league: leagueInfo.name,
+        category: leagueInfo.category,
         leagueLogo,
         startTime: comp.date || event.date || '',
         home: {
           name: homeComp.team.displayName || homeComp.team.abbreviation,
-          score: homeComp.score !== undefined ? parseInt(homeComp.score, 10) : null,
+          score: homeComp.score !== undefined && homeComp.score !== null && homeComp.score !== '' && !isNaN(parseInt(homeComp.score, 10)) ? parseInt(homeComp.score, 10) : null,
           logo: homeComp.team.logo,
           isWinner: homeComp.winner
         },
         away: {
           name: awayComp.team.displayName || awayComp.team.abbreviation,
-          score: awayComp.score !== undefined ? parseInt(awayComp.score, 10) : null,
+          score: awayComp.score !== undefined && awayComp.score !== null && awayComp.score !== '' && !isNaN(parseInt(awayComp.score, 10)) ? parseInt(awayComp.score, 10) : null,
           logo: awayComp.team.logo,
           isWinner: awayComp.winner
         },
