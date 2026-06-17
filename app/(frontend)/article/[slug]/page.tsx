@@ -5,6 +5,7 @@ import { supabaseAdmin } from '@/lib/supabase';
 import { formatDatetime, timeAgo } from '@/lib/timeAgo';
 import BookmarkButton from '@/components/frontend/BookmarkButton';
 import ReadingProgressBar from './ReadingProgressBar';
+import BottomNav from '@/components/frontend/BottomNav';
 
 export const dynamic = 'force-dynamic';
 
@@ -280,6 +281,7 @@ export default async function ArticlePage({ params }: PageProps) {
         </article>
 
       </div>
+      <BottomNav />
     </div>
   );
 }

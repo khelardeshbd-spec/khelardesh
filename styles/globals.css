@@ -609,11 +609,29 @@ ul, ol {
 
 /* Sleek flat cards */
 .clay-card {
-  background-color: var(--bg-surface);
+  background-color: transparent;
   border-radius: 8px;
   border: 1px solid var(--ink-border);
-  box-shadow: none;
+  box-shadow: none !important;
   transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+/* Slow marquee scroll for scorecards */
+@keyframes scores-ticker-scroll {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.scores-ticker-track {
+  display: flex;
+  gap: 24px;
+  animation: scores-ticker-scroll 75s linear infinite;
+  white-space: nowrap;
+  width: max-content;
+}
+
+.scores-ticker-track:hover {
+  animation-play-state: paused;
 }
 
 /* Scrollbar hide utility */

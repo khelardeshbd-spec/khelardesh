@@ -41,7 +41,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           }}
         />
       </head>
-      <body className="has-bottom-nav">
+      <body>
         {/* <SmartHeader /> removed as per user request */}
         <StickyScrollHeader />
         <LiveTicker />
@@ -49,7 +49,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           {children}
         </main>
         <Footer />
-        <BottomNav />
       </body>
     </html>
   );

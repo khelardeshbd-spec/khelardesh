@@ -45,7 +45,7 @@ export default function ScoresStrip() {
   return (
     <section 
       aria-label="খেলাসমূহ" 
-      className="w-full bg-[#fcfcfc] py-4 px-6 border-y border-[#e2e2e2]"
+      className="w-full py-4"
       style={{ fontFamily: 'var(--font-body)' }}
     >
       {/* Header */}
@@ -53,35 +53,62 @@ export default function ScoresStrip() {
         Live &amp; Recent Scores
       </h2>
 
-      {/* Horizontal Scroll Area */}
-      <div className="scrollbar-none overflow-x-auto flex gap-6 items-start pb-2">
-        {sorted.map((match, idx) => {
-          let winnerTeam: "A" | "B" | null = null;
-          if (match.isFinished) {
-             if (match.home.isWinner) winnerTeam = "A";
-             if (match.away.isWinner) winnerTeam = "B";
-          }
+      {/* Ticker scrolling track */}
+      <div className="overflow-hidden w-full relative py-1">
+        <div className="scores-ticker-track">
+          {/* First set of cards */}
+          {sorted.map((match) => {
+            let winnerTeam: "A" | "B" | null = null;
+            if (match.isFinished) {
+               if (match.home.isWinner) winnerTeam = "A";
+               if (match.away.isWinner) winnerTeam = "B";
+            }
 
-          return (
-            <ScoreCard
-              key={match.id}
-              league={match.league}
-              teamA={translateTeamName(match.home.name)}
-              scoreA={match.home.score !== null ? toBengaliNumerals(match.home.score) : '-'}
-              teamB={translateTeamName(match.away.name)}
-              scoreB={match.away.score !== null ? toBengaliNumerals(match.away.score) : '-'}
-              status={translateStatus(match.statusText)}
-              isLive={match.isLive}
-              winnerTeam={winnerTeam}
-              home_team_logo={match.home.logo}
-              away_team_logo={match.away.logo}
-            />
-          );
-        })}
+            return (
+              <ScoreCard
+                key={match.id}
+                league={match.league}
+                teamA={translateTeamName(match.home.name)}
+                scoreA={match.home.score !== null ? toBengaliNumerals(match.home.score) : '-'}
+                teamB={translateTeamName(match.away.name)}
+                scoreB={match.away.score !== null ? toBengaliNumerals(match.away.score) : '-'}
+                status={translateStatus(match.statusText)}
+                isLive={match.isLive}
+                winnerTeam={winnerTeam}
+                home_team_logo={match.home.logo}
+                away_team_logo={match.away.logo}
+              />
+            );
+          })}
+          {/* Duplicated set of cards for seamless infinite marquee */}
+          {sorted.map((match) => {
+            let winnerTeam: "A" | "B" | null = null;
+            if (match.isFinished) {
+               if (match.home.isWinner) winnerTeam = "A";
+               if (match.away.isWinner) winnerTeam = "B";
+            }
+
+            return (
+              <ScoreCard
+                key={`${match.id}-dup`}
+                league={match.league}
+                teamA={translateTeamName(match.home.name)}
+                scoreA={match.home.score !== null ? toBengaliNumerals(match.home.score) : '-'}
+                teamB={translateTeamName(match.away.name)}
+                scoreB={match.away.score !== null ? toBengaliNumerals(match.away.score) : '-'}
+                status={translateStatus(match.statusText)}
+                isLive={match.isLive}
+                winnerTeam={winnerTeam}
+                home_team_logo={match.home.logo}
+                away_team_logo={match.away.logo}
+              />
+            );
+          })}
+        </div>
       </div>
 
       {/* Footer bar */}
-      <div className="flex items-center justify-between mt-2 pt-3 border-t border-[#f0f0f0]">
+      <div className="flex items-center justify-between mt-4 pt-3 border-t border-[#f0f0f0]">
         <Link
           href="/scores"
           className="text-[11px] font-semibold text-[#121212] hover:underline"

@@ -6,7 +6,7 @@ import { useScrollDirection } from '@/hooks/useScrollDirection';
 import { motion } from 'framer-motion';
 
 /**
- * BottomNav — mobile only
+ * BottomNav — mobile only, slimmed down by ~35%
  * SVG icons (no unicode glyphs), Bengali labels
  * Active state: ink color fill
  * Safe-area-inset-bottom padding for iPhone notch
@@ -17,7 +17,7 @@ const NAV_ITEMS = [
     labelBn: 'মাঠ',
     href: '/',
     icon: (active: boolean) => (
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={active ? 2.2 : 1.8} strokeLinecap="round" strokeLinejoin="round">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={active ? 2.2 : 1.8} strokeLinecap="round" strokeLinejoin="round">
         <path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9.5z" fill={active ? 'currentColor' : 'none'} />
         <path d="M9 21V12h6v9" />
       </svg>
@@ -27,7 +27,7 @@ const NAV_ITEMS = [
     labelBn: 'খোঁজ',
     href: '/search',
     icon: (active: boolean) => (
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={active ? 2.2 : 1.8} strokeLinecap="round" strokeLinejoin="round">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={active ? 2.2 : 1.8} strokeLinecap="round" strokeLinejoin="round">
         <circle cx="11" cy="11" r="7" />
         <line x1="16.5" y1="16.5" x2="22" y2="22" />
       </svg>
@@ -37,18 +37,8 @@ const NAV_ITEMS = [
     labelBn: 'সেভ',
     href: '/saved',
     icon: (active: boolean) => (
-      <svg width="22" height="22" viewBox="0 0 24 24" fill={active ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth={active ? 2.2 : 1.8} strokeLinecap="round" strokeLinejoin="round">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill={active ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth={active ? 2.2 : 1.8} strokeLinecap="round" strokeLinejoin="round">
         <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
-      </svg>
-    ),
-  },
-  {
-    labelBn: 'সতর্কতা',
-    href: '/alerts',
-    icon: (active: boolean) => (
-      <svg width="22" height="22" viewBox="0 0 24 24" fill={active ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth={active ? 2.2 : 1.8} strokeLinecap="round" strokeLinejoin="round">
-        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
-        <path d="M13.73 21a2 2 0 0 1-3.46 0" />
       </svg>
     ),
   },
@@ -69,7 +59,7 @@ export default function BottomNav() {
         transform: navVisible ? 'translateY(0)' : 'translateY(100%)',
         transition: 'transform 0.25s ease',
         zIndex: 50,
-        paddingBottom: 'max(12px, env(safe-area-inset-bottom))',
+        paddingBottom: 'max(8px, env(safe-area-inset-bottom))',
       }}
     >
       <motion.div
@@ -81,8 +71,8 @@ export default function BottomNav() {
           backgroundColor: 'var(--bg-page)',
           border: '0.5px solid var(--ink-border)',
           borderRadius: 100,
-          padding: '6px 8px',
-          marginBottom: 8,
+          padding: '4px 6px',
+          marginBottom: 6,
         }}
       >
         {NAV_ITEMS.map(({ labelBn, href, icon }) => {
@@ -95,8 +85,8 @@ export default function BottomNav() {
                 aria-current={isActive ? 'page' : undefined}
                 style={{
                   color: isActive ? 'var(--ink)' : 'var(--ink-muted)',
-                  minHeight: 44,
-                  padding: '7px 16px',
+                  minHeight: 32,
+                  padding: '4px 14px',
                   backgroundColor: isActive ? 'var(--ink-ghost)' : 'transparent',
                   borderRadius: 100,
                 }}
@@ -106,7 +96,7 @@ export default function BottomNav() {
                   lang="bn"
                   style={{
                     fontFamily: "var(--font-body)",
-                    fontSize: 9,
+                    fontSize: 8,
                     letterSpacing: '0.04em',
                     color: 'inherit',
                     fontWeight: isActive ? 600 : 400,
