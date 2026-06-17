@@ -92,16 +92,16 @@ export function formatStatus(event: SofaScoreEvent): { text: string; isLive: boo
 
 function formatKickoff(timestamp: number): string {
   const date = new Date(timestamp * 1000);
-  // Show date + time in Bengali locale
+  // Show date + time in English locale
   const now = new Date();
   const isToday =
     date.getDate() === now.getDate() &&
     date.getMonth() === now.getMonth() &&
     date.getFullYear() === now.getFullYear();
   if (isToday) {
-    return date.toLocaleTimeString('bn-BD', { hour: '2-digit', minute: '2-digit' });
+    return date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
   }
-  return date.toLocaleDateString('bn-BD', { day: 'numeric', month: 'short' });
+  return date.toLocaleDateString('en-US', { day: 'numeric', month: 'short' });
 }
 
 /**

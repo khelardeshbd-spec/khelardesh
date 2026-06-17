@@ -25,20 +25,20 @@ const toBn = (n: string | number | null) =>
 
 function translateStatus(s: string): string {
   const l = s.toLowerCase();
-  if (l === 'ft' || l === 'full time') return 'পূর্ণ সময়';
-  if (l === 'ht' || l === 'half time') return 'বিরতি';
-  if (l === 'scheduled') return 'আসন্ন';
-  if (l === 'live') return 'লাইভ';
-  if (l === 'postponed') return 'স্থগিত';
-  if (l === 'canceled' || l === 'cancelled') return 'বাতিল';
-  if (/^\d+'?$/.test(s.trim())) return toBn(s);
+  if (l === 'ft' || l === 'full time') return 'FT'; // Keep FT in English
+  if (l === 'ht' || l === 'half time') return 'HT'; // Keep HT in English
+  if (l === 'scheduled') return 'Upcoming'; // Upcoming in English
+  if (l === 'live') return 'LIVE'; // LIVE in English
+  if (l === 'postponed') return 'Postponed';
+  if (l === 'canceled' || l === 'cancelled') return 'Cancelled';
+  if (/^\d+'?$/.test(s.trim())) return s.trim(); // Do not convert live minutes to Bengali digits
   return s;
 }
 
 function formatKickoff(iso: string): string {
   if (!iso) return '';
   try {
-    return new Date(iso).toLocaleTimeString('bn-BD', { hour: '2-digit', minute: '2-digit' });
+    return new Date(iso).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
   } catch {
     return '';
   }
