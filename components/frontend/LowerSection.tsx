@@ -55,10 +55,10 @@ function Kicker({ sport }: { sport?: string | null }) {
 function BlockLead({ article }: { article: Article }) {
   const headline = article.headlineBn || article.headline;
   return (
-    <div style={{ gridArea: 'lead', borderTop: '3px solid var(--ink)', paddingTop: 12 }}>
+    <div style={{ gridArea: 'lead', borderBottom: '1px solid var(--ink-border)', paddingTop: 8 }}>
       <Kicker sport={article.sport} />
       {article.mediaUrl && (
-        <div style={{ width: '100%', aspectRatio: '4/3', overflow: 'hidden', marginBottom: 14, border: '1px solid var(--ink-border)' }}>
+        <div style={{ width: '100%', aspectRatio: '4/3', overflow: 'hidden', marginBottom: 8, border: '1px solid var(--ink-border)' }}>
           <img
             src={article.mediaUrl}
             alt={headline}
@@ -102,7 +102,7 @@ function BlockLead({ article }: { article: Article }) {
 function BlockHorizontal({ article }: { article: Article }) {
   const headline = article.headlineBn || article.headline;
   return (
-    <div style={{ gridArea: 'mid', borderTop: '3px solid var(--ink)', paddingTop: 12, borderLeft: '1px solid var(--ink-border)', paddingLeft: 16 }}>
+    <div style={{ gridArea: 'mid', borderBottom: '1px solid var(--ink-border)', paddingBottom: 8 }}>
       <Kicker sport={article.sport} />
       <Link href={`/article/${article.slug}`} style={{ textDecoration: 'none', display: 'flex', gap: 12, alignItems: 'flex-start' }}>
         {article.mediaUrl && (
@@ -150,9 +150,14 @@ function BlockHorizontal({ article }: { article: Article }) {
 function BlockTextOnly({ article }: { article: Article }) {
   const headline = article.headlineBn || article.headline;
   return (
-    <div style={{ gridArea: 'text', borderTop: '1px solid var(--ink-border)', paddingTop: 12, borderLeft: '1px solid var(--ink-border)', paddingLeft: 16 }}>
+    <div style={{ gridArea: 'text', borderBottom: '1px solid var(--ink-border)', paddingBottom: 8 }}>
       <Kicker sport={article.sport} />
-      <Link href={`/article/${article.slug}`} style={{ textDecoration: 'none' }}>
+      {article.mediaUrl && (
+        <div style={{ width: '30%', flexShrink: 0, aspectRatio: '3/2', overflow: 'hidden', border: '1px solid var(--ink-border)', marginRight: 8 }}>
+          <img src={article.mediaUrl} alt={headline} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+        </div>
+      )}
+      <Link href={`/article/${article.slug}`} style={{ textDecoration: 'none', display: 'flex', flexDirection: 'column' }}>
         <h3 style={{
           fontFamily: 'var(--font-headline)',
           fontSize: 'clamp(1rem, 1.4vw, 1.25rem)',
@@ -190,10 +195,10 @@ function BlockStrip({ articles }: { articles: Article[] }) {
   return (
     <div style={{
       gridArea: 'strip',
-      borderLeft: '2px solid var(--ink)',
-      paddingLeft: 16,
-      borderTop: '3px solid var(--ink)',
-      paddingTop: 12,
+      /* removed heavy left border for cleaner look */
+      paddingLeft: 8,
+      /* removed extra top border */
+      paddingTop: 8,
     }}>
       <span style={{
         fontFamily: 'var(--font-body)',
@@ -209,31 +214,41 @@ function BlockStrip({ articles }: { articles: Article[] }) {
       </span>
       <div style={{ display: 'flex', flexDirection: 'column' }}>
         {articles.map((article, i) => {
-          const headline = article.headlineBn || article.headline;
-          return (
-            <div
-              key={article.id}
-              style={{
-                paddingBottom: 14,
-                marginBottom: 14,
-                borderBottom: i < articles.length - 1 ? '1px solid var(--ink-border)' : 'none',
-              }}
-            >
-              <Kicker sport={article.sport} />
-              <Link href={`/article/${article.slug}`} style={{ textDecoration: 'none' }}>
-                <h4 style={{
-                  fontFamily: 'var(--font-headline)',
-                  fontSize: '0.95rem',
-                  fontWeight: 700,
-                  lineHeight: 1.25,
-                  color: 'var(--ink)',
-                }}>
-                  {headline}
-                </h4>
-              </Link>
-            </div>
-          );
-        })}
+            const headline = article.headlineBn || article.headline;
+            return (
+              <div
+                key={article.id}
+                style={{
+                  paddingBottom: 14,
+                  marginBottom: 14,
+                  borderBottom: i < articles.length - 1 ? '1px solid var(--ink-border)' : 'none',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 8,
+                }}
+              >
+                {article.mediaUrl && (
+                  <div style={{ width: 40, height: 40, overflow: 'hidden', borderRadius: 4, border: '1px solid var(--ink-border)' }}>
+                    <img src={article.mediaUrl} alt={headline} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  </div>
+                )}
+                <div style={{ flex: 1 }}>
+                  <Kicker sport={article.sport} />
+                  <Link href={`/article/${article.slug}`} style={{ textDecoration: 'none' }}>
+                    <h4 style={{
+                      fontFamily: 'var(--font-headline)',
+                      fontSize: '0.95rem',
+                      fontWeight: 700,
+                      lineHeight: 1.25,
+                      color: 'var(--ink)',
+                    }}>
+                      {headline}
+                    </h4>
+                  </Link>
+                </div>
+              </div>
+            );
+          })}
       </div>
     </div>
   );
@@ -243,7 +258,7 @@ function BlockStrip({ articles }: { articles: Article[] }) {
 function BlockWideBand({ article }: { article: Article }) {
   const headline = article.headlineBn || article.headline;
   return (
-    <div style={{ gridArea: 'band', borderTop: '2px solid var(--ink)', paddingTop: 12, borderRight: '1px solid var(--ink-border)', paddingRight: 16 }}>
+    <div style={{ gridArea: 'band', borderBottom: '1px solid var(--ink-border)', paddingTop: 8, paddingRight: 8 }}>
       <Kicker sport={article.sport} />
       <Link href={`/article/${article.slug}`} style={{ textDecoration: 'none', display: 'flex', gap: 20, alignItems: 'center' }}>
         {article.mediaUrl && (
@@ -308,14 +323,15 @@ export default function LowerSection({ articles }: LowerSectionProps) {
       <style>{`
         .ls-grid {
           display: grid;
-          grid-template-columns: 1fr 1fr 1fr 220px;
+          /* Proportional columns – strip shrinks on wide screens */
+          grid-template-columns: 2fr 1fr 1fr minmax(180px, 1fr);
           grid-template-rows: auto auto auto;
           grid-template-areas:
             "lead lead mid  strip"
             "lead lead text strip"
             "band band band strip";
-          gap: 0 20px;
-          row-gap: 20px;
+          gap: 0 12px;
+          row-gap: 16px;
         }
         @media (max-width: 1023px) {
           .ls-grid {
@@ -325,6 +341,18 @@ export default function LowerSection({ articles }: LowerSectionProps) {
               "mid  text"
               "band band"
               "strip strip";
+          }
+        }
+        @media (max-width: 900px) {
+          /* Collapse strip to full‑width horizontal band on medium screens */
+          .ls-grid {
+            grid-template-columns: 1fr;
+            grid-template-areas:
+              "lead"
+              "mid"
+              "band"
+              "text"
+              "strip";
           }
         }
         @media (max-width: 639px) {
@@ -338,7 +366,6 @@ export default function LowerSection({ articles }: LowerSectionProps) {
               "strip";
           }
         }
-        /* Tablet sidebar adjustments */
         @media (max-width: 1023px) {
           .ls-strip { border-left: none !important; padding-left: 0 !important; border-top: 3px solid var(--ink) !important; }
         }
@@ -348,10 +375,10 @@ export default function LowerSection({ articles }: LowerSectionProps) {
       <div style={{
         display: 'flex',
         alignItems: 'center',
-        gap: 12,
-        marginBottom: 20,
+        gap: 8,
+        marginBottom: 16,
         borderTop: '4px double var(--ink)',
-        paddingTop: 10,
+        paddingTop: 8,
       }}>
         <span style={{
           fontFamily: 'var(--font-body)',
@@ -360,7 +387,7 @@ export default function LowerSection({ articles }: LowerSectionProps) {
           letterSpacing: '0.2em',
           textTransform: 'uppercase',
           color: 'var(--ink)',
-          paddingRight: 12,
+          paddingRight: 8,
           borderRight: '1px solid var(--ink-border)',
         }}>
           সর্বশেষ
@@ -378,7 +405,7 @@ export default function LowerSection({ articles }: LowerSectionProps) {
       </div>
 
       {/* ─── More Stories Below ─── */}
-      <div style={{ marginTop: 40, borderTop: '4px double var(--ink)', paddingTop: 12 }}>
+      <div style={{ marginTop: 32, borderTop: '4px double var(--ink)', paddingTop: 8 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 20 }}>
           <span style={{
             fontFamily: 'var(--font-body)',
@@ -387,7 +414,7 @@ export default function LowerSection({ articles }: LowerSectionProps) {
             letterSpacing: '0.2em',
             textTransform: 'uppercase',
             color: 'var(--ink)',
-            paddingRight: 12,
+            paddingRight: 8,
             borderRight: '1px solid var(--ink-border)',
           }}>
             আরও পড়ুন
@@ -395,7 +422,7 @@ export default function LowerSection({ articles }: LowerSectionProps) {
           <span style={{ flex: 1, height: 1, backgroundColor: 'var(--ink-border)' }} />
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '0 24px' }} className="more-stories-grid">
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '12px' }} className="more-stories-grid">
           <style>{`
             @media (max-width: 767px) {
               .more-stories-grid { grid-template-columns: 1fr !important; }
