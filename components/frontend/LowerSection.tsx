@@ -51,25 +51,25 @@ function Kicker({ sport }: { sport?: string | null }) {
   );
 }
 
-/* ─── Block A: Large Lead (image + big headline + deck) ─── */
-function BlockLead({ article }: { article: Article }) {
+/* ─── CardLead: Large Featured Article ─── */
+function CardLead({ article }: { article: Article }) {
   const headline = article.headlineBn || article.headline;
   return (
-    <div style={{ gridArea: 'lead', borderBottom: '1px solid var(--ink-border)', paddingTop: 8 }}>
+    <div style={{ gridArea: 'lead', display: 'flex', flexDirection: 'column' }}>
       <Kicker sport={article.sport} />
-      {article.mediaUrl && (
-        <div style={{ width: '100%', aspectRatio: '4/3', overflow: 'hidden', marginBottom: 8, border: '1px solid var(--ink-border)' }}>
-          <img
-            src={article.mediaUrl}
-            alt={headline}
-            style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
-          />
-        </div>
-      )}
-      <Link href={`/article/${article.slug}`} style={{ textDecoration: 'none' }}>
+      <Link href={`/article/${article.slug}`} style={{ textDecoration: 'none', display: 'block', marginBottom: 12 }}>
+        {article.mediaUrl && (
+          <div style={{ width: '100%', aspectRatio: '16/9', overflow: 'hidden', border: '1px solid var(--ink-border)', marginBottom: 12 }}>
+            <img
+              src={article.mediaUrl}
+              alt={headline}
+              style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+            />
+          </div>
+        )}
         <h2 style={{
           fontFamily: 'var(--font-headline)',
-          fontSize: 'clamp(1.65rem, 2.8vw, 2.2rem)',
+          fontSize: 'clamp(1.5rem, 2.5vw, 2rem)',
           fontWeight: 700,
           lineHeight: 1.15,
           color: 'var(--ink)',
@@ -78,195 +78,36 @@ function BlockLead({ article }: { article: Article }) {
         }}>
           {headline}
         </h2>
-      </Link>
-      {article.deck && (
-        <p style={{
-          fontFamily: 'var(--font-body)',
-          fontSize: 13,
-          lineHeight: 1.75,
-          color: 'var(--ink)',
-          opacity: 0.85,
-          marginBottom: 12,
-        }}>
-          {article.deck}
-        </p>
-      )}
-      <span style={{ fontFamily: 'var(--font-body)', fontSize: 10, color: 'var(--ink-muted)', fontStyle: 'italic' }}>
-        {article.byline || 'স্টাফ রিপোর্টার'}
-      </span>
-    </div>
-  );
-}
-
-/* ─── Block B: Horizontal Split (image left, text right) ─── */
-function BlockHorizontal({ article }: { article: Article }) {
-  const headline = article.headlineBn || article.headline;
-  return (
-    <div style={{ gridArea: 'mid', borderBottom: '1px solid var(--ink-border)', paddingBottom: 8 }}>
-      <Kicker sport={article.sport} />
-      <Link href={`/article/${article.slug}`} style={{ textDecoration: 'none', display: 'flex', gap: 12, alignItems: 'flex-start' }}>
-        {article.mediaUrl && (
-          <div style={{ width: '45%', flexShrink: 0, aspectRatio: '3/2', overflow: 'hidden', border: '1px solid var(--ink-border)' }}>
-            <img
-              src={article.mediaUrl}
-              alt={headline}
-              style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
-            />
-          </div>
-        )}
-        <div style={{ flex: 1, minWidth: 0 }}>
-          <h3 style={{
-            fontFamily: 'var(--font-headline)',
-            fontSize: 'clamp(1.1rem, 1.5vw, 1.35rem)',
-            fontWeight: 700,
-            lineHeight: 1.2,
+        {article.deck && (
+          <p style={{
+            fontFamily: 'var(--font-body)',
+            fontSize: 14,
+            lineHeight: 1.6,
             color: 'var(--ink)',
-            marginBottom: 8,
+            opacity: 0.85,
           }}>
-            {headline}
-          </h3>
-          {article.deck && (
-            <p style={{
-              fontFamily: 'var(--font-body)',
-              fontSize: 11,
-              lineHeight: 1.6,
-              color: 'var(--ink)',
-              opacity: 0.75,
-              WebkitLineClamp: 3,
-              display: '-webkit-box',
-              WebkitBoxOrient: 'vertical',
-              overflow: 'hidden',
-            }}>
-              {article.deck}
-            </p>
-          )}
-        </div>
-      </Link>
-    </div>
-  );
-}
-
-/* ─── Block C: Text-Only Editorial (no image, drop-cap style) ─── */
-function BlockTextOnly({ article }: { article: Article }) {
-  const headline = article.headlineBn || article.headline;
-  return (
-    <div style={{ gridArea: 'text', borderBottom: '1px solid var(--ink-border)', paddingBottom: 16 }}>
-      <Kicker sport={article.sport} />
-      <Link href={`/article/${article.slug}`} style={{ textDecoration: 'none', display: 'flex', gap: 12, alignItems: 'flex-start' }}>
-        {article.mediaUrl && (
-          <div style={{ width: '35%', flexShrink: 0, aspectRatio: '4/3', overflow: 'hidden', border: '1px solid var(--ink-border)' }}>
-            <img src={article.mediaUrl} alt={headline} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
-          </div>
+            {article.deck}
+          </p>
         )}
-        <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column' }}>
-          <h3 style={{
-            fontFamily: 'var(--font-headline)',
-            fontSize: 'clamp(1.05rem, 1.4vw, 1.25rem)',
-            fontWeight: 700,
-            lineHeight: 1.25,
-            color: 'var(--ink)',
-            marginBottom: 8,
-            fontStyle: 'italic',
-          }}>
-            {headline}
-          </h3>
-          {article.deck && (
-            <p style={{
-              fontFamily: 'var(--font-body)',
-              fontSize: 12,
-              lineHeight: 1.6,
-              color: 'var(--ink)',
-              opacity: 0.8,
-              WebkitLineClamp: 3,
-              display: '-webkit-box',
-              WebkitBoxOrient: 'vertical',
-              overflow: 'hidden',
-            }}>
-              {article.deck}
-            </p>
-          )}
-          <span style={{ fontFamily: 'var(--font-body)', fontSize: 10, color: 'var(--ink-muted)', fontStyle: 'italic', marginTop: 12 }}>
-            {article.byline || 'স্টাফ রিপোর্টার'}
-          </span>
-        </div>
       </Link>
-    </div>
-  );
-}
-
-/* ─── Block D: Sidebar Strip (headlines-only list) ─── */
-function BlockStrip({ articles }: { articles: Article[] }) {
-  return (
-    <div style={{
-      gridArea: 'strip',
-      /* removed heavy left border for cleaner look */
-      paddingLeft: 8,
-      /* removed extra top border */
-      paddingTop: 8,
-    }}>
-      <span style={{
-        fontFamily: 'var(--font-body)',
-        fontSize: 9,
-        fontWeight: 700,
-        letterSpacing: '0.15em',
-        textTransform: 'uppercase',
-        color: 'var(--ink-muted)',
-        display: 'block',
-        marginBottom: 14,
-      }}>
-        আরও খবর
-      </span>
-      <div style={{ display: 'flex', flexDirection: 'column' }}>
-        {articles.map((article, i) => {
-            const headline = article.headlineBn || article.headline;
-            return (
-              <div
-                key={article.id}
-                style={{
-                  paddingBottom: 14,
-                  marginBottom: 14,
-                  borderBottom: i < articles.length - 1 ? '1px solid var(--ink-border)' : 'none',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 8,
-                }}
-              >
-                {article.mediaUrl && (
-                  <div style={{ width: 40, height: 40, flexShrink: 0, overflow: 'hidden', borderRadius: 4, border: '1px solid var(--ink-border)' }}>
-                    <img src={article.mediaUrl} alt={headline} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                  </div>
-                )}
-                <div style={{ flex: 1 }}>
-                  <Kicker sport={article.sport} />
-                  <Link href={`/article/${article.slug}`} style={{ textDecoration: 'none' }}>
-                    <h4 style={{
-                      fontFamily: 'var(--font-headline)',
-                      fontSize: '0.95rem',
-                      fontWeight: 700,
-                      lineHeight: 1.25,
-                      color: 'var(--ink)',
-                    }}>
-                      {headline}
-                    </h4>
-                  </Link>
-                </div>
-              </div>
-            );
-          })}
+      <div style={{ marginTop: 'auto' }}>
+        <span style={{ fontFamily: 'var(--font-body)', fontSize: 11, color: 'var(--ink-muted)', fontStyle: 'italic' }}>
+          {article.byline || 'স্টাফ রিপোর্টার'}
+        </span>
       </div>
     </div>
   );
 }
 
-/* ─── Block E: Wide Horizontal Banner ─── */
-function BlockWideBand({ article }: { article: Article }) {
+/* ─── CardStandard: Medium Article ─── */
+function CardStandard({ article, area }: { article: Article, area: string }) {
   const headline = article.headlineBn || article.headline;
   return (
-    <div style={{ gridArea: 'band', borderBottom: '1px solid var(--ink-border)', paddingTop: 8, paddingRight: 8 }}>
+    <div style={{ gridArea: area, display: 'flex', flexDirection: 'column' }}>
       <Kicker sport={article.sport} />
-      <Link href={`/article/${article.slug}`} style={{ textDecoration: 'none', display: 'flex', gap: 20, alignItems: 'center' }}>
+      <Link href={`/article/${article.slug}`} style={{ textDecoration: 'none', display: 'block', marginBottom: 12 }}>
         {article.mediaUrl && (
-          <div style={{ width: '35%', flexShrink: 0, aspectRatio: '16/9', overflow: 'hidden', border: '1px solid var(--ink-border)' }}>
+          <div style={{ width: '100%', aspectRatio: '16/9', overflow: 'hidden', border: '1px solid var(--ink-border)', marginBottom: 12 }}>
             <img
               src={article.mediaUrl}
               alt={headline}
@@ -274,37 +115,80 @@ function BlockWideBand({ article }: { article: Article }) {
             />
           </div>
         )}
-        <div style={{ flex: 1, minWidth: 0 }}>
-          <h3 style={{
-            fontFamily: 'var(--font-headline)',
-            fontSize: 'clamp(1.2rem, 1.8vw, 1.5rem)',
-            fontWeight: 700,
-            lineHeight: 1.2,
-            color: 'var(--ink)',
-            marginBottom: 10,
-          }}>
-            {headline}
-          </h3>
-          {article.deck && (
-            <p style={{
-              fontFamily: 'var(--font-body)',
-              fontSize: 12,
-              lineHeight: 1.7,
-              color: 'var(--ink)',
-              opacity: 0.8,
-              WebkitLineClamp: 2,
-              display: '-webkit-box',
-              WebkitBoxOrient: 'vertical',
-              overflow: 'hidden',
-            }}>
-              {article.deck}
-            </p>
-          )}
-          <span style={{ fontFamily: 'var(--font-body)', fontSize: 10, color: 'var(--ink-muted)', fontStyle: 'italic', display: 'block', marginTop: 8 }}>
-            {article.byline || 'স্টাফ রিপোর্টার'}
-          </span>
-        </div>
+        <h3 style={{
+          fontFamily: 'var(--font-headline)',
+          fontSize: '1.2rem',
+          fontWeight: 700,
+          lineHeight: 1.25,
+          color: 'var(--ink)',
+        }}>
+          {headline}
+        </h3>
       </Link>
+      <div style={{ marginTop: 'auto' }}>
+        <span style={{ fontFamily: 'var(--font-body)', fontSize: 11, color: 'var(--ink-muted)', fontStyle: 'italic' }}>
+          {article.byline || 'স্টাফ রিপোর্টার'}
+        </span>
+      </div>
+    </div>
+  );
+}
+
+/* ─── CardList: Sidebar Feed ─── */
+function CardList({ articles }: { articles: Article[] }) {
+  return (
+    <div style={{
+      display: 'flex',
+      flexDirection: 'column',
+      gap: 16,
+    }}>
+      <span style={{
+        fontFamily: 'var(--font-body)',
+        fontSize: 10,
+        fontWeight: 700,
+        letterSpacing: '0.15em',
+        textTransform: 'uppercase',
+        color: 'var(--ink-muted)',
+        display: 'block',
+        marginBottom: 8,
+      }}>
+        আরও খবর
+      </span>
+      {articles.map((article, i) => {
+        const headline = article.headlineBn || article.headline;
+        return (
+          <div
+            key={article.id}
+            style={{
+              paddingBottom: 16,
+              borderBottom: i < articles.length - 1 ? '1px solid var(--ink-border)' : 'none',
+              display: 'flex',
+              alignItems: 'flex-start',
+              gap: 12,
+            }}
+          >
+            {article.mediaUrl && (
+              <div style={{ width: 64, height: 64, flexShrink: 0, overflow: 'hidden', border: '1px solid var(--ink-border)' }}>
+                <img src={article.mediaUrl} alt={headline} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+              </div>
+            )}
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <Kicker sport={article.sport} />
+              <Link href={`/article/${article.slug}`} style={{ textDecoration: 'none' }}>
+                <h4 style={{
+                  fontFamily: 'var(--font-headline)',
+                  fontSize: '1rem',
+                  fontWeight: 700,
+                  lineHeight: 1.25,
+                  color: 'var(--ink)',
+                }}>
+                  {headline}
+                </h4>
+              </Link>
+            </div>
+          </div>
+        );
+      })}
     </div>
   );
 }
@@ -314,64 +198,54 @@ export default function LowerSection({ articles }: LowerSectionProps) {
   const a = articles;
   if (!a || a.length === 0) return null;
 
-  // Assign articles to blocks: 0=Lead, 1=Horizontal, 2=TextOnly, 3-5=Strip, 6=WideBand
-  const lead     = a[0];
-  const horiz    = a[1];
-  const textOnly = a[2];
-  const strip    = a.slice(3, 7);
-  const band     = a[7] ?? a[3];
+  // Distribute articles across the 3-column grid
+  const lead = a[0];
+  const sub1 = a[1];
+  const sub2 = a[2];
+  // the rest goes to list
+  const list = a.slice(3, 8);
 
   return (
     <section aria-label="সংবাদ বিভাগ" style={{ marginBottom: 32 }}>
       {/* ─── Responsive Grid Styles ─── */}
       <style>{`
-        .ls-grid {
+        .ls-grid-clean {
           display: grid;
-          /* Proportional columns – strip shrinks on wide screens */
-          grid-template-columns: 2fr 1fr 1fr minmax(180px, 1fr);
-          grid-template-rows: auto auto auto;
+          grid-template-columns: repeat(3, 1fr);
           grid-template-areas:
-            "lead lead mid  strip"
-            "lead lead text strip"
-            "band band band strip";
-          gap: 0 12px;
-          row-gap: 16px;
+            "lead lead strip"
+            "sub1 sub2 strip";
+          gap: 24px;
+        }
+        .ls-strip-container {
+          grid-area: strip;
+          border-left: 1px solid var(--ink-border);
+          padding-left: 24px;
         }
         @media (max-width: 1023px) {
-          .ls-grid {
+          .ls-grid-clean {
             grid-template-columns: 1fr 1fr;
             grid-template-areas:
               "lead lead"
-              "mid  text"
-              "band band"
+              "sub1 sub2"
               "strip strip";
           }
-        }
-        @media (max-width: 900px) {
-          /* Collapse strip to full‑width horizontal band on medium screens */
-          .ls-grid {
-            grid-template-columns: 1fr;
-            grid-template-areas:
-              "lead"
-              "mid"
-              "band"
-              "text"
-              "strip";
+          .ls-strip-container {
+            border-left: none;
+            padding-left: 0;
+            border-top: 1px solid var(--ink-border);
+            padding-top: 24px;
           }
         }
         @media (max-width: 639px) {
-          .ls-grid {
+          .ls-grid-clean {
             grid-template-columns: 1fr;
             grid-template-areas:
               "lead"
-              "mid"
-              "band"
-              "text"
+              "sub1"
+              "sub2"
               "strip";
           }
-        }
-        @media (max-width: 1023px) {
-          .ls-strip { border-left: none !important; padding-left: 0 !important; border-top: 3px solid var(--ink) !important; }
         }
       `}</style>
 
@@ -380,7 +254,7 @@ export default function LowerSection({ articles }: LowerSectionProps) {
         display: 'flex',
         alignItems: 'center',
         gap: 8,
-        marginBottom: 16,
+        marginBottom: 24,
         borderTop: '4px double var(--ink)',
         paddingTop: 8,
       }}>
@@ -399,13 +273,16 @@ export default function LowerSection({ articles }: LowerSectionProps) {
         <span style={{ flex: 1, height: 1, backgroundColor: 'var(--ink-border)' }} />
       </div>
 
-      {/* ─── Editorial Grid ─── */}
-      <div className="ls-grid">
-        {lead     && <BlockLead      article={lead} />}
-        {horiz    && <BlockHorizontal article={horiz} />}
-        {textOnly && <BlockTextOnly   article={textOnly} />}
-        {strip.length > 0 && <BlockStrip articles={strip} />}
-        {band     && <BlockWideBand   article={band} />}
+      {/* ─── Clean 3-Column Grid ─── */}
+      <div className="ls-grid-clean">
+        {lead && <CardLead article={lead} />}
+        {sub1 && <CardStandard article={sub1} area="sub1" />}
+        {sub2 && <CardStandard article={sub2} area="sub2" />}
+        {list.length > 0 && (
+          <div className="ls-strip-container">
+            <CardList articles={list} />
+          </div>
+        )}
       </div>
 
       {/* ─── More Stories Below ─── */}
