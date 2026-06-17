@@ -207,4 +207,4 @@ export default function ScoreCard({
       <div style={{ height: '0.5px', backgroundColor: 'var(--ink-border)', margin: '8px 0' }} />
     </motion.div>
   );
-
+}
