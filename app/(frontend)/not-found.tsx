@@ -68,7 +68,7 @@ export default function NotFound() {
           }}
           lang="bn"
         >
-          নীড়পাতায় ফিরুন
+          মূল পাতায় ফিরে যান
         </Link>
         <Link 
           href="/search"
