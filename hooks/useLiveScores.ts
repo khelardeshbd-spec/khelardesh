@@ -5,6 +5,7 @@ import useSWR from 'swr'
 export type ESPNMatch = {
   id: string
   league: string
+  startTime: string
   home: {
     name: string
     score: number | null
