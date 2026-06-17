@@ -155,7 +155,7 @@ function CardList({ articles }: { articles: Article[] }) {
         display: 'block',
         marginBottom: 8,
       }}>
-        আরও খবর
+        অন্যান্য
       </span>
       {articles.map((article, i) => {
         const headline = article.headlineBn || article.headline;

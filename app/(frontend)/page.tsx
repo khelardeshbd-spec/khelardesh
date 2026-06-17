@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import Image from 'next/image';
 import { supabaseAdmin } from '@/lib/supabase';
+import HeroSlideshow from '@/components/frontend/HeroSlideshow';
 import LeadStory from '@/components/frontend/LeadStory';
 import HomeSlider from '@/components/frontend/HomeSlider';
 import ArticleCard from '@/components/frontend/ArticleCard';
@@ -120,9 +121,9 @@ export default async function HomePage() {
           </div>
 
           {/* Tier 2: Controls & Info Bar */}
-          <div className="flex flex-col sm:grid sm:grid-cols-3 gap-2 sm:gap-0 items-center border-b border-[#e2e2e2] pb-2 mb-1.5 text-xs font-semibold uppercase">
+          <div className="flex flex-row justify-between items-center border-b border-[#e2e2e2] pb-2 mb-1.5 text-xs font-semibold uppercase">
             {/* Left: Icons */}
-            <div className="flex items-center gap-5 justify-center sm:justify-start w-full sm:w-auto">
+            <div className="flex items-center">
               {/* Search */}
               <button className="hover:opacity-75 transition-opacity text-[#121212]" aria-label="Search">
                 <svg className="w-[21px] h-[21px]" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
@@ -133,25 +134,33 @@ export default async function HomePage() {
             </div>
 
             {/* Center: Bengali Date Info */}
-            <div className="flex flex-col items-center text-center text-[11px] text-[#121212] justify-center">
+            <div className="flex flex-col items-center text-center text-[10px] sm:text-[11px] text-[#121212] justify-center hidden sm:flex">
               <span className="font-bold">
                 {new Intl.DateTimeFormat('bn-BD', {
                   weekday: 'long',
                   day: 'numeric',
                   month: 'long',
-                  year: 'numeric',
-                  timeZone: 'Asia/Dhaka',
+                  year: 'numeric'
+                }).format(new Date())}
+              </span>
+            </div>
+            {/* Show short date on very small screens so it fits */}
+            <div className="flex flex-col items-center text-center text-[10px] text-[#121212] justify-center sm:hidden">
+              <span className="font-bold">
+                {new Intl.DateTimeFormat('bn-BD', {
+                  day: 'numeric',
+                  month: 'short',
+                  year: 'numeric'
                 }).format(new Date())}
               </span>
             </div>
 
-
-            {/* Right: Subscribe & Login buttons in Bengali */}
-            <div className="flex items-center gap-2 sm:gap-3 justify-center sm:justify-end w-full sm:w-auto">
-              <button className="border border-[#326891] text-[#326891] hover:bg-[#326891] hover:text-white transition-colors duration-150 px-3 sm:px-4 py-1 sm:py-1.5 rounded-[3px] font-extrabold text-[10px] sm:text-[11px] tracking-wide">
+            {/* Right: Actions */}
+            <div className="flex items-center gap-1.5 sm:gap-3">
+              <button className="border border-[#326891] text-[#326891] hover:bg-[#326891] hover:text-white transition-colors duration-150 px-2 sm:px-4 py-1 sm:py-1.5 rounded-[3px] font-extrabold text-[9px] sm:text-[11px] tracking-wide">
                 সাবস্ক্রিপশন
               </button>
-              <button className="border border-[#121212] text-[#121212] hover:bg-[#121212] hover:text-white transition-colors duration-150 px-3 sm:px-4 py-1 sm:py-1.5 rounded-[3px] font-extrabold text-[10px] sm:text-[11px] tracking-wide">
+              <button className="border border-[#121212] text-[#121212] hover:bg-[#121212] hover:text-white transition-colors duration-150 px-2 sm:px-4 py-1 sm:py-1.5 rounded-[3px] font-extrabold text-[9px] sm:text-[11px] tracking-wide">
                 লগইন
               </button>
             </div>
@@ -190,7 +199,7 @@ export default async function HomePage() {
                 const href = item.slug === '' ? '/' : `/sport/${item.slug}`;
                 if (item.subItems) {
                   return (
-                    <div key={idx} className="relative group">
+                    <div key={idx} className="relative group h-full flex items-center">
                       <Link 
                         href={href}
                         className="cursor-pointer hover:underline flex items-center gap-1"
@@ -229,38 +238,7 @@ export default async function HomePage() {
           </div>
         </div>
 
-
-        {/* HERO SECTION */}
-        <div className="grid grid-cols-12 gap-4 border-b border-[#e2e2e2] pb-4 mb-4">
-          <div className="col-span-12 md:col-span-4 flex flex-col justify-between order-2 md:order-1">
-            <div>
-              <h3 style={{ fontFamily: 'var(--font-body)' }} className="text-sm font-bold mb-2 text-gray-400">যুক্তরাষ্ট্র থেকে</h3>
-              <h1 style={{ fontFamily: 'var(--font-headline)', fontSize: '1.7rem', lineHeight: '1.15', marginBottom: '8px', letterSpacing: '-0.01em' }}>
-                {leads[0]?.headlineBn || 'বিশেষ: ভিভিয়ান মেয়ার, সবচেয়ে বড় গোপন রহস্য'}
-              </h1>
-              <p className="text-sm font-bold italic mb-3 text-gray-400">জেরেমি ওয়াটার দ্বারা</p>
-              <p className="text-sm text-justify leading-relaxed columns-1">
-                ভিভিয়ান মেয়ারের নাম, একজন নারী যিনি চিত্রকর হওয়ার পাশাপাশি একজন অসামান্য ফোটোগ্রাফার ছিলেন, তার সম্পর্কে অনেক কথাই জানা যায়নি। তার কাজগুলো দীর্ঘকাল ধরে লুকিয়ে ছিল। হঠাৎ করেই তার শত শত ফোটোগ্রাফ আবিষ্কার হয়, যা ফোটোগ্রাফি জগতে আলোড়ন সৃষ্টি করে। তার ছবিগুলোর মধ্যে এক অদ্ভুত গভীরতা ও অনুভূতি রয়েছে যা সাধারণ মানুষের জীবনযাত্রাকে নিপুণভাবে তুলে ধরে। এই আবিষ্কারের পর থেকে তাকে নিয়ে নানা রহস্য ও আলোচনা শুরু হয়েছে।
-              </p>
-            </div>
-            <div className="text-right mt-3">
-              <Link href={`/article/${leads[0]?.slug || '#'}`} className="text-[11px] font-bold text-[#d33f3f] hover:underline">
-                আরো পড়ুন
-              </Link>
-            </div>
-          </div>
-          <div className="col-span-12 md:col-span-8 order-1 md:order-2">
-            <div className="w-full h-[240px] sm:h-[320px] lg:h-[395px] bg-gray-200 overflow-hidden border border-[#e2e2e2] p-1 relative">
-               {leads[0]?.slug === 'madrid-unravel-final-ten' ? (
-                 <Image src="/images/madrid_defeat_hero.png" fill style={{ objectFit: 'cover' }} alt="Hero Image" />
-               ) : leads[0]?.mediaUrl ? (
-                 <Image src={leads[0].mediaUrl} fill style={{ objectFit: 'cover' }} alt="Hero Image" />
-               ) : (
-                 <div className="w-full h-full flex items-center justify-center text-gray-500 italic">ছবি নেই</div>
-               )}
-            </div>
-          </div>
-        </div>
+        <HeroSlideshow articles={leads.slice(0, 3)} />
 
         {/* SCORES STRIP */}
         <div className="mb-4">
