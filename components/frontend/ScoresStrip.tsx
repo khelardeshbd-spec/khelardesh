@@ -118,11 +118,11 @@ export default function ScoresStrip() {
             <div key={match.id} className="flex-shrink-0">
               <ScoreCard
                 league={match.league}
-                teamA={translateTeamName(match.home.name)}
-                scoreA={match.home.score !== null ? toBengaliNumerals(match.home.score) : '-'}
-                teamB={translateTeamName(match.away.name)}
-                scoreB={match.away.score !== null ? toBengaliNumerals(match.away.score) : '-'}
-                status={translateStatus(match.statusText)}
+                teamA={match.home.name}
+                scoreA={match.home.score !== null ? String(match.home.score) : '-'}
+                teamB={match.away.name}
+                scoreB={match.away.score !== null ? String(match.away.score) : '-'}
+                status={match.statusText}
                 isLive={match.isLive}
                 winnerTeam={winnerTeam}
                 home_team_logo={match.home.logo}
@@ -143,11 +143,11 @@ export default function ScoresStrip() {
             <div key={`${match.id}-dup`} className="flex-shrink-0">
               <ScoreCard
                 league={match.league}
-                teamA={translateTeamName(match.home.name)}
-                scoreA={match.home.score !== null ? toBengaliNumerals(match.home.score) : '-'}
-                teamB={translateTeamName(match.away.name)}
-                scoreB={match.away.score !== null ? toBengaliNumerals(match.away.score) : '-'}
-                status={translateStatus(match.statusText)}
+                teamA={match.home.name}
+                scoreA={match.home.score !== null ? String(match.home.score) : '-'}
+                teamB={match.away.name}
+                scoreB={match.away.score !== null ? String(match.away.score) : '-'}
+                status={match.statusText}
                 isLive={match.isLive}
                 winnerTeam={winnerTeam}
                 home_team_logo={match.home.logo}
