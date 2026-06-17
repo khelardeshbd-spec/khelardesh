@@ -334,7 +334,7 @@ export default function ScoresPage() {
       <div style={{ padding: '0 16px 16px', borderBottom: '2px solid var(--ink-border)' }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 4 }}>
           <Link href="/" style={{ fontSize: 12, color: 'var(--ink-muted)', textDecoration: 'none', fontFamily: 'var(--font-body)' }}>
-            ← নীড়পাতা
+            ← হোমপেজ
           </Link>
           {lastUpdated && (
             <span style={{ fontSize: 10, color: 'var(--ink-ghost)', fontFamily: 'var(--font-body)' }}>

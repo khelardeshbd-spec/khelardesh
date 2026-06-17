@@ -150,7 +150,7 @@ export default function SmartHeader() {
         >
           {/* Left spacer */}
           <div className="flex items-center h-full gap-3 border-b border-[var(--ink-border)] pb-2">
-            <Link href="/" aria-label="খেলারদেশ নীড়পাতা">
+            <Link href="/" aria-label="খেলারদেশ হোমপেজ">
               <img src="/logo.png" alt="খেলারদেশ" style={{ height: 54, objectFit: 'contain', filter: 'var(--logo-filter, none)' }} />
             </Link>
           </div>
@@ -266,7 +266,7 @@ export default function SmartHeader() {
         {/* ── MOBILE TOP BAR ── */}
         <div className="flex lg:hidden items-center justify-between px-3 py-2 bg-transparent" style={{ minHeight: 50 }}>
           {/* Logo */}
-          <Link href="/" aria-label="খেলারদেশ — নীড়পাতা">
+          <Link href="/" aria-label="খেলারদেশ — হোমপেজ">
             <img
               src="/logo.png"
               alt="খেলারদেশ"

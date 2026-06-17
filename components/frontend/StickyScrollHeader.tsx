@@ -68,7 +68,7 @@ export default function StickyScrollHeader() {
     >
       <div className="max-w-[1200px] mx-auto px-6 py-2.5 flex items-center justify-between">
         {/* Left Brand Identity: text wordmark */}
-        <Link href="/" className="flex items-center flex-shrink-0" aria-label="খেলারদেশ নীড়পাতা">
+        <Link href="/" className="flex items-center flex-shrink-0" aria-label="খেলারদেশ হোমপেজ">
           <span
             style={{
               fontFamily: 'var(--font-headline)',
