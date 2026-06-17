@@ -37,7 +37,11 @@ export default function ScoresStrip() {
     let isUserInteracting = false;
 
     const onStart = () => { isUserInteracting = true; };
-    const onEnd = () => { isUserInteracting = false; };
+    const onEnd = () => {
+      isUserInteracting = false;
+      // Synchronize accumulator when user finishes dragging
+      scrollPos = el.scrollLeft;
+    };
 
     el.addEventListener('mouseenter', onStart);
     el.addEventListener('mouseleave', onEnd);
@@ -46,15 +50,22 @@ export default function ScoresStrip() {
     el.addEventListener('mousedown', onStart);
     el.addEventListener('mouseup', onEnd);
 
+    // High-precision accumulator for scrolling position
+    let scrollPos = el.scrollLeft;
+
     const step = () => {
       if (!isUserInteracting) {
-        el.scrollLeft += 0.45; // very slow scroll
+        scrollPos += 0.55; // slow scroll speed
 
         // Reset to start seamlessly if we have scrolled past the first set of items
         const halfWidth = el.scrollWidth / 2;
-        if (el.scrollLeft >= halfWidth) {
-          el.scrollLeft = 0;
+        if (scrollPos >= halfWidth) {
+          scrollPos = 0;
         }
+        el.scrollLeft = Math.floor(scrollPos);
+      } else {
+        // Sync accumulator with user's scroll gesture
+        scrollPos = el.scrollLeft;
       }
       frameId = requestAnimationFrame(step);
     };
