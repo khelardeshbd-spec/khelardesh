@@ -6,80 +6,88 @@ import ScoreCard from './ScoreCard';
 import { useLiveScores } from '@/hooks/useLiveScores';
 import { translateTeamName } from '@/lib/teamTranslations';
 
-function toBengaliNumerals(numStr: string | number | null): string {
-  if (numStr === null || numStr === undefined) return '';
-  const bnNumerals = ['০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯'];
-  return String(numStr).replace(/[0-9]/g, w => bnNumerals[parseInt(w, 10)]);
-}
-
-function translateStatus(status: string): string {
-  const s = status.toLowerCase();
-  if (s === 'ft' || s === 'full time') return 'পূর্ণ সময়';
-  if (s === 'ht' || s === 'half time') return 'বিরতি';
-  if (s === 'scheduled') return 'আসন্ন';
-  if (s === 'live') return 'লাইভ';
-  if (s === 'postponed') return 'স্থগিত';
-  if (s === 'canceled' || s === 'cancelled') return 'বাতিল';
-  if (s.includes("'")) return toBengaliNumerals(s);
-  return status; // fallback
-}
-
 export default function ScoresStrip() {
   const { data, isLoading, isError } = useLiveScores();
-  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  
+  const containerRef = useRef<HTMLDivElement>(null);
+  const trackRef = useRef<HTMLDivElement>(null);
 
-  // Handle JS-driven auto scrolling with manual swipe overrides
   useEffect(() => {
-    const el = scrollContainerRef.current;
-    if (!el || !data || data.length === 0) return;
+    const container = containerRef.current;
+    const track = trackRef.current;
+    if (!container || !track || !data || data.length === 0) return;
 
     let frameId: number;
-    let isUserInteracting = false;
-
-    const onStart = () => { isUserInteracting = true; };
-    const onEnd = () => {
-      isUserInteracting = false;
-      // Synchronize accumulator when user finishes dragging
-      scrollPos = el.scrollLeft;
-    };
-
-    el.addEventListener('mouseenter', onStart);
-    el.addEventListener('mouseleave', onEnd);
-    el.addEventListener('touchstart', onStart, { passive: true });
-    el.addEventListener('touchend', onEnd, { passive: true });
-    el.addEventListener('mousedown', onStart);
-    el.addEventListener('mouseup', onEnd);
-
-    // High-precision accumulator for scrolling position
-    let scrollPos = el.scrollLeft;
+    let x = 0; // current position
+    let startX = 0;
+    let dragStartX = 0;
+    let isDragging = false;
 
     const step = () => {
-      if (!isUserInteracting) {
-        scrollPos += 0.55; // slow scroll speed
+      if (!isDragging) {
+        x -= 0.65; // slow auto scroll speed
 
-        // Reset to start seamlessly if we have scrolled past the first set of items
-        const halfWidth = el.scrollWidth / 2;
-        if (scrollPos >= halfWidth) {
-          scrollPos = 0;
+        const halfWidth = track.scrollWidth / 2;
+        if (Math.abs(x) >= halfWidth) {
+          x = 0; // wrap around seamlessly
         }
-        el.scrollLeft = Math.floor(scrollPos);
-      } else {
-        // Sync accumulator with user's scroll gesture
-        scrollPos = el.scrollLeft;
+        track.style.transform = `translate3d(${x}px, 0, 0)`;
       }
       frameId = requestAnimationFrame(step);
     };
+
+    // Drag start
+    const onStart = (e: MouseEvent | TouchEvent) => {
+      isDragging = true;
+      startX = 'touches' in e ? e.touches[0].clientX : e.clientX;
+      dragStartX = x;
+    };
+
+    // Drag move
+    const onMove = (e: MouseEvent | TouchEvent) => {
+      if (!isDragging) return;
+      const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX;
+      const deltaX = clientX - startX;
+      x = dragStartX + deltaX;
+
+      // Wrap around boundary limits seamlessly during manual drag
+      const halfWidth = track.scrollWidth / 2;
+      if (x > 0) {
+        x = -halfWidth + x;
+      } else if (Math.abs(x) >= halfWidth) {
+        x = x + halfWidth;
+      }
+
+      track.style.transform = `translate3d(${x}px, 0, 0)`;
+    };
+
+    // Drag end
+    const onEnd = () => {
+      isDragging = false;
+    };
+
+    // Desktop events
+    container.addEventListener('mousedown', onStart);
+    window.addEventListener('mousemove', onMove);
+    window.addEventListener('mouseup', onEnd);
+
+    // Mobile events
+    container.addEventListener('touchstart', onStart, { passive: true });
+    window.addEventListener('touchmove', onMove, { passive: true });
+    window.addEventListener('touchend', onEnd);
 
     frameId = requestAnimationFrame(step);
 
     return () => {
       cancelAnimationFrame(frameId);
-      el.removeEventListener('mouseenter', onStart);
-      el.removeEventListener('mouseleave', onEnd);
-      el.removeEventListener('touchstart', onStart);
-      el.removeEventListener('touchend', onEnd);
-      el.removeEventListener('mousedown', onStart);
-      el.removeEventListener('mouseup', onEnd);
+      
+      container.removeEventListener('mousedown', onStart);
+      window.removeEventListener('mousemove', onMove);
+      window.removeEventListener('mouseup', onEnd);
+
+      container.removeEventListener('touchstart', onStart);
+      window.removeEventListener('touchmove', onMove);
+      window.removeEventListener('touchend', onEnd);
     };
   }, [data]);
 
@@ -111,62 +119,68 @@ export default function ScoresStrip() {
         </h2>
       </div>
 
-      {/* Swipeable auto-scrolling track */}
+      {/* Swipeable auto-scrolling container */}
       <div 
-        ref={scrollContainerRef}
-        className="scrollbar-none overflow-x-auto flex gap-6 items-start pb-2 px-6"
-        style={{ WebkitOverflowScrolling: 'touch' }}
+        ref={containerRef}
+        className="overflow-hidden w-full relative py-1 cursor-grab active:cursor-grabbing select-none"
+        style={{ touchAction: 'pan-y' }}
       >
-        {/* First set of cards */}
-        {sorted.map((match) => {
-          let winnerTeam: "A" | "B" | null = null;
-          if (match.isFinished) {
-             if (match.home.isWinner) winnerTeam = "A";
-             if (match.away.isWinner) winnerTeam = "B";
-          }
+        <div 
+          ref={trackRef}
+          className="flex gap-6 items-start pb-2 px-6"
+          style={{ width: 'max-content', willChange: 'transform' }}
+        >
+          {/* First set of cards */}
+          {sorted.map((match) => {
+            let winnerTeam: "A" | "B" | null = null;
+            if (match.isFinished) {
+               if (match.home.isWinner) winnerTeam = "A";
+               if (match.away.isWinner) winnerTeam = "B";
+            }
 
-          return (
-            <div key={match.id} className="flex-shrink-0">
-              <ScoreCard
-                league={match.league}
-                teamA={match.home.name}
-                scoreA={match.home.score !== null ? String(match.home.score) : '-'}
-                teamB={match.away.name}
-                scoreB={match.away.score !== null ? String(match.away.score) : '-'}
-                status={match.statusText}
-                isLive={match.isLive}
-                winnerTeam={winnerTeam}
-                home_team_logo={match.home.logo}
-                away_team_logo={match.away.logo}
-              />
-            </div>
-          );
-        })}
-        {/* Duplicated set of cards for seamless infinite scroll */}
-        {sorted.map((match) => {
-          let winnerTeam: "A" | "B" | null = null;
-          if (match.isFinished) {
-             if (match.home.isWinner) winnerTeam = "A";
-             if (match.away.isWinner) winnerTeam = "B";
-          }
+            return (
+              <div key={match.id} className="flex-shrink-0">
+                <ScoreCard
+                  league={match.league}
+                  teamA={match.home.name}
+                  scoreA={match.home.score !== null ? String(match.home.score) : '-'}
+                  teamB={match.away.name}
+                  scoreB={match.away.score !== null ? String(match.away.score) : '-'}
+                  status={match.statusText}
+                  isLive={match.isLive}
+                  winnerTeam={winnerTeam}
+                  home_team_logo={match.home.logo}
+                  away_team_logo={match.away.logo}
+                />
+              </div>
+            );
+          })}
+          {/* Duplicated set of cards for seamless infinite scroll */}
+          {sorted.map((match) => {
+            let winnerTeam: "A" | "B" | null = null;
+            if (match.isFinished) {
+               if (match.home.isWinner) winnerTeam = "A";
+               if (match.away.isWinner) winnerTeam = "B";
+            }
 
-          return (
-            <div key={`${match.id}-dup`} className="flex-shrink-0">
-              <ScoreCard
-                league={match.league}
-                teamA={match.home.name}
-                scoreA={match.home.score !== null ? String(match.home.score) : '-'}
-                teamB={match.away.name}
-                scoreB={match.away.score !== null ? String(match.away.score) : '-'}
-                status={match.statusText}
-                isLive={match.isLive}
-                winnerTeam={winnerTeam}
-                home_team_logo={match.home.logo}
-                away_team_logo={match.away.logo}
-              />
-            </div>
-          );
-        })}
+            return (
+              <div key={`${match.id}-dup`} className="flex-shrink-0">
+                <ScoreCard
+                  league={match.league}
+                  teamA={match.home.name}
+                  scoreA={match.home.score !== null ? String(match.home.score) : '-'}
+                  teamB={match.away.name}
+                  scoreB={match.away.score !== null ? String(match.away.score) : '-'}
+                  status={match.statusText}
+                  isLive={match.isLive}
+                  winnerTeam={winnerTeam}
+                  home_team_logo={match.home.logo}
+                  away_team_logo={match.away.logo}
+                />
+              </div>
+            );
+          })}
+        </div>
       </div>
 
       {/* Footer bar */}
