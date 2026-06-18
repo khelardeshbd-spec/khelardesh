@@ -53,6 +53,12 @@ export default function ScoresStrip() {
       pausedUntil = Date.now() + 4000;
     };
 
+    const onHoverPause = () => {
+      if (window.matchMedia('(hover: hover)').matches) {
+        triggerPause();
+      }
+    };
+
     // Drag start
     const onStart = (e: MouseEvent | TouchEvent) => {
       isDragging = true;
@@ -63,8 +69,8 @@ export default function ScoresStrip() {
 
     // Drag move
     const onMove = (e: MouseEvent | TouchEvent) => {
-      triggerPause();
       if (!isDragging) return;
+      triggerPause();
       const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX;
       const deltaX = clientX - startX;
       x = dragStartX + deltaX;
@@ -94,8 +100,8 @@ export default function ScoresStrip() {
 
     // Desktop events
     container.addEventListener('mousedown', onStart);
-    container.addEventListener('mouseenter', triggerPause);
-    container.addEventListener('mousemove', triggerPause);
+    container.addEventListener('mouseenter', onHoverPause);
+    container.addEventListener('mousemove', onHoverPause);
     window.addEventListener('mousemove', onMove);
     window.addEventListener('mouseup', onEnd);
 
@@ -111,8 +117,8 @@ export default function ScoresStrip() {
       xRef.current = x; // Ensure last frame position is saved
       
       container.removeEventListener('mousedown', onStart);
-      container.removeEventListener('mouseenter', triggerPause);
-      container.removeEventListener('mousemove', triggerPause);
+      container.removeEventListener('mouseenter', onHoverPause);
+      container.removeEventListener('mousemove', onHoverPause);
       window.removeEventListener('mousemove', onMove);
       window.removeEventListener('mouseup', onEnd);
 
