@@ -308,7 +308,6 @@ export default async function ArticlePage({ params }: PageProps) {
         </article>
 
       </div>
-      <BottomNav />
     </div>
   );
 }
