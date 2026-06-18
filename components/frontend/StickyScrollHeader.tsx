@@ -8,6 +8,7 @@ export default function StickyScrollHeader() {
   const [isVisible, setIsVisible] = useState(false);
   const pathname = usePathname();
   const activeItemRef = useRef<HTMLAnchorElement>(null);
+  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -15,6 +16,7 @@ export default function StickyScrollHeader() {
         setIsVisible(true);
       } else {
         setIsVisible(false);
+        setOpenDropdown(null);
       }
     };
 
@@ -86,69 +88,80 @@ export default function StickyScrollHeader() {
         </Link>
 
         {/* Center: Navigation Menu */}
-        <nav 
-          className="scrollbar-none overflow-x-auto lg:overflow-visible flex items-center gap-x-6 ml-4 justify-start lg:justify-end flex-1"
-          style={{ whiteSpace: 'nowrap' }}
-        >
-          {navItems.map((item, idx) => {
-            const href = item.slug === '' ? '/' : `/sport/${item.slug}`;
-            const isActive = item.slug === '' 
-              ? pathname === '/' 
-              : pathname === `/sport/${item.slug}` || (!!item.subItems && item.subItems.some(sub => pathname === `/sport/${sub.slug}`));
+        <div className="relative flex-1 ml-4 overflow-hidden lg:overflow-visible flex items-center pr-2">
+          <nav 
+            className={`scrollbar-none ${openDropdown ? 'overflow-visible' : 'overflow-x-auto'} lg:overflow-visible flex items-center gap-x-6 justify-start lg:justify-end flex-1`}
+            style={{ whiteSpace: 'nowrap' }}
+          >
+            {navItems.map((item, idx) => {
+              const href = item.slug === '' ? '/' : `/sport/${item.slug}`;
+              const isActive = item.slug === '' 
+                ? pathname === '/' 
+                : pathname === `/sport/${item.slug}` || (!!item.subItems && item.subItems.some(sub => pathname === `/sport/${sub.slug}`));
+              const isOpen = openDropdown === item.slug;
 
-            if (item.subItems) {
-              return (
-                <div key={idx} className="relative group py-2">
-                  <Link
-                    ref={isActive ? activeItemRef : undefined}
-                    href={href}
-                    className="text-[13px] font-bold tracking-wide transition-colors duration-150 hover:underline flex items-center gap-1"
-                    style={{
-                      fontFamily: 'var(--font-body)',
-                      color: isActive ? 'var(--live-red)' : 'var(--ink)',
-                    }}
-                  >
-                    {item.label}
-                    <span className="text-[9px]">▼</span>
-                  </Link>
-                  {/* Dropdown menu */}
-                  <div className="absolute left-0 top-[100%] hidden group-hover:block bg-[var(--bg-surface)] border border-[var(--ink-border)] shadow-md rounded-[3px] py-1 min-w-[150px] z-50 dropdown-bridge">
+              if (item.subItems) {
+                return (
+                  <div key={idx} className="relative group py-2">
+                    <Link
+                      ref={isActive ? activeItemRef : undefined}
+                      href={href}
+                      onClick={(e) => {
+                        if (window.innerWidth < 1024) {
+                          e.preventDefault();
+                          setOpenDropdown(openDropdown === item.slug ? null : item.slug);
+                        }
+                      }}
+                      className="text-[13px] font-bold tracking-wide transition-colors duration-150 hover:underline flex items-center gap-1"
+                      style={{
+                        fontFamily: 'var(--font-body)',
+                        color: isActive ? 'var(--live-red)' : 'var(--ink)',
+                      }}
+                    >
+                      {item.label}
+                      <span className="text-[9px]">▼</span>
+                    </Link>
+                    {/* Dropdown menu */}
+                    <div className={`absolute left-0 top-[100%] ${isOpen ? 'block' : 'hidden lg:group-hover:block'} bg-[var(--bg-surface)] border border-[var(--ink-border)] shadow-md rounded-[3px] py-1 min-w-[150px] z-50 dropdown-bridge`}>
 
-                    {item.subItems.map((sub, sIdx) => {
-                      const isSubActive = pathname === `/sport/${sub.slug}`;
-                      return (
-                        <Link
-                          key={sIdx}
-                          ref={isSubActive ? activeItemRef : undefined}
-                          href={`/sport/${sub.slug}`}
-                          className="block px-4 py-2 text-xs font-bold transition-colors"
-                          style={{ 
-                            fontFamily: 'var(--font-body)',
-                            color: isSubActive ? 'var(--live-red)' : 'var(--ink)',
-                            backgroundColor: isSubActive ? 'var(--ink-ghost)' : 'transparent'
-                          }}
-                        >
-                          {sub.label}
-                        </Link>
-                      );
-                    })}
+                      {item.subItems.map((sub, sIdx) => {
+                        const isSubActive = pathname === `/sport/${sub.slug}`;
+                        return (
+                          <Link
+                            key={sIdx}
+                            ref={isSubActive ? activeItemRef : undefined}
+                            href={`/sport/${sub.slug}`}
+                            onClick={() => setOpenDropdown(null)}
+                            className="block px-4 py-2 text-xs font-bold transition-colors"
+                            style={{ 
+                              fontFamily: 'var(--font-body)',
+                              color: isSubActive ? 'var(--live-red)' : 'var(--ink)',
+                              backgroundColor: isSubActive ? 'var(--ink-ghost)' : 'transparent'
+                            }}
+                          >
+                            {sub.label}
+                          </Link>
+                        );
+                      })}
+                    </div>
                   </div>
-                </div>
-              );
-            }
+                );
+              }
 
-            return (
-              <Link
-                key={idx}
-                ref={isActive ? activeItemRef : undefined}
-                href={href}
-                className="text-[13px] font-bold tracking-wide transition-colors duration-150 hover:underline py-2"
-                style={{
-                  fontFamily: 'var(--font-body)',
-                  color: isActive ? 'var(--live-red)' : 'var(--ink)',
-                }}
-              >
-                {item.label}
+              return (
+                <Link
+                  key={idx}
+                  ref={isActive ? activeItemRef : undefined}
+                  href={href}
+                  className="text-[13px] font-bold tracking-wide transition-colors duration-150 hover:underline py-2"
+                  style={{
+                    fontFamily: 'var(--font-body)',
+                    color: isActive ? 'var(--live-red)' : 'var(--ink)',
+                  }}
+                >
+                  {item.label}
+                </Link>
+              );
               </Link>
             );
           })}
