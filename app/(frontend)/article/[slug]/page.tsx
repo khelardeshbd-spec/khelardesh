@@ -189,11 +189,11 @@ export default async function ArticlePage({ params }: PageProps) {
           </div>
 
           {/* Byline, metadata, and Actions combined in one single row */}
-          <div className="flex items-center justify-between border-t border-b border-[var(--ink-border)] py-3.5 mb-8 gap-3 flex-wrap">
-            <div className="flex items-center gap-2.5">
+          <div className="flex items-center justify-between border-t border-b border-[var(--ink-border)] py-2.5 mb-8 gap-2 w-full flex-nowrap overflow-x-auto no-scrollbar whitespace-nowrap">
+            <div className="flex items-center gap-2 flex-shrink-0 min-w-0">
               {/* Author circular avatar */}
               <div 
-                className="w-8 h-8 rounded-full flex items-center justify-center border overflow-hidden text-xs font-bold flex-shrink-0"
+                className="w-7 h-7 rounded-full flex items-center justify-center border overflow-hidden text-[10px] font-bold flex-shrink-0"
                 style={{ 
                   backgroundColor: 'var(--bg-surface)', 
                   borderColor: 'var(--ink-border)',
@@ -203,27 +203,27 @@ export default async function ArticlePage({ params }: PageProps) {
                 {byline ? byline.slice(0, 2) : 'KD'}
               </div>
               <div 
-                className="text-xs text-[var(--ink)] flex items-center gap-1.5 flex-wrap" 
+                className="text-[11px] text-[var(--ink)] flex items-center gap-1.5 flex-nowrap min-w-0" 
                 style={{ fontFamily: 'var(--font-body)' }}
               >
-                <span>By <span className="font-bold">{byline || 'খেলারদেশ প্রতিনিধি'}</span></span>
-                <span className="text-[var(--ink-muted)]">·</span>
-                <span className="text-[var(--ink-muted)]">{time} · {exactTime}</span>
+                <span className="flex-shrink-0">By <span className="font-bold">{byline || 'খেলারদেশ প্রতিনিধি'}</span></span>
+                <span className="text-[var(--ink-muted)] flex-shrink-0">·</span>
+                <span className="text-[var(--ink-muted)] flex-shrink-0">{time} · {exactTime}</span>
               </div>
             </div>
 
-            <div className="flex items-center gap-2">
-              <ShareButton />
+            <div className="flex items-center gap-1.5 flex-shrink-0">
+              <ShareButton compact={true} />
               <BookmarkButton article={articleForBookmark} variant="circle" />
               <button 
-                className="h-9 px-3 rounded-full flex items-center justify-center gap-1.5 border hover:bg-[var(--ink-ghost)] transition-colors cursor-pointer text-[var(--ink-muted)] hover:text-[var(--ink)] text-xs font-bold"
+                className="h-8 px-2.5 rounded-full flex items-center justify-center gap-1 border hover:bg-[var(--ink-ghost)] transition-colors cursor-pointer text-[var(--ink-muted)] hover:text-[var(--ink)] text-[10px] font-bold flex-shrink-0"
                 style={{ 
                   backgroundColor: 'var(--bg-surface)', 
                   borderColor: 'var(--ink-border)' 
                 }}
                 title="মন্তব্য"
               >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24">
+                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 20.97a.598.598 0 01-.78-.78l.893-2.61a8.887 8.887 0 01-1.023-3.33C4.5 7.444 8.53 3.75 13.5 3.75S21 7.444 21 12z" />
                 </svg>
                 <span>০</span>
