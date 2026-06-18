@@ -128,12 +128,12 @@ export default async function ArticlePage({ params }: PageProps) {
             style={{
               fontFamily: "var(--font-headline)",
               fontWeight: 800,
-              fontSize: 'clamp(32px, 5vw, 48px)',
-              lineHeight: 1.12,
+              fontSize: 'clamp(28px, 4.5vw, 42px)',
+              lineHeight: 1.15,
               letterSpacing: '-0.02em',
               color: 'var(--ink)',
               marginBottom: '16px',
-              marginTop: '24px',
+              marginTop: '20px',
             }}
           >
             {displayHeadline}
@@ -146,53 +146,15 @@ export default async function ArticlePage({ params }: PageProps) {
               style={{
                 fontFamily: "var(--font-headline)",
                 fontWeight: 400,
-                fontSize: 'clamp(18px, 2vw, 21px)',
+                fontSize: 'clamp(17px, 1.8vw, 20px)',
                 color: 'var(--ink-muted)',
-                lineHeight: 1.5,
+                lineHeight: 1.45,
                 marginBottom: '24px',
               }}
             >
               {deck}
             </p>
           )}
-
-          {/* Byline and Timestamp row */}
-          <div className="flex items-center justify-between border-t border-b border-[var(--ink-border)] py-3.5 mb-8">
-            <div className="flex items-center gap-3">
-              {/* Author circular avatar */}
-              <div 
-                className="w-9 h-9 rounded-full flex items-center justify-center border overflow-hidden text-xs font-bold"
-                style={{ 
-                  backgroundColor: 'var(--bg-surface)', 
-                  borderColor: 'var(--ink-border)',
-                  color: 'var(--ink)'
-                }}
-              >
-                {byline ? byline.slice(0, 2) : 'KD'}
-              </div>
-              <div className="flex flex-col">
-                <span 
-                  className="text-sm font-bold text-[var(--ink)] leading-tight" 
-                  style={{ fontFamily: 'var(--font-body)' }}
-                >
-                  {byline || 'খেলারদেশ প্রতিনিধি'}
-                </span>
-                <span 
-                  className="text-xs text-[var(--ink-muted)] flex items-center gap-1.5 mt-0.5" 
-                  style={{ fontFamily: 'var(--font-body)' }}
-                >
-                  <span>{time}</span>
-                  <span className="text-[10px]">·</span>
-                  <span title={exactTime}>{exactTime}</span>
-                </span>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-3">
-              <ShareButton />
-              <BookmarkButton article={articleForBookmark} />
-            </div>
-          </div>
 
           {/* Hero Image / Video */}
           <div className="w-full mb-6">
@@ -224,13 +186,61 @@ export default async function ArticlePage({ params }: PageProps) {
             </div>
             {mediaCaption && (
               <p
-                className="mt-3 text-xs text-[var(--ink-muted)] leading-relaxed italic"
+                className="mt-2.5 text-xs text-[var(--ink-muted)] leading-relaxed italic"
                 style={{ fontFamily: "var(--font-body)" }}
                 lang="bn"
               >
                 {mediaCaption}
               </p>
             )}
+          </div>
+
+          {/* Author Byline block (matching NYT style) */}
+          <div className="mt-6 mb-4 flex flex-col gap-1.5">
+            <div className="flex items-center gap-3">
+              {/* Author circular avatar */}
+              <div 
+                className="w-9 h-9 rounded-full flex items-center justify-center border overflow-hidden text-xs font-bold"
+                style={{ 
+                  backgroundColor: 'var(--bg-surface)', 
+                  borderColor: 'var(--ink-border)',
+                  color: 'var(--ink)'
+                }}
+              >
+                {byline ? byline.slice(0, 2) : 'KD'}
+              </div>
+              <div 
+                className="text-sm text-[var(--ink)]" 
+                style={{ fontFamily: 'var(--font-body)' }}
+              >
+                By <span className="font-bold">{byline || 'খেলারদেশ প্রতিনিধি'}</span>
+              </div>
+            </div>
+            <div 
+              className="text-xs text-[var(--ink-muted)] pl-12" 
+              style={{ fontFamily: 'var(--font-body)' }}
+            >
+              {time} · {exactTime}
+            </div>
+          </div>
+
+          {/* Action buttons row */}
+          <div className="flex items-center gap-3 border-t border-b border-[var(--ink-border)] py-3.5 mb-8">
+            <ShareButton />
+            <BookmarkButton article={articleForBookmark} variant="circle" />
+            <button 
+              className="h-9 px-3 rounded-full flex items-center justify-center gap-1.5 border hover:bg-[var(--ink-ghost)] transition-colors cursor-pointer text-[var(--ink-muted)] hover:text-[var(--ink)] text-xs font-bold"
+              style={{ 
+                backgroundColor: 'var(--bg-surface)', 
+                borderColor: 'var(--ink-border)' 
+              }}
+              title="মন্তব্য"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 20.97a.598.598 0 01-.78-.78l.893-2.61a8.887 8.887 0 01-1.023-3.33C4.5 7.444 8.53 3.75 13.5 3.75S21 7.444 21 12z" />
+              </svg>
+              <span>০</span>
+            </button>
           </div>
 
           {/* Paragraphs in Athletic Style */}

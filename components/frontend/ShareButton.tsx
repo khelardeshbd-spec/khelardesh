@@ -43,7 +43,7 @@ export default function ShareButton() {
       <button
         onClick={handleShare}
         aria-label="খবরটি শেয়ার করুন"
-        className="w-9 h-9 rounded-full flex items-center justify-center border hover:bg-[var(--ink-ghost)] transition-colors cursor-pointer"
+        className="h-9 px-4 rounded-full flex items-center justify-center gap-2 border hover:bg-[var(--ink-ghost)] transition-colors cursor-pointer text-xs font-bold"
         style={{
           backgroundColor: 'var(--bg-surface)',
           borderColor: 'var(--ink-border)',
@@ -53,6 +53,7 @@ export default function ShareButton() {
         <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" d="M8.684 10.742l5.26-2.63m0 7.776l-5.26-2.63m8 2.812a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm-8.25-4a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25-4a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0z" />
         </svg>
+        <span>শেয়ার করুন</span>
       </button>
     </div>
   );

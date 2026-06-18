@@ -15,7 +15,13 @@ interface Article {
   publishedAt: Date | string;
 }
 
-export default function BookmarkButton({ article }: { article: Article }) {
+export default function BookmarkButton({ 
+  article, 
+  variant = 'default' 
+}: { 
+  article: Article; 
+  variant?: 'default' | 'circle';
+}) {
   const [isSaved, setIsSaved] = useState(false);
 
   useEffect(() => {
@@ -46,12 +52,24 @@ export default function BookmarkButton({ article }: { article: Article }) {
     }
   };
 
+  const buttonClasses = variant === 'circle'
+    ? "w-9 h-9 rounded-full flex items-center justify-center border hover:bg-[var(--ink-ghost)] transition-colors cursor-pointer text-[var(--ink-muted)] hover:text-[var(--ink)]"
+    : "text-[var(--ink-muted)] hover:text-[var(--ink)] transition-colors p-1";
+
+  const buttonStyles = variant === 'circle'
+    ? {
+        backgroundColor: 'var(--bg-surface)',
+        borderColor: 'var(--ink-border)',
+      }
+    : undefined;
+
   return (
     <button
       onClick={toggleBookmark}
       aria-label={isSaved ? "সংরক্ষণ বাতিল করুন" : "সংরক্ষণ করুন"}
       title={isSaved ? "সংরক্ষণ বাতিল করুন" : "সংরক্ষণ করুন"}
-      className="text-[var(--ink-muted)] hover:text-[var(--ink)] transition-colors p-1"
+      className={buttonClasses}
+      style={buttonStyles}
     >
       <svg width="20" height="20" viewBox="0 0 24 24" fill={isSaved ? "currentColor" : "none"} stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
         <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
