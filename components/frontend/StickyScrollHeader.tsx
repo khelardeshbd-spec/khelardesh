@@ -164,8 +164,13 @@ export default function StickyScrollHeader() {
               );
           })}
         </nav>
+        {/* Right swipe indicator gradient */}
+        {!openDropdown && (
+          <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-r from-transparent to-white pointer-events-none lg:hidden" />
+        )}
       </div>
     </div>
+  </div>
   );
 }
 
