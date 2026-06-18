@@ -13,19 +13,96 @@ async function fetchFallbackAvatar(playerName: string): Promise<string | null> {
     return playerAvatarCache.get(cleanName) || null;
   }
 
-  try {
-    const url = `https://www.thesportsdb.com/api/v1/json/3/searchplayers.php?p=${encodeURIComponent(cleanName)}`;
-    const res = await fetch(url, {
-      next: { revalidate: 86400 } // Cache results for 24 hours
-    });
-    if (res.ok) {
-      const data = await res.json();
-      const player = data.player?.[0];
-      if (player) {
-        const avatarUrl = player.strCutout || player.strThumb || null;
-        playerAvatarCache.set(cleanName, avatarUrl);
-        return avatarUrl;
+  // Define lookup methods in order of preference (SportsDB cutout > Wiki EN search > Wiki PT search > Wiki EN exact)
+  const fetchSportsDB = async () => {
+    try {
+      const url = `https://www.thesportsdb.com/api/v1/json/3/searchplayers.php?p=${encodeURIComponent(cleanName)}`;
+      const res = await fetch(url, { next: { revalidate: 86400 } });
+      if (res.ok) {
+        const data = await res.json();
+        const player = data.player?.[0];
+        if (player && (player.strCutout || player.strThumb)) {
+          return player.strCutout || player.strThumb;
+        }
       }
+    } catch {}
+    return null;
+  };
+
+  const fetchWikiEN = async () => {
+    try {
+      const url = `https://en.wikipedia.org/w/api.php?action=query&generator=search&gsrsearch=${encodeURIComponent(cleanName + ' footballer')}&gsrlimit=1&prop=pageimages&piprop=thumbnail&pithumbsize=200&format=json`;
+      const res = await fetch(url, { next: { revalidate: 86400 } });
+      if (res.ok) {
+        const data = await res.json();
+        const pages = data.query?.pages;
+        if (pages) {
+          const pageId = Object.keys(pages)[0];
+          const thumbnail = pages[pageId]?.thumbnail?.source;
+          if (thumbnail) return thumbnail;
+        }
+      }
+    } catch {}
+    return null;
+  };
+
+  const fetchWikiPT = async () => {
+    try {
+      const url = `https://pt.wikipedia.org/w/api.php?action=query&generator=search&gsrsearch=${encodeURIComponent(cleanName + ' futebol')}&gsrlimit=1&prop=pageimages&piprop=thumbnail&pithumbsize=200&format=json`;
+      const res = await fetch(url, { next: { revalidate: 86400 } });
+      if (res.ok) {
+        const data = await res.json();
+        const pages = data.query?.pages;
+        if (pages) {
+          const pageId = Object.keys(pages)[0];
+          const thumbnail = pages[pageId]?.thumbnail?.source;
+          if (thumbnail) return thumbnail;
+        }
+      }
+    } catch {}
+    return null;
+  };
+
+  const fetchWikiENExact = async () => {
+    try {
+      const url = `https://en.wikipedia.org/w/api.php?action=query&titles=${encodeURIComponent(cleanName)}&prop=pageimages&piprop=thumbnail&pithumbsize=200&format=json`;
+      const res = await fetch(url, { next: { revalidate: 86400 } });
+      if (res.ok) {
+        const data = await res.json();
+        const pages = data.query?.pages;
+        if (pages) {
+          const pageId = Object.keys(pages)[0];
+          const thumbnail = pages[pageId]?.thumbnail?.source;
+          if (thumbnail) return thumbnail;
+        }
+      }
+    } catch {}
+    return null;
+  };
+
+  try {
+    const sportsdb = await fetchSportsDB();
+    if (sportsdb) {
+      playerAvatarCache.set(cleanName, sportsdb);
+      return sportsdb;
+    }
+
+    const wikien = await fetchWikiEN();
+    if (wikien) {
+      playerAvatarCache.set(cleanName, wikien);
+      return wikien;
+    }
+
+    const wikipt = await fetchWikiPT();
+    if (wikipt) {
+      playerAvatarCache.set(cleanName, wikipt);
+      return wikipt;
+    }
+
+    const wikiexact = await fetchWikiENExact();
+    if (wikiexact) {
+      playerAvatarCache.set(cleanName, wikiexact);
+      return wikiexact;
     }
   } catch (err) {
     console.error(`Error fetching fallback avatar for ${cleanName}:`, err);
