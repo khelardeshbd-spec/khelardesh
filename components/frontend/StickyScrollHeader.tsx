@@ -162,8 +162,6 @@ export default function StickyScrollHeader() {
                   {item.label}
                 </Link>
               );
-              </Link>
-            );
           })}
         </nav>
       </div>
