@@ -8,6 +8,7 @@ export default function StickyScrollHeader() {
   const [isVisible, setIsVisible] = useState(false);
   const pathname = usePathname();
   const activeItemRef = useRef<HTMLAnchorElement>(null);
+  const navRef = useRef<HTMLDivElement>(null);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
 
   useEffect(() => {
@@ -22,6 +23,17 @@ export default function StickyScrollHeader() {
 
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // Close dropdown on click outside
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (navRef.current && !navRef.current.contains(event.target as Node)) {
+        setOpenDropdown(null);
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
   // Scroll active category into view
@@ -88,7 +100,7 @@ export default function StickyScrollHeader() {
         </Link>
 
         {/* Center: Navigation Menu */}
-        <div className={`relative flex-1 ml-4 ${openDropdown ? 'overflow-visible' : 'overflow-hidden'} lg:overflow-visible flex items-center pr-2`}>
+        <div ref={navRef} className={`relative flex-1 ml-4 ${openDropdown ? 'overflow-visible' : 'overflow-hidden'} lg:overflow-visible flex items-center pr-2`}>
           <nav 
             className={`scrollbar-none ${openDropdown ? 'overflow-visible' : 'overflow-x-auto'} lg:overflow-visible flex items-center gap-x-6 justify-start lg:justify-end flex-1`}
             style={{ whiteSpace: 'nowrap' }}
