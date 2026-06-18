@@ -25,15 +25,41 @@ export default function ScoresStrip() {
     let isDragging = false;
     let lastTime = performance.now();
     let pausedUntil = 0; // timestamp to pause scrolling
+    
+    // Inertia physics variables
+    let velocity = 0;
+    let lastX = 0;
+    let lastTimestamp = 0;
 
-    const speed = 40; // Pixels per second scroll speed
+    const speed = 40; // Pixels per second auto-scroll speed
 
     const step = (time: number) => {
       const now = Date.now();
-      if (!isDragging && now > pausedUntil) {
-        const delta = (time - lastTime) / 1000;
-        // Cap delta to prevent huge jumps (e.g., if tab is hidden/suspended)
-        const cappedDelta = Math.min(delta, 0.1);
+      const delta = (time - lastTime) / 1000;
+      // Cap delta to prevent huge jumps (e.g., if tab is hidden/suspended)
+      const cappedDelta = Math.min(delta, 0.1);
+
+      if (isDragging) {
+        // Handled by onMove
+      } else if (Math.abs(velocity) > 0.05) {
+        // Sliding with inertia
+        x += velocity * cappedDelta * 1000;
+        velocity *= 0.94; // Decelerate smoothly
+        
+        // Boundaries checks during sliding
+        const halfWidth = track.scrollWidth / 2;
+        if (halfWidth > 0) {
+          if (x > 0) {
+            x = -halfWidth + x;
+          } else if (Math.abs(x) >= halfWidth) {
+            x = x + halfWidth;
+          }
+        }
+        track.style.transform = `translate3d(${x}px, 0, 0)`;
+        xRef.current = x;
+        pausedUntil = Date.now() + 4000; // Keep autoplay paused while sliding
+      } else if (now > pausedUntil) {
+        // Autoplay scroll
         x -= speed * cappedDelta;
 
         const halfWidth = track.scrollWidth / 2;
@@ -43,7 +69,7 @@ export default function ScoresStrip() {
           }
         }
         track.style.transform = `translate3d(${x}px, 0, 0)`;
-        xRef.current = x; // Persist updated position
+        xRef.current = x;
       }
       lastTime = time;
       frameId = requestAnimationFrame(step);
@@ -65,6 +91,9 @@ export default function ScoresStrip() {
       triggerPause();
       startX = 'touches' in e ? e.touches[0].clientX : e.clientX;
       dragStartX = x;
+      lastX = startX;
+      lastTimestamp = performance.now();
+      velocity = 0;
     };
 
     // Drag move
@@ -72,6 +101,16 @@ export default function ScoresStrip() {
       if (!isDragging) return;
       triggerPause();
       const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX;
+      const now = performance.now();
+      const dt = now - lastTimestamp;
+      
+      if (dt > 0) {
+        // Calculate velocity (pixels per millisecond)
+        velocity = (clientX - lastX) / dt;
+      }
+      lastX = clientX;
+      lastTimestamp = now;
+
       const deltaX = clientX - startX;
       x = dragStartX + deltaX;
 
@@ -94,7 +133,7 @@ export default function ScoresStrip() {
       if (isDragging) {
         isDragging = false;
         triggerPause();
-        lastTime = performance.now(); // Reset lastTime so step() has correct starting baseline
+        lastTime = performance.now(); // Reset lastTime starting baseline
       }
     };
 

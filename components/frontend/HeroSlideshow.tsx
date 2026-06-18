@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 
@@ -25,29 +25,43 @@ export default function HeroSlideshow({ articles }: HeroSlideshowProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [touchStart, setTouchStart] = useState<number | null>(null);
   const [touchEnd, setTouchEnd] = useState<number | null>(null);
+  const [isPaused, setIsPaused] = useState(false);
+  const autoplayTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const minSwipeDistance = 50;
 
   useEffect(() => {
-    if (articles.length <= 1) return;
+    if (articles.length <= 1 || isPaused) return;
     const timer = setInterval(() => {
       setCurrentIndex((prev) => (prev + 1) % articles.length);
     }, 4000);
     return () => clearInterval(timer);
-  }, [articles.length, currentIndex]);
+  }, [articles.length, isPaused]);
+
+  useEffect(() => {
+    return () => {
+      if (autoplayTimeoutRef.current) {
+        clearTimeout(autoplayTimeoutRef.current);
+      }
+    };
+  }, []);
 
   if (!articles || articles.length === 0) return null;
 
-  const onTouchStart = (e: React.TouchEvent) => {
+  const onTouchStartAction = (e: React.TouchEvent) => {
+    setIsPaused(true);
+    if (autoplayTimeoutRef.current) {
+      clearTimeout(autoplayTimeoutRef.current);
+    }
     setTouchEnd(null);
     setTouchStart(e.targetTouches[0].clientX);
   };
 
-  const onTouchMove = (e: React.TouchEvent) => {
+  const onTouchMoveAction = (e: React.TouchEvent) => {
     setTouchEnd(e.targetTouches[0].clientX);
   };
 
-  const onTouchEnd = () => {
+  const onTouchEndAction = () => {
     if (!touchStart || !touchEnd) return;
     const distance = touchStart - touchEnd;
     if (distance > minSwipeDistance) {
@@ -55,13 +69,30 @@ export default function HeroSlideshow({ articles }: HeroSlideshowProps) {
     } else if (distance < -minSwipeDistance) {
       setCurrentIndex((prev) => (prev - 1 + articles.length) % articles.length);
     }
+    
+    // Resume autoplay after 8 seconds of no touch interaction
+    if (autoplayTimeoutRef.current) {
+      clearTimeout(autoplayTimeoutRef.current);
+    }
+    autoplayTimeoutRef.current = setTimeout(() => {
+      setIsPaused(false);
+    }, 8000);
   };
 
   return (
     <div
-      onTouchStart={onTouchStart}
-      onTouchMove={onTouchMove}
-      onTouchEnd={onTouchEnd}
+      onTouchStart={onTouchStartAction}
+      onTouchMove={onTouchMoveAction}
+      onTouchEnd={onTouchEndAction}
+      onMouseEnter={() => {
+        setIsPaused(true);
+        if (autoplayTimeoutRef.current) {
+          clearTimeout(autoplayTimeoutRef.current);
+        }
+      }}
+      onMouseLeave={() => {
+        setIsPaused(false);
+      }}
       className="border-b border-[#e2e2e2] pb-4 mb-4 overflow-hidden relative"
     >
       <div 

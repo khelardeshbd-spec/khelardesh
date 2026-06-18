@@ -143,12 +143,15 @@ export default async function HomePage() {
           </div>
 
           {/* Tier 2: Controls & Info Bar */}
-          <div className="grid grid-cols-3 items-center border-b border-[#e2e2e2] pb-2 mb-1.5 text-xs font-semibold uppercase w-full">
+          <div className="grid grid-cols-3 items-center border-b border-gray-200 py-3 mb-2 text-xs font-semibold uppercase w-full">
             {/* Left: Icons */}
             <div className="flex items-center justify-start">
               {/* Search */}
-              <button className="hover:opacity-75 transition-opacity text-[#121212]" aria-label="Search">
-                <svg className="w-[21px] h-[21px]" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+              <button 
+                className="w-8 h-8 rounded-full flex items-center justify-center text-[#121212] hover:bg-gray-100 transition-all duration-200 cursor-pointer"
+                aria-label="Search"
+              >
+                <svg className="w-[18px] h-[18px]" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
                   <circle cx="11" cy="11" r="8"></circle>
                   <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
                 </svg>
@@ -158,8 +161,8 @@ export default async function HomePage() {
             {/* Center: Bengali Date Info */}
             <div className="flex justify-center items-center">
               {/* Desktop version */}
-              <div className="flex flex-col items-center text-center text-[10px] sm:text-[11px] text-[#121212] justify-center hidden sm:flex">
-                <span className="font-bold">
+              <div className="flex flex-col items-center text-center text-[10px] sm:text-[11px] text-gray-500 tracking-widest justify-center hidden sm:flex font-medium font-sans">
+                <span>
                   {new Intl.DateTimeFormat('bn-BD', {
                     weekday: 'long',
                     day: 'numeric',
@@ -169,8 +172,8 @@ export default async function HomePage() {
                 </span>
               </div>
               {/* Show short date on very small screens so it fits */}
-              <div className="flex flex-col items-center text-center text-[10px] text-[#121212] justify-center sm:hidden">
-                <span className="font-bold">
+              <div className="flex flex-col items-center text-center text-[9px] text-gray-500 tracking-widest justify-center sm:hidden font-medium font-sans">
+                <span>
                   {new Intl.DateTimeFormat('bn-BD', {
                     day: 'numeric',
                     month: 'short',
@@ -181,11 +184,11 @@ export default async function HomePage() {
             </div>
 
             {/* Right: Actions */}
-            <div className="flex items-center justify-end gap-1.5 sm:gap-3">
-              <button className="border border-[#326891] text-[#326891] hover:bg-[#326891] hover:text-white transition-colors duration-150 px-2 sm:px-4 py-1 sm:py-1.5 rounded-[3px] font-extrabold text-[9px] sm:text-[11px] tracking-wide">
+            <div className="flex items-center justify-end gap-2 sm:gap-3">
+              <button className="bg-[#d33f3f] border border-[#d33f3f] text-white hover:bg-[#b52a2a] transition-all duration-200 px-3 sm:px-5 py-1.5 rounded-full font-bold text-[9px] sm:text-[11px] tracking-wider cursor-pointer shadow-sm hover:shadow">
                 সাবস্ক্রিপশন
               </button>
-              <button className="border border-[#121212] text-[#121212] hover:bg-[#121212] hover:text-white transition-colors duration-150 px-2 sm:px-4 py-1 sm:py-1.5 rounded-[3px] font-extrabold text-[9px] sm:text-[11px] tracking-wide">
+              <button className="border border-gray-200 text-[#121212] hover:bg-gray-100 transition-all duration-200 px-3 sm:px-4 py-1.5 rounded-full font-bold text-[9px] sm:text-[11px] tracking-wider cursor-pointer">
                 লগইন
               </button>
             </div>
