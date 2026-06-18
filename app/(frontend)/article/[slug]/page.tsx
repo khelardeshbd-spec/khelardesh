@@ -62,7 +62,24 @@ export default async function ArticlePage({ params }: PageProps) {
     .filter(Boolean);
 
   const articlesList = articles ?? [];
-  const categoryLabel = sport ? sport.toUpperCase() : (kicker || 'খেলাধুলা');
+  const sportMap: Record<string, string> = {
+    football: 'ফুটবল',
+    'bd-football': 'দেশের ফুটবল',
+    'international-football': 'আন্তর্জাতিক ফুটবল',
+    'club-football': 'ক্লাব ফুটবল',
+    cricket: 'ক্রিকেট',
+    'bd-cricket': 'বাংলাদেশের ক্রিকেট',
+    interview: 'ইন্টারভিউ',
+    feature: 'ফিচার',
+    special: 'খেলার দেশ বিশেষ',
+    'guest-column': 'অতিথি কলাম',
+    basketball: 'বাস্কেটবল',
+    rugby: 'রাগবি',
+    f1: 'ফর্মুলা ওয়ান',
+    'table-tennis': 'টেবিল টেনিস',
+    golf: 'গল্ফ'
+  };
+  const categoryLabel = sport && sportMap[sport.toLowerCase()] ? sportMap[sport.toLowerCase()] : (kicker || 'খেলাধুলা');
 
   return (
     <div style={{ backgroundColor: 'var(--bg-page)', minHeight: '100vh', color: 'var(--ink)' }}>

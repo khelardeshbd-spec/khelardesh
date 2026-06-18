@@ -36,7 +36,145 @@ interface TacticalPitchProps {
 }
 
 // Calculate player coordinates for a vertical half-pitch team lineup
-function calculateSinglePitchCoordinates(players: PitchPlayer[]): Map<string, { x: number; y: number }> {
+function calculateSinglePitchCoordinates(players: PitchPlayer[], formation: string): Map<string, { x: number; y: number }> {
+  const f = (formation || '4-4-2').replace(/\s+/g, '');
+  const mappedCoords = new Map<string, { x: number; y: number }>();
+  
+  // Custom coordinate maps based on formationPlace (1-11)
+  const formationPlaceMaps: Record<string, Record<number, { x: number; y: number }>> = {
+    '4-2-3-1': {
+      1: { x: 50, y: 12 }, // GK
+      2: { x: 80, y: 32 }, // RB
+      3: { x: 20, y: 32 }, // LB
+      5: { x: 60, y: 32 }, // RCB
+      6: { x: 40, y: 32 }, // LCB
+      4: { x: 38, y: 52 }, // LDM
+      8: { x: 62, y: 52 }, // RDM
+      11: { x: 22, y: 70 }, // LM / LAM
+      7: { x: 78, y: 70 }, // RM / RAM
+      10: { x: 50, y: 70 }, // CAM
+      9: { x: 50, y: 86 }  // ST
+    },
+    '4-4-2': {
+      1: { x: 50, y: 12 }, // GK
+      2: { x: 80, y: 32 }, // RB
+      3: { x: 20, y: 32 }, // LB
+      5: { x: 60, y: 32 }, // RCB
+      6: { x: 40, y: 32 }, // LCB
+      11: { x: 20, y: 58 }, // LM
+      7: { x: 80, y: 58 }, // RM
+      8: { x: 40, y: 58 }, // LCM
+      4: { x: 60, y: 58 }, // RCM
+      9: { x: 38, y: 84 }, // LF
+      10: { x: 62, y: 84 } // RF
+    },
+    '4-3-3': {
+      1: { x: 50, y: 12 }, // GK
+      2: { x: 80, y: 32 }, // RB
+      3: { x: 20, y: 32 }, // LB
+      5: { x: 60, y: 32 }, // RCB
+      6: { x: 40, y: 32 }, // LCB
+      4: { x: 35, y: 55 }, // LCM
+      8: { x: 65, y: 55 }, // RCM
+      10: { x: 50, y: 50 }, // CM / DM
+      11: { x: 25, y: 76 }, // LW
+      7: { x: 75, y: 76 }, // RW
+      9: { x: 50, y: 86 }  // ST
+    },
+    '3-5-2': {
+      1: { x: 50, y: 12 }, // GK
+      2: { x: 50, y: 32 }, // CB
+      5: { x: 72, y: 32 }, // RCB
+      6: { x: 28, y: 32 }, // LCB
+      3: { x: 18, y: 55 }, // LWB / LM
+      7: { x: 82, y: 55 }, // RWB / RM
+      4: { x: 35, y: 55 }, // LCM
+      8: { x: 65, y: 55 }, // RCM
+      10: { x: 50, y: 68 }, // CAM
+      9: { x: 38, y: 84 }, // LF
+      11: { x: 62, y: 84 } // RF
+    },
+    '5-3-2': {
+      1: { x: 50, y: 12 }, // GK
+      2: { x: 82, y: 32 }, // RWB
+      3: { x: 18, y: 32 }, // LWB
+      5: { x: 62, y: 32 }, // RCB
+      6: { x: 38, y: 32 }, // LCB
+      10: { x: 50, y: 32 }, // CB
+      4: { x: 35, y: 56 }, // LCM
+      8: { x: 65, y: 56 }, // RCM
+      7: { x: 50, y: 56 }, // CM
+      9: { x: 38, y: 82 }, // LF
+      11: { x: 62, y: 82 } // RF
+    },
+    '5-4-1': {
+      1: { x: 50, y: 12 }, // GK
+      2: { x: 82, y: 32 }, // RWB
+      3: { x: 18, y: 32 }, // LWB
+      5: { x: 62, y: 32 }, // RCB
+      6: { x: 38, y: 32 }, // LCB
+      10: { x: 50, y: 32 }, // CB
+      11: { x: 22, y: 58 }, // LM
+      7: { x: 78, y: 58 }, // RM
+      8: { x: 40, y: 58 }, // LCM
+      4: { x: 60, y: 58 }, // RCM
+      9: { x: 50, y: 84 }  // ST
+    },
+    '3-4-3': {
+      1: { x: 50, y: 12 }, // GK
+      2: { x: 50, y: 32 }, // CB
+      5: { x: 72, y: 32 }, // RCB
+      6: { x: 28, y: 32 }, // LCB
+      3: { x: 18, y: 56 }, // LM
+      7: { x: 82, y: 56 }, // RM
+      4: { x: 38, y: 56 }, // LCM
+      8: { x: 62, y: 56 }, // RCM
+      11: { x: 25, y: 76 }, // LW
+      10: { x: 75, y: 76 }, // RW
+      9: { x: 50, y: 86 }  // ST
+    }
+  };
+
+  const currentMap = formationPlaceMaps[f];
+  
+  // Try to use formationPlace if it maps successfully
+  let successfullyMappedCount = 0;
+  players.forEach(p => {
+    const place = parseInt(p.formationPlace || '0', 10);
+    if (currentMap && currentMap[place]) {
+      mappedCoords.set(p.id, currentMap[place]);
+      successfullyMappedCount++;
+    } else {
+      // General fallback mappings if the specific formation is not matched
+      const fallbackMap: Record<number, { x: number; y: number }> = {
+        1: { x: 50, y: 12 },
+        2: { x: 80, y: 32 },
+        3: { x: 20, y: 32 },
+        4: { x: 38, y: 55 },
+        5: { x: 60, y: 32 },
+        6: { x: 40, y: 32 },
+        7: { x: 75, y: 68 },
+        8: { x: 62, y: 55 },
+        9: { x: 50, y: 86 },
+        10: { x: 50, y: 68 },
+        11: { x: 25, y: 68 }
+      };
+      if (fallbackMap[place]) {
+        mappedCoords.set(p.id, fallbackMap[place]);
+        successfullyMappedCount++;
+      }
+    }
+  });
+
+  // If the majority of players are mapped, return the map.
+  // Otherwise, fall back to the old purely heuristic row-based distributor.
+  if (successfullyMappedCount >= 8) {
+    return mappedCoords;
+  }
+
+  // Clear and run old dynamic distribution logic
+  mappedCoords.clear();
+
   // Sort by formationPlace
   const sorted = [...players].sort((a, b) => parseInt(a.formationPlace || '0') - parseInt(b.formationPlace || '0'));
   
@@ -59,8 +197,6 @@ function calculateSinglePitchCoordinates(players: PitchPlayer[]): Map<string, { 
       attack.push(p);
     }
   });
-  
-  const mappedCoords = new Map<string, { x: number; y: number }>();
   
   // Goalkeeper at the top center
   if (gk) {
@@ -104,7 +240,7 @@ function getRatingStyle(rating: number): { bg: string; text: string } {
 }
 
 function TeamPitch({ roster, selectedSubTab }: { roster: TeamRoster; selectedSubTab: 'performance' | 'age' | 'club' }) {
-  const coordsMap = calculateSinglePitchCoordinates(roster.starters || []);
+  const coordsMap = calculateSinglePitchCoordinates(roster.starters || [], roster.formation);
 
   return (
     <div className="w-full bg-[#72bb85] rounded-xl border border-[#c1e5cc] shadow-sm overflow-hidden mb-6 max-w-[480px]">

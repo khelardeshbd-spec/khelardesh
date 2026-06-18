@@ -46,8 +46,20 @@ export default function NavStrip({ noBorder = false, vertical = false, onNavigat
   const pathname = usePathname();
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const navRef = useRef<HTMLElement>(null);
+  const activeItemRef = useRef<HTMLAnchorElement>(null);
 
   const closeDropdown = useCallback(() => setOpenDropdown(null), []);
+
+  // Scroll active item into view
+  useEffect(() => {
+    if (activeItemRef.current) {
+      activeItemRef.current.scrollIntoView({
+        behavior: 'auto',
+        block: 'nearest',
+        inline: 'center'
+      });
+    }
+  }, [pathname]);
 
   // Close on click outside
   useEffect(() => {
@@ -182,6 +194,7 @@ export default function NavStrip({ noBorder = false, vertical = false, onNavigat
             <li key={item.slug} className="relative flex-shrink-0 group">
               <div className="flex items-stretch">
                 <Link
+                  ref={active ? activeItemRef : undefined}
                   href={href}
                   lang="bn"
                   className="flex items-center px-1.5 py-2.5 whitespace-nowrap transition-colors duration-150"

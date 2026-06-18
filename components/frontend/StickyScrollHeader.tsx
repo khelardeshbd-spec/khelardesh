@@ -1,12 +1,13 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
 export default function StickyScrollHeader() {
   const [isVisible, setIsVisible] = useState(false);
   const pathname = usePathname();
+  const activeItemRef = useRef<HTMLAnchorElement>(null);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -20,6 +21,17 @@ export default function StickyScrollHeader() {
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  // Scroll active category into view
+  useEffect(() => {
+    if (activeItemRef.current) {
+      activeItemRef.current.scrollIntoView({
+        behavior: 'auto',
+        block: 'nearest',
+        inline: 'center'
+      });
+    }
+  }, [pathname]);
 
   const navItems = [
     { label: 'মাঠ', slug: '' },
@@ -69,18 +81,7 @@ export default function StickyScrollHeader() {
       <div className="max-w-[1200px] mx-auto px-6 py-2.5 flex items-center justify-between">
         {/* Left Brand Identity: text wordmark */}
         <Link href="/" className="flex items-center flex-shrink-0" aria-label="খেলারদেশ হোমপেজ">
-          <span
-            style={{
-              fontFamily: 'var(--font-headline)',
-              fontSize: '1.15rem',
-              fontWeight: 400,
-              color: '#1a5c2e',
-              letterSpacing: '-0.01em',
-              lineHeight: 1,
-            }}
-          >
-            খেলারদেশ
-          </span>
+          <img src="/logo.png" alt="খেলারদেশ" style={{ height: 38, objectFit: 'contain' }} />
         </Link>
 
         {/* Center: Navigation Menu */}
@@ -90,12 +91,15 @@ export default function StickyScrollHeader() {
         >
           {navItems.map((item, idx) => {
             const href = item.slug === '' ? '/' : `/sport/${item.slug}`;
-            const isActive = item.slug === '' ? pathname === '/' : pathname === `/sport/${item.slug}`;
+            const isActive = item.slug === '' 
+              ? pathname === '/' 
+              : pathname === `/sport/${item.slug}` || (!!item.subItems && item.subItems.some(sub => pathname === `/sport/${sub.slug}`));
 
             if (item.subItems) {
               return (
                 <div key={idx} className="relative group py-2">
                   <Link
+                    ref={isActive ? activeItemRef : undefined}
                     href={href}
                     className="text-[13px] font-bold tracking-wide transition-colors duration-150 hover:underline flex items-center gap-1"
                     style={{
@@ -109,16 +113,24 @@ export default function StickyScrollHeader() {
                   {/* Dropdown menu */}
                   <div className="absolute left-0 top-[100%] hidden group-hover:block bg-[var(--bg-surface)] border border-[var(--ink-border)] shadow-md rounded-[3px] py-1 min-w-[150px] z-50 dropdown-bridge">
 
-                    {item.subItems.map((sub, sIdx) => (
-                      <Link
-                        key={sIdx}
-                        href={`/sport/${sub.slug}`}
-                        className="block px-4 py-2 text-xs font-bold text-[var(--ink)] hover:bg-[var(--ink-ghost)] transition-colors"
-                        style={{ fontFamily: 'var(--font-body)' }}
-                      >
-                        {sub.label}
-                      </Link>
-                    ))}
+                    {item.subItems.map((sub, sIdx) => {
+                      const isSubActive = pathname === `/sport/${sub.slug}`;
+                      return (
+                        <Link
+                          key={sIdx}
+                          ref={isSubActive ? activeItemRef : undefined}
+                          href={`/sport/${sub.slug}`}
+                          className="block px-4 py-2 text-xs font-bold transition-colors"
+                          style={{ 
+                            fontFamily: 'var(--font-body)',
+                            color: isSubActive ? 'var(--live-red)' : 'var(--ink)',
+                            backgroundColor: isSubActive ? 'var(--ink-ghost)' : 'transparent'
+                          }}
+                        >
+                          {sub.label}
+                        </Link>
+                      );
+                    })}
                   </div>
                 </div>
               );
@@ -127,6 +139,7 @@ export default function StickyScrollHeader() {
             return (
               <Link
                 key={idx}
+                ref={isActive ? activeItemRef : undefined}
                 href={href}
                 className="text-[13px] font-bold tracking-wide transition-colors duration-150 hover:underline py-2"
                 style={{
