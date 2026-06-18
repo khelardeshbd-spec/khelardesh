@@ -13,6 +13,7 @@ interface ESPNAthlete {
   fullName: string;
   displayName: string;
   jerseyImages?: { href: string }[];
+  headshot?: { href: string };
 }
 
 interface ESPNPosition {

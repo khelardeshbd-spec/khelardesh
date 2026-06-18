@@ -59,7 +59,7 @@ function calculatePitchCoordinates(players: PitchPlayer[], isHome: boolean): Map
   const mappedCoords = new Map<string, { x: number; y: number }>();
   
   if (gk) {
-    mappedCoords.set(gk.id, { x: 50, y: isHome ? 90 : 10 });
+    mappedCoords.set((gk as PitchPlayer).id, { x: 50, y: isHome ? 90 : 10 });
   }
   
   // Helper to distribute players evenly across an X row with a slight natural curve

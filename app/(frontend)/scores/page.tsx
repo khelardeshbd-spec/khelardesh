@@ -94,14 +94,41 @@ function MatchRow({ match }: { match: ESPNMatch }) {
         ) : match.isFinished ? (
           <>
             <span style={{ fontSize: 9, color: 'var(--ink-muted)', fontFamily: 'var(--font-body)' }}>{kickoff}</span>
-            <span style={{ fontSize: 9, fontWeight: 600, color: 'var(--ink-ghost)', fontFamily: 'var(--font-body)' }}>
-              {status}
+            <span style={{ fontSize: 8, fontWeight: 600, color: 'var(--ink-ghost)', fontFamily: 'var(--font-body)' }}>
+              {(() => {
+                const md = new Date(match.startTime);
+                const td = new Date();
+                td.setHours(0,0,0,0);
+                const d = new Date(md);
+                d.setHours(0,0,0,0);
+                const diff = (td.getTime() - d.getTime()) / (1000 * 3600 * 24);
+                if (diff === 0) return 'Today';
+                if (diff === 1) return 'Yesterday';
+                if (diff === 2) return '2 Days Ago';
+                return status;
+              })()}
             </span>
           </>
         ) : (
-          <span style={{ fontSize: 11, fontWeight: 600, color: 'var(--ink)', fontFamily: 'var(--font-body)' }}>
-            {kickoff || status}
-          </span>
+          <>
+            <span style={{ fontSize: 11, fontWeight: 600, color: 'var(--ink)', fontFamily: 'var(--font-body)' }}>
+              {kickoff || status}
+            </span>
+            <span style={{ fontSize: 8, fontWeight: 600, color: 'var(--ink-ghost)', fontFamily: 'var(--font-body)' }}>
+              {(() => {
+                const md = new Date(match.startTime);
+                const td = new Date();
+                td.setHours(0,0,0,0);
+                const d = new Date(md);
+                d.setHours(0,0,0,0);
+                const diff = (d.getTime() - td.getTime()) / (1000 * 3600 * 24);
+                if (diff === 0) return 'Today';
+                if (diff === 1) return 'Tomorrow';
+                if (diff === 2) return 'In 2 Days';
+                return '';
+              })()}
+            </span>
+          </>
         )}
       </div>
 
