@@ -285,8 +285,17 @@ export default function MatchCenterPage({ params }: { params: { matchId: string 
                               </div>
                             </div>
                             <div className="flex flex-col min-w-0">
-                              <span className="text-xs font-bold text-gray-800 truncate">{p.name}</span>
-                              <span className="text-[10px] font-medium text-gray-500">{p.position}</span>
+                              <div className="flex items-center gap-1.5">
+                                <span className="text-xs font-bold text-gray-800 truncate">{p.name}</span>
+                                {p.goals > 0 && <span className="text-xs" title={`${p.goals} Goals`}>⚽{p.goals > 1 ? `x${p.goals}` : ''}</span>}
+                                {p.cards?.map((c: string, i: number) => (
+                                  <span key={i} className={`inline-block w-2 h-3 rounded-xs border border-white shadow-xs ${c === 'red' ? 'bg-[#d93025]' : 'bg-[#f9ab00]'}`} />
+                                ))}
+                              </div>
+                              <div className="flex items-center gap-1.5 text-[10px] font-medium text-gray-500">
+                                <span>{p.position}</span>
+                                {p.subbedOut && <span className="text-[9px] text-[#d93025] font-semibold">↓ {p.subbedOut}</span>}
+                              </div>
                             </div>
                           </div>
                         ))}
@@ -305,8 +314,17 @@ export default function MatchCenterPage({ params }: { params: { matchId: string 
                               </div>
                             </div>
                             <div className="flex flex-col min-w-0">
-                              <span className="text-xs font-bold text-gray-600 truncate">{p.name}</span>
-                              <span className="text-[9px] text-gray-400">{p.position}</span>
+                              <div className="flex items-center gap-1.5">
+                                <span className="text-xs font-bold text-gray-600 truncate">{p.name}</span>
+                                {p.goals > 0 && <span className="text-xs">⚽{p.goals > 1 ? `x${p.goals}` : ''}</span>}
+                                {p.cards?.map((c: string, i: number) => (
+                                  <span key={i} className={`inline-block w-2 h-3 rounded-xs border border-white shadow-xs ${c === 'red' ? 'bg-[#d93025]' : 'bg-[#f9ab00]'}`} />
+                                ))}
+                              </div>
+                              <div className="flex items-center gap-1.5 text-[9px] text-gray-400">
+                                <span>{p.position}</span>
+                                {p.subbedIn && <span className="text-[9px] text-[#1e8e3e] font-semibold">↑ {p.subbedIn}</span>}
+                              </div>
                             </div>
                           </div>
                         ))}
@@ -326,8 +344,17 @@ export default function MatchCenterPage({ params }: { params: { matchId: string 
                         {awayRoster?.starters?.map((p: any) => (
                           <div key={p.id} className="flex items-center justify-end text-right gap-3 p-2 rounded-xl hover:bg-gray-50 transition-colors border border-transparent hover:border-gray-100">
                             <div className="flex flex-col min-w-0">
-                              <span className="text-xs font-bold text-gray-800 truncate">{p.name}</span>
-                              <span className="text-[10px] font-medium text-gray-500">{p.position}</span>
+                              <div className="flex items-center justify-end gap-1.5">
+                                {p.cards?.map((c: string, i: number) => (
+                                  <span key={i} className={`inline-block w-2 h-3 rounded-xs border border-white shadow-xs ${c === 'red' ? 'bg-[#d93025]' : 'bg-[#f9ab00]'}`} />
+                                ))}
+                                {p.goals > 0 && <span className="text-xs" title={`${p.goals} Goals`}>⚽{p.goals > 1 ? `x${p.goals}` : ''}</span>}
+                                <span className="text-xs font-bold text-gray-800 truncate">{p.name}</span>
+                              </div>
+                              <div className="flex items-center justify-end gap-1.5 text-[10px] font-medium text-gray-500">
+                                {p.subbedOut && <span className="text-[9px] text-[#d93025] font-semibold">↓ {p.subbedOut}</span>}
+                                <span>{p.position}</span>
+                              </div>
                             </div>
                             <div className="relative">
                               {p.avatar ? (
@@ -354,8 +381,17 @@ export default function MatchCenterPage({ params }: { params: { matchId: string 
                         {awayRoster?.bench?.map((p: any) => (
                           <div key={p.id} className="flex items-center justify-end text-right gap-3 p-2 rounded-xl opacity-80 hover:opacity-100 hover:bg-gray-50 transition-all border border-transparent hover:border-gray-100">
                             <div className="flex flex-col min-w-0">
-                              <span className="text-xs font-bold text-gray-600 truncate">{p.name}</span>
-                              <span className="text-[9px] text-gray-400">{p.position}</span>
+                              <div className="flex items-center justify-end gap-1.5">
+                                {p.cards?.map((c: string, i: number) => (
+                                  <span key={i} className={`inline-block w-2 h-3 rounded-xs border border-white shadow-xs ${c === 'red' ? 'bg-[#d93025]' : 'bg-[#f9ab00]'}`} />
+                                ))}
+                                {p.goals > 0 && <span className="text-xs">⚽{p.goals > 1 ? `x${p.goals}` : ''}</span>}
+                                <span className="text-xs font-bold text-gray-600 truncate">{p.name}</span>
+                              </div>
+                              <div className="flex items-center justify-end gap-1.5 text-[9px] text-gray-400">
+                                {p.subbedIn && <span className="text-[9px] text-[#1e8e3e] font-semibold">↑ {p.subbedIn}</span>}
+                                <span>{p.position}</span>
+                              </div>
                             </div>
                             <div className="relative">
                               {p.avatar ? (

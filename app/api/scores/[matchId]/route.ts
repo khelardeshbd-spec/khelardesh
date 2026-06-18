@@ -160,6 +160,48 @@ export async function GET(
       }
     });
 
+    // Parse keyEvents for card, substitution, goals events
+    const keyEvents = data.keyEvents || [];
+    const playerCardsMap = new Map<string, string[]>();
+    const playerSubOutMap = new Map<string, string>();
+    const playerSubInMap = new Map<string, string>();
+    const playerGoalsMap = new Map<string, number>();
+    const playerAssistsMap = new Map<string, number>();
+
+    keyEvents.forEach((e: any) => {
+      const typeText = e.type?.text || '';
+      const clockVal = e.clock?.displayValue || '';
+      const participants = e.participants || [];
+
+      if (typeText.toLowerCase().includes('goal') && !typeText.toLowerCase().includes('disallowed') && !typeText.toLowerCase().includes('cancelled')) {
+        const goalscorerId = participants[0]?.athlete?.id;
+        if (goalscorerId) {
+          playerGoalsMap.set(goalscorerId, (playerGoalsMap.get(goalscorerId) || 0) + 1);
+        }
+        const assistId = participants[1]?.athlete?.id;
+        if (assistId) {
+          playerAssistsMap.set(assistId, (playerAssistsMap.get(assistId) || 0) + 1);
+        }
+      } else if (typeText === 'Substitution') {
+        const subInId = participants[0]?.athlete?.id;
+        const subOutId = participants[1]?.athlete?.id;
+        if (subInId) playerSubInMap.set(subInId, clockVal);
+        if (subOutId) playerSubOutMap.set(subOutId, clockVal);
+      } else if (typeText === 'Yellow Card') {
+        const playerId = participants[0]?.athlete?.id;
+        if (playerId) {
+          const current = playerCardsMap.get(playerId) || [];
+          playerCardsMap.set(playerId, [...current, 'yellow']);
+        }
+      } else if (typeText === 'Red Card' || typeText === 'Second Yellow Card') {
+        const playerId = participants[0]?.athlete?.id;
+        if (playerId) {
+          const current = playerCardsMap.get(playerId) || [];
+          playerCardsMap.set(playerId, [...current, 'red']);
+        }
+      }
+    });
+
     // 3. Parse Rosters / Lineups
     const rawRosters: ESPNTeamRoster[] = data.rosters || [];
     const rosters = rawRosters.map((teamRoster) => {
@@ -175,7 +217,12 @@ export async function GET(
           positionAbbr: p.position.abbreviation,
           formationPlace: p.formationPlace || '',
           rating: calculateRating(p),
-          avatar: p.athlete.headshot?.href || null
+          avatar: p.athlete.headshot?.href || null,
+          cards: playerCardsMap.get(p.athlete.id) || [],
+          subbedOut: playerSubOutMap.get(p.athlete.id) || null,
+          subbedIn: playerSubInMap.get(p.athlete.id) || null,
+          goals: playerGoalsMap.get(p.athlete.id) || 0,
+          assists: playerAssistsMap.get(p.athlete.id) || 0
         }));
 
       const benchList = (teamRoster.roster || [])
@@ -188,7 +235,12 @@ export async function GET(
           position: p.position.displayName,
           positionAbbr: p.position.abbreviation,
           rating: calculateRating(p),
-          avatar: p.athlete.headshot?.href || null
+          avatar: p.athlete.headshot?.href || null,
+          cards: playerCardsMap.get(p.athlete.id) || [],
+          subbedOut: playerSubOutMap.get(p.athlete.id) || null,
+          subbedIn: playerSubInMap.get(p.athlete.id) || null,
+          goals: playerGoalsMap.get(p.athlete.id) || 0,
+          assists: playerAssistsMap.get(p.athlete.id) || 0
         }));
 
       return {
