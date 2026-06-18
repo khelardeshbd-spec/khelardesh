@@ -25,13 +25,13 @@ const toBn = (n: string | number | null) =>
 
 function translateStatus(s: string): string {
   const l = s.toLowerCase();
-  if (l === 'ft' || l === 'full time') return 'FT'; // Keep FT in English
-  if (l === 'ht' || l === 'half time') return 'HT'; // Keep HT in English
-  if (l === 'scheduled') return 'Upcoming'; // Upcoming in English
-  if (l === 'live') return 'LIVE'; // LIVE in English
+  if (l === 'ft' || l === 'full time') return 'FT';
+  if (l === 'ht' || l === 'half time') return 'HT';
+  if (l === 'scheduled') return 'Upcoming';
+  if (l === 'live') return 'LIVE';
   if (l === 'postponed') return 'Postponed';
   if (l === 'canceled' || l === 'cancelled') return 'Cancelled';
-  if (/^\d+'?$/.test(s.trim())) return s.trim(); // Do not convert live minutes to Bengali digits
+  if (/^\d+'?$/.test(s.trim())) return s.trim();
   return s;
 }
 
@@ -54,6 +54,15 @@ function groupByLeague(matches: ESPNMatch[]): Map<string, ESPNMatch[]> {
   return map;
 }
 
+// Order priority for leagues (FIFA at the top)
+function getLeaguePriority(leagueName: string): number {
+  const name = leagueName.toLowerCase();
+  if (name.includes('fifa') || name.includes('world cup')) return 1; // Top priority
+  if (name.includes('uefa') || name.includes('champions league') || name.includes('europa') || name.includes('euro')) return 2;
+  if (name.includes('premier league') || name.includes('laliga') || name.includes('la liga') || name.includes('serie a') || name.includes('bundesliga') || name.includes('ligue 1')) return 3;
+  return 4; // Default other leagues
+}
+
 // ─── Match Row ────────────────────────────────────────────────────────────────
 function MatchRow({ match }: { match: ESPNMatch }) {
   const isEnglish = (str: string) => /[a-zA-Z]/.test(str);
@@ -66,35 +75,24 @@ function MatchRow({ match }: { match: ESPNMatch }) {
   return (
     <Link
       href={`/scores/${match.id}`}
-      style={{
-        display: 'grid',
-        gridTemplateColumns: '54px 1fr 52px',
-        alignItems: 'center',
-        padding: '10px 16px',
-        borderBottom: '1px solid var(--ink-border)',
-        background: 'var(--bg-card, #fff)',
-        cursor: 'pointer',
-        transition: 'background 0.15s',
-        gap: 8,
-        textDecoration: 'none',
-        color: 'inherit',
-      }}
-      onMouseEnter={(e) => (e.currentTarget.style.background = 'var(--bg-subtle, #f9f9f9)')}
-      onMouseLeave={(e) => (e.currentTarget.style.background = 'var(--bg-card, #fff)')}
+      className="grid grid-cols-[64px_1fr_48px] items-center py-3.5 px-4 gap-3 bg-white hover:bg-slate-50/80 transition-all border-b border-slate-100 last:border-b-0 group text-decoration-none color-inherit"
     >
       {/* Col 1: Time / Status */}
-      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
+      <div className="flex flex-col items-center justify-center text-center gap-1 min-w-[64px]">
         {match.isLive ? (
           <>
-            <span style={{ fontSize: 10, fontWeight: 700, color: 'var(--live-red)', fontFamily: isEnglish(status) ? 'sans-serif' : 'var(--font-body)' }}>
+            <span 
+              className="text-[11px] font-black text-[#d93025] animate-pulse tracking-tight"
+              style={{ fontFamily: isEnglish(status) ? 'sans-serif' : 'var(--font-body)' }}
+            >
               {status}
             </span>
-            <span className="live-dot" style={{ width: 6, height: 6 }} />
+            <span className="w-1.5 h-1.5 rounded-full bg-[#d93025] animate-ping" />
           </>
         ) : match.isFinished ? (
           <>
-            <span style={{ fontSize: 9, color: 'var(--ink-muted)', fontFamily: 'var(--font-body)' }}>{kickoff}</span>
-            <span style={{ fontSize: 8, fontWeight: 600, color: 'var(--ink-ghost)', fontFamily: 'var(--font-body)' }}>
+            <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">{status}</span>
+            <span className="text-[9px] font-semibold text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded-md">
               {(() => {
                 const md = new Date(match.startTime);
                 const td = new Date();
@@ -105,16 +103,14 @@ function MatchRow({ match }: { match: ESPNMatch }) {
                 if (diff === 0) return 'Today';
                 if (diff === 1) return 'Yesterday';
                 if (diff === 2) return '2 Days Ago';
-                return status;
+                return kickoff || 'FT';
               })()}
             </span>
           </>
         ) : (
           <>
-            <span style={{ fontSize: 11, fontWeight: 600, color: 'var(--ink)', fontFamily: 'var(--font-body)' }}>
-              {kickoff || status}
-            </span>
-            <span style={{ fontSize: 8, fontWeight: 600, color: 'var(--ink-ghost)', fontFamily: 'var(--font-body)' }}>
+            <span className="text-[11px] font-bold text-slate-800">{kickoff}</span>
+            <span className="text-[8px] font-bold text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded-md uppercase tracking-wider">
               {(() => {
                 const md = new Date(match.startTime);
                 const td = new Date();
@@ -125,7 +121,7 @@ function MatchRow({ match }: { match: ESPNMatch }) {
                 if (diff === 0) return 'Today';
                 if (diff === 1) return 'Tomorrow';
                 if (diff === 2) return 'In 2 Days';
-                return '';
+                return 'Upcoming';
               })()}
             </span>
           </>
@@ -133,42 +129,45 @@ function MatchRow({ match }: { match: ESPNMatch }) {
       </div>
 
       {/* Col 2: Teams */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 5, overflow: 'hidden' }}>
-        {/* Home */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
+      <div className="flex flex-col gap-2.5 overflow-hidden pr-2">
+        {/* Home Team */}
+        <div className="flex items-center gap-2.5 min-w-0">
           {match.home.logo ? (
-            <img src={match.home.logo} alt="" width={16} height={16} style={{ borderRadius: '50%', flexShrink: 0 }} />
+            <img src={match.home.logo} alt="" className="w-5 h-5 rounded-full object-contain bg-slate-50 p-0.5 border border-slate-100 flex-shrink-0" />
           ) : (
-            <div style={{ width: 16, height: 16, borderRadius: '50%', background: '#e0e0e0', flexShrink: 0 }} />
+            <div className="w-5 h-5 rounded-full bg-slate-100 border border-slate-200 flex-shrink-0 flex items-center justify-center text-[9px] font-bold text-slate-400">H</div>
           )}
           <span
-            style={{
-              fontFamily: isEnglish(match.home.name) ? 'sans-serif' : 'var(--font-body)',
-              fontSize: 13,
-              fontWeight: winnerA ? 700 : 400,
-              color: winnerA ? 'var(--ink)' : match.isFinished ? 'var(--ink-muted)' : 'var(--ink)',
-              overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
-            }}
+            className={`text-[13px] sm:text-sm truncate leading-tight tracking-tight ${
+              winnerA 
+                ? 'font-black text-slate-900' 
+                : match.isFinished 
+                  ? 'text-slate-400 font-normal' 
+                  : 'text-slate-700 font-semibold'
+            }`}
+            style={{ fontFamily: isEnglish(match.home.name) ? 'sans-serif' : 'var(--font-body)' }}
             lang={isEnglish(match.home.name) ? 'en' : 'bn'}
           >
             {match.home.name}
           </span>
         </div>
-        {/* Away */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
+        
+        {/* Away Team */}
+        <div className="flex items-center gap-2.5 min-w-0">
           {match.away.logo ? (
-            <img src={match.away.logo} alt="" width={16} height={16} style={{ borderRadius: '50%', flexShrink: 0 }} />
+            <img src={match.away.logo} alt="" className="w-5 h-5 rounded-full object-contain bg-slate-50 p-0.5 border border-slate-100 flex-shrink-0" />
           ) : (
-            <div style={{ width: 16, height: 16, borderRadius: '50%', background: '#e0e0e0', flexShrink: 0 }} />
+            <div className="w-5 h-5 rounded-full bg-slate-100 border border-slate-200 flex-shrink-0 flex items-center justify-center text-[9px] font-bold text-slate-400">A</div>
           )}
           <span
-            style={{
-              fontFamily: isEnglish(match.away.name) ? 'sans-serif' : 'var(--font-body)',
-              fontSize: 13,
-              fontWeight: winnerB ? 700 : 400,
-              color: winnerB ? 'var(--ink)' : match.isFinished ? 'var(--ink-muted)' : 'var(--ink)',
-              overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
-            }}
+            className={`text-[13px] sm:text-sm truncate leading-tight tracking-tight ${
+              winnerB 
+                ? 'font-black text-slate-900' 
+                : match.isFinished 
+                  ? 'text-slate-400 font-normal' 
+                  : 'text-slate-700 font-semibold'
+            }`}
+            style={{ fontFamily: isEnglish(match.away.name) ? 'sans-serif' : 'var(--font-body)' }}
             lang={isEnglish(match.away.name) ? 'en' : 'bn'}
           >
             {match.away.name}
@@ -177,34 +176,28 @@ function MatchRow({ match }: { match: ESPNMatch }) {
       </div>
 
       {/* Col 3: Scores */}
-      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 5 }}>
+      <div className="flex flex-col items-end justify-center gap-2.5 min-w-[40px] pr-2">
         <span
-          style={{
-            fontSize: 15,
-            fontWeight: 700,
-            fontFamily: 'var(--font-body)',
-            color: match.isLive
-              ? 'var(--live-red)'
+          className={`text-base font-black tabular-nums tracking-tighter ${
+            match.isLive
+              ? 'text-[#d93025]'
               : winnerA
-              ? 'var(--ink)'
-              : 'var(--ink-muted)',
-            lineHeight: 1,
-          }}
+                ? 'text-slate-900'
+                : 'text-slate-400'
+          }`}
+          style={{ fontFamily: 'var(--font-body)' }}
         >
           {match.home.score !== null ? toBn(match.home.score) : match.isFinished ? '০' : ''}
         </span>
         <span
-          style={{
-            fontSize: 15,
-            fontWeight: 700,
-            fontFamily: 'var(--font-body)',
-            color: match.isLive
-              ? 'var(--live-red)'
+          className={`text-base font-black tabular-nums tracking-tighter ${
+            match.isLive
+              ? 'text-[#d93025]'
               : winnerB
-              ? 'var(--ink)'
-              : 'var(--ink-muted)',
-            lineHeight: 1,
-          }}
+                ? 'text-slate-900'
+                : 'text-slate-400'
+          }`}
+          style={{ fontFamily: 'var(--font-body)' }}
         >
           {match.away.score !== null ? toBn(match.away.score) : match.isFinished ? '০' : ''}
         </span>
@@ -217,50 +210,39 @@ function MatchRow({ match }: { match: ESPNMatch }) {
 function LeagueGroup({ league, matches, defaultOpen }: { league: string; matches: ESPNMatch[]; defaultOpen: boolean }) {
   const [open, setOpen] = useState(defaultOpen);
   const liveCount = matches.filter((m) => m.isLive).length;
+  
+  // Find league logo from the first match in the group
+  const leagueLogo = matches[0]?.leagueLogo;
 
   return (
-    <div style={{ borderBottom: '1.5px solid var(--ink-border)' }}>
+    <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden mb-4 transition-all">
       {/* Header */}
       <button
         onClick={() => setOpen((p) => !p)}
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: 10,
-          width: '100%',
-          padding: '10px 16px',
-          background: 'var(--bg-subtle, #f5f5f5)',
-          border: 'none',
-          cursor: 'pointer',
-          textAlign: 'left',
-        }}
+        className="flex items-center gap-3 w-full px-4 py-3.5 bg-gradient-to-r from-slate-50 to-white hover:from-slate-100/60 hover:to-slate-50/60 transition-colors border-none cursor-pointer text-left"
       >
-        <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--ink)', fontFamily: 'sans-serif', flex: 1 }}>
+        {leagueLogo && (
+          <img src={leagueLogo} alt="" className="w-5 h-5 object-contain flex-shrink-0" />
+        )}
+        <span 
+          className="text-xs sm:text-[13px] font-black text-slate-800 flex-1 tracking-tight"
+          style={{ fontFamily: 'sans-serif' }}
+        >
           {league}
         </span>
         {liveCount > 0 && (
-          <span
-            style={{
-              fontSize: 9,
-              fontWeight: 700,
-              color: '#fff',
-              background: 'var(--live-red)',
-              borderRadius: 99,
-              padding: '1px 6px',
-              lineHeight: 1.6,
-            }}
-          >
-            {liveCount} লাইভ
+          <span className="text-[9px] font-black text-white bg-[#d93025] rounded-full px-2.5 py-0.5 tracking-wider animate-pulse uppercase">
+            {liveCount} Live
           </span>
         )}
-        <span style={{ fontSize: 13, color: 'var(--ink-muted)', transition: 'transform 0.2s', transform: open ? 'rotate(180deg)' : 'rotate(0deg)' }}>
-          ▾
+        <span className={`text-[10px] text-slate-400 transition-transform duration-300 font-bold px-1 ${open ? 'rotate-180' : 'rotate-0'}`}>
+          ▼
         </span>
       </button>
 
       {/* Matches */}
       {open && (
-        <div>
+        <div className="divide-y divide-slate-100">
           {matches.map((m) => (
             <MatchRow key={m.id} match={m} />
           ))}
@@ -286,8 +268,8 @@ export default function ScoresPage() {
       const data = await res.json();
       setMatches(data.matches || []);
       setLastUpdated(new Date());
-    } catch {
-      // silent
+    } catch (err) {
+      console.error("Failed to load scores:", err);
     } finally {
       setLoading(false);
     }
@@ -304,6 +286,7 @@ export default function ScoresPage() {
     if (filter === 'live') base = matches.filter((m) => m.isLive);
     if (filter === 'finished') base = matches.filter((m) => m.isFinished && !m.isLive);
     if (filter === 'upcoming') base = matches.filter((m) => !m.isLive && !m.isFinished);
+    
     // sort: live first, then upcoming, then finished
     return [...base].sort((a, b) => {
       if (a.isLive && !b.isLive) return -1;
@@ -314,84 +297,97 @@ export default function ScoresPage() {
     });
   }, [matches, filter]);
 
+  // Group matches by league
   const grouped = useMemo(() => groupByLeague(filtered), [filtered]);
+
+  // Sort groups: FIFA / World Cup leagues at the top of the feed
+  const sortedGroupedEntries = useMemo(() => {
+    return Array.from(grouped.entries()).sort((a, b) => {
+      const prioA = getLeaguePriority(a[0]);
+      const prioB = getLeaguePriority(b[0]);
+      if (prioA !== prioB) return prioA - prioB;
+      return a[0].localeCompare(b[0]); // alphabetical secondary sort
+    });
+  }, [grouped]);
+
   const liveCount = matches.filter((m) => m.isLive).length;
   const finishedCount = matches.filter((m) => m.isFinished && !m.isLive).length;
   const upcomingCount = matches.filter((m) => !m.isLive && !m.isFinished).length;
 
-  const filterBtn = (f: Filter, label: string, count?: number, red?: boolean) => (
-    <button
-      onClick={() => setFilter(f)}
-      style={{
-        padding: '6px 14px',
-        border: 'none',
-        borderRadius: 99,
-        fontFamily: 'var(--font-body)',
-        fontSize: 12,
-        fontWeight: filter === f ? 700 : 500,
-        cursor: 'pointer',
-        background: filter === f ? (red ? 'var(--live-red)' : 'var(--ink)') : 'transparent',
-        color: filter === f ? '#fff' : red ? 'var(--live-red)' : 'var(--ink)',
-        transition: 'all 0.15s',
-        display: 'flex',
-        alignItems: 'center',
-        gap: 5,
-      }}
-    >
-      {label}
-      {count !== undefined && count > 0 && (
-        <span
-          style={{
-            fontSize: 10,
-            fontWeight: 700,
-            background: filter === f ? 'rgba(255,255,255,0.25)' : (red ? 'var(--live-red)' : 'var(--ink)'),
-            color: filter === f ? '#fff' : '#fff',
-            borderRadius: 99,
-            padding: '0 5px',
-            lineHeight: 1.7,
-          }}
-        >
-          {count}
-        </span>
-      )}
-    </button>
-  );
+  const filterBtn = (f: Filter, label: string, count?: number, red?: boolean) => {
+    const isSelected = filter === f;
+    return (
+      <button
+        onClick={() => setFilter(f)}
+        className={`flex items-center gap-1.5 px-4 py-2 border-none rounded-full text-xs font-bold transition-all duration-200 cursor-pointer shadow-xs ${
+          isSelected 
+            ? red 
+              ? 'bg-[#d93025] text-white scale-105 shadow-sm font-black' 
+              : 'bg-slate-900 text-white scale-105 shadow-sm font-black'
+            : red && count && count > 0
+              ? 'bg-red-50 text-[#d93025] hover:bg-red-100'
+              : 'bg-slate-100 text-slate-600 hover:bg-slate-200/80 hover:text-slate-800'
+        }`}
+        style={{ fontFamily: 'var(--font-body)' }}
+      >
+        {label}
+        {count !== undefined && count > 0 && (
+          <span
+            className={`text-[10px] font-black rounded-full px-1.5 py-0.2 select-none ${
+              isSelected 
+                ? 'bg-white/25 text-white' 
+                : red 
+                  ? 'bg-[#d93025] text-white' 
+                  : 'bg-slate-300 text-slate-700'
+            }`}
+          >
+            {count}
+          </span>
+        )}
+      </button>
+    );
+  };
 
   return (
-    <div style={{ maxWidth: 700, margin: '0 auto', padding: '24px 0 80px' }}>
+    <div className="max-w-[680px] mx-auto px-4 pt-6 pb-20 bg-slate-50/30 min-h-screen">
       {/* Page Header */}
-      <div style={{ padding: '0 16px 16px', borderBottom: '2px solid var(--ink-border)' }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 4 }}>
-          <Link href="/" style={{ fontSize: 12, color: 'var(--ink-muted)', textDecoration: 'none', fontFamily: 'var(--font-body)' }}>
-            ← হোমপেজ
+      <div className="mb-6">
+        <div className="flex items-center justify-between mb-4">
+          <Link 
+            href="/" 
+            className="flex items-center gap-1 text-xs font-black text-slate-500 hover:text-slate-800 transition-colors uppercase tracking-wider text-decoration-none"
+            style={{ fontFamily: 'var(--font-body)' }}
+          >
+            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
+            </svg>
+            হোমপেজ
           </Link>
           {lastUpdated && (
-            <span style={{ fontSize: 10, color: 'var(--ink-ghost)', fontFamily: 'var(--font-body)' }}>
-              আপডেট: {lastUpdated.toLocaleTimeString('bn-BD', { hour: '2-digit', minute: '2-digit' })}
+            <span 
+              className="text-[10px] font-bold text-slate-400 bg-slate-100 px-2.5 py-1 rounded-full border border-slate-200/50"
+              style={{ fontFamily: 'var(--font-body)' }}
+            >
+              আপডেট: {lastUpdated.toLocaleTimeString('bn-BD', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
             </span>
           )}
         </div>
-        <h1 style={{ fontFamily: 'var(--font-headline)', fontSize: 24, fontWeight: 700, color: 'var(--ink)', margin: '8px 0 0' }}>
+        <h1 
+          className="text-2xl sm:text-3xl font-black text-slate-800 tracking-tight leading-none"
+          style={{ fontFamily: 'var(--font-headline)' }}
+        >
           লাইভ স্কোর
         </h1>
-        <p style={{ fontFamily: 'var(--font-body)', fontSize: 12, color: 'var(--ink-muted)', marginTop: 4 }}>
+        <p 
+          className="text-xs font-semibold text-slate-500 mt-2"
+          style={{ fontFamily: 'var(--font-body)' }}
+        >
           ESPN থেকে সরাসরি আপডেট — প্রতি ৩০ সেকেন্ডে স্বয়ংক্রিয়ভাবে রিফ্রেশ হয়
         </p>
       </div>
 
       {/* Filter Bar */}
-      <div
-        style={{
-          display: 'flex',
-          gap: 4,
-          padding: '10px 12px',
-          borderBottom: '1px solid var(--ink-border)',
-          background: 'var(--bg-card, #fff)',
-          position: 'sticky',
-          top: 0,
-          zIndex: 10,
-        }}
-      >
+      <div className="flex gap-2.5 overflow-x-auto py-3.5 mb-5 sticky top-0 bg-slate-50/90 backdrop-blur-md z-30 border-b border-slate-100 scrollbar-none">
         {filterBtn('all', 'সব')}
         {filterBtn('live', 'লাইভ', liveCount, true)}
         {filterBtn('finished', 'শেষ', finishedCount)}
@@ -400,25 +396,25 @@ export default function ScoresPage() {
 
       {/* Content */}
       {loading ? (
-        <div style={{ padding: 40, textAlign: 'center' }}>
-          <div style={{ display: 'inline-block', width: 32, height: 32, border: '3px solid var(--ink-border)', borderTopColor: 'var(--live-red)', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
-          <p style={{ fontFamily: 'var(--font-body)', color: 'var(--ink-muted)', marginTop: 12 }}>লোড হচ্ছে...</p>
+        <div className="py-20 text-center flex flex-col items-center justify-center">
+          <div style={{ display: 'inline-block', width: 32, height: 32, border: '3.5px solid #e2e8f0', borderTopColor: '#d93025', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
+          <p className="mt-4 text-xs font-black text-slate-400 uppercase tracking-widest" style={{ fontFamily: 'var(--font-body)' }}>লোড হচ্ছে...</p>
           <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
         </div>
-      ) : grouped.size === 0 ? (
-        <div style={{ padding: 48, textAlign: 'center' }}>
-          <p style={{ fontFamily: 'var(--font-body)', fontSize: 16, color: 'var(--ink-muted)' }}>
+      ) : sortedGroupedEntries.length === 0 ? (
+        <div className="py-20 text-center rounded-2xl bg-white border border-slate-100 shadow-sm">
+          <p className="text-sm font-black text-slate-400" style={{ fontFamily: 'var(--font-body)' }}>
             {filter === 'live' ? 'এই মুহূর্তে কোনো লাইভ ম্যাচ নেই' : 'কোনো ম্যাচ পাওয়া যায়নি'}
           </p>
         </div>
       ) : (
-        <div style={{ border: '1px solid var(--ink-border)', borderTop: 'none' }}>
-          {Array.from(grouped.entries()).map(([league, leagueMatches], i) => (
+        <div className="flex flex-col">
+          {sortedGroupedEntries.map(([league, leagueMatches]) => (
             <LeagueGroup
               key={league}
               league={league}
               matches={leagueMatches}
-              defaultOpen={i === 0 || leagueMatches.some((m) => m.isLive)}
+              defaultOpen={leagueMatches.some((m) => m.isLive) || getLeaguePriority(league) === 1}
             />
           ))}
         </div>
@@ -426,8 +422,11 @@ export default function ScoresPage() {
 
       {/* Footer note */}
       {!loading && matches.length > 0 && (
-        <p style={{ fontFamily: 'var(--font-body)', fontSize: 11, color: 'var(--ink-ghost)', textAlign: 'center', marginTop: 24, padding: '0 16px' }}>
-          তথ্যসূত্র: ESPN API · {matches.length}টি ম্যাচ
+        <p 
+          className="text-[10px] font-bold text-slate-400 text-center mt-8 px-4"
+          style={{ fontFamily: 'var(--font-body)' }}
+        >
+          তথ্যসূত্র: ESPN API · {toBn(matches.length)}টি ম্যাচ
         </p>
       )}
     </div>
