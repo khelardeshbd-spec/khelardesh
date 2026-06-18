@@ -181,9 +181,9 @@ export default function MatchCenterPage({ params }: { params: { matchId: string 
             </div>
           </div>
 
-          {/* Goal Scorers list */}
+        {/* Goal Scorers list */}
           {match.scorers && match.scorers.length > 0 && (
-            <div className="mt-6 pt-5 border-t border-white/10 grid grid-cols-2 gap-4 text-[11px] sm:text-xs text-gray-300">
+            <div className="mt-4 pt-4 border-t border-white/10 grid grid-cols-2 gap-4 text-[11px] sm:text-xs text-gray-300">
               {/* Home scorers */}
               <div className="text-left space-y-1">
                 {match.scorers.filter(s => s.teamId === match.home.id).map((s, idx) => (
