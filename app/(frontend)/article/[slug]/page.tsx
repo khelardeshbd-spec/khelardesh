@@ -88,17 +88,30 @@ export default async function ArticlePage({ params }: PageProps) {
 
       {/* Back button / Breadcrumbs */}
       <div className="w-full max-w-[680px] mx-auto px-4 pt-6 pb-2">
-        <div 
-          className="flex items-center gap-1.5 text-xs font-semibold tracking-wider uppercase text-[var(--ink-muted)]"
-          style={{ fontFamily: 'var(--font-body)' }}
-        >
-          <Link href="/" className="hover:text-[var(--ink)] transition-colors">
-            মাঠ
+        <div className="flex items-center gap-3">
+          <Link 
+            href="/" 
+            className="flex items-center gap-1.5 text-xs font-bold text-[var(--ink)] hover:bg-[var(--ink-ghost)] transition-colors bg-[var(--bg-surface)] border border-[var(--ink-border)] px-3 py-1.5 rounded-full"
+            style={{ fontFamily: 'var(--font-body)' }}
+          >
+            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
+            </svg>
+            ফিরে যান
           </Link>
-          <span>/</span>
-          <Link href={sport ? `/sport/${sport}` : '#'} className="text-[#1a5c2e] hover:text-[var(--ink)] transition-colors">
-            {categoryLabel}
-          </Link>
+          
+          <div 
+            className="flex items-center gap-1.5 text-xs font-semibold tracking-wider uppercase text-[var(--ink-muted)]"
+            style={{ fontFamily: 'var(--font-body)' }}
+          >
+            <Link href="/" className="hover:text-[var(--ink)] transition-colors">
+              মাঠ
+            </Link>
+            <span>/</span>
+            <Link href={sport ? `/sport/${sport}` : '#'} className="text-[#1a5c2e] hover:text-[var(--ink)] transition-colors">
+              {categoryLabel}
+            </Link>
+          </div>
         </div>
       </div>
 
