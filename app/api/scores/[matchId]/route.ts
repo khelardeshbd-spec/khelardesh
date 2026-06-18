@@ -296,14 +296,14 @@ export async function GET(
         name: homeComp.team?.displayName || 'Home Team',
         abbreviation: homeComp.team?.abbreviation || 'HOME',
         score: homeScoreParsed,
-        logo: homeComp.team?.logo || ''
+        logo: homeComp.team?.logo || homeComp.team?.logos?.[0]?.href || ''
       },
       away: {
         id: awayComp.id,
         name: awayComp.team?.displayName || 'Away Team',
         abbreviation: awayComp.team?.abbreviation || 'AWAY',
         score: awayScoreParsed,
-        logo: awayComp.team?.logo || ''
+        logo: awayComp.team?.logo || awayComp.team?.logos?.[0]?.href || ''
       },
       scorers,
       rosters,
