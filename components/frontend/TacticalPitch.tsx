@@ -239,7 +239,7 @@ function getRatingStyle(rating: number): { bg: string; text: string } {
   return { bg: '#d93025', text: '#ffffff' }; // Google red
 }
 
-function TeamPitch({ roster, selectedSubTab }: { roster: TeamRoster; selectedSubTab: 'performance' | 'age' | 'club' }) {
+function TeamPitch({ roster, selectedSubTab, isAway = false }: { roster: TeamRoster; selectedSubTab: 'performance' | 'age' | 'club'; isAway?: boolean }) {
   const coordsMap = calculateSinglePitchCoordinates(roster.starters || [], roster.formation);
 
   return (
@@ -262,41 +262,64 @@ function TeamPitch({ roster, selectedSubTab }: { roster: TeamRoster; selectedSub
       </div>
 
       {/* Visual Pitch Container */}
-      <div 
-        className="relative w-full h-[410px] overflow-hidden"
-        style={{
-          touchAction: 'none',
-          overscrollBehavior: 'none'
-        }}
-      >
+      <div className="relative w-full h-[410px] overflow-hidden">
         {/* --- PITCH MARKINGS --- */}
-        {/* Outer boundaries */}
-        <div className="absolute top-4 left-4 right-4 bottom-0 border border-white/20 border-b-0 pointer-events-none" />
-
-        {/* Half-way line (bottom boundary) */}
-        <div className="absolute bottom-0 left-4 right-4 h-[1px] bg-white/20 pointer-events-none" />
-
-        {/* Center circle arc */}
-        <div 
-          className="absolute bottom-0 left-1/2 -translate-x-1/2 border border-white/20 rounded-full pointer-events-none translate-y-1/2" 
-          style={{ width: 100, height: 100 }}
-        />
-
-        {/* Penalty Box (Top) */}
-        <div className="absolute top-4 left-1/2 border border-white/20 border-t-0 pointer-events-none -translate-x-1/2" style={{ width: 160, height: 60 }} />
-        {/* Goal Box (Top) */}
-        <div className="absolute top-4 left-1/2 border border-white/20 border-t-0 pointer-events-none -translate-x-1/2" style={{ width: 70, height: 20 }} />
-        {/* Penalty Spot */}
-        <div className="absolute top-[46px] left-1/2 w-1 h-1 bg-white/40 rounded-full pointer-events-none -translate-x-1/2" />
-        {/* Penalty Arc */}
-        <div 
-          className="absolute top-[60px] left-1/2 border border-white/20 border-t-0 rounded-b-full pointer-events-none -translate-x-1/2" 
-          style={{ width: 50, height: 20 }}
-        />
+        {!isAway ? (
+          <>
+            {/* Top Half Outer boundaries */}
+            <div className="absolute top-4 left-4 right-4 bottom-0 border border-white/20 border-b-0 pointer-events-none" />
+            {/* Half-way line */}
+            <div className="absolute bottom-0 left-4 right-4 h-[1px] bg-white/20 pointer-events-none" />
+            {/* Center circle arc */}
+            <div 
+              className="absolute bottom-0 left-1/2 -translate-x-1/2 border border-white/20 rounded-full pointer-events-none translate-y-1/2" 
+              style={{ width: 100, height: 100 }}
+            />
+            {/* Penalty Box (Top) */}
+            <div className="absolute top-4 left-1/2 border border-white/20 border-t-0 pointer-events-none -translate-x-1/2" style={{ width: 160, height: 60 }} />
+            {/* Goal Box (Top) */}
+            <div className="absolute top-4 left-1/2 border border-white/20 border-t-0 pointer-events-none -translate-x-1/2" style={{ width: 70, height: 20 }} />
+            {/* Penalty Spot */}
+            <div className="absolute top-[46px] left-1/2 w-1 h-1 bg-white/40 rounded-full pointer-events-none -translate-x-1/2" />
+            {/* Penalty Arc */}
+            <div 
+              className="absolute top-[60px] left-1/2 border border-white/20 border-t-0 rounded-b-full pointer-events-none -translate-x-1/2" 
+              style={{ width: 50, height: 20 }}
+            />
+          </>
+        ) : (
+          <>
+            {/* Bottom Half Outer boundaries */}
+            <div className="absolute top-0 left-4 right-4 bottom-4 border border-white/20 border-t-0 pointer-events-none" />
+            {/* Half-way line */}
+            <div className="absolute top-0 left-4 right-4 h-[1px] bg-white/20 pointer-events-none" />
+            {/* Center circle arc */}
+            <div 
+              className="absolute top-0 left-1/2 -translate-x-1/2 border border-white/20 rounded-full pointer-events-none -translate-y-1/2" 
+              style={{ width: 100, height: 100 }}
+            />
+            {/* Penalty Box (Bottom) */}
+            <div className="absolute bottom-4 left-1/2 border border-white/20 border-b-0 pointer-events-none -translate-x-1/2" style={{ width: 160, height: 60 }} />
+            {/* Goal Box (Bottom) */}
+            <div className="absolute bottom-4 left-1/2 border border-white/20 border-b-0 pointer-events-none -translate-x-1/2" style={{ width: 70, height: 20 }} />
+            {/* Penalty Spot */}
+            <div className="absolute bottom-[46px] left-1/2 w-1 h-1 bg-white/40 rounded-full pointer-events-none -translate-x-1/2" />
+            {/* Penalty Arc */}
+            <div 
+              className="absolute bottom-[60px] left-1/2 border border-white/20 border-b-0 rounded-t-full pointer-events-none -translate-x-1/2" 
+              style={{ width: 50, height: 20 }}
+            />
+          </>
+        )}
 
         {/* --- PLAYERS --- */}
         {(roster.starters || []).map((player) => {
-          const coords = coordsMap.get(player.id) || { x: 50, y: 50 };
+          let coords = coordsMap.get(player.id) || { x: 50, y: 50 };
+          
+          // Rotate coordinates 180 degrees for away team so they face each other on the pitch
+          if (isAway) {
+            coords = { x: 100 - coords.x, y: 100 - coords.y };
+          }
           
           let pillText = '';
           let pillBg = '#757575';
@@ -450,12 +473,12 @@ export default function TacticalPitch({ homeRoster, awayRoster }: TacticalPitchP
 
       {/* Render Home Team Pitch */}
       {homeRoster?.starters?.length > 0 && (
-        <TeamPitch roster={homeRoster} selectedSubTab={selectedSubTab} />
+        <TeamPitch roster={homeRoster} selectedSubTab={selectedSubTab} isAway={false} />
       )}
 
       {/* Render Away Team Pitch */}
       {awayRoster?.starters?.length > 0 && (
-        <TeamPitch roster={awayRoster} selectedSubTab={selectedSubTab} />
+        <TeamPitch roster={awayRoster} selectedSubTab={selectedSubTab} isAway={true} />
       )}
     </div>
   );
