@@ -150,7 +150,7 @@ export default function ScoresStrip() {
       {/* Header */}
       <div className="px-6">
         <h2 className="text-[17px] font-bold text-[#121212] mb-4">
-          Live &amp; Recent Scores
+          লাইভ ও রিসেন্ট স্কোর
         </h2>
       </div>
 

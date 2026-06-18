@@ -81,12 +81,12 @@ export default function StickyScrollHeader() {
       <div className="max-w-[1200px] mx-auto px-6 py-2.5 flex items-center justify-between">
         {/* Left Brand Identity: text wordmark */}
         <Link href="/" className="flex items-center flex-shrink-0" aria-label="খেলারদেশ হোমপেজ">
-          <img src="/logo.png" alt="খেলারদেশ" style={{ height: 38, objectFit: 'contain' }} />
+          <img src="/images/khelardesh_logo.png" alt="খেলারদেশ" style={{ height: 38, objectFit: 'contain' }} />
         </Link>
 
         {/* Center: Navigation Menu */}
         <nav 
-          className="scrollbar-none overflow-x-auto lg:overflow-visible flex items-center gap-x-6 ml-4 justify-end flex-1"
+          className="scrollbar-none overflow-x-auto lg:overflow-visible flex items-center gap-x-6 ml-4 justify-start lg:justify-end flex-1"
           style={{ whiteSpace: 'nowrap' }}
         >
           {navItems.map((item, idx) => {

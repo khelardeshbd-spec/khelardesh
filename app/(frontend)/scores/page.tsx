@@ -378,12 +378,7 @@ export default function ScoresPage() {
         >
           লাইভ স্কোর
         </h1>
-        <p 
-          className="text-xs font-semibold text-slate-500 mt-2"
-          style={{ fontFamily: 'var(--font-body)' }}
-        >
-          ESPN থেকে সরাসরি আপডেট — প্রতি ৩০ সেকেন্ডে স্বয়ংক্রিয়ভাবে রিফ্রেশ হয়
-        </p>
+
       </div>
 
       {/* Filter Bar */}
