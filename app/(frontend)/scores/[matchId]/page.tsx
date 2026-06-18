@@ -331,7 +331,15 @@ export default function MatchCenterPage({ params }: { params: { matchId: string 
                             </div>
                             <div className="relative">
                               {p.avatar ? (
-                                <img src={p.avatar} alt={p.name} className="w-10 h-10 rounded-full object-cover bg-gray-100 border border-gray-200" />
+                                <div className="w-10 h-10 rounded-full relative overflow-hidden bg-gray-100 border border-gray-200">
+                                  <img 
+                                    src={p.avatar} 
+                                    alt={p.name} 
+                                    className="w-full h-full object-cover z-10" 
+                                    onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                                  />
+                                  <div className="absolute inset-0 flex items-center justify-center text-gray-500 font-bold text-xs z-0">{p.name.slice(0, 2)}</div>
+                                </div>
                               ) : (
                                 <div className="w-10 h-10 rounded-full bg-gradient-to-br from-gray-100 to-gray-200 border border-gray-300 flex items-center justify-center text-gray-500 font-bold text-xs">{p.jersey || p.name.slice(0, 2)}</div>
                               )}
@@ -351,7 +359,15 @@ export default function MatchCenterPage({ params }: { params: { matchId: string 
                             </div>
                             <div className="relative">
                               {p.avatar ? (
-                                <img src={p.avatar} alt={p.name} className="w-8 h-8 rounded-full object-cover bg-gray-100 border border-gray-200 grayscale-[30%]" />
+                                <div className="w-8 h-8 rounded-full relative overflow-hidden bg-gray-100 border border-gray-200 grayscale-[30%]">
+                                  <img 
+                                    src={p.avatar} 
+                                    alt={p.name} 
+                                    className="w-full h-full object-cover z-10"
+                                    onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                                  />
+                                  <div className="absolute inset-0 flex items-center justify-center text-gray-400 font-bold text-[10px] z-0">{p.name.slice(0, 2)}</div>
+                                </div>
                               ) : (
                                 <div className="w-8 h-8 rounded-full bg-gray-100 border border-gray-200 flex items-center justify-center text-gray-400 font-bold text-[10px]">{p.jersey || p.name.slice(0, 2)}</div>
                               )}
@@ -451,38 +467,54 @@ export default function MatchCenterPage({ params }: { params: { matchId: string 
                       <div key={p.id} className="flex items-center justify-between p-2 rounded-xl hover:bg-gray-50 transition-colors">
                         <div className="flex items-center gap-3">
                           {p.avatar ? (
-                            <img src={p.avatar} alt={p.name} className="w-8 h-8 rounded-full object-cover border border-gray-200" />
+                            <div className="w-8 h-8 rounded-full relative overflow-hidden bg-gray-100 border border-gray-200">
+                              <img 
+                                src={p.avatar} 
+                                alt={p.name} 
+                                className="w-full h-full object-cover z-10" 
+                                onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                              />
+                              <div className="absolute inset-0 flex items-center justify-center text-gray-500 font-bold text-[10px] z-0">{p.name.slice(0, 2)}</div>
+                            </div>
                           ) : (
-                            <div className="w-8 h-8 rounded-full bg-gray-100 border border-gray-200 flex items-center justify-center text-gray-400 font-bold text-[10px]">{p.jersey}</div>
+                            <div className="w-8 h-8 rounded-full bg-gray-100 border border-gray-200 flex items-center justify-center text-gray-400 font-bold text-[10px]">{p.jersey || p.name.slice(0, 2)}</div>
                           )}
-                          <div className="flex flex-col">
-                            <span className="text-xs font-bold text-gray-800">{p.name}</span>
-                            <span className="text-[10px] text-gray-500">{p.position}</span>
+                          <div className="flex flex-col min-w-0">
+                            <span className="text-sm font-bold text-gray-800 truncate">{p.name}</span>
+                            <span className="text-[10px] font-medium text-gray-500">{p.position}</span>
                           </div>
                         </div>
-                        <span className="text-xs font-black text-gray-300 w-6 text-right">#{p.jersey}</span>
+                        <span className="w-6 h-6 rounded bg-gray-100 flex items-center justify-center text-[10px] font-black text-gray-600 shadow-sm border border-gray-200">
+                          {p.jersey}
+                        </span>
                       </div>
                     ))}
                   </div>
 
                   <div className="text-[10px] font-black text-gray-400 mt-6 mb-3 uppercase tracking-widest">Substitutes</div>
-                  <div className="grid grid-cols-1 gap-1">
+                  <div className="grid grid-cols-1 gap-2">
                     {homeRoster?.bench?.map((p: any) => (
-                      <div key={p.id} className="flex items-center justify-between p-2 rounded-lg hover:bg-gray-50 transition-colors opacity-80 hover:opacity-100">
-                        <div className="flex items-center gap-2">
+                      <div key={p.id} className="flex items-center justify-between p-2 rounded-xl opacity-80 hover:opacity-100 hover:bg-gray-50 transition-all">
+                        <div className="flex items-center gap-3">
                           {p.avatar ? (
-                            <img src={p.avatar} alt={p.name} className="w-6 h-6 rounded-full object-cover grayscale-[50%]" />
+                            <div className="w-6 h-6 rounded-full relative overflow-hidden bg-gray-100 border border-gray-200 grayscale-[30%]">
+                              <img 
+                                src={p.avatar} 
+                                alt={p.name} 
+                                className="w-full h-full object-cover z-10"
+                                onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                              />
+                              <div className="absolute inset-0 flex items-center justify-center text-gray-400 font-bold text-[9px] z-0">{p.name.slice(0, 2)}</div>
+                            </div>
                           ) : (
-                            <div className="w-6 h-6 rounded-full bg-gray-100 flex items-center justify-center text-gray-400 font-bold text-[8px]">{p.jersey}</div>
+                            <div className="w-6 h-6 rounded-full bg-gray-100 border border-gray-200 flex items-center justify-center text-gray-400 font-bold text-[9px]">{p.jersey || p.name.slice(0, 2)}</div>
                           )}
-                          <div className="flex flex-col">
-                            <span className="text-[11px] font-bold text-gray-700">{p.name}</span>
+                          <div className="flex flex-col min-w-0">
+                            <span className="text-xs font-bold text-gray-600 truncate">{p.name}</span>
+                            <span className="text-[9px] text-gray-400">{p.position}</span>
                           </div>
                         </div>
-                        <div className="flex items-center gap-2">
-                          <span className="text-[9px] text-gray-400">{p.position}</span>
-                          <span className="text-[10px] font-black text-gray-300 w-5 text-right">#{p.jersey}</span>
-                        </div>
+                        <span className="text-[9px] font-bold text-gray-400 w-5 text-right">{p.jersey}</span>
                       </div>
                     ))}
                   </div>
