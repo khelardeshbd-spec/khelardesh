@@ -164,47 +164,46 @@ export default function TacticalPitch({ homeRoster, awayRoster }: TacticalPitchP
 
       {/* Visual Pitch Container */}
       <div 
-        className="relative w-full h-[620px] max-w-[480px] bg-[#1a73e8] overflow-hidden my-4 border border-[#e2e2e2]"
+        className="relative w-full h-[620px] max-w-[480px] overflow-hidden my-4 border border-[#e2e2e2]"
         style={{
           borderRadius: 8,
-          // Green grass texture gradient and pitch lines
-          background: 'radial-gradient(circle, #27ae60 0%, #1e824c 100%)',
+          background: '#7bc087', // Google-style light green pitch
           boxShadow: '0 4px 12px rgba(0,0,0,0.08)'
         }}
       >
         {/* --- PITCH MARKINGS --- */}
         {/* Border Line */}
-        <div className="absolute inset-4 border border-white/20 pointer-events-none" />
+        <div className="absolute inset-4 border border-white/30 pointer-events-none" />
 
         {/* Center Line */}
-        <div className="absolute top-1/2 left-4 right-4 h-[1px] bg-white/20 pointer-events-none" />
+        <div className="absolute top-1/2 left-4 right-4 h-[1px] bg-white/30 pointer-events-none" />
 
         {/* Center Circle */}
         <div 
-          className="absolute top-1/2 left-1/2 border border-white/20 rounded-full pointer-events-none -translate-x-1/2 -translate-y-1/2" 
+          className="absolute top-1/2 left-1/2 border border-white/30 rounded-full pointer-events-none -translate-x-1/2 -translate-y-1/2" 
           style={{ width: 100, height: 100 }}
         />
         <div 
-          className="absolute top-1/2 left-1/2 w-1.5 h-1.5 bg-white/30 rounded-full pointer-events-none -translate-x-1/2 -translate-y-1/2" 
+          className="absolute top-1/2 left-1/2 w-1.5 h-1.5 bg-white/40 rounded-full pointer-events-none -translate-x-1/2 -translate-y-1/2" 
         />
 
         {/* Penalty Box Top (Away) */}
-        <div className="absolute top-4 left-1/2 border border-white/20 border-t-0 pointer-events-none -translate-x-1/2" style={{ width: 180, height: 80 }} />
+        <div className="absolute top-4 left-1/2 border border-white/30 border-t-0 pointer-events-none -translate-x-1/2" style={{ width: 180, height: 80 }} />
         {/* Goal Box Top (Away) */}
-        <div className="absolute top-4 left-1/2 border border-white/20 border-t-0 pointer-events-none -translate-x-1/2" style={{ width: 80, height: 26 }} />
+        <div className="absolute top-4 left-1/2 border border-white/30 border-t-0 pointer-events-none -translate-x-1/2" style={{ width: 80, height: 26 }} />
         {/* Penalty Arc Top */}
         <div 
-          className="absolute top-[84px] left-1/2 border border-white/20 rounded-full pointer-events-none -translate-x-1/2" 
+          className="absolute top-[84px] left-1/2 border border-white/30 rounded-full pointer-events-none -translate-x-1/2" 
           style={{ width: 60, height: 24, clipPath: 'inset(12px 0 0 0)' }}
         />
 
         {/* Penalty Box Bottom (Home) */}
-        <div className="absolute bottom-4 left-1/2 border border-white/20 border-b-0 pointer-events-none -translate-x-1/2" style={{ width: 180, height: 80 }} />
+        <div className="absolute bottom-4 left-1/2 border border-white/30 border-b-0 pointer-events-none -translate-x-1/2" style={{ width: 180, height: 80 }} />
         {/* Goal Box Bottom (Home) */}
-        <div className="absolute bottom-4 left-1/2 border border-white/20 border-b-0 pointer-events-none -translate-x-1/2" style={{ width: 80, height: 26 }} />
+        <div className="absolute bottom-4 left-1/2 border border-white/30 border-b-0 pointer-events-none -translate-x-1/2" style={{ width: 80, height: 26 }} />
         {/* Penalty Arc Bottom */}
         <div 
-          className="absolute bottom-[84px] left-1/2 border border-white/20 rounded-full pointer-events-none -translate-x-1/2" 
+          className="absolute bottom-[84px] left-1/2 border border-white/30 rounded-full pointer-events-none -translate-x-1/2" 
           style={{ width: 60, height: 24, clipPath: 'inset(0 0 12px 0)' }}
         />
 
@@ -219,22 +218,24 @@ export default function TacticalPitch({ homeRoster, awayRoster }: TacticalPitchP
               className="absolute flex flex-col items-center -translate-x-1/2 -translate-y-1/2 group"
               style={{ left: `${x}%`, top: `${y}%`, zIndex: 20 }}
             >
-              {/* Player Node */}
-              <div className="relative">
-                {/* Profile Circle / Jersey */}
-                <div 
-                  className="w-10 h-10 rounded-full border-2 flex items-center justify-center text-white text-xs font-bold shadow-md select-none transition-transform group-hover:scale-105"
-                  style={{ 
-                    backgroundColor: '#' + awayRoster.color, 
-                    borderColor: '#ffffff',
-                  }}
-                >
-                  {player.jersey || player.name.slice(0, 2)}
-                </div>
+              <div className="relative flex flex-col items-center">
+                {/* Profile Avatar / Circle */}
+                {player.avatar ? (
+                  <div className="w-[42px] h-[42px] sm:w-12 sm:h-12 rounded-full overflow-hidden shadow-sm flex items-center justify-center bg-gray-100 transition-transform group-hover:scale-105">
+                    <img src={player.avatar} alt={player.name} className="w-full h-full object-cover scale-[1.1]" />
+                  </div>
+                ) : (
+                  <div 
+                    className="w-[42px] h-[42px] sm:w-12 sm:h-12 rounded-full flex items-center justify-center text-white text-sm font-bold shadow-sm select-none transition-transform group-hover:scale-105"
+                    style={{ backgroundColor: '#' + awayRoster.color }}
+                  >
+                    {player.name.slice(0, 2)}
+                  </div>
+                )}
 
                 {/* Rating Badge */}
                 <div 
-                  className="absolute -bottom-1 -right-2 w-5.5 h-5.5 rounded-full flex items-center justify-center text-[9px] font-black text-white border border-white shadow select-none"
+                  className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-black text-white border-2 border-[#7bc087] shadow-sm select-none"
                   style={{ backgroundColor: ratingColor }}
                 >
                   {player.rating.toFixed(1)}
@@ -242,12 +243,14 @@ export default function TacticalPitch({ homeRoster, awayRoster }: TacticalPitchP
               </div>
 
               {/* Player Name */}
-              <span 
-                className="mt-1.5 px-1.5 py-0.5 rounded bg-black/60 text-white font-bold tracking-tight text-[10px] whitespace-nowrap text-center"
-                style={{ fontFamily: 'var(--font-body)' }}
-              >
-                {player.name}
-              </span>
+              <div className="mt-2.5 text-center px-1">
+                <span 
+                  className="text-[#1a1a1a] font-semibold tracking-tight text-[10px] sm:text-[11px] whitespace-nowrap"
+                  style={{ fontFamily: 'var(--font-body)' }}
+                >
+                  <span className="font-normal text-[#333333] mr-0.5">{player.jersey}</span> {player.name}
+                </span>
+              </div>
             </div>
           );
         })}
@@ -263,22 +266,24 @@ export default function TacticalPitch({ homeRoster, awayRoster }: TacticalPitchP
               className="absolute flex flex-col items-center -translate-x-1/2 -translate-y-1/2 group"
               style={{ left: `${x}%`, top: `${y}%`, zIndex: 20 }}
             >
-              {/* Player Node */}
-              <div className="relative">
-                {/* Profile Circle / Jersey */}
-                <div 
-                  className="w-10 h-10 rounded-full border-2 flex items-center justify-center text-white text-xs font-bold shadow-md select-none transition-transform group-hover:scale-105"
-                  style={{ 
-                    backgroundColor: '#' + homeRoster.color, 
-                    borderColor: '#ffffff',
-                  }}
-                >
-                  {player.jersey || player.name.slice(0, 2)}
-                </div>
+              <div className="relative flex flex-col items-center">
+                {/* Profile Avatar / Circle */}
+                {player.avatar ? (
+                  <div className="w-[42px] h-[42px] sm:w-12 sm:h-12 rounded-full overflow-hidden shadow-sm flex items-center justify-center bg-gray-100 transition-transform group-hover:scale-105">
+                    <img src={player.avatar} alt={player.name} className="w-full h-full object-cover scale-[1.1]" />
+                  </div>
+                ) : (
+                  <div 
+                    className="w-[42px] h-[42px] sm:w-12 sm:h-12 rounded-full flex items-center justify-center text-white text-sm font-bold shadow-sm select-none transition-transform group-hover:scale-105"
+                    style={{ backgroundColor: '#' + homeRoster.color }}
+                  >
+                    {player.name.slice(0, 2)}
+                  </div>
+                )}
 
                 {/* Rating Badge */}
                 <div 
-                  className="absolute -bottom-1 -right-2 w-5.5 h-5.5 rounded-full flex items-center justify-center text-[9px] font-black text-white border border-white shadow select-none"
+                  className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-black text-white border-2 border-[#7bc087] shadow-sm select-none"
                   style={{ backgroundColor: ratingColor }}
                 >
                   {player.rating.toFixed(1)}
@@ -286,12 +291,14 @@ export default function TacticalPitch({ homeRoster, awayRoster }: TacticalPitchP
               </div>
 
               {/* Player Name */}
-              <span 
-                className="mt-1.5 px-1.5 py-0.5 rounded bg-black/60 text-white font-bold tracking-tight text-[10px] whitespace-nowrap text-center"
-                style={{ fontFamily: 'var(--font-body)' }}
-              >
-                {player.name}
-              </span>
+              <div className="mt-2.5 text-center px-1">
+                <span 
+                  className="text-[#1a1a1a] font-semibold tracking-tight text-[10px] sm:text-[11px] whitespace-nowrap"
+                  style={{ fontFamily: 'var(--font-body)' }}
+                >
+                  <span className="font-normal text-[#333333] mr-0.5">{player.jersey}</span> {player.name}
+                </span>
+              </div>
             </div>
           );
         })}
