@@ -174,7 +174,7 @@ export async function GET(
           positionAbbr: p.position.abbreviation,
           formationPlace: p.formationPlace || '',
           rating: calculateRating(p),
-          avatar: p.athlete.jerseyImages?.[0]?.href || ''
+          avatar: p.athlete.headshot?.href || p.athlete.jerseyImages?.[0]?.href || ''
         }));
 
       const benchList = (teamRoster.roster || [])
@@ -187,7 +187,7 @@ export async function GET(
           position: p.position.displayName,
           positionAbbr: p.position.abbreviation,
           rating: calculateRating(p),
-          avatar: p.athlete.jerseyImages?.[0]?.href || ''
+          avatar: p.athlete.headshot?.href || p.athlete.jerseyImages?.[0]?.href || ''
         }));
 
       return {
@@ -205,7 +205,7 @@ export async function GET(
     // Extract stats
     const stats: { name: string; home: string; away: string }[] = [];
     const boxscore = data.boxscore || {};
-    const teamsStats = boxscore.statistics || [];
+    const teamsStats = boxscore.teams || [];
     const homeStats = teamsStats.find((s: any) => s.team?.id === homeComp.id) || {};
     const awayStats = teamsStats.find((s: any) => s.team?.id === awayComp.id) || {};
     
