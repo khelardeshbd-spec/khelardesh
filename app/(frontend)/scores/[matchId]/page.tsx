@@ -212,25 +212,34 @@ export default function MatchCenterPage({ params }: { params: { matchId: string 
       {/* CONTENT AREA */}
       <div className="max-w-[700px] mx-auto px-4 -mt-4 relative z-20">
         
-        {/* NAV TABS (Floating Segmented Control) */}
-        <div className="bg-white p-1.5 rounded-xl shadow-lg border border-gray-100 flex mb-6">
+        {/* NAV TABS (Google-Style Segmented Control) */}
+        <div className="bg-white border-b border-gray-200 flex mb-6">
           <button
             onClick={() => setActiveTab('lineup')}
-            className={`flex-1 py-2.5 text-xs sm:text-sm font-bold rounded-lg transition-all ${activeTab === 'lineup' ? 'bg-[#1e293b] text-white shadow-md' : 'text-gray-500 hover:text-gray-800 hover:bg-gray-50'}`}
+            className={`flex-1 relative py-3.5 text-[13px] sm:text-sm font-medium transition-colors ${activeTab === 'lineup' ? 'text-[#1a73e8]' : 'text-[#70757a] hover:text-[#202124]'}`}
           >
             লাইনআপ (ফরমেশন)
+            {activeTab === 'lineup' && (
+              <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1/2 h-[3px] bg-[#1a73e8] rounded-t-full" />
+            )}
           </button>
           <button
             onClick={() => setActiveTab('stats')}
-            className={`flex-1 py-2.5 text-xs sm:text-sm font-bold rounded-lg transition-all ${activeTab === 'stats' ? 'bg-[#1e293b] text-white shadow-md' : 'text-gray-500 hover:text-gray-800 hover:bg-gray-50'}`}
+            className={`flex-1 relative py-3.5 text-[13px] sm:text-sm font-medium transition-colors ${activeTab === 'stats' ? 'text-[#1a73e8]' : 'text-[#70757a] hover:text-[#202124]'}`}
           >
             পরিসংখ্যান
+            {activeTab === 'stats' && (
+              <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1/2 h-[3px] bg-[#1a73e8] rounded-t-full" />
+            )}
           </button>
           <button
             onClick={() => setActiveTab('info')}
-            className={`flex-1 py-2.5 text-xs sm:text-sm font-bold rounded-lg transition-all ${activeTab === 'info' ? 'bg-[#1e293b] text-white shadow-md' : 'text-gray-500 hover:text-gray-800 hover:bg-gray-50'}`}
+            className={`flex-1 relative py-3.5 text-[13px] sm:text-sm font-medium transition-colors ${activeTab === 'info' ? 'text-[#1a73e8]' : 'text-[#70757a] hover:text-[#202124]'}`}
           >
             দল ও স্কোয়াড
+            {activeTab === 'info' && (
+              <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1/2 h-[3px] bg-[#1a73e8] rounded-t-full" />
+            )}
           </button>
         </div>
 
@@ -382,16 +391,9 @@ export default function MatchCenterPage({ params }: { params: { matchId: string 
 
           {/* STATS TAB */}
           {activeTab === 'stats' && (
-            <div className="animate-in fade-in slide-in-from-bottom-2 duration-500">
-              <div className="flex items-center gap-3 mb-8 pb-4 border-b border-gray-100">
-                <div className="w-10 h-10 rounded-full bg-blue-50 text-blue-500 flex items-center justify-center">
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
-                </div>
-                <h3 className="text-lg font-black text-gray-800">Match Statistics</h3>
-              </div>
-              
+            <div className="animate-in fade-in slide-in-from-bottom-2 duration-500 pb-8">
               {match.stats && match.stats.length > 0 ? (
-                <div className="flex flex-col gap-6">
+                <div className="flex flex-col gap-6 pt-2">
                   {match.stats.map((stat, idx) => {
                     const homeVal = parseFloat(stat.home) || 0;
                     const awayVal = parseFloat(stat.away) || 0;
@@ -400,23 +402,27 @@ export default function MatchCenterPage({ params }: { params: { matchId: string 
                     const awayPct = (awayVal / total) * 100;
 
                     return (
-                      <div key={idx} className="flex flex-col group">
-                        <div className="flex justify-between items-end mb-2">
-                          <span className="text-sm font-black text-gray-800 w-12 text-left">{stat.home}</span>
-                          <span className="text-xs font-bold text-gray-500 uppercase tracking-widest">{stat.name}</span>
-                          <span className="text-sm font-black text-gray-800 w-12 text-right">{stat.away}</span>
+                      <div key={idx} className="flex flex-col w-full px-2 sm:px-6">
+                        <div className="flex justify-between items-center mb-1.5">
+                          <span className="text-[13px] sm:text-sm font-bold text-[#202124] w-10 text-left">{stat.home}</span>
+                          <span className="text-[12px] sm:text-[13px] text-[#70757a] text-center">{stat.name}</span>
+                          <span className="text-[13px] sm:text-sm font-bold text-[#202124] w-10 text-right">{stat.away}</span>
                         </div>
-                        <div className="w-full h-3 bg-gray-100 rounded-full overflow-hidden flex shadow-inner">
-                          <div className="h-full bg-gradient-to-r from-[#1e40af] to-[#3b82f6] transition-all duration-1000 ease-out" style={{ width: `${homePct}%` }} />
-                          <div className="h-full bg-gradient-to-l from-[#991b1b] to-[#ef4444] transition-all duration-1000 ease-out" style={{ width: `${awayPct}%` }} />
+                        <div className="flex w-full h-[6px] gap-1">
+                          <div className="h-full bg-[#f1f3f4] flex-1 rounded-l-sm overflow-hidden flex justify-end">
+                            <div className="h-full bg-[#1a73e8] transition-all duration-1000 ease-out" style={{ width: `${homePct}%` }} />
+                          </div>
+                          <div className="h-full bg-[#f1f3f4] flex-1 rounded-r-sm overflow-hidden flex justify-start">
+                            <div className="h-full bg-[#ea4335] transition-all duration-1000 ease-out" style={{ width: `${awayPct}%` }} />
+                          </div>
                         </div>
                       </div>
                     );
                   })}
                 </div>
               ) : (
-                <div className="py-16 text-center rounded-xl bg-gray-50 border border-dashed border-gray-200">
-                  <p className="text-gray-500 font-medium">পরিসংখ্যান এখনও উপলব্ধ নয়।</p>
+                <div className="py-16 text-center text-[#70757a] font-medium">
+                  <p>Match has not started yet</p>
                 </div>
               )}
             </div>
