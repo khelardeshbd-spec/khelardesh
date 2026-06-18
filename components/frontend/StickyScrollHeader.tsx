@@ -88,7 +88,7 @@ export default function StickyScrollHeader() {
         </Link>
 
         {/* Center: Navigation Menu */}
-        <div className="relative flex-1 ml-4 overflow-hidden lg:overflow-visible flex items-center pr-2">
+        <div className={`relative flex-1 ml-4 ${openDropdown ? 'overflow-visible' : 'overflow-hidden'} lg:overflow-visible flex items-center pr-2`}>
           <nav 
             className={`scrollbar-none ${openDropdown ? 'overflow-visible' : 'overflow-x-auto'} lg:overflow-visible flex items-center gap-x-6 justify-start lg:justify-end flex-1`}
             style={{ whiteSpace: 'nowrap' }}
