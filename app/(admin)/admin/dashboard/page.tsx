@@ -21,7 +21,7 @@ export default async function AdminDashboardPage() {
   const session = await getServerSession(authOptions);
   if (!session) redirect('/admin');
 
-  const [{ data: articles }, { data: scores }, { data: countRes }] = await Promise.all([
+  const [{ data: articles }, { data: scores }, { data: countRes }, { data: users }] = await Promise.all([
     supabaseAdmin
       .from('Article')
       .select('id, slug, headline, headlineBn, sport, isLead, publishedAt')
@@ -35,12 +35,18 @@ export default async function AdminDashboardPage() {
     supabaseAdmin
       .from('Article')
       .select('id', { count: 'exact', head: true }),
+    supabaseAdmin
+      .from('SiteUser')
+      .select('*')
+      .order('createdAt', { ascending: false })
+      .limit(20),
   ]);
 
   const totalArticles = (countRes as any)?.length ?? 0;
 
   const safeArticles = articles ?? []
   const safeScores = scores ?? []
+  const safeUsers = users ?? []
 
   const headingStyle = {
     fontFamily: "'Hind Siliguri', sans-serif",
@@ -89,6 +95,10 @@ export default async function AdminDashboardPage() {
           <div style={{ padding: '16px 24px', backgroundColor: 'var(--bg-surface)', border: '1px solid var(--ink-border)', borderRadius: 2, minWidth: 140 }}>
             <p style={{ fontFamily: "'Hind Siliguri', sans-serif", fontSize: 9, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--ink-muted)', marginBottom: 4 }}>Lead Stories</p>
             <p style={{ fontFamily: "'Hind Siliguri', sans-serif", fontSize: 32, fontWeight: 700, color: 'var(--live-red)', lineHeight: 1 }}>{safeArticles.filter(a => a.isLead).length}</p>
+          </div>
+          <div style={{ padding: '16px 24px', backgroundColor: 'var(--bg-surface)', border: '1px solid var(--ink-border)', borderRadius: 2, minWidth: 140 }}>
+            <p style={{ fontFamily: "'Hind Siliguri', sans-serif", fontSize: 9, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--ink-muted)', marginBottom: 4 }}>Site Users</p>
+            <p style={{ fontFamily: "'Hind Siliguri', sans-serif", fontSize: 32, fontWeight: 700, color: 'var(--ink)', lineHeight: 1 }}>{safeUsers.length}</p>
           </div>
         </div>
 
@@ -211,6 +221,59 @@ export default async function AdminDashboardPage() {
             <Link href="/admin/scores" style={{ color: 'var(--ink-muted)', fontSize: 11, textDecoration: 'underline' }}>
               Manage scores →
             </Link>
+          </div>
+        </section>
+
+        {/* Registered Users */}
+        <section className="mt-10">
+          <h2 style={headingStyle}>Registered Site Users</h2>
+          <div style={{ overflowX: 'auto' }}>
+            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+              <thead>
+                <tr>
+                  <th style={thStyle}>Avatar</th>
+                  <th style={thStyle}>Name</th>
+                  <th style={thStyle}>Email</th>
+                  <th style={thStyle}>Signed Up</th>
+                  <th style={thStyle}>Last Login</th>
+                </tr>
+              </thead>
+              <tbody>
+                {safeUsers.length === 0 ? (
+                  <tr>
+                    <td colSpan={5} style={{ ...tdStyle, color: 'var(--ink-muted)', textAlign: 'center', padding: '16px' }}>
+                      No registered users yet.
+                    </td>
+                  </tr>
+                ) : (
+                  safeUsers.map((u: any) => (
+                    <tr key={u.id}>
+                      <td style={tdStyle}>
+                        {u.image ? (
+                          <img 
+                            src={u.image} 
+                            alt={u.name || 'User'} 
+                            className="w-6 h-6 rounded-full border border-[var(--ink-border)]"
+                          />
+                        ) : (
+                          <div className="w-6 h-6 rounded-full bg-gray-200 flex items-center justify-center text-[8px] font-bold text-gray-700 border border-[var(--ink-border)]">
+                            {u.name ? u.name.slice(0, 2) : 'U'}
+                          </div>
+                        )}
+                      </td>
+                      <td style={{ ...tdStyle, fontWeight: 600 }}>{u.name || 'Anonymous'}</td>
+                      <td style={tdStyle}>{u.email}</td>
+                      <td style={{ ...tdStyle, color: 'var(--ink-muted)' }}>
+                        {u.createdAt ? new Date(u.createdAt).toLocaleDateString('en-GB') : '—'}
+                      </td>
+                      <td style={{ ...tdStyle, color: 'var(--ink-muted)' }}>
+                        {u.lastLoginAt ? new Date(u.lastLoginAt).toLocaleString('en-GB', { dateStyle: 'short', timeStyle: 'short' }) : '—'}
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
           </div>
         </section>
       </div>

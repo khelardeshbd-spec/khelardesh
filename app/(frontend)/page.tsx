@@ -34,6 +34,10 @@ export const revalidate = 30; // ISR every 30 seconds
  * Desktop: 2fr main + 1fr sidebar
  */
 export default async function HomePage() {
+  const { getServerSession } = require('next-auth');
+  const { authOptions } = require('@/lib/auth');
+  const session = await getServerSession(authOptions);
+
   // Fetch data server-side via Supabase
   const [leadResult, articlesResult, scoresResult, sponsorsResult] = await Promise.allSettled([
     supabaseAdmin
@@ -185,12 +189,34 @@ export default async function HomePage() {
 
             {/* Right: Actions */}
             <div className="flex items-center justify-end gap-2 sm:gap-3">
-              <button className="bg-[#d33f3f] border border-[#d33f3f] text-white hover:bg-[#b52a2a] transition-all duration-200 px-3 sm:px-5 py-1.5 rounded-full font-bold text-[9px] sm:text-[11px] tracking-wider cursor-pointer shadow-sm hover:shadow">
-                সাবস্ক্রিপশন
-              </button>
-              <button className="border border-gray-200 text-[#121212] hover:bg-gray-100 transition-all duration-200 px-3 sm:px-4 py-1.5 rounded-full font-bold text-[9px] sm:text-[11px] tracking-wider cursor-pointer">
-                লগইন
-              </button>
+              {session?.user ? (
+                <div className="flex items-center gap-2.5">
+                  {session.user.image ? (
+                    <img 
+                      src={session.user.image} 
+                      alt={session.user.name || 'User'} 
+                      className="w-8 h-8 rounded-full border border-gray-200"
+                    />
+                  ) : (
+                    <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-[10px] font-bold text-gray-700 border border-gray-200">
+                      {session.user.name ? session.user.name.slice(0, 2) : 'U'}
+                    </div>
+                  )}
+                  <Link 
+                    href="/api/auth/signout" 
+                    className="text-[10px] text-gray-400 hover:text-gray-600 transition-all font-bold tracking-wider"
+                  >
+                    লগআউট
+                  </Link>
+                </div>
+              ) : (
+                <Link 
+                  href="/api/auth/signin" 
+                  className="text-blue-600 hover:text-blue-800 transition-colors font-bold text-[11px] sm:text-xs tracking-wider cursor-pointer"
+                >
+                  লগইন করুন
+                </Link>
+              )}
             </div>
           </div>
 

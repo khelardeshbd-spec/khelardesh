@@ -6,6 +6,7 @@ export function getAuthOptions(): AuthOptions {
   if (cachedAuthOptions) return cachedAuthOptions;
 
   const CredentialsProvider = require('next-auth/providers/credentials').default;
+  const GoogleProvider = require('next-auth/providers/google').default;
 
   cachedAuthOptions = {
     providers: [
@@ -31,6 +32,10 @@ export function getAuthOptions(): AuthOptions {
           return null;
         },
       }),
+      GoogleProvider({
+        clientId: process.env.GOOGLE_CLIENT_ID || 'placeholder-id',
+        clientSecret: process.env.GOOGLE_CLIENT_SECRET || 'placeholder-secret',
+      }),
     ],
     pages: {
       signIn: '/admin',
@@ -40,13 +45,44 @@ export function getAuthOptions(): AuthOptions {
       maxAge: 60 * 60 * 24, // 24 hours
     },
     callbacks: {
-      async jwt({ token, user }) {
-        if (user) token.role = 'admin';
+      async signIn({ user, account }) {
+        if (account?.provider === 'google') {
+          const { supabaseAdmin } = require('@/lib/supabase');
+          try {
+            const { error } = await supabaseAdmin
+              .from('SiteUser')
+              .upsert({
+                email: user.email,
+                name: user.name,
+                image: user.image,
+                lastLoginAt: new Date().toISOString()
+              }, { onConflict: 'email' });
+            if (error) {
+              console.error('Error saving user in Supabase SiteUser table:', error);
+            }
+          } catch (e) {
+            console.error('Database save user failed:', e);
+          }
+        }
+        return true;
+      },
+      async jwt({ token, user, account }) {
+        if (user) {
+          if (account?.provider === 'credentials') {
+            token.role = 'admin';
+          } else {
+            token.role = 'user';
+          }
+          token.image = user.image;
+        }
         return token;
       },
       async session({ session, token }) {
         if (session.user) {
-          (session.user as typeof session.user & { role: string }).role = token.role as string;
+          (session.user as any).role = token.role as string;
+          if (token.image) {
+            session.user.image = token.image as string;
+          }
         }
         return session;
       },
