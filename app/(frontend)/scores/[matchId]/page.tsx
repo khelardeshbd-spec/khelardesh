@@ -95,337 +95,455 @@ export default function MatchCenterPage({ params }: { params: { matchId: string 
   const isScheduled = !match.status.isLive && !match.status.isFinished;
 
   return (
-    <div className="max-w-[700px] mx-auto px-4 py-6" style={{ backgroundColor: '#ffffff', color: '#121212', fontFamily: 'var(--font-body)' }}>
-      {/* Back button */}
-      <div className="mb-4">
-        <Link href="/scores" className="text-xs font-bold text-gray-500 hover:text-[#121212] transition-colors">
-          ← লাইভ স্কোরবোর্ড
-        </Link>
-      </div>
+    <div className="max-w-[700px] mx-auto pb-12 bg-[#f8fafc]" style={{ color: '#121212', fontFamily: 'var(--font-body)', minHeight: '100vh' }}>
+      
+      {/* MATCH HEADER (GRADIENT) */}
+      <div className="bg-gradient-to-br from-[#0f172a] via-[#1e293b] to-[#0f172a] text-white px-4 pt-6 pb-8 shadow-xl relative overflow-hidden">
+        {/* Decorative background blur */}
+        <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/4 pointer-events-none"></div>
+        <div className="absolute bottom-0 left-0 w-48 h-48 bg-blue-500/10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/4 pointer-events-none"></div>
+        
+        <div className="relative z-10 max-w-[700px] mx-auto">
+          {/* Back & League Badge Row */}
+          <div className="flex justify-between items-center mb-6">
+            <Link href="/scores" className="flex items-center gap-1.5 text-xs font-bold text-gray-300 hover:text-white transition-colors bg-white/10 px-3 py-1.5 rounded-full backdrop-blur-md">
+              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+              লাইভ স্কোরবোর্ড
+            </Link>
 
-      {/* Match Category / League Header Badge */}
-      <div className="flex items-center gap-2 mb-4 bg-gray-50 border border-gray-100 rounded-lg p-3">
-        {match.leagueLogo && (
-          <img src={match.leagueLogo} alt="" className="w-6 h-6 object-contain" />
-        )}
-        <div className="flex flex-col">
-          <span className="text-xs font-bold text-gray-800 uppercase tracking-wider">
-            {match.league}
-          </span>
-          <span className="text-[9px] font-bold text-gray-400">
-            {match.category === 'FIFA / International' ? 'FIFA / International Match' : 'Club Match'}
-          </span>
+            <div className="flex items-center gap-2 bg-white/10 backdrop-blur-md border border-white/5 rounded-full px-3 py-1.5">
+              {match.leagueLogo && (
+                <img src={match.leagueLogo} alt="" className="w-4 h-4 object-contain filter drop-shadow-sm" />
+              )}
+              <span className="text-[10px] font-bold text-gray-200 uppercase tracking-widest">
+                {match.league}
+              </span>
+            </div>
+          </div>
+
+          {/* SCOREBOARD CORE */}
+          <div className="flex items-center justify-between mb-4 mt-2">
+            {/* Home Team */}
+            <div className="flex flex-col items-center flex-1">
+              <div className="relative mb-3">
+                <div className="absolute inset-0 bg-white/20 blur-xl rounded-full"></div>
+                {match.home.logo ? (
+                  <img src={match.home.logo} alt={match.home.name} className="w-20 h-20 sm:w-24 sm:h-24 object-contain relative z-10 drop-shadow-2xl" />
+                ) : (
+                  <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-white/10 border border-white/20 flex items-center justify-center text-gray-300 font-bold text-2xl relative z-10">H</div>
+                )}
+              </div>
+              <span className="text-sm sm:text-base font-black tracking-tight text-center leading-tight drop-shadow-md">{match.home.name}</span>
+            </div>
+
+            {/* Scores & Status */}
+            <div className="flex flex-col items-center justify-center flex-shrink-0 px-2 sm:px-4">
+              <div className="flex items-center justify-center mb-1">
+                {match.status.isLive && (
+                  <span className="flex h-2 w-2 relative mr-2">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
+                  </span>
+                )}
+                <span className={`text-[10px] uppercase font-black tracking-widest ${match.status.isLive ? 'text-red-400' : 'text-gray-400'}`}>
+                  {match.status.isLive ? 'LIVE' : match.status.isFinished ? 'FINAL' : 'SCHEDULED'}
+                </span>
+              </div>
+              
+              <div className="flex items-center gap-3 sm:gap-4 my-1">
+                <span className="text-4xl sm:text-5xl font-black tabular-nums tracking-tighter drop-shadow-lg">
+                  {match.home.score !== null ? match.home.score : '-'}
+                </span>
+                <span className="text-white/30 text-2xl font-black mb-1">:</span>
+                <span className="text-4xl sm:text-5xl font-black tabular-nums tracking-tighter drop-shadow-lg">
+                  {match.away.score !== null ? match.away.score : '-'}
+                </span>
+              </div>
+
+              <div className="mt-2 text-center">
+                <span className={`inline-block text-xs font-bold px-3 py-1 rounded-full backdrop-blur-md border ${match.status.isLive ? 'bg-red-500/20 text-red-300 border-red-500/30' : 'bg-white/10 text-gray-300 border-white/10'}`}>
+                  {match.status.displayClock || match.status.detail}
+                </span>
+              </div>
+            </div>
+
+            {/* Away Team */}
+            <div className="flex flex-col items-center flex-1">
+              <div className="relative mb-3">
+                <div className="absolute inset-0 bg-white/20 blur-xl rounded-full"></div>
+                {match.away.logo ? (
+                  <img src={match.away.logo} alt={match.away.name} className="w-20 h-20 sm:w-24 sm:h-24 object-contain relative z-10 drop-shadow-2xl" />
+                ) : (
+                  <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-white/10 border border-white/20 flex items-center justify-center text-gray-300 font-bold text-2xl relative z-10">A</div>
+                )}
+              </div>
+              <span className="text-sm sm:text-base font-black tracking-tight text-center leading-tight drop-shadow-md">{match.away.name}</span>
+            </div>
+          </div>
+
+          {/* Goal Scorers list */}
+          {match.scorers && match.scorers.length > 0 && (
+            <div className="mt-6 pt-5 border-t border-white/10 grid grid-cols-2 gap-4 text-[11px] sm:text-xs text-gray-300">
+              {/* Home scorers */}
+              <div className="text-left space-y-1">
+                {match.scorers.filter(s => s.teamId === match.home.id).map((s, idx) => (
+                  <div key={idx} className="flex items-center gap-1.5">
+                    <svg className="w-3 h-3 text-white/50" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/></svg>
+                    <span className="font-semibold text-white">{s.athlete}</span>
+                    <span className="text-white/50">{s.time}</span>
+                  </div>
+                ))}
+              </div>
+              {/* Away scorers */}
+              <div className="text-right space-y-1">
+                {match.scorers.filter(s => s.teamId === match.away.id).map((s, idx) => (
+                  <div key={idx} className="flex items-center justify-end gap-1.5">
+                    <span className="text-white/50">{s.time}</span>
+                    <span className="font-semibold text-white">{s.athlete}</span>
+                    <svg className="w-3 h-3 text-white/50" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/></svg>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
-      {/* SCOREBOARD HEADER */}
-      <div className="border border-[#e2e2e2] rounded-lg p-5 mb-6 shadow-sm bg-white">
-        <div className="grid grid-cols-12 items-center gap-3">
-          {/* Home Team */}
-          <div className="col-span-4 flex flex-col items-center text-center">
-            {match.home.logo ? (
-              <img src={match.home.logo} alt={match.home.name} className="w-14 h-14 object-contain mb-2" />
-            ) : (
-              <div className="w-14 h-14 rounded-full bg-gray-100 flex items-center justify-center text-gray-400 font-bold mb-2">H</div>
-            )}
-            <span className="text-sm font-bold leading-tight">{match.home.name}</span>
-          </div>
-
-          {/* Scores & Clock */}
-          <div className="col-span-4 flex flex-col items-center justify-center text-center">
-            <span className="text-[10px] uppercase font-bold tracking-wider text-gray-400 mb-1">
-              {match.status.isLive ? 'LIVE' : match.status.isFinished ? 'FINAL' : 'SCHEDULED'}
-            </span>
-            <div className="flex items-center gap-3">
-              <span className="text-3xl font-black">
-                {match.home.score !== null ? match.home.score : '-'}
-              </span>
-              <span className="text-gray-300 text-lg font-bold">:</span>
-              <span className="text-3xl font-black">
-                {match.away.score !== null ? match.away.score : '-'}
-              </span>
-            </div>
-            <span 
-              className={`text-[11px] font-bold mt-2 px-2 py-0.5 rounded-full ${match.status.isLive ? 'bg-red-50 text-[var(--live-red)]' : 'bg-gray-100 text-gray-500'}`}
-            >
-              {match.status.displayClock || match.status.detail}
-            </span>
-          </div>
-
-          {/* Away Team */}
-          <div className="col-span-4 flex flex-col items-center text-center">
-            {match.away.logo ? (
-              <img src={match.away.logo} alt={match.away.name} className="w-14 h-14 object-contain mb-2" />
-            ) : (
-              <div className="w-14 h-14 rounded-full bg-gray-100 flex items-center justify-center text-gray-400 font-bold mb-2">A</div>
-            )}
-            <span className="text-sm font-bold leading-tight">{match.away.name}</span>
-          </div>
+      {/* CONTENT AREA */}
+      <div className="max-w-[700px] mx-auto px-4 -mt-4 relative z-20">
+        
+        {/* NAV TABS (Floating Segmented Control) */}
+        <div className="bg-white p-1.5 rounded-xl shadow-lg border border-gray-100 flex mb-6">
+          <button
+            onClick={() => setActiveTab('lineup')}
+            className={`flex-1 py-2.5 text-xs sm:text-sm font-bold rounded-lg transition-all ${activeTab === 'lineup' ? 'bg-[#1e293b] text-white shadow-md' : 'text-gray-500 hover:text-gray-800 hover:bg-gray-50'}`}
+          >
+            লাইনআপ (ফরমেশন)
+          </button>
+          <button
+            onClick={() => setActiveTab('stats')}
+            className={`flex-1 py-2.5 text-xs sm:text-sm font-bold rounded-lg transition-all ${activeTab === 'stats' ? 'bg-[#1e293b] text-white shadow-md' : 'text-gray-500 hover:text-gray-800 hover:bg-gray-50'}`}
+          >
+            পরিসংখ্যান
+          </button>
+          <button
+            onClick={() => setActiveTab('info')}
+            className={`flex-1 py-2.5 text-xs sm:text-sm font-bold rounded-lg transition-all ${activeTab === 'info' ? 'bg-[#1e293b] text-white shadow-md' : 'text-gray-500 hover:text-gray-800 hover:bg-gray-50'}`}
+          >
+            দল ও স্কোয়াড
+          </button>
         </div>
 
-        {/* Goal Scorers list */}
-        {match.scorers && match.scorers.length > 0 && (
-          <div className="mt-5 pt-4 border-t border-[#f0f0f0] grid grid-cols-2 gap-4 text-[11px] text-gray-500">
-            {/* Home scorers */}
-            <div className="text-left">
-              {match.scorers.filter(s => s.teamId === match.home.id).map((s, idx) => (
-                <div key={idx} className="flex items-center gap-1.5">
-                  <span className="font-semibold text-gray-700">{s.athlete}</span>
-                  <span>({s.time})</span>
-                </div>
-              ))}
-            </div>
-            {/* Away scorers */}
-            <div className="text-right">
-              {match.scorers.filter(s => s.teamId === match.away.id).map((s, idx) => (
-                <div key={idx} className="flex items-center justify-end gap-1.5">
-                  <span>({s.time})</span>
-                  <span className="font-semibold text-gray-700">{s.athlete}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-      </div>
-
-      {/* NAV TABS */}
-      <div className="flex border-b border-[#e2e2e2] mb-6">
-        <button
-          onClick={() => setActiveTab('lineup')}
-          className={`flex-1 py-3 text-sm font-bold border-b-2 transition-all ${activeTab === 'lineup' ? 'border-[#d33f3f] text-[#d33f3f]' : 'border-transparent text-gray-400 hover:text-gray-600'}`}
-        >
-          লাইনআপ (ফরমেশন)
-        </button>
-        <button
-          onClick={() => setActiveTab('stats')}
-          className={`flex-1 py-3 text-sm font-bold border-b-2 transition-all ${activeTab === 'stats' ? 'border-[#d33f3f] text-[#d33f3f]' : 'border-transparent text-gray-400 hover:text-gray-600'}`}
-        >
-          পরিসংখ্যান
-        </button>
-        <button
-          onClick={() => setActiveTab('info')}
-          className={`flex-1 py-3 text-sm font-bold border-b-2 transition-all ${activeTab === 'info' ? 'border-[#d33f3f] text-[#d33f3f]' : 'border-transparent text-gray-400 hover:text-gray-600'}`}
-        >
-          দল ও স্কোয়াড
-        </button>
-      </div>
-
-      {/* TAB CONTENT */}
-      <div>
-        {activeTab === 'lineup' && (
-          <div>
-            {hasLineup ? (
-              <div>
-                {/* Formation badges */}
-                <div className="flex justify-between items-center mb-4 px-1">
-                  <div className="flex items-center gap-2">
-                    {match.home.logo && <img src={match.home.logo} alt="" className="w-5 h-5 object-contain" />}
-                    <span className="text-xs font-bold text-gray-700">{match.home.name}</span>
-                    <span className="text-[10px] bg-[#326891]/10 text-[#326891] font-bold px-2 py-0.5 rounded-full">{homeRoster?.formation}</span>
+        {/* TAB CONTENT */}
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 sm:p-6 mb-8">
+          
+          {/* LINEUP TAB */}
+          {activeTab === 'lineup' && (
+            <div>
+              {hasLineup ? (
+                <div className="animate-in fade-in slide-in-from-bottom-2 duration-500">
+                  <div className="flex items-center justify-between mb-6">
+                    <h3 className="text-base font-black text-gray-800">Starting XI & Substitutes</h3>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-[10px] bg-[#d33f3f]/10 text-[#d33f3f] font-bold px-2 py-0.5 rounded-full">{awayRoster?.formation}</span>
-                    <span className="text-xs font-bold text-gray-700">{match.away.name}</span>
-                    {match.away.logo && <img src={match.away.logo} alt="" className="w-5 h-5 object-contain" />}
-                  </div>
-                </div>
-
-                {/* Column headers */}
-                <div className="grid grid-cols-2 gap-0 border border-[#e2e2e2] rounded-lg overflow-hidden">
-                  <div className="bg-[#326891] text-white text-[10px] font-bold uppercase tracking-wider px-3 py-2 text-center">
-                    {match.home.abbreviation}
-                  </div>
-                  <div className="bg-[#d33f3f] text-white text-[10px] font-bold uppercase tracking-wider px-3 py-2 text-center border-l border-white/20">
-                    {match.away.abbreviation}
+                  
+                  {/* TACTICAL PITCH VISUALIZATION */}
+                  <div className="mb-8">
+                    <TacticalPitch homeRoster={homeRoster} awayRoster={awayRoster} />
                   </div>
 
-                  {/* Starters header */}
-                  <div className="col-span-2 bg-gray-50 px-3 py-1.5 border-t border-[#e2e2e2]">
-                    <span className="text-[9px] font-black uppercase tracking-widest text-gray-400">Starting XI</span>
-                  </div>
-
-                  {/* Side-by-side starters */}
-                  {Array.from({ length: Math.max(homeRoster?.starters?.length || 0, awayRoster?.starters?.length || 0) }).map((_, i) => {
-                    const hp = homeRoster?.starters?.[i];
-                    const ap = awayRoster?.starters?.[i];
-                    return (
-                      <React.Fragment key={i}>
-                        {/* Home player */}
-                        <div className={`flex items-center gap-2 px-3 py-2 border-t border-[#f0f0f0] ${!hp ? 'opacity-0' : ''}`}>
-                          <span className="w-6 text-[10px] font-black text-[#326891] text-center flex-shrink-0">
-                            {hp?.jersey}
-                          </span>
-                          <div className="flex flex-col min-w-0">
-                            <span className="text-xs font-semibold text-gray-800 truncate">{hp?.name}</span>
-                            <span className="text-[9px] text-gray-400">{hp?.position}</span>
-                          </div>
-                        </div>
-                        {/* Away player */}
-                        <div className={`flex items-center gap-2 px-3 py-2 border-t border-l border-[#f0f0f0] justify-end text-right ${!ap ? 'opacity-0' : ''}`}>
-                          <div className="flex flex-col min-w-0">
-                            <span className="text-xs font-semibold text-gray-800 truncate">{ap?.name}</span>
-                            <span className="text-[9px] text-gray-400">{ap?.position}</span>
-                          </div>
-                          <span className="w-6 text-[10px] font-black text-[#d33f3f] text-center flex-shrink-0">
-                            {ap?.jersey}
-                          </span>
-                        </div>
-                      </React.Fragment>
-                    );
-                  })}
-
-                  {/* Bench header */}
-                  {((homeRoster?.bench?.length || 0) > 0 || (awayRoster?.bench?.length || 0) > 0) && (
-                    <div className="col-span-2 bg-gray-50 px-3 py-1.5 border-t border-[#e2e2e2]">
-                      <span className="text-[9px] font-black uppercase tracking-widest text-gray-400">Substitutes</span>
-                    </div>
-                  )}
-
-                  {Array.from({ length: Math.max(homeRoster?.bench?.length || 0, awayRoster?.bench?.length || 0) }).map((_, i) => {
-                    const hp = homeRoster?.bench?.[i];
-                    const ap = awayRoster?.bench?.[i];
-                    return (
-                      <React.Fragment key={`bench-${i}`}>
-                        <div className={`flex items-center gap-2 px-3 py-1.5 border-t border-[#f0f0f0] bg-gray-50/50 ${!hp ? 'opacity-0' : ''}`}>
-                          <span className="w-6 text-[10px] font-black text-gray-400 text-center flex-shrink-0">
-                            {hp?.jersey}
-                          </span>
-                          <div className="flex flex-col min-w-0">
-                            <span className="text-[11px] font-medium text-gray-600 truncate">{hp?.name}</span>
-                            <span className="text-[9px] text-gray-400">{hp?.position}</span>
-                          </div>
-                        </div>
-                        <div className={`flex items-center gap-2 px-3 py-1.5 border-t border-l border-[#f0f0f0] bg-gray-50/50 justify-end text-right ${!ap ? 'opacity-0' : ''}`}>
-                          <div className="flex flex-col min-w-0">
-                            <span className="text-[11px] font-medium text-gray-600 truncate">{ap?.name}</span>
-                            <span className="text-[9px] text-gray-400">{ap?.position}</span>
-                          </div>
-                          <span className="w-6 text-[10px] font-black text-gray-400 text-center flex-shrink-0">
-                            {ap?.jersey}
-                          </span>
-                        </div>
-                      </React.Fragment>
-                    );
-                  })}
-                </div>
-              </div>
-            ) : isScheduled ? (
-              <div className="py-16 px-4 text-center border border-[#e2e2e2] rounded-lg bg-gray-50 w-full">
-                <svg className="w-12 h-12 text-gray-300 mx-auto mb-3" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5m-9-6h.008v.008H12v-.008zM12 15h.008v.008H12V15zm0 2.25h.008v.008H12v-.008zM9.75 15h.008v.008H9.75V15zm0 2.25h.008v.008H9.75v-.008zM7.5 15h.008v.008H7.5V15zm0 2.25h.008v.008H7.5v-.008zM14.25 15h.008v.008h-.008V15zm0 2.25h.008v.008h-.008v-.008zm2.25-4.5h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V15z" />
-                </svg>
-                <p className="font-bold text-sm text-gray-700">Match has not started yet</p>
-                <p className="text-xs text-gray-400 mt-1">Lineups are typically released 30–60 minutes before kick-off.</p>
-              </div>
-            ) : (
-              <div className="py-16 px-4 text-center border border-[#e2e2e2] rounded-lg bg-gray-50 w-full">
-                <p className="font-bold text-sm text-gray-700">Lineup not available</p>
-                <p className="text-xs text-gray-400 mt-1">Check the Stats tab for match statistics.</p>
-              </div>
-            )}
-          </div>
-        )}
-
-        {activeTab === 'stats' && (
-          <div className="border border-[#e2e2e2] rounded-lg p-5 bg-white shadow-sm">
-            <h3 className="text-sm font-bold mb-4 border-b pb-2 text-gray-700">ম্যাচ পরিসংখ্যান</h3>
-            {match.stats && match.stats.length > 0 ? (
-              <div className="flex flex-col gap-5">
-                {match.stats.map((stat, idx) => {
-                  const homeVal = parseFloat(stat.home) || 0;
-                  const awayVal = parseFloat(stat.away) || 0;
-                  const total = homeVal + awayVal || 1;
-                  const homePct = (homeVal / total) * 100;
-                  const awayPct = (awayVal / total) * 100;
-
-                  return (
-                    <div key={idx} className="flex flex-col">
-                      <div className="flex justify-between text-xs font-bold text-gray-600 mb-1.5">
-                        <span>{stat.home}</span>
-                        <span className="text-gray-400 font-medium">{stat.name}</span>
-                        <span>{stat.away}</span>
+                  {/* Player List View */}
+                  <div className="grid grid-cols-2 gap-4">
+                    {/* Home Team Column */}
+                    <div>
+                      <div className="flex items-center gap-2 mb-4 p-2 bg-gray-50 rounded-lg border border-gray-100">
+                        {match.home.logo && <img src={match.home.logo} alt="" className="w-6 h-6 object-contain" />}
+                        <span className="text-sm font-black text-gray-800 truncate">{match.home.name}</span>
+                        <span className="ml-auto text-[10px] bg-[#326891] text-white font-bold px-2 py-0.5 rounded-full shadow-sm">{homeRoster?.formation}</span>
                       </div>
-                      <div className="w-full h-2 bg-gray-100 rounded-full overflow-hidden flex">
-                        <div className="h-full bg-[#326891]" style={{ width: `${homePct}%` }} />
-                        <div className="h-full bg-[#d33f3f]" style={{ width: `${awayPct}%` }} />
+                      
+                      <div className="space-y-1">
+                        <div className="text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2 px-1">Starters</div>
+                        {homeRoster?.starters?.map((p: any) => (
+                          <div key={p.id} className="flex items-center gap-3 p-2 rounded-xl hover:bg-gray-50 transition-colors border border-transparent hover:border-gray-100">
+                            <div className="relative">
+                              {p.avatar ? (
+                                <img src={p.avatar} alt={p.name} className="w-10 h-10 rounded-full object-cover bg-gray-100 border border-gray-200" />
+                              ) : (
+                                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-gray-100 to-gray-200 border border-gray-300 flex items-center justify-center text-gray-500 font-bold text-xs">{p.jersey || p.name.slice(0, 2)}</div>
+                              )}
+                              <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-[#326891] rounded-full flex items-center justify-center text-[9px] font-black text-white border border-white shadow-sm">
+                                {p.jersey}
+                              </div>
+                            </div>
+                            <div className="flex flex-col min-w-0">
+                              <span className="text-xs font-bold text-gray-800 truncate">{p.name}</span>
+                              <span className="text-[10px] font-medium text-gray-500">{p.position}</span>
+                            </div>
+                          </div>
+                        ))}
+
+                        <div className="text-[10px] font-black uppercase tracking-widest text-gray-400 mt-6 mb-2 px-1">Substitutes</div>
+                        {homeRoster?.bench?.map((p: any) => (
+                          <div key={p.id} className="flex items-center gap-3 p-2 rounded-xl opacity-80 hover:opacity-100 hover:bg-gray-50 transition-all border border-transparent hover:border-gray-100">
+                            <div className="relative">
+                              {p.avatar ? (
+                                <img src={p.avatar} alt={p.name} className="w-8 h-8 rounded-full object-cover bg-gray-100 border border-gray-200 grayscale-[30%]" />
+                              ) : (
+                                <div className="w-8 h-8 rounded-full bg-gray-100 border border-gray-200 flex items-center justify-center text-gray-400 font-bold text-[10px]">{p.jersey || p.name.slice(0, 2)}</div>
+                              )}
+                              <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-gray-400 rounded-full flex items-center justify-center text-[8px] font-black text-white border border-white">
+                                {p.jersey}
+                              </div>
+                            </div>
+                            <div className="flex flex-col min-w-0">
+                              <span className="text-xs font-bold text-gray-600 truncate">{p.name}</span>
+                              <span className="text-[9px] text-gray-400">{p.position}</span>
+                            </div>
+                          </div>
+                        ))}
                       </div>
                     </div>
-                  );
-                })}
-              </div>
-            ) : (
-              <div className="py-12 text-center text-gray-400 text-sm">
-                পরিসংখ্যান এখনও উপলব্ধ নয়।
-              </div>
-            )}
-          </div>
-        )}
 
-        {activeTab === 'info' && (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Home Team Squad */}
-            <div className="border border-[#e2e2e2] rounded-lg p-4 bg-white shadow-sm">
-              <h3 className="text-sm font-bold text-[#326891] border-b pb-2 mb-3 flex justify-between">
-                <span>{match.home.name}</span>
-                <span className="text-xs text-gray-400">ফরমেশন: {homeRoster?.formation || 'N/A'}</span>
-              </h3>
-              <div className="flex flex-col gap-2">
-                <div className="text-xs font-bold text-gray-400 mt-1 uppercase">Starters</div>
-                {homeRoster?.starters?.map((p: any) => (
-                  <div key={p.id} className="flex items-center justify-between text-xs py-1 border-b border-gray-50">
-                    <span className="flex items-center gap-2">
-                      <span className="w-5 text-gray-400 font-bold">#{p.jersey}</span>
-                      <span className="font-semibold">{p.name}</span>
-                    </span>
-                    <span className="text-[10px] text-gray-400">{p.position}</span>
-                  </div>
-                ))}
-                
-                <div className="text-xs font-bold text-gray-400 mt-4 uppercase">Substitutes</div>
-                {homeRoster?.bench?.map((p: any) => (
-                  <div key={p.id} className="flex items-center justify-between text-xs py-1 border-b border-gray-50">
-                    <span className="flex items-center gap-2">
-                      <span className="w-5 text-gray-400 font-bold">#{p.jersey}</span>
-                      <span className="font-semibold">{p.name}</span>
-                    </span>
-                    <span className="text-[10px] text-gray-400">{p.position}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
+                    {/* Away Team Column */}
+                    <div>
+                      <div className="flex items-center gap-2 mb-4 p-2 bg-gray-50 rounded-lg border border-gray-100">
+                        {match.away.logo && <img src={match.away.logo} alt="" className="w-6 h-6 object-contain" />}
+                        <span className="text-sm font-black text-gray-800 truncate">{match.away.name}</span>
+                        <span className="ml-auto text-[10px] bg-[#d33f3f] text-white font-bold px-2 py-0.5 rounded-full shadow-sm">{awayRoster?.formation}</span>
+                      </div>
+                      
+                      <div className="space-y-1">
+                        <div className="text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2 px-1 text-right">Starters</div>
+                        {awayRoster?.starters?.map((p: any) => (
+                          <div key={p.id} className="flex items-center justify-end text-right gap-3 p-2 rounded-xl hover:bg-gray-50 transition-colors border border-transparent hover:border-gray-100">
+                            <div className="flex flex-col min-w-0">
+                              <span className="text-xs font-bold text-gray-800 truncate">{p.name}</span>
+                              <span className="text-[10px] font-medium text-gray-500">{p.position}</span>
+                            </div>
+                            <div className="relative">
+                              {p.avatar ? (
+                                <img src={p.avatar} alt={p.name} className="w-10 h-10 rounded-full object-cover bg-gray-100 border border-gray-200" />
+                              ) : (
+                                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-gray-100 to-gray-200 border border-gray-300 flex items-center justify-center text-gray-500 font-bold text-xs">{p.jersey || p.name.slice(0, 2)}</div>
+                              )}
+                              <div className="absolute -bottom-1 -left-1 w-5 h-5 bg-[#d33f3f] rounded-full flex items-center justify-center text-[9px] font-black text-white border border-white shadow-sm">
+                                {p.jersey}
+                              </div>
+                            </div>
+                          </div>
+                        ))}
 
-            {/* Away Team Squad */}
-            <div className="border border-[#e2e2e2] rounded-lg p-4 bg-white shadow-sm">
-              <h3 className="text-sm font-bold text-[#d33f3f] border-b pb-2 mb-3 flex justify-between">
-                <span>{match.away.name}</span>
-                <span className="text-xs text-gray-400">ফরমেশন: {awayRoster?.formation || 'N/A'}</span>
-              </h3>
-              <div className="flex flex-col gap-2">
-                <div className="text-xs font-bold text-gray-400 mt-1 uppercase">Starters</div>
-                {awayRoster?.starters?.map((p: any) => (
-                  <div key={p.id} className="flex items-center justify-between text-xs py-1 border-b border-gray-50">
-                    <span className="flex items-center gap-2">
-                      <span className="w-5 text-gray-400 font-bold">#{p.jersey}</span>
-                      <span className="font-semibold">{p.name}</span>
-                    </span>
-                    <span className="text-[10px] text-gray-400">{p.position}</span>
+                        <div className="text-[10px] font-black uppercase tracking-widest text-gray-400 mt-6 mb-2 px-1 text-right">Substitutes</div>
+                        {awayRoster?.bench?.map((p: any) => (
+                          <div key={p.id} className="flex items-center justify-end text-right gap-3 p-2 rounded-xl opacity-80 hover:opacity-100 hover:bg-gray-50 transition-all border border-transparent hover:border-gray-100">
+                            <div className="flex flex-col min-w-0">
+                              <span className="text-xs font-bold text-gray-600 truncate">{p.name}</span>
+                              <span className="text-[9px] text-gray-400">{p.position}</span>
+                            </div>
+                            <div className="relative">
+                              {p.avatar ? (
+                                <img src={p.avatar} alt={p.name} className="w-8 h-8 rounded-full object-cover bg-gray-100 border border-gray-200 grayscale-[30%]" />
+                              ) : (
+                                <div className="w-8 h-8 rounded-full bg-gray-100 border border-gray-200 flex items-center justify-center text-gray-400 font-bold text-[10px]">{p.jersey || p.name.slice(0, 2)}</div>
+                              )}
+                              <div className="absolute -bottom-1 -left-1 w-4 h-4 bg-gray-400 rounded-full flex items-center justify-center text-[8px] font-black text-white border border-white">
+                                {p.jersey}
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
                   </div>
-                ))}
-                
-                <div className="text-xs font-bold text-gray-400 mt-4 uppercase">Substitutes</div>
-                {awayRoster?.bench?.map((p: any) => (
-                  <div key={p.id} className="flex items-center justify-between text-xs py-1 border-b border-gray-50">
-                    <span className="flex items-center gap-2">
-                      <span className="w-5 text-gray-400 font-bold">#{p.jersey}</span>
-                      <span className="font-semibold">{p.name}</span>
-                    </span>
-                    <span className="text-[10px] text-gray-400">{p.position}</span>
+                </div>
+              ) : isScheduled ? (
+                <div className="py-20 px-4 text-center rounded-2xl bg-gray-50 w-full animate-in fade-in duration-500 border border-dashed border-gray-200">
+                  <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center mx-auto mb-4 shadow-sm border border-gray-100">
+                    <svg className="w-8 h-8 text-gray-300" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
                   </div>
-                ))}
-              </div>
+                  <p className="font-black text-base text-gray-800">Match has not started yet</p>
+                  <p className="text-sm text-gray-500 mt-2 max-w-sm mx-auto">Lineups are typically released 30–60 minutes before kick-off. Check back later!</p>
+                </div>
+              ) : (
+                <div className="py-20 px-4 text-center rounded-2xl bg-gray-50 w-full animate-in fade-in duration-500 border border-dashed border-gray-200">
+                  <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center mx-auto mb-4 shadow-sm border border-gray-100">
+                    <svg className="w-8 h-8 text-gray-300" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
+                    </svg>
+                  </div>
+                  <p className="font-black text-base text-gray-800">Lineup not available</p>
+                  <p className="text-sm text-gray-500 mt-2">Check the Stats tab for match statistics.</p>
+                </div>
+              )}
             </div>
-          </div>
-        )}
+          )}
+
+          {/* STATS TAB */}
+          {activeTab === 'stats' && (
+            <div className="animate-in fade-in slide-in-from-bottom-2 duration-500">
+              <div className="flex items-center gap-3 mb-8 pb-4 border-b border-gray-100">
+                <div className="w-10 h-10 rounded-full bg-blue-50 text-blue-500 flex items-center justify-center">
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                </div>
+                <h3 className="text-lg font-black text-gray-800">Match Statistics</h3>
+              </div>
+              
+              {match.stats && match.stats.length > 0 ? (
+                <div className="flex flex-col gap-6">
+                  {match.stats.map((stat, idx) => {
+                    const homeVal = parseFloat(stat.home) || 0;
+                    const awayVal = parseFloat(stat.away) || 0;
+                    const total = homeVal + awayVal || 1;
+                    const homePct = (homeVal / total) * 100;
+                    const awayPct = (awayVal / total) * 100;
+
+                    return (
+                      <div key={idx} className="flex flex-col group">
+                        <div className="flex justify-between items-end mb-2">
+                          <span className="text-sm font-black text-gray-800 w-12 text-left">{stat.home}</span>
+                          <span className="text-xs font-bold text-gray-500 uppercase tracking-widest">{stat.name}</span>
+                          <span className="text-sm font-black text-gray-800 w-12 text-right">{stat.away}</span>
+                        </div>
+                        <div className="w-full h-3 bg-gray-100 rounded-full overflow-hidden flex shadow-inner">
+                          <div className="h-full bg-gradient-to-r from-[#1e40af] to-[#3b82f6] transition-all duration-1000 ease-out" style={{ width: `${homePct}%` }} />
+                          <div className="h-full bg-gradient-to-l from-[#991b1b] to-[#ef4444] transition-all duration-1000 ease-out" style={{ width: `${awayPct}%` }} />
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              ) : (
+                <div className="py-16 text-center rounded-xl bg-gray-50 border border-dashed border-gray-200">
+                  <p className="text-gray-500 font-medium">পরিসংখ্যান এখনও উপলব্ধ নয়।</p>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* SQUAD INFO TAB */}
+          {activeTab === 'info' && (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 animate-in fade-in slide-in-from-bottom-2 duration-500">
+              
+              {/* Home Squad Card */}
+              <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+                <div className="bg-gradient-to-r from-[#f8fafc] to-[#f1f5f9] p-4 border-b border-gray-100 flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    {match.home.logo && <img src={match.home.logo} alt="" className="w-8 h-8 object-contain filter drop-shadow-sm" />}
+                    <h3 className="text-base font-black text-gray-800">{match.home.name}</h3>
+                  </div>
+                  <span className="text-xs font-bold text-gray-500 bg-white px-2.5 py-1 rounded-md shadow-sm border border-gray-50">
+                    {homeRoster?.formation || 'N/A'}
+                  </span>
+                </div>
+                
+                <div className="p-4">
+                  <div className="text-[10px] font-black text-gray-400 mb-3 uppercase tracking-widest">Starters</div>
+                  <div className="grid grid-cols-1 gap-2">
+                    {homeRoster?.starters?.map((p: any) => (
+                      <div key={p.id} className="flex items-center justify-between p-2 rounded-xl hover:bg-gray-50 transition-colors">
+                        <div className="flex items-center gap-3">
+                          {p.avatar ? (
+                            <img src={p.avatar} alt={p.name} className="w-8 h-8 rounded-full object-cover border border-gray-200" />
+                          ) : (
+                            <div className="w-8 h-8 rounded-full bg-gray-100 border border-gray-200 flex items-center justify-center text-gray-400 font-bold text-[10px]">{p.jersey}</div>
+                          )}
+                          <div className="flex flex-col">
+                            <span className="text-xs font-bold text-gray-800">{p.name}</span>
+                            <span className="text-[10px] text-gray-500">{p.position}</span>
+                          </div>
+                        </div>
+                        <span className="text-xs font-black text-gray-300 w-6 text-right">#{p.jersey}</span>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="text-[10px] font-black text-gray-400 mt-6 mb-3 uppercase tracking-widest">Substitutes</div>
+                  <div className="grid grid-cols-1 gap-1">
+                    {homeRoster?.bench?.map((p: any) => (
+                      <div key={p.id} className="flex items-center justify-between p-2 rounded-lg hover:bg-gray-50 transition-colors opacity-80 hover:opacity-100">
+                        <div className="flex items-center gap-2">
+                          {p.avatar ? (
+                            <img src={p.avatar} alt={p.name} className="w-6 h-6 rounded-full object-cover grayscale-[50%]" />
+                          ) : (
+                            <div className="w-6 h-6 rounded-full bg-gray-100 flex items-center justify-center text-gray-400 font-bold text-[8px]">{p.jersey}</div>
+                          )}
+                          <div className="flex flex-col">
+                            <span className="text-[11px] font-bold text-gray-700">{p.name}</span>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <span className="text-[9px] text-gray-400">{p.position}</span>
+                          <span className="text-[10px] font-black text-gray-300 w-5 text-right">#{p.jersey}</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* Away Squad Card */}
+              <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+                <div className="bg-gradient-to-r from-[#f8fafc] to-[#f1f5f9] p-4 border-b border-gray-100 flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    {match.away.logo && <img src={match.away.logo} alt="" className="w-8 h-8 object-contain filter drop-shadow-sm" />}
+                    <h3 className="text-base font-black text-gray-800">{match.away.name}</h3>
+                  </div>
+                  <span className="text-xs font-bold text-gray-500 bg-white px-2.5 py-1 rounded-md shadow-sm border border-gray-50">
+                    {awayRoster?.formation || 'N/A'}
+                  </span>
+                </div>
+                
+                <div className="p-4">
+                  <div className="text-[10px] font-black text-gray-400 mb-3 uppercase tracking-widest">Starters</div>
+                  <div className="grid grid-cols-1 gap-2">
+                    {awayRoster?.starters?.map((p: any) => (
+                      <div key={p.id} className="flex items-center justify-between p-2 rounded-xl hover:bg-gray-50 transition-colors">
+                        <div className="flex items-center gap-3">
+                          {p.avatar ? (
+                            <img src={p.avatar} alt={p.name} className="w-8 h-8 rounded-full object-cover border border-gray-200" />
+                          ) : (
+                            <div className="w-8 h-8 rounded-full bg-gray-100 border border-gray-200 flex items-center justify-center text-gray-400 font-bold text-[10px]">{p.jersey}</div>
+                          )}
+                          <div className="flex flex-col">
+                            <span className="text-xs font-bold text-gray-800">{p.name}</span>
+                            <span className="text-[10px] text-gray-500">{p.position}</span>
+                          </div>
+                        </div>
+                        <span className="text-xs font-black text-gray-300 w-6 text-right">#{p.jersey}</span>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="text-[10px] font-black text-gray-400 mt-6 mb-3 uppercase tracking-widest">Substitutes</div>
+                  <div className="grid grid-cols-1 gap-1">
+                    {awayRoster?.bench?.map((p: any) => (
+                      <div key={p.id} className="flex items-center justify-between p-2 rounded-lg hover:bg-gray-50 transition-colors opacity-80 hover:opacity-100">
+                        <div className="flex items-center gap-2">
+                          {p.avatar ? (
+                            <img src={p.avatar} alt={p.name} className="w-6 h-6 rounded-full object-cover grayscale-[50%]" />
+                          ) : (
+                            <div className="w-6 h-6 rounded-full bg-gray-100 flex items-center justify-center text-gray-400 font-bold text-[8px]">{p.jersey}</div>
+                          )}
+                          <div className="flex flex-col">
+                            <span className="text-[11px] font-bold text-gray-700">{p.name}</span>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <span className="text-[9px] text-gray-400">{p.position}</span>
+                          <span className="text-[10px] font-black text-gray-300 w-5 text-right">#{p.jersey}</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          )}
+
+        </div>
       </div>
     </div>
   );
