@@ -174,7 +174,7 @@ export async function GET(
           positionAbbr: p.position.abbreviation,
           formationPlace: p.formationPlace || '',
           rating: calculateRating(p),
-          avatar: p.athlete.headshot?.href || p.athlete.jerseyImages?.[0]?.href || ''
+          avatar: p.athlete.headshot?.href || `https://a.espncdn.com/combiner/i?img=/i/headshots/soccer/players/full/${p.athlete.id}.png`
         }));
 
       const benchList = (teamRoster.roster || [])
@@ -187,7 +187,7 @@ export async function GET(
           position: p.position.displayName,
           positionAbbr: p.position.abbreviation,
           rating: calculateRating(p),
-          avatar: p.athlete.headshot?.href || p.athlete.jerseyImages?.[0]?.href || ''
+          avatar: p.athlete.headshot?.href || `https://a.espncdn.com/combiner/i?img=/i/headshots/soccer/players/full/${p.athlete.id}.png`
         }));
 
       return {
