@@ -139,27 +139,10 @@ export default async function ArticlePage({ params }: PageProps) {
             {displayHeadline}
           </h1>
 
-          {/* Deck (Subheadline) */}
-          {deck && (
-            <p
-              lang="bn"
-              style={{
-                fontFamily: "var(--font-headline)",
-                fontWeight: 400,
-                fontSize: 'clamp(17px, 1.8vw, 20px)',
-                color: 'var(--ink-muted)',
-                lineHeight: 1.45,
-                marginBottom: '24px',
-              }}
-            >
-              {deck}
-            </p>
-          )}
-
           {/* Hero Image / Video */}
-          <div className="w-full mb-6">
+          <div className="w-[calc(100%+2rem)] -mx-4 sm:w-full sm:mx-0 mb-6">
             <div
-              className="w-full relative rounded-md overflow-hidden border"
+              className="w-full relative overflow-hidden sm:rounded-md border-b sm:border"
               style={{ 
                 aspectRatio: '16/9',
                 backgroundColor: 'var(--bg-surface)',
@@ -184,9 +167,19 @@ export default async function ArticlePage({ params }: PageProps) {
                 />
               )}
             </div>
+            {/* Deck displayed below image with normal font, smaller size and dark color */}
+            {deck && (
+              <p
+                lang="bn"
+                className="mt-3 px-4 sm:px-0 text-sm text-[var(--ink)] leading-relaxed"
+                style={{ fontFamily: "var(--font-body)", fontWeight: 400 }}
+              >
+                {deck}
+              </p>
+            )}
             {mediaCaption && (
               <p
-                className="mt-2.5 text-xs text-[var(--ink-muted)] leading-relaxed italic"
+                className="mt-1.5 px-4 sm:px-0 text-xs text-[var(--ink-muted)] leading-relaxed italic"
                 style={{ fontFamily: "var(--font-body)" }}
                 lang="bn"
               >
@@ -195,12 +188,12 @@ export default async function ArticlePage({ params }: PageProps) {
             )}
           </div>
 
-          {/* Author Byline block (matching NYT style) */}
-          <div className="mt-6 mb-4 flex flex-col gap-1.5">
-            <div className="flex items-center gap-3">
+          {/* Byline, metadata, and Actions combined in one single row */}
+          <div className="flex items-center justify-between border-t border-b border-[var(--ink-border)] py-3.5 mb-8 gap-3 flex-wrap">
+            <div className="flex items-center gap-2.5">
               {/* Author circular avatar */}
               <div 
-                className="w-9 h-9 rounded-full flex items-center justify-center border overflow-hidden text-xs font-bold"
+                className="w-8 h-8 rounded-full flex items-center justify-center border overflow-hidden text-xs font-bold flex-shrink-0"
                 style={{ 
                   backgroundColor: 'var(--bg-surface)', 
                   borderColor: 'var(--ink-border)',
@@ -210,37 +203,32 @@ export default async function ArticlePage({ params }: PageProps) {
                 {byline ? byline.slice(0, 2) : 'KD'}
               </div>
               <div 
-                className="text-sm text-[var(--ink)]" 
+                className="text-xs text-[var(--ink)] flex items-center gap-1.5 flex-wrap" 
                 style={{ fontFamily: 'var(--font-body)' }}
               >
-                By <span className="font-bold">{byline || 'খেলারদেশ প্রতিনিধি'}</span>
+                <span>By <span className="font-bold">{byline || 'খেলারদেশ প্রতিনিধি'}</span></span>
+                <span className="text-[var(--ink-muted)]">·</span>
+                <span className="text-[var(--ink-muted)]">{time} · {exactTime}</span>
               </div>
             </div>
-            <div 
-              className="text-xs text-[var(--ink-muted)] pl-12" 
-              style={{ fontFamily: 'var(--font-body)' }}
-            >
-              {time} · {exactTime}
-            </div>
-          </div>
 
-          {/* Action buttons row */}
-          <div className="flex items-center gap-3 border-t border-b border-[var(--ink-border)] py-3.5 mb-8">
-            <ShareButton />
-            <BookmarkButton article={articleForBookmark} variant="circle" />
-            <button 
-              className="h-9 px-3 rounded-full flex items-center justify-center gap-1.5 border hover:bg-[var(--ink-ghost)] transition-colors cursor-pointer text-[var(--ink-muted)] hover:text-[var(--ink)] text-xs font-bold"
-              style={{ 
-                backgroundColor: 'var(--bg-surface)', 
-                borderColor: 'var(--ink-border)' 
-              }}
-              title="মন্তব্য"
-            >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 20.97a.598.598 0 01-.78-.78l.893-2.61a8.887 8.887 0 01-1.023-3.33C4.5 7.444 8.53 3.75 13.5 3.75S21 7.444 21 12z" />
-              </svg>
-              <span>০</span>
-            </button>
+            <div className="flex items-center gap-2">
+              <ShareButton />
+              <BookmarkButton article={articleForBookmark} variant="circle" />
+              <button 
+                className="h-9 px-3 rounded-full flex items-center justify-center gap-1.5 border hover:bg-[var(--ink-ghost)] transition-colors cursor-pointer text-[var(--ink-muted)] hover:text-[var(--ink)] text-xs font-bold"
+                style={{ 
+                  backgroundColor: 'var(--bg-surface)', 
+                  borderColor: 'var(--ink-border)' 
+                }}
+                title="মন্তব্য"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 20.97a.598.598 0 01-.78-.78l.893-2.61a8.887 8.887 0 01-1.023-3.33C4.5 7.444 8.53 3.75 13.5 3.75S21 7.444 21 12z" />
+                </svg>
+                <span>০</span>
+              </button>
+            </div>
           </div>
 
           {/* Paragraphs in Athletic Style */}
