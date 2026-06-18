@@ -117,7 +117,9 @@ export default function TacticalPitch({ homeRoster, awayRoster }: TacticalPitchP
         style={{
           borderRadius: 8,
           background: '#7bc087', // Google-style light green pitch
-          boxShadow: '0 4px 12px rgba(0,0,0,0.08)'
+          boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
+          touchAction: 'none',
+          overscrollBehavior: 'none'
         }}
       >
         {/* --- PITCH MARKINGS --- */}
