@@ -4,6 +4,7 @@ import type { Metadata } from 'next';
 import { supabaseAdmin } from '@/lib/supabase';
 import { formatDatetime, timeAgo } from '@/lib/timeAgo';
 import BookmarkButton from '@/components/frontend/BookmarkButton';
+import ShareButton from '@/components/frontend/ShareButton';
 import ReadingProgressBar from './ReadingProgressBar';
 import BottomNav from '@/components/frontend/BottomNav';
 
@@ -121,16 +122,6 @@ export default async function ArticlePage({ params }: PageProps) {
         {/* Main Editorial Article Column */}
         <article className="min-w-0">
           
-          {/* Category/Kicker */}
-          <div className="mb-3 mt-4">
-            <span 
-              className="text-xs font-bold uppercase tracking-wider text-[#1a5c2e]" 
-              style={{ fontFamily: 'var(--font-body)' }}
-            >
-              {categoryLabel}
-            </span>
-          </div>
-
           {/* Headline */}
           <h1
             lang="bn"
@@ -142,6 +133,7 @@ export default async function ArticlePage({ params }: PageProps) {
               letterSpacing: '-0.02em',
               color: 'var(--ink)',
               marginBottom: '16px',
+              marginTop: '24px',
             }}
           >
             {displayHeadline}
@@ -197,6 +189,7 @@ export default async function ArticlePage({ params }: PageProps) {
             </div>
 
             <div className="flex items-center gap-3">
+              <ShareButton />
               <BookmarkButton article={articleForBookmark} />
             </div>
           </div>
