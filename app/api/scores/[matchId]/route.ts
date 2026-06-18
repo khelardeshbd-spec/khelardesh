@@ -2,6 +2,40 @@ export const dynamic = 'force-dynamic'
 
 import { NextResponse } from 'next/server'
 
+// In-memory cache for player avatars
+const playerAvatarCache = new Map<string, string | null>();
+
+async function fetchFallbackAvatar(playerName: string): Promise<string | null> {
+  const cleanName = playerName.trim();
+  if (!cleanName) return null;
+
+  if (playerAvatarCache.has(cleanName)) {
+    return playerAvatarCache.get(cleanName) || null;
+  }
+
+  try {
+    const url = `https://www.thesportsdb.com/api/v1/json/3/searchplayers.php?p=${encodeURIComponent(cleanName)}`;
+    const res = await fetch(url, {
+      next: { revalidate: 86400 } // Cache results for 24 hours
+    });
+    if (res.ok) {
+      const data = await res.json();
+      const player = data.player?.[0];
+      if (player) {
+        const avatarUrl = player.strCutout || player.strThumb || null;
+        playerAvatarCache.set(cleanName, avatarUrl);
+        return avatarUrl;
+      }
+    }
+  } catch (err) {
+    console.error(`Error fetching fallback avatar for ${cleanName}:`, err);
+  }
+
+  // Cache null to avoid repeatedly hitting API for unfound players
+  playerAvatarCache.set(cleanName, null);
+  return null;
+}
+
 interface PlayerStat {
   name: string;
   value: number;
@@ -204,43 +238,55 @@ export async function GET(
 
     // 3. Parse Rosters / Lineups
     const rawRosters: ESPNTeamRoster[] = data.rosters || [];
-    const rosters = rawRosters.map((teamRoster) => {
+    const rosters = await Promise.all(rawRosters.map(async (teamRoster) => {
       const isHome = teamRoster.homeAway === 'home';
-      const starterList = (teamRoster.roster || [])
+      const starterList = await Promise.all((teamRoster.roster || [])
         .filter(p => p.starter)
-        .map(p => ({
-          id: p.athlete.id,
-          name: p.athlete.shortName || p.athlete.displayName,
-          fullName: p.athlete.fullName,
-          jersey: p.jersey,
-          position: p.position.displayName,
-          positionAbbr: p.position.abbreviation,
-          formationPlace: p.formationPlace || '',
-          rating: calculateRating(p),
-          avatar: p.athlete.headshot?.href || null,
-          cards: playerCardsMap.get(p.athlete.id) || [],
-          subbedOut: playerSubOutMap.get(p.athlete.id) || null,
-          subbedIn: playerSubInMap.get(p.athlete.id) || null,
-          goals: playerGoalsMap.get(p.athlete.id) || 0,
-          assists: playerAssistsMap.get(p.athlete.id) || 0
+        .map(async (p) => {
+          let avatar = p.athlete.headshot?.href || null;
+          if (!avatar) {
+            avatar = await fetchFallbackAvatar(p.athlete.fullName);
+          }
+          return {
+            id: p.athlete.id,
+            name: p.athlete.shortName || p.athlete.displayName,
+            fullName: p.athlete.fullName,
+            jersey: p.jersey,
+            position: p.position.displayName,
+            positionAbbr: p.position.abbreviation,
+            formationPlace: p.formationPlace || '',
+            rating: calculateRating(p),
+            avatar,
+            cards: playerCardsMap.get(p.athlete.id) || [],
+            subbedOut: playerSubOutMap.get(p.athlete.id) || null,
+            subbedIn: playerSubInMap.get(p.athlete.id) || null,
+            goals: playerGoalsMap.get(p.athlete.id) || 0,
+            assists: playerAssistsMap.get(p.athlete.id) || 0
+          };
         }));
 
-      const benchList = (teamRoster.roster || [])
+      const benchList = await Promise.all((teamRoster.roster || [])
         .filter(p => !p.starter)
-        .map(p => ({
-          id: p.athlete.id,
-          name: p.athlete.shortName || p.athlete.displayName,
-          fullName: p.athlete.fullName,
-          jersey: p.jersey,
-          position: p.position.displayName,
-          positionAbbr: p.position.abbreviation,
-          rating: calculateRating(p),
-          avatar: p.athlete.headshot?.href || null,
-          cards: playerCardsMap.get(p.athlete.id) || [],
-          subbedOut: playerSubOutMap.get(p.athlete.id) || null,
-          subbedIn: playerSubInMap.get(p.athlete.id) || null,
-          goals: playerGoalsMap.get(p.athlete.id) || 0,
-          assists: playerAssistsMap.get(p.athlete.id) || 0
+        .map(async (p) => {
+          let avatar = p.athlete.headshot?.href || null;
+          if (!avatar) {
+            avatar = await fetchFallbackAvatar(p.athlete.fullName);
+          }
+          return {
+            id: p.athlete.id,
+            name: p.athlete.shortName || p.athlete.displayName,
+            fullName: p.athlete.fullName,
+            jersey: p.jersey,
+            position: p.position.displayName,
+            positionAbbr: p.position.abbreviation,
+            rating: calculateRating(p),
+            avatar,
+            cards: playerCardsMap.get(p.athlete.id) || [],
+            subbedOut: playerSubOutMap.get(p.athlete.id) || null,
+            subbedIn: playerSubInMap.get(p.athlete.id) || null,
+            goals: playerGoalsMap.get(p.athlete.id) || 0,
+            assists: playerAssistsMap.get(p.athlete.id) || 0
+          };
         }));
 
       return {
@@ -253,7 +299,7 @@ export async function GET(
         starters: starterList,
         bench: benchList
       };
-    });
+    }));
 
     // Extract stats
     const stats: { name: string; home: string; away: string }[] = [];
