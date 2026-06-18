@@ -30,118 +30,67 @@ interface TacticalPitchProps {
   awayRoster: TeamRoster;
 }
 
-// Map player position abbreviations/names to precise tactical coordinates (X: 0-100, Y: 0-100)
-// Home team defends bottom (GK at Y=90, FW at Y=52)
-// Away team defends top (GK at Y=10, FW at Y=48)
-function getPlayerCoordinates(player: PitchPlayer, isHome: boolean): { x: number; y: number } {
-  const abbr = player.positionAbbr.toUpperCase();
-  const name = player.position.toLowerCase();
-
-  let x = 50;
-  let y = isHome ? 75 : 25; // default center
-
-  // Goalkeeper
-  if (abbr === 'G' || name.includes('goalkeeper')) {
-    return { x: 50, y: isHome ? 90 : 10 };
-  }
-
-  // Defenders / Fullbacks
-  const isLB = abbr === 'LB' || abbr === 'LWB' || name.includes('left back') || name.includes('left wing back');
-  const isRB = abbr === 'RB' || abbr === 'RWB' || name.includes('right back') || name.includes('right wing back');
-  const isCD = abbr === 'CD' || abbr === 'CB' || name.includes('center') && name.includes('defender');
-  const isCDL = abbr === 'CD-L' || abbr === 'LCB' || name.includes('center left');
-  const isCDR = abbr === 'CD-R' || abbr === 'RCB' || name.includes('center right');
-
-  if (isLB) {
-    x = 18;
-    y = isHome ? 78 : 22;
-  } else if (isRB) {
-    x = 82;
-    y = isHome ? 78 : 22;
-  } else if (isCDL) {
-    x = 36;
-    y = isHome ? 80 : 20;
-  } else if (isCDR) {
-    x = 64;
-    y = isHome ? 80 : 20;
-  } else if (isCD) {
-    x = 50;
-    y = isHome ? 80 : 20;
-  }
-
-  // Midfielders (DM, CM, LM, RM, AM)
-  const isDM = abbr.includes('DM') || name.includes('defensive midfielder');
-  const isLM = abbr === 'LM' || name.includes('left midfielder');
-  const isRM = abbr === 'RM' || name.includes('right midfielder');
-  const isAM = abbr.includes('AM') || name.includes('attacking midfielder');
-  const isCM = abbr === 'CM' || abbr.includes('CM') || name.includes('central midfielder') || name.includes('center midfielder') || name.includes('midfielder');
-
-  if (isDM) {
-    if (abbr.includes('L') || name.includes('left')) {
-      x = 35;
-    } else if (abbr.includes('R') || name.includes('right')) {
-      x = 65;
+// Calculate all player coordinates dynamically to avoid overlaps
+function calculatePitchCoordinates(players: PitchPlayer[], isHome: boolean): Map<string, { x: number; y: number }> {
+  // Sort by formationPlace to ensure consistent ordering across the pitch
+  const sorted = [...players].sort((a, b) => parseInt(a.formationPlace || '0') - parseInt(b.formationPlace || '0'));
+  
+  const defense: PitchPlayer[] = [];
+  const midfield: PitchPlayer[] = [];
+  const attack: PitchPlayer[] = [];
+  let gk: PitchPlayer | null = null;
+  
+  // Group players by approximate Y band (Defense, Midfield, Attack)
+  sorted.forEach(p => {
+    const abbr = p.positionAbbr.toUpperCase();
+    const name = p.position.toLowerCase();
+    
+    if (abbr === 'G' || name.includes('goalkeeper')) {
+      gk = p;
+    } else if (abbr.includes('B') || name.includes('back') || name.includes('defender') || abbr === 'CD') {
+      defense.push(p);
+    } else if (abbr.includes('M') || name.includes('midfielder')) {
+      midfield.push(p);
     } else {
-      x = 50;
+      attack.push(p);
     }
-    y = isHome ? 68 : 32;
-  } else if (isLM) {
-    x = 18;
-    y = isHome ? 62 : 38;
-  } else if (isRM) {
-    x = 82;
-    y = isHome ? 62 : 38;
-  } else if (isAM) {
-    if (abbr.includes('L') || name.includes('left')) {
-      x = 32;
-    } else if (abbr.includes('R') || name.includes('right')) {
-      x = 68;
-    } else {
-      x = 50;
-    }
-    y = isHome ? 58 : 42;
-  } else if (isCM) {
-    if (abbr.includes('L') || name.includes('left')) {
-      x = 35;
-    } else if (abbr.includes('R') || name.includes('right')) {
-      x = 65;
-    } else {
-      x = 50;
-    }
-    y = isHome ? 64 : 36;
+  });
+  
+  const mappedCoords = new Map<string, { x: number; y: number }>();
+  
+  if (gk) {
+    mappedCoords.set(gk.id, { x: 50, y: isHome ? 90 : 10 });
   }
+  
+  // Helper to distribute players evenly across an X row with a slight natural curve
+  const distributeRow = (rowPlayers: PitchPlayer[], baseY: number) => {
+    const count = rowPlayers.length;
+    if (count === 0) return;
+    
+    // Spread players from roughly x=20 to x=80
+    const startX = 20;
+    const endX = 80;
+    const range = endX - startX;
+    const step = count > 1 ? range / (count - 1) : 0;
+    
+    rowPlayers.forEach((p, idx) => {
+      // Create a slight arc effect for aesthetics (ends slightly higher up the pitch)
+      const centerDist = Math.abs((count - 1) / 2 - idx) / ((count - 1) / 2 || 1); // 0 at center, 1 at edges
+      const arcOffset = isHome ? - (centerDist * 2.5) : (centerDist * 2.5); // Move edges up (smaller Y for home, larger Y for away)
+      
+      const x = count === 1 ? 50 : startX + (step * idx);
+      const y = baseY + arcOffset;
+      
+      mappedCoords.set(p.id, { x, y });
+    });
+  };
 
-  // Forwards / Attackers
-  const isLW = abbr === 'LW' || name.includes('left wing');
-  const isRW = abbr === 'RW' || name.includes('right wing');
-  const isCF = abbr === 'CF' || abbr === 'F' || abbr === 'ST' || name.includes('forward') || name.includes('striker');
-
-  if (isLW) {
-    x = 22;
-    y = isHome ? 52 : 48;
-  } else if (isRW) {
-    x = 78;
-    y = isHome ? 52 : 48;
-  } else if (isCF) {
-    if (abbr.includes('L') || name.includes('left')) {
-      x = 36;
-    } else if (abbr.includes('R') || name.includes('right')) {
-      x = 64;
-    } else {
-      x = 50;
-    }
-    y = isHome ? 50 : 50;
-  }
-
-  // Adjust overlapping positions using formationPlace mapping as secondary heuristic
-  if (player.formationPlace) {
-    const place = parseInt(player.formationPlace, 10);
-    // Add minor offsets based on formationPlace to prevent identical overlaps
-    const offsetSeed = (place * 7) % 5 - 2; // -2 to 2
-    x += offsetSeed;
-  }
-
-  return { x, y };
+  // Base Y positions for the 3 main bands
+  distributeRow(defense, isHome ? 75 : 25);
+  distributeRow(midfield, isHome ? 58 : 42);
+  distributeRow(attack, isHome ? 42 : 58);
+  
+  return mappedCoords;
 }
 
 // Google style rating colors
@@ -209,99 +158,105 @@ export default function TacticalPitch({ homeRoster, awayRoster }: TacticalPitchP
 
 
         {/* --- AWAY PLAYERS (Top Half) --- */}
-        {(awayRoster.starters || []).map((player) => {
-          const { x, y } = getPlayerCoordinates(player, false);
-          const ratingColor = getRatingColor(player.rating);
-          return (
-            <div 
-              key={player.id}
-              className="absolute flex flex-col items-center -translate-x-1/2 -translate-y-1/2 group"
-              style={{ left: `${x}%`, top: `${y}%`, zIndex: 20 }}
-            >
-              <div className="relative flex flex-col items-center">
-                {/* Profile Avatar / Circle */}
-                {player.avatar ? (
-                  <div className="w-[42px] h-[42px] sm:w-12 sm:h-12 rounded-full overflow-hidden shadow-sm flex items-center justify-center bg-gray-100 transition-transform group-hover:scale-105">
-                    <img src={player.avatar} alt={player.name} className="w-full h-full object-cover scale-[1.1]" />
-                  </div>
-                ) : (
-                  <div 
-                    className="w-[42px] h-[42px] sm:w-12 sm:h-12 rounded-full flex items-center justify-center text-white text-sm font-bold shadow-sm select-none transition-transform group-hover:scale-105"
-                    style={{ backgroundColor: '#' + awayRoster.color }}
-                  >
-                    {player.name.slice(0, 2)}
-                  </div>
-                )}
+        {(() => {
+          const coordsMap = calculatePitchCoordinates(awayRoster.starters || [], false);
+          return (awayRoster.starters || []).map((player) => {
+            const coords = coordsMap.get(player.id) || { x: 50, y: 25 };
+            const ratingColor = getRatingColor(player.rating);
+            return (
+              <div 
+                key={player.id}
+                className="absolute flex flex-col items-center -translate-x-1/2 -translate-y-1/2 group"
+                style={{ left: `${coords.x}%`, top: `${coords.y}%`, zIndex: 20 }}
+              >
+                <div className="relative flex flex-col items-center">
+                  {/* Profile Avatar / Circle */}
+                  {player.avatar ? (
+                    <div className="w-[42px] h-[42px] sm:w-12 sm:h-12 rounded-full overflow-hidden shadow-sm flex items-center justify-center bg-gray-100 transition-transform group-hover:scale-105">
+                      <img src={player.avatar} alt={player.name} className="w-full h-full object-cover scale-[1.1]" />
+                    </div>
+                  ) : (
+                    <div 
+                      className="w-[42px] h-[42px] sm:w-12 sm:h-12 rounded-full flex items-center justify-center text-white text-sm font-bold shadow-sm select-none transition-transform group-hover:scale-105"
+                      style={{ backgroundColor: '#' + awayRoster.color }}
+                    >
+                      {player.name.slice(0, 2)}
+                    </div>
+                  )}
 
-                {/* Rating Badge */}
-                <div 
-                  className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-black text-white border-2 border-[#7bc087] shadow-sm select-none"
-                  style={{ backgroundColor: ratingColor }}
-                >
-                  {player.rating.toFixed(1)}
+                  {/* Rating Badge */}
+                  <div 
+                    className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-black text-white border-2 border-[#7bc087] shadow-sm select-none"
+                    style={{ backgroundColor: ratingColor }}
+                  >
+                    {player.rating.toFixed(1)}
+                  </div>
+                </div>
+
+                {/* Player Name */}
+                <div className="mt-2.5 text-center px-1">
+                  <span 
+                    className="text-[#1a1a1a] font-semibold tracking-tight text-[10px] sm:text-[11px] whitespace-nowrap"
+                    style={{ fontFamily: 'var(--font-body)' }}
+                  >
+                    <span className="font-normal text-[#333333] mr-0.5">{player.jersey}</span> {player.name}
+                  </span>
                 </div>
               </div>
-
-              {/* Player Name */}
-              <div className="mt-2.5 text-center px-1">
-                <span 
-                  className="text-[#1a1a1a] font-semibold tracking-tight text-[10px] sm:text-[11px] whitespace-nowrap"
-                  style={{ fontFamily: 'var(--font-body)' }}
-                >
-                  <span className="font-normal text-[#333333] mr-0.5">{player.jersey}</span> {player.name}
-                </span>
-              </div>
-            </div>
-          );
-        })}
+            );
+          });
+        })()}
 
 
         {/* --- HOME PLAYERS (Bottom Half) --- */}
-        {(homeRoster.starters || []).map((player) => {
-          const { x, y } = getPlayerCoordinates(player, true);
-          const ratingColor = getRatingColor(player.rating);
-          return (
-            <div 
-              key={player.id}
-              className="absolute flex flex-col items-center -translate-x-1/2 -translate-y-1/2 group"
-              style={{ left: `${x}%`, top: `${y}%`, zIndex: 20 }}
-            >
-              <div className="relative flex flex-col items-center">
-                {/* Profile Avatar / Circle */}
-                {player.avatar ? (
-                  <div className="w-[42px] h-[42px] sm:w-12 sm:h-12 rounded-full overflow-hidden shadow-sm flex items-center justify-center bg-gray-100 transition-transform group-hover:scale-105">
-                    <img src={player.avatar} alt={player.name} className="w-full h-full object-cover scale-[1.1]" />
-                  </div>
-                ) : (
-                  <div 
-                    className="w-[42px] h-[42px] sm:w-12 sm:h-12 rounded-full flex items-center justify-center text-white text-sm font-bold shadow-sm select-none transition-transform group-hover:scale-105"
-                    style={{ backgroundColor: '#' + homeRoster.color }}
-                  >
-                    {player.name.slice(0, 2)}
-                  </div>
-                )}
+        {(() => {
+          const coordsMap = calculatePitchCoordinates(homeRoster.starters || [], true);
+          return (homeRoster.starters || []).map((player) => {
+            const coords = coordsMap.get(player.id) || { x: 50, y: 75 };
+            const ratingColor = getRatingColor(player.rating);
+            return (
+              <div 
+                key={player.id}
+                className="absolute flex flex-col items-center -translate-x-1/2 -translate-y-1/2 group"
+                style={{ left: `${coords.x}%`, top: `${coords.y}%`, zIndex: 20 }}
+              >
+                <div className="relative flex flex-col items-center">
+                  {/* Profile Avatar / Circle */}
+                  {player.avatar ? (
+                    <div className="w-[42px] h-[42px] sm:w-12 sm:h-12 rounded-full overflow-hidden shadow-sm flex items-center justify-center bg-gray-100 transition-transform group-hover:scale-105">
+                      <img src={player.avatar} alt={player.name} className="w-full h-full object-cover scale-[1.1]" />
+                    </div>
+                  ) : (
+                    <div 
+                      className="w-[42px] h-[42px] sm:w-12 sm:h-12 rounded-full flex items-center justify-center text-white text-sm font-bold shadow-sm select-none transition-transform group-hover:scale-105"
+                      style={{ backgroundColor: '#' + homeRoster.color }}
+                    >
+                      {player.name.slice(0, 2)}
+                    </div>
+                  )}
 
-                {/* Rating Badge */}
-                <div 
-                  className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-black text-white border-2 border-[#7bc087] shadow-sm select-none"
-                  style={{ backgroundColor: ratingColor }}
-                >
-                  {player.rating.toFixed(1)}
+                  {/* Rating Badge */}
+                  <div 
+                    className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-black text-white border-2 border-[#7bc087] shadow-sm select-none"
+                    style={{ backgroundColor: ratingColor }}
+                  >
+                    {player.rating.toFixed(1)}
+                  </div>
+                </div>
+
+                {/* Player Name */}
+                <div className="mt-2.5 text-center px-1">
+                  <span 
+                    className="text-[#1a1a1a] font-semibold tracking-tight text-[10px] sm:text-[11px] whitespace-nowrap"
+                    style={{ fontFamily: 'var(--font-body)' }}
+                  >
+                    <span className="font-normal text-[#333333] mr-0.5">{player.jersey}</span> {player.name}
+                  </span>
                 </div>
               </div>
-
-              {/* Player Name */}
-              <div className="mt-2.5 text-center px-1">
-                <span 
-                  className="text-[#1a1a1a] font-semibold tracking-tight text-[10px] sm:text-[11px] whitespace-nowrap"
-                  style={{ fontFamily: 'var(--font-body)' }}
-                >
-                  <span className="font-normal text-[#333333] mr-0.5">{player.jersey}</span> {player.name}
-                </span>
-              </div>
-            </div>
-          );
-        })}
+            );
+          });
+        })()}
       </div>
     </div>
   );
