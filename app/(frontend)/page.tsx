@@ -214,7 +214,7 @@ export default async function HomePage() {
                   href="/api/auth/signin" 
                   className="text-blue-600 hover:text-blue-800 transition-colors font-bold text-[11px] sm:text-xs tracking-wider cursor-pointer"
                 >
-                  লগইন করুন
+                  লগইন
                 </Link>
               )}
             </div>
