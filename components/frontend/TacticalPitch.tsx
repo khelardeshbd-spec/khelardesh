@@ -174,8 +174,21 @@ export default function TacticalPitch({ homeRoster, awayRoster }: TacticalPitchP
                 <div className="relative flex flex-col items-center">
                   {/* Profile Avatar / Circle */}
                   {player.avatar ? (
-                    <div className="w-[42px] h-[42px] sm:w-12 sm:h-12 rounded-full overflow-hidden shadow-sm flex items-center justify-center bg-gray-100 transition-transform group-hover:scale-105">
-                      <img src={player.avatar} alt={player.name} className="w-full h-full object-cover scale-[1.1]" />
+                    <div className="w-[42px] h-[42px] sm:w-12 sm:h-12 rounded-full overflow-hidden shadow-sm flex items-center justify-center bg-gray-100 transition-transform group-hover:scale-105 relative">
+                      <img 
+                        src={player.avatar} 
+                        alt={player.name} 
+                        className="w-full h-full object-cover scale-[1.1] z-10"
+                        onError={(e) => {
+                          e.currentTarget.style.display = 'none';
+                        }}
+                      />
+                      <div 
+                        className="absolute inset-0 flex items-center justify-center text-white text-sm font-bold select-none z-0"
+                        style={{ backgroundColor: '#' + awayRoster.color }}
+                      >
+                        {player.name.slice(0, 2)}
+                      </div>
                     </div>
                   ) : (
                     <div 
@@ -188,7 +201,7 @@ export default function TacticalPitch({ homeRoster, awayRoster }: TacticalPitchP
 
                   {/* Rating Badge */}
                   <div 
-                    className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-black text-white border-2 border-[#7bc087] shadow-sm select-none"
+                    className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-black text-white border-2 border-[#7bc087] shadow-sm select-none z-20"
                     style={{ backgroundColor: ratingColor }}
                   >
                     {player.rating.toFixed(1)}
@@ -225,8 +238,21 @@ export default function TacticalPitch({ homeRoster, awayRoster }: TacticalPitchP
                 <div className="relative flex flex-col items-center">
                   {/* Profile Avatar / Circle */}
                   {player.avatar ? (
-                    <div className="w-[42px] h-[42px] sm:w-12 sm:h-12 rounded-full overflow-hidden shadow-sm flex items-center justify-center bg-gray-100 transition-transform group-hover:scale-105">
-                      <img src={player.avatar} alt={player.name} className="w-full h-full object-cover scale-[1.1]" />
+                    <div className="w-[42px] h-[42px] sm:w-12 sm:h-12 rounded-full overflow-hidden shadow-sm flex items-center justify-center bg-gray-100 transition-transform group-hover:scale-105 relative">
+                      <img 
+                        src={player.avatar} 
+                        alt={player.name} 
+                        className="w-full h-full object-cover scale-[1.1] z-10"
+                        onError={(e) => {
+                          e.currentTarget.style.display = 'none';
+                        }}
+                      />
+                      <div 
+                        className="absolute inset-0 flex items-center justify-center text-white text-sm font-bold select-none z-0"
+                        style={{ backgroundColor: '#' + homeRoster.color }}
+                      >
+                        {player.name.slice(0, 2)}
+                      </div>
                     </div>
                   ) : (
                     <div 
@@ -239,7 +265,7 @@ export default function TacticalPitch({ homeRoster, awayRoster }: TacticalPitchP
 
                   {/* Rating Badge */}
                   <div 
-                    className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-black text-white border-2 border-[#7bc087] shadow-sm select-none"
+                    className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-black text-white border-2 border-[#7bc087] shadow-sm select-none z-20"
                     style={{ backgroundColor: ratingColor }}
                   >
                     {player.rating.toFixed(1)}
