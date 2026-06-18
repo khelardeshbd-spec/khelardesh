@@ -65,23 +65,24 @@ export default function StickyScrollHeader() {
     <div
       style={{
         position: 'fixed',
-        top: 0,
-        left: 0,
-        right: 0,
+        top: '12px',
+        left: '12px',
+        right: '12px',
         zIndex: 100,
-        backgroundColor: '#ffffff',
-        borderBottom: '1px solid #e2e2e2',
-        transform: isVisible ? 'translateY(0)' : 'translateY(-100%)',
+        backgroundColor: 'rgba(255, 255, 255, 0.9)',
+        border: '1px solid rgba(226, 226, 226, 0.8)',
+        borderRadius: '9999px',
+        transform: isVisible ? 'translateY(0)' : 'translateY(-120%)',
         transition: 'transform 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
-        boxShadow: '0 2px 10px rgba(0, 0, 0, 0.05)',
-        backdropFilter: 'blur(8px)',
-        WebkitBackdropFilter: 'blur(8px)',
+        boxShadow: '0 4px 20px rgba(0, 0, 0, 0.06)',
+        backdropFilter: 'blur(10px)',
+        WebkitBackdropFilter: 'blur(10px)',
       }}
     >
-      <div className="max-w-[1200px] mx-auto px-6 py-2.5 flex items-center justify-between">
+      <div className="max-w-[1200px] mx-auto px-5 py-1.5 flex items-center justify-between">
         {/* Left Brand Identity: text wordmark */}
         <Link href="/" className="flex items-center flex-shrink-0" aria-label="খেলারদেশ হোমপেজ">
-          <img src="/images/khelardesh_logo.png" alt="খেলারদেশ" style={{ height: 38, objectFit: 'contain' }} />
+          <img src="/images/khelardesh_logo.png" alt="খেলারদেশ" style={{ height: 20, objectFit: 'contain' }} />
         </Link>
 
         {/* Center: Navigation Menu */}
