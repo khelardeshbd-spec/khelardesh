@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 
-export default function ShareButton({ compact = false }: { compact?: boolean }) {
+export default function ShareButton() {
   const [copied, setCopied] = useState(false);
 
   const handleShare = async () => {
@@ -30,15 +30,11 @@ export default function ShareButton({ compact = false }: { compact?: boolean }) 
     }
   };
 
-  const buttonClasses = compact
-    ? "h-8 px-2.5 rounded-full flex items-center justify-center gap-1 border hover:bg-[var(--ink-ghost)] transition-colors cursor-pointer text-[10px] font-bold"
-    : "h-9 px-4 rounded-full flex items-center justify-center gap-2 border hover:bg-[var(--ink-ghost)] transition-colors cursor-pointer text-xs font-bold";
-
   return (
     <div className="relative flex items-center">
       {copied && (
         <span 
-          className="absolute right-full mr-2 text-[10px] font-bold text-white bg-slate-800 px-2 py-1 rounded shadow-sm whitespace-nowrap animate-in fade-in slide-in-from-right-1 duration-200"
+          className="absolute bottom-full mb-2 right-0 text-[10px] font-bold text-white bg-slate-800 px-2 py-1 rounded shadow-sm whitespace-nowrap animate-in fade-in slide-in-from-bottom-1 duration-200"
           style={{ fontFamily: 'var(--font-body)' }}
         >
           লিঙ্ক কপি করা হয়েছে!
@@ -46,18 +42,17 @@ export default function ShareButton({ compact = false }: { compact?: boolean }) 
       )}
       <button
         onClick={handleShare}
-        aria-label="খবরটি শেয়ার করুন"
-        className={buttonClasses}
+        aria-label="শেয়ার করুন"
+        title="শেয়ার করুন"
+        className="w-8 h-8 rounded-full flex items-center justify-center border hover:bg-[var(--ink-ghost)] transition-colors cursor-pointer text-[var(--ink-muted)] hover:text-[var(--ink)] flex-shrink-0"
         style={{
           backgroundColor: 'var(--bg-surface)',
           borderColor: 'var(--ink-border)',
-          color: 'var(--ink)'
         }}
       >
-        <svg className={compact ? "w-3.5 h-3.5" : "w-4 h-4"} fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" d="M8.684 10.742l5.26-2.63m0 7.776l-5.26-2.63m8 2.812a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm-8.25-4a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25-4a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0z" />
+        <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M15 15l6-6m0 0l-6-6m6 6H9a6 6 0 00-6 6v3" />
         </svg>
-        <span>শেয়ার করুন</span>
       </button>
     </div>
   );
