@@ -15,6 +15,8 @@ import { MotionDiv } from '@/components/frontend/MotionDiv';
 import { staggerContainer, fadeUp } from '@/lib/animations';
 import CategoryColumnFeed from '@/components/frontend/CategoryColumnFeed';
 import LowerSection from '@/components/frontend/LowerSection';
+import LoginButton from '@/components/frontend/LoginButton';
+import LogoutButton from '@/components/frontend/LogoutButton';
 
 export const dynamic = 'force-dynamic';
 
@@ -202,20 +204,10 @@ export default async function HomePage() {
                       {session.user.name ? session.user.name.slice(0, 2) : 'U'}
                     </div>
                   )}
-                  <Link 
-                    href="/api/auth/signout" 
-                    className="text-[10px] text-gray-400 hover:text-gray-600 transition-all font-bold tracking-wider"
-                  >
-                    লগআউট
-                  </Link>
+                  <LogoutButton />
                 </div>
               ) : (
-                <Link 
-                  href="/api/auth/signin" 
-                  className="text-blue-600 hover:text-blue-800 transition-colors font-bold text-[11px] sm:text-xs tracking-wider cursor-pointer"
-                >
-                  লগইন
-                </Link>
+                <LoginButton />
               )}
             </div>
           </div>
