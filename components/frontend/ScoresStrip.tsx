@@ -132,13 +132,11 @@ export default function ScoresStrip() {
     return null;
   }
 
-  // Sort matches: live first
+  // Sort matches: live first, then chronological by startTime
   const sorted = [...data].sort((a, b) => {
     if (a.isLive && !b.isLive) return -1;
     if (!a.isLive && b.isLive) return 1;
-    if (!a.isFinished && b.isFinished) return -1;
-    if (a.isFinished && !b.isFinished) return 1;
-    return 0;
+    return new Date(a.startTime).getTime() - new Date(b.startTime).getTime();
   });
 
   if (sorted.length === 0) return null;
@@ -188,6 +186,8 @@ export default function ScoresStrip() {
                   winnerTeam={winnerTeam}
                   home_team_logo={match.home.logo}
                   away_team_logo={match.away.logo}
+                  isFinished={match.isFinished}
+                  startTime={match.startTime}
                 />
               </Link>
             );
@@ -213,6 +213,8 @@ export default function ScoresStrip() {
                   winnerTeam={winnerTeam}
                   home_team_logo={match.home.logo}
                   away_team_logo={match.away.logo}
+                  isFinished={match.isFinished}
+                  startTime={match.startTime}
                 />
               </Link>
             );

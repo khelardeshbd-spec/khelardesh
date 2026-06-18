@@ -17,12 +17,36 @@ interface ScoreCardProps {
   away_team_logo?: string;
 }
 
-function formatKickoffEn(iso: string): { date: string; time: string } {
+function formatRelativeDate(iso: string): { date: string; time: string } {
   if (!iso) return { date: '', time: '' };
   try {
     const d = new Date(iso);
-    const date = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    const now = new Date();
+    
+    // Reset hours to compare calendar days
+    const dDate = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+    const nowClean = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    
+    const diffTime = dDate.getTime() - nowClean.getTime();
+    const diffDays = Math.round(diffTime / (1000 * 60 * 60 * 24));
+    
     const time = d.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+    
+    let date = '';
+    if (diffDays === 0) {
+      date = 'Today';
+    } else if (diffDays === 1) {
+      date = 'Tomorrow';
+    } else if (diffDays === 2) {
+      date = '2 days later';
+    } else if (diffDays === -1) {
+      date = 'Yesterday';
+    } else if (diffDays === -2) {
+      date = '2 days ago';
+    } else {
+      date = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    }
+    
     return { date, time };
   } catch {
     return { date: '', time: '' };
@@ -52,7 +76,7 @@ export default function ScoreCard({
   const statusIsMinute = /^\d+'?$/.test(status.trim());
   const isEnglish = (str: string) => /[a-zA-Z]/.test(str);
 
-  const kickoff = isUpcoming && startTime ? formatKickoffEn(startTime) : null;
+  const kickoff = startTime ? formatRelativeDate(startTime) : null;
 
   return (
     <motion.div
@@ -200,6 +224,15 @@ export default function ScoreCard({
           </span>
           <span style={{ fontFamily: 'sans-serif', fontSize: 9, fontWeight: 500, color: 'var(--ink-muted)' }}>
             {kickoff.time}
+          </span>
+        </div>
+      )}
+
+      {/* Finished match relative date label */}
+      {isFinished && kickoff && (
+        <div style={{ display: 'flex', alignItems: 'center', marginTop: -8, marginBottom: 6 }}>
+          <span style={{ fontFamily: 'sans-serif', fontSize: 9, fontWeight: 700, color: 'var(--ink-muted)', letterSpacing: '0.02em' }}>
+            {kickoff.date}
           </span>
         </div>
       )}

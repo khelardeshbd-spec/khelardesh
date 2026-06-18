@@ -149,23 +149,29 @@ function getLeagueInfo(uid: string, topLeagueName: string, eventName?: string): 
   };
 }
 
-export async function GET() {
+function formatDateYYYYMMDD(d: Date): string {
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  const date = String(d.getDate()).padStart(2, '0');
+  return `${y}${m}${date}`;
+}
+
+async function fetchMatchesForDate(dateStr: string) {
   try {
-    const url = 'https://site.api.espn.com/apis/site/v2/sports/soccer/all/scoreboard';
+    const url = `https://site.api.espn.com/apis/site/v2/sports/soccer/all/scoreboard?dates=${dateStr}`;
     const res = await fetch(url, {
       next: { revalidate: 30 }
     });
 
     if (!res.ok) {
-      throw new Error(`ESPN API failed with status ${res.status}`);
+      return [];
     }
 
     const data = await res.json();
     const events: ESPNEvent[] = data.events || [];
-
     const topLeagueName: string = data.leagues?.[0]?.name || data.league?.name || '';
 
-    const matches = events.map((event: ESPNEvent) => {
+    return events.map((event: ESPNEvent) => {
       const comp = event.competitions[0];
       if (!comp) return null;
 
@@ -194,13 +200,13 @@ export async function GET() {
         home: {
           name: homeComp.team.displayName || homeComp.team.abbreviation,
           score: homeComp.score !== undefined && homeComp.score !== null && homeComp.score !== '' && !isNaN(parseInt(homeComp.score, 10)) ? parseInt(homeComp.score, 10) : null,
-          logo: homeComp.team.logo,
+          logo: homeComp.team.logo || (homeComp.team as any).logos?.[0]?.href || '',
           isWinner: homeComp.winner
         },
         away: {
           name: awayComp.team.displayName || awayComp.team.abbreviation,
           score: awayComp.score !== undefined && awayComp.score !== null && awayComp.score !== '' && !isNaN(parseInt(awayComp.score, 10)) ? parseInt(awayComp.score, 10) : null,
-          logo: awayComp.team.logo,
+          logo: awayComp.team.logo || (awayComp.team as any).logos?.[0]?.href || '',
           isWinner: awayComp.winner
         },
         isLive,
@@ -208,6 +214,43 @@ export async function GET() {
         statusText
       };
     }).filter(Boolean);
+  } catch (error) {
+    console.error(`Error fetching matches for date ${dateStr}:`, error);
+    return [];
+  }
+}
+
+export async function GET() {
+  try {
+    const datesToFetch: string[] = [];
+    for (let i = -2; i <= 2; i++) {
+      const d = new Date();
+      d.setDate(d.getDate() + i);
+      datesToFetch.push(formatDateYYYYMMDD(d));
+    }
+
+    const results = await Promise.all(
+      datesToFetch.map(dateStr => fetchMatchesForDate(dateStr))
+    );
+
+    let allMatches = results.flat();
+
+    // Deduplicate matches by ID
+    const seen = new Set<string>();
+    const matches = allMatches.filter(m => {
+      if (!m) return false;
+      if (seen.has(m.id)) return false;
+      seen.add(m.id);
+      return true;
+    });
+
+    // Sort: Live matches first, then chronological by startTime
+    matches.sort((a, b) => {
+      if (!a || !b) return 0;
+      if (a.isLive && !b.isLive) return -1;
+      if (!a.isLive && b.isLive) return 1;
+      return new Date(a.startTime).getTime() - new Date(b.startTime).getTime();
+    });
 
     const response = NextResponse.json({ source: 'espn', matches });
     response.headers.set('Cache-Control', 's-maxage=30, stale-while-revalidate=60');
