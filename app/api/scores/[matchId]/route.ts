@@ -210,13 +210,25 @@ export async function GET(
     const awayStats = teamsStats.find((s: any) => s.team?.id === awayComp.id) || {};
     
     // Map team statistics
-    const statKeys = ['shots', 'shotsOnTarget', 'possessionPercent', 'foulsCommitted', 'yellowCards', 'redCards', 'offsides', 'cornerKicks', 'saves'];
-    statKeys.forEach(key => {
-      const hStat = (homeStats.statistics || []).find((s: any) => s.name === key);
-      const aStat = (awayStats.statistics || []).find((s: any) => s.name === key);
+    const statKeys = [
+      { key: 'possessionPercent', label: 'Possession' },
+      { key: 'shots', label: 'Shots' },
+      { key: 'shotsOnTarget', label: 'Shots on Target' },
+      { key: 'wonCorners', label: 'Corners' },
+      { key: 'foulsCommitted', label: 'Fouls' },
+      { key: 'yellowCards', label: 'Yellow Cards' },
+      { key: 'redCards', label: 'Red Cards' },
+      { key: 'offsides', label: 'Offsides' },
+      { key: 'saves', label: 'Saves' }
+    ];
+    
+    statKeys.forEach(statMap => {
+      const hStat = (homeStats.statistics || []).find((s: any) => s.name === statMap.key);
+      const aStat = (awayStats.statistics || []).find((s: any) => s.name === statMap.key);
+      
       if (hStat || aStat) {
         stats.push({
-          name: hStat?.displayName || aStat?.displayName || key,
+          name: statMap.label,
           home: hStat?.displayValue || '0',
           away: aStat?.displayValue || '0'
         });
