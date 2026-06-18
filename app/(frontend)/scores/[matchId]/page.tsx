@@ -95,7 +95,7 @@ export default function MatchCenterPage({ params }: { params: { matchId: string 
   const isScheduled = !match.status.isLive && !match.status.isFinished;
 
   return (
-    <div className="max-w-[700px] mx-auto pb-12 bg-[#f8fafc]" style={{ color: '#121212', fontFamily: 'var(--font-body)', minHeight: '100vh' }}>
+    <div className="max-w-[700px] mx-auto pb-12 bg-[#f8fafc]" style={{ color: '#121212', fontFamily: 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif', minHeight: '100vh' }}>
       
       {/* MATCH HEADER (GRADIENT) */}
       <div className="bg-gradient-to-br from-[#0f172a] via-[#1e293b] to-[#0f172a] text-white px-4 pt-6 pb-8 shadow-xl relative overflow-hidden">
@@ -126,14 +126,16 @@ export default function MatchCenterPage({ params }: { params: { matchId: string 
             {/* Home Team */}
             <div className="flex flex-col items-center flex-1">
               <div className="relative mb-3">
-                <div className="absolute inset-0 bg-white/20 blur-xl rounded-full"></div>
+                <div className="absolute inset-0 bg-white/10 blur-2xl rounded-full"></div>
                 {match.home.logo ? (
-                  <img src={match.home.logo} alt={match.home.name} className="w-20 h-20 sm:w-24 sm:h-24 object-contain relative z-10 drop-shadow-2xl" />
+                  <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full overflow-hidden border-4 border-white/15 shadow-2xl flex items-center justify-center bg-slate-800 relative z-10">
+                    <img src={match.home.logo} alt={match.home.name} className="w-full h-full object-cover" />
+                  </div>
                 ) : (
                   <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-white/10 border border-white/20 flex items-center justify-center text-gray-300 font-bold text-2xl relative z-10">H</div>
                 )}
               </div>
-              <span className="text-sm sm:text-base font-black tracking-tight text-center leading-tight drop-shadow-md">{match.home.name}</span>
+              <span className="text-sm sm:text-base font-extrabold tracking-tight text-center leading-tight drop-shadow-md text-slate-100" style={{ fontFamily: 'system-ui, sans-serif' }}>{match.home.name}</span>
             </div>
 
             {/* Scores & Status */}
@@ -170,14 +172,16 @@ export default function MatchCenterPage({ params }: { params: { matchId: string 
             {/* Away Team */}
             <div className="flex flex-col items-center flex-1">
               <div className="relative mb-3">
-                <div className="absolute inset-0 bg-white/20 blur-xl rounded-full"></div>
+                <div className="absolute inset-0 bg-white/10 blur-2xl rounded-full"></div>
                 {match.away.logo ? (
-                  <img src={match.away.logo} alt={match.away.name} className="w-20 h-20 sm:w-24 sm:h-24 object-contain relative z-10 drop-shadow-2xl" />
+                  <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full overflow-hidden border-4 border-white/15 shadow-2xl flex items-center justify-center bg-slate-800 relative z-10">
+                    <img src={match.away.logo} alt={match.away.name} className="w-full h-full object-cover" />
+                  </div>
                 ) : (
                   <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-white/10 border border-white/20 flex items-center justify-center text-gray-300 font-bold text-2xl relative z-10">A</div>
                 )}
               </div>
-              <span className="text-sm sm:text-base font-black tracking-tight text-center leading-tight drop-shadow-md">{match.away.name}</span>
+              <span className="text-sm sm:text-base font-extrabold tracking-tight text-center leading-tight drop-shadow-md text-slate-100" style={{ fontFamily: 'system-ui, sans-serif' }}>{match.away.name}</span>
             </div>
           </div>
 
@@ -212,34 +216,40 @@ export default function MatchCenterPage({ params }: { params: { matchId: string 
       {/* CONTENT AREA */}
       <div className="max-w-[700px] mx-auto px-4 -mt-4 relative z-20">
         
-        {/* NAV TABS (Google-Style Segmented Control) */}
-        <div className="bg-white border-b border-gray-200 flex mb-6">
+        {/* NAV TABS (Modern Premium Segmented Control) */}
+        <div className="bg-slate-100 p-1.5 rounded-2xl flex gap-1.5 mb-6 border border-slate-200/50 shadow-inner">
           <button
             onClick={() => setActiveTab('lineup')}
-            className={`flex-1 relative py-3.5 text-[13px] sm:text-sm font-medium transition-colors ${activeTab === 'lineup' ? 'text-[#1a73e8]' : 'text-[#70757a] hover:text-[#202124]'}`}
+            className={`flex-1 py-3 text-xs sm:text-sm font-bold rounded-xl transition-all duration-200 border-none cursor-pointer ${
+              activeTab === 'lineup' 
+                ? 'bg-white text-slate-800 shadow-sm scale-102' 
+                : 'text-slate-500 hover:text-slate-850 hover:bg-white/40'
+            }`}
+            style={{ fontFamily: 'system-ui, sans-serif' }}
           >
             লাইনআপ (ফরমেশন)
-            {activeTab === 'lineup' && (
-              <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1/2 h-[3px] bg-[#1a73e8] rounded-t-full" />
-            )}
           </button>
           <button
             onClick={() => setActiveTab('stats')}
-            className={`flex-1 relative py-3.5 text-[13px] sm:text-sm font-medium transition-colors ${activeTab === 'stats' ? 'text-[#1a73e8]' : 'text-[#70757a] hover:text-[#202124]'}`}
+            className={`flex-1 py-3 text-xs sm:text-sm font-bold rounded-xl transition-all duration-200 border-none cursor-pointer ${
+              activeTab === 'stats' 
+                ? 'bg-white text-slate-800 shadow-sm scale-102' 
+                : 'text-slate-500 hover:text-slate-850 hover:bg-white/40'
+            }`}
+            style={{ fontFamily: 'system-ui, sans-serif' }}
           >
             পরিসংখ্যান
-            {activeTab === 'stats' && (
-              <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1/2 h-[3px] bg-[#1a73e8] rounded-t-full" />
-            )}
           </button>
           <button
             onClick={() => setActiveTab('info')}
-            className={`flex-1 relative py-3.5 text-[13px] sm:text-sm font-medium transition-colors ${activeTab === 'info' ? 'text-[#1a73e8]' : 'text-[#70757a] hover:text-[#202124]'}`}
+            className={`flex-1 py-3 text-xs sm:text-sm font-bold rounded-xl transition-all duration-200 border-none cursor-pointer ${
+              activeTab === 'info' 
+                ? 'bg-white text-slate-800 shadow-sm scale-102' 
+                : 'text-slate-500 hover:text-slate-850 hover:bg-white/40'
+            }`}
+            style={{ fontFamily: 'system-ui, sans-serif' }}
           >
             দল ও স্কোয়াড
-            {activeTab === 'info' && (
-              <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1/2 h-[3px] bg-[#1a73e8] rounded-t-full" />
-            )}
           </button>
         </div>
 
