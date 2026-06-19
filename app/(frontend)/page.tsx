@@ -56,48 +56,56 @@ export default async function HomePage() {
       .from('Article')
       .select('*')
       .eq('isLead', true)
+      .eq('status', 'published')
       .order('publishedAt', { ascending: false })
       .limit(4),
     supabaseAdmin
       .from('Article')
       .select('id, slug, headline, headlineBn, deck, sport, mediaType, mediaUrl, byline, publishedAt')
       .in('sport', ['football', 'bd-football', 'international-football', 'club-football'])
+      .eq('status', 'published')
       .order('publishedAt', { ascending: false })
       .limit(10),
     supabaseAdmin
       .from('Article')
       .select('id, slug, headline, headlineBn, deck, sport, mediaType, mediaUrl, byline, publishedAt')
       .in('sport', ['cricket', 'bd-cricket', 'international-cricket', 'local-cricket'])
+      .eq('status', 'published')
       .order('publishedAt', { ascending: false })
       .limit(10),
     supabaseAdmin
       .from('Article')
       .select('id, slug, headline, headlineBn, deck, sport, mediaType, mediaUrl, byline, publishedAt')
       .eq('sport', 'interview')
+      .eq('status', 'published')
       .order('publishedAt', { ascending: false })
       .limit(10),
     supabaseAdmin
       .from('Article')
       .select('id, slug, headline, headlineBn, deck, sport, mediaType, mediaUrl, byline, publishedAt')
       .eq('sport', 'feature')
+      .eq('status', 'published')
       .order('publishedAt', { ascending: false })
       .limit(10),
     supabaseAdmin
       .from('Article')
       .select('id, slug, headline, headlineBn, deck, sport, mediaType, mediaUrl, byline, publishedAt')
       .eq('sport', 'special')
+      .eq('status', 'published')
       .order('publishedAt', { ascending: false })
       .limit(10),
     supabaseAdmin
       .from('Article')
       .select('id, slug, headline, headlineBn, deck, sport, mediaType, mediaUrl, byline, publishedAt')
       .eq('sport', 'guest-column')
+      .eq('status', 'published')
       .order('publishedAt', { ascending: false })
       .limit(10),
     supabaseAdmin
       .from('Article')
       .select('id, slug, headline, headlineBn, deck, sport, mediaType, mediaUrl, byline, publishedAt')
       .in('sport', ['others', 'other', 'basketball', 'tennis', 'f1', 'rugby', 'athletics', 'table-tennis', 'golf'])
+      .eq('status', 'published')
       .order('publishedAt', { ascending: false })
       .limit(10),
     supabaseAdmin

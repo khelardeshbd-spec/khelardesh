@@ -13,6 +13,7 @@ interface Article {
   isLead: boolean;
   publishedAt: string;
   byline: string;
+  views: number;
 }
 
 interface ArticlesClientProps {
@@ -24,22 +25,9 @@ export default function ArticlesClient({ initialArticles }: ArticlesClientProps)
   const [sortField, setSortField] = useState<'publishedAt' | 'headline' | 'sport' | 'views'>('publishedAt');
   const [sortAsc, setSortAsc] = useState(false);
 
-  // Generate deterministic views for consistent presentation
-  const articlesWithViews = useMemo(() => {
-    return initialArticles.map((art) => {
-      const ageHours = (new Date().getTime() - new Date(art.publishedAt).getTime()) / (1000 * 60 * 60);
-      const baseViews = Math.floor(Math.abs(Math.sin(art.id) * 8000)) + 1200;
-      const accumulation = Math.floor(Math.min(ageHours, 720) * 12);
-      return {
-        ...art,
-        views: baseViews + accumulation,
-      };
-    });
-  }, [initialArticles]);
-
   // Sort and filter logic
   const sortedAndFilteredArticles = useMemo(() => {
-    let result = [...articlesWithViews];
+    let result = [...initialArticles];
 
     if (searchQuery.trim()) {
       const q = searchQuery.toLowerCase();
@@ -242,7 +230,7 @@ export default function ArticlesClient({ initialArticles }: ArticlesClientProps)
                       {art.byline}
                     </td>
                     <td className="p-4 text-right text-xs font-bold text-[var(--ink)]">
-                      {art.views.toLocaleString()}
+                      {(art.views ?? 0).toLocaleString()}
                     </td>
                     <td className="p-4 text-right text-xs text-[var(--ink-muted)] whitespace-nowrap">
                       {new Date(art.publishedAt).toLocaleDateString('bn-BD', { dateStyle: 'medium' })}
