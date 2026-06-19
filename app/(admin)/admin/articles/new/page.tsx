@@ -236,7 +236,7 @@ export default function NewArticlePage() {
               padding: '6px 0',
               outline: 'none',
             }}
-            className="focus:border-[var(--ink)] placeholder:text-[var(--ink-ghost)] placeholder:font-normal"
+            className="focus:border-[var(--ink)] placeholder:text-[var(--ink-muted)] placeholder:font-normal"
             value={headlineBn}
             onChange={(e) => setHeadlineBn(e.target.value)}
           />
@@ -260,7 +260,7 @@ export default function NewArticlePage() {
               padding: '6px 0',
               outline: 'none',
             }}
-            className="focus:border-[var(--ink)] placeholder:text-[var(--ink-ghost)] placeholder:font-normal"
+            className="focus:border-[var(--ink)] placeholder:text-[var(--ink-muted)] placeholder:font-normal"
             value={headline}
             onChange={(e) => setHeadline(e.target.value)}
           />
@@ -394,7 +394,7 @@ export default function NewArticlePage() {
               padding: '6px 0',
               outline: 'none',
             }}
-            className="focus:border-[var(--ink)] placeholder:text-[var(--ink-ghost)]"
+            className="focus:border-[var(--ink)] placeholder:text-[var(--ink-muted)]"
             value={deck}
             onChange={(e) => setDeck(e.target.value)}
           />
@@ -417,7 +417,7 @@ export default function NewArticlePage() {
               padding: '4px 0',
               outline: 'none',
             }}
-            className="focus:border-[var(--ink)] placeholder:text-[var(--ink-ghost)] placeholder:font-normal"
+            className="focus:border-[var(--ink)] placeholder:text-[var(--ink-muted)] placeholder:font-normal"
             value={mediaCaption}
             onChange={(e) => setMediaCaption(e.target.value)}
           />
@@ -442,7 +442,7 @@ export default function NewArticlePage() {
               padding: '4px 0',
               outline: 'none',
             }}
-            className="focus:border-[var(--ink)] placeholder:text-[var(--ink-ghost)] placeholder:font-normal"
+            className="focus:border-[var(--ink)] placeholder:text-[var(--ink-muted)] placeholder:font-normal"
             value={kicker}
             onChange={(e) => setKicker(e.target.value)}
           />
@@ -477,16 +477,16 @@ export default function NewArticlePage() {
                     padding: '2px 0',
                     outline: 'none',
                   }}
-                  className="focus:border-[var(--ink)] placeholder:text-[var(--ink-ghost)]"
+                  className="focus:border-[var(--ink)] placeholder:text-[var(--ink-muted)]"
                   value={byline}
                   onChange={(e) => setByline(e.target.value)}
                 />
               </div>
-              <span className="text-[10px] text-[var(--ink-ghost)] mt-1">আজ · এইমাত্র</span>
+              <span className="text-[10px] text-[var(--ink-muted)] mt-1">আজ · এইমাত্র</span>
             </div>
           </div>
 
-          <div className="text-[10px] text-[var(--ink-ghost)] font-semibold uppercase" style={{ fontFamily: "'Hind Siliguri', sans-serif" }}>
+          <div className="text-[10px] text-[var(--ink-muted)] font-semibold uppercase" style={{ fontFamily: "'Hind Siliguri', sans-serif" }}>
             Draft Mode
           </div>
         </div>
@@ -521,7 +521,7 @@ export default function NewArticlePage() {
               <div key={i} style={{ marginBottom: '1.6em' }}>{p}</div>
             ))
           ) : (
-            <div style={{ color: 'var(--ink-ghost)', fontStyle: 'italic', fontSize: '16px' }}>
+            <div style={{ color: 'var(--ink-muted)', fontStyle: 'italic', fontSize: '16px' }}>
               এখানে সংবাদের মূল অনুচ্ছেদগুলো টাইপ করুন...
             </div>
           )}

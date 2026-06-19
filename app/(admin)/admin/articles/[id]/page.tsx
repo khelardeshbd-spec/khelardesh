@@ -508,16 +508,16 @@ export default function EditArticlePage({ params }: { params: { id: string } }) 
                   fontFamily: "'Abu JM Akkas', 'Hind Siliguri', sans-serif",
                   fontSize: 10, fontWeight: 400,
                   letterSpacing: '0.1em', textTransform: 'uppercase',
-                  color: 'var(--ink-ghost)',
+                  color: 'var(--ink-muted)',
                 }}
               >
                 {byline}
               </span>
-              <span style={{ color: 'var(--ink-ghost)', fontSize: 10 }}>·</span>
+              <span style={{ color: 'var(--ink-muted)', fontSize: 10 }}>·</span>
               <span
                 style={{
                   fontFamily: "'Abu JM Akkas', 'Hind Siliguri', sans-serif",
-                  fontSize: 10, color: 'var(--ink-ghost)',
+                  fontSize: 10, color: 'var(--ink-muted)',
                 }}
               >
                 Just now
