@@ -19,13 +19,21 @@ interface PageProps {
 
 const SPORT_NAMES: Record<string, string> = {
   football: 'ফুটবল',
+  'bd-football': 'দেশের ফুটবল',
+  'club-football': 'ক্লাব ফুটবল',
+  'international-football': 'আন্তর্জাতিক ফুটবল',
   cricket: 'ক্রিকেট',
+  'bd-cricket': 'বাংলাদেশের ক্রিকেট',
   basketball: 'বাস্কেটবল',
   tennis: 'টেনিস',
-  f1: 'F1',
+  f1: 'ফর্মুলা ওয়ান',
+  interview: 'ইন্টারভিউ',
+  feature: 'ফিচার',
+  special: 'খেলার দেশ বিশেষ',
+  'guest-column': 'অতিথি কলাম',
+  other: 'অন্যান্য',
   rugby: 'রাগবি',
   athletics: 'অ্যাথলেটিক্স',
-  other: 'অন্যান্য',
 };
 
 const VALID_SPORTS = Object.keys(SPORT_NAMES);
