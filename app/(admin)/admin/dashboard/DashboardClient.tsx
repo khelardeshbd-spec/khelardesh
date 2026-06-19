@@ -273,7 +273,7 @@ export default function DashboardClient({ initialArticles, totalScoresCount }: D
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
         <div>
           <h1 style={{ fontFamily: "var(--font-body)", fontWeight: 800, fontSize: 24, color: 'var(--ink)' }}>
-            ড্যাশবোর্ড / Overview
+            ড্যাশবোর্ড
           </h1>
           <p style={{ fontFamily: "'Hind Siliguri', sans-serif", fontSize: 12, color: 'var(--ink-muted)' }}>
             Real-time insights and readership performance analytics

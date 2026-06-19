@@ -36,14 +36,13 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
           style={{ borderColor: 'var(--ink-border)' }}
         >
           <img
-            src="/logo.png"
+            src="/images/khelardesh_logo.png"
             alt="খেলারদেশ"
             style={{
-              height: '55px',
+              height: '38px',
               objectFit: 'contain',
-              filter: 'var(--logo-filter, none)',
               display: 'block',
-              marginBottom: '2px',
+              marginBottom: '4px',
             }}
           />
           <p
@@ -130,12 +129,11 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
         {/* Mobile Header */}
         <div className="px-5 py-4 border-b flex items-center justify-between" style={{ borderColor: 'var(--ink-border)', height: 52 }}>
           <img
-            src="/logo.png"
+            src="/images/khelardesh_logo.png"
             alt="খেলারদেশ"
             style={{
-              height: '42px',
+              height: '32px',
               objectFit: 'contain',
-              filter: 'var(--logo-filter, none)',
               display: 'block',
             }}
           />

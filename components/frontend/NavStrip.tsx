@@ -10,6 +10,7 @@ export const NAV_ITEMS = [
     label: 'ফুটবল',
     slug: 'football',
     subItems: [
+      { label: 'সব', slug: 'football' },
       { label: 'দেশের ফুটবল', slug: 'bd-football' },
       { label: 'বিদেশের ফুটবল', slug: 'international-football' },
       { label: 'পাড়া মহল্লার ফুটবল', slug: 'club-football' },
@@ -20,6 +21,7 @@ export const NAV_ITEMS = [
     label: 'ক্রিকেট',
     slug: 'cricket',
     subItems: [
+      { label: 'সব', slug: 'cricket' },
       { label: 'দেশের ক্রিকেট', slug: 'bd-cricket' },
       { label: 'বিদেশের ক্রিকেট', slug: 'international-cricket' },
       { label: 'পাড়া মহল্লার ক্রিকেট', slug: 'local-cricket' }
@@ -31,8 +33,9 @@ export const NAV_ITEMS = [
   { label: 'অতিথি কলাম', slug: 'guest-column' },
   {
     label: 'অন্যান্য',
-    slug: 'others',
+    slug: 'other',
     subItems: [
+      { label: 'সব', slug: 'other' },
       { label: 'বাস্কেটবল', slug: 'basketball' },
       { label: 'রাগবি', slug: 'rugby' },
       { label: 'ফর্মুলা ওয়ান', slug: 'f1' },

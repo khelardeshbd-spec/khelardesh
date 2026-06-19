@@ -53,15 +53,17 @@ export default function StickyScrollHeader() {
       label: 'ফুটবল', 
       slug: 'football',
       subItems: [
+        { label: 'সব', slug: 'football' },
         { label: 'দেশের ফুটবল', slug: 'bd-football' },
         { label: 'বিদেশের ফুটবল', slug: 'international-football' },
-        { label: 'পাড়া মহল্লার ফুটবল', slug: 'club-football' } // Mapping club-football as neighborhood sport
+        { label: 'পাড়া মহল্লার ফুটবল', slug: 'club-football' }
       ]
     },
     { 
       label: 'ক্রিকেট', 
       slug: 'cricket',
       subItems: [
+        { label: 'সব', slug: 'cricket' },
         { label: 'দেশের ক্রিকেট', slug: 'bd-cricket' },
         { label: 'বিদেশের ক্রিকেট', slug: 'international-cricket' },
         { label: 'পাড়া মহল্লার ক্রিকেট', slug: 'local-cricket' }
@@ -71,7 +73,18 @@ export default function StickyScrollHeader() {
     { label: 'ফিচার', slug: 'feature' },
     { label: 'খেলার দেশ বিশেষ', slug: 'special' },
     { label: 'অতিথি কলাম', slug: 'guest-column' },
-    { label: 'অন্যান্য', slug: 'others' }
+    { 
+      label: 'অন্যান্য', 
+      slug: 'other',
+      subItems: [
+        { label: 'সব', slug: 'other' },
+        { label: 'বাস্কেটবল', slug: 'basketball' },
+        { label: 'রাগবি', slug: 'rugby' },
+        { label: 'ফর্মুলা ওয়ান', slug: 'f1' },
+        { label: 'টেবিল টেনিস', slug: 'table-tennis' },
+        { label: 'গল্ফ', slug: 'golf' },
+      ]
+    }
   ];
 
 
