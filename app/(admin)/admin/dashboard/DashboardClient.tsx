@@ -52,7 +52,7 @@ export default function DashboardClient({ initialArticles, totalScoresCount }: D
 
   useEffect(() => {
     // Remove any existing channel with the same name to prevent "after subscribe" errors
-    const existing = supabase.getChannels().find((c) => c.name === 'global_presence');
+    const existing = supabase.getChannels().find((c) => (c as any).topic === 'realtime:global_presence');
     if (existing) {
       supabase.removeChannel(existing);
     }
