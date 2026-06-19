@@ -49,20 +49,26 @@ export default function HeroSlideshow({ articles }: HeroSlideshowProps) {
   if (!articles || articles.length === 0) return null;
 
   const onTouchStartAction = (e: React.TouchEvent) => {
-    setIsPaused(true);
-    if (autoplayTimeoutRef.current) {
-      clearTimeout(autoplayTimeoutRef.current);
+    if (e.targetTouches.length === 2) {
+      setIsPaused(true);
+      if (autoplayTimeoutRef.current) {
+        clearTimeout(autoplayTimeoutRef.current);
+      }
+      setTouchEnd(null);
+      const avgClientX = (e.targetTouches[0].clientX + e.targetTouches[1].clientX) / 2;
+      setTouchStart(avgClientX);
     }
-    setTouchEnd(null);
-    setTouchStart(e.targetTouches[0].clientX);
   };
 
   const onTouchMoveAction = (e: React.TouchEvent) => {
-    setTouchEnd(e.targetTouches[0].clientX);
+    if (e.targetTouches.length === 2 && touchStart !== null) {
+      const avgClientX = (e.targetTouches[0].clientX + e.targetTouches[1].clientX) / 2;
+      setTouchEnd(avgClientX);
+    }
   };
 
   const onTouchEndAction = () => {
-    if (!touchStart || !touchEnd) return;
+    if (touchStart === null || touchEnd === null) return;
     const distance = touchStart - touchEnd;
     if (distance > minSwipeDistance) {
       setCurrentIndex((prev) => (prev + 1) % articles.length);
@@ -70,6 +76,9 @@ export default function HeroSlideshow({ articles }: HeroSlideshowProps) {
       setCurrentIndex((prev) => (prev - 1 + articles.length) % articles.length);
     }
     
+    setTouchStart(null);
+    setTouchEnd(null);
+
     // Resume autoplay after 8 seconds of no touch interaction
     if (autoplayTimeoutRef.current) {
       clearTimeout(autoplayTimeoutRef.current);
