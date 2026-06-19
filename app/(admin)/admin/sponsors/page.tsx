@@ -18,12 +18,8 @@ interface Sponsor {
 export default function AdminSponsorsPage() {
   const [sponsors, setSponsors] = useState<Sponsor[]>([]);
   const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState<number | null>(null);
+  const [savingId, setSavingId] = useState<string | null>(null);
   const [error, setError] = useState('');
-
-  // Simplified states for Banner 1 and Banner 2
-  const [banner1, setBanner1] = useState({ id: null as number | null, imageUrl: '', ctaUrl: '' });
-  const [banner2, setBanner2] = useState({ id: null as number | null, imageUrl: '', ctaUrl: '' });
 
   useEffect(() => {
     loadSponsors();
@@ -33,23 +29,7 @@ export default function AdminSponsorsPage() {
     try {
       const res = await fetch('/api/admin/sponsors');
       const data = await res.json() as any;
-      const list = data.sponsors ?? [];
-      setSponsors(list);
-
-      // Find the existing banners
-      const b1 = list.find((s: Sponsor) => s.placement === 'header-left');
-      if (b1) {
-        setBanner1({ id: b1.id, imageUrl: b1.imageUrl || '', ctaUrl: b1.ctaUrl || '' });
-      } else {
-        setBanner1({ id: null, imageUrl: '', ctaUrl: '' });
-      }
-
-      const b2 = list.find((s: Sponsor) => s.placement === 'header-right');
-      if (b2) {
-        setBanner2({ id: b2.id, imageUrl: b2.imageUrl || '', ctaUrl: b2.ctaUrl || '' });
-      } else {
-        setBanner2({ id: null, imageUrl: '', ctaUrl: '' });
-      }
+      setSponsors(data.sponsors ?? []);
     } catch (err) {
       console.error(err);
       setError('Failed to load sponsors');
@@ -58,30 +38,30 @@ export default function AdminSponsorsPage() {
     }
   }
 
-  async function saveBanner(bannerNum: 1 | 2) {
-    const banner = bannerNum === 1 ? banner1 : banner2;
-    const placement = bannerNum === 1 ? 'header-left' : 'header-right';
-    const label = bannerNum === 1 ? 'Desktop Banner 1' : 'Desktop Banner 2';
+  async function handleSaveBanner(placement: 'header-left' | 'header-right', newImageUrl: string, newCtaUrl: string) {
+    const existing = sponsors.find((s) => s.placement === placement);
+    const label = placement === 'header-left' ? 'Desktop Banner 1' : 'Desktop Banner 2';
+    const displayOrder = placement === 'header-left' ? 1 : 2;
 
-    setSaving(bannerNum);
+    setSavingId(placement);
     setError('');
     try {
-      const url = banner.id ? `/api/admin/sponsors/${banner.id}` : '/api/admin/sponsors';
-      const method = banner.id ? 'PUT' : 'POST';
+      const url = existing?.id ? `/api/admin/sponsors/${existing.id}` : '/api/admin/sponsors';
+      const method = existing?.id ? 'PUT' : 'POST';
       const res = await fetch(url, {
         method,
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          id: banner.id,
+          id: existing?.id,
           label,
           placement,
-          imageUrl: banner.imageUrl,
-          ctaUrl: banner.ctaUrl,
+          imageUrl: newImageUrl,
+          ctaUrl: newCtaUrl,
           title: '',
           subtitle: '',
           ctaText: '',
           isActive: true,
-          displayOrder: bannerNum
+          displayOrder
         })
       });
 
@@ -95,31 +75,12 @@ export default function AdminSponsorsPage() {
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : 'Error saving banner');
     } finally {
-      setSaving(null);
+      setSavingId(null);
     }
   }
 
-  const labelStyle = { 
-    fontFamily: "'Hind Siliguri', sans-serif", 
-    fontSize: 11, 
-    fontWeight: 600, 
-    textTransform: 'uppercase' as const, 
-    color: 'var(--ink-muted)', 
-    display: 'block', 
-    marginBottom: 6 
-  };
-
-  const inputStyle = { 
-    width: '100%', 
-    padding: '10px 12px', 
-    border: '1px solid var(--ink-border)', 
-    background: 'var(--bg-surface)', 
-    color: 'var(--ink)', 
-    fontFamily: "'Hind Siliguri', sans-serif", 
-    fontSize: 13, 
-    borderRadius: 4,
-    marginBottom: 16
-  };
+  const leftBanner = sponsors.find((s) => s.placement === 'header-left');
+  const rightBanner = sponsors.find((s) => s.placement === 'header-right');
 
   return (
     <div style={{ minHeight: '100vh', backgroundColor: 'var(--bg-page)', padding: '32px 24px' }}>
@@ -132,7 +93,7 @@ export default function AdminSponsorsPage() {
               Sponsor Manager
             </h1>
             <p style={{ fontFamily: "'Hind Siliguri', sans-serif", fontSize: 12, color: 'var(--ink-muted)', marginTop: 4 }}>
-              Manage the 2 desktop header banner ads that sit beside the logo.
+              Upload and crop the 2 desktop header banner ads that sit beside the logo.
             </p>
           </div>
           <a href="/admin/dashboard" className="admin-btn-secondary">← Dashboard</a>
@@ -149,146 +110,288 @@ export default function AdminSponsorsPage() {
         ) : (
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '32px' }}>
             
-            {/* Desktop Banner 1 */}
-            <section style={{ backgroundColor: 'var(--bg-surface)', border: '1px solid var(--ink-border)', borderRadius: 6, padding: '24px', boxShadow: '0 1px 3px rgba(0,0,0,0.02)' }}>
-              <div className="flex items-center justify-between mb-4">
-                <h2 style={{ fontFamily: "var(--font-body)", fontWeight: 700, fontSize: 16, color: 'var(--ink)' }}>
-                  Desktop Banner 1 (Left Side)
-                </h2>
-                <span style={{ fontSize: 10, color: 'var(--ink-muted)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                  Placement: header-left
-                </span>
-              </div>
+            {/* Banner 1 */}
+            <BannerCropper 
+              label="Desktop Banner 1 (Left Side)"
+              placement="header-left"
+              initialImageUrl={leftBanner?.imageUrl || ''}
+              initialCtaUrl={leftBanner?.ctaUrl || ''}
+              onSave={(img, link) => handleSaveBanner('header-left', img, link)}
+              saving={savingId === 'header-left'}
+            />
 
-              <div style={{ 
-                height: 75, 
-                width: '100%', 
-                backgroundColor: 'var(--bg-page)', 
-                border: '1.5px dashed var(--ink-border)', 
-                borderRadius: 4, 
-                overflow: 'hidden', 
-                display: 'flex', 
-                alignItems: 'center', 
-                justifyContent: 'center', 
-                marginBottom: 20 
-              }}>
-                {banner1.imageUrl ? (
-                  <img 
-                    src={banner1.imageUrl} 
-                    alt="Desktop Banner 1 Preview" 
-                    style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
-                  />
-                ) : (
-                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', width: '100%', height: '100%', color: 'var(--ink-ghost)', fontSize: 11, fontFamily: "'Hind Siliguri', sans-serif" }}>
-                    <span>NO IMAGE</span>
-                    <span style={{ fontSize: 9, marginTop: 2 }}>Crops to 75px height automatically</span>
-                  </div>
-                )}
-              </div>
-
-              {/* Form Controls */}
-              <div>
-                <label style={labelStyle}>Banner Image URL</label>
-                <input 
-                  type="url" 
-                  style={inputStyle} 
-                  value={banner1.imageUrl} 
-                  onChange={(e) => setBanner1({ ...banner1, imageUrl: e.target.value })} 
-                  placeholder="https://example.com/banner-left.jpg" 
-                />
-
-                <label style={labelStyle}>Redirection Link (Background Link)</label>
-                <input 
-                  type="url" 
-                  style={inputStyle} 
-                  value={banner1.ctaUrl} 
-                  onChange={(e) => setBanner1({ ...banner1, ctaUrl: e.target.value })} 
-                  placeholder="https://target-advertiser.com" 
-                />
-
-                <button 
-                  onClick={() => saveBanner(1)} 
-                  className="admin-btn-primary" 
-                  style={{ width: '100%', height: 42, fontSize: 13, fontWeight: 600 }}
-                  disabled={saving !== null}
-                >
-                  {saving === 1 ? 'Saving Banner 1...' : 'Save Desktop Banner 1'}
-                </button>
-              </div>
-            </section>
-
-            {/* Desktop Banner 2 */}
-            <section style={{ backgroundColor: 'var(--bg-surface)', border: '1px solid var(--ink-border)', borderRadius: 6, padding: '24px', boxShadow: '0 1px 3px rgba(0,0,0,0.02)' }}>
-              <div className="flex items-center justify-between mb-4">
-                <h2 style={{ fontFamily: "var(--font-body)", fontWeight: 700, fontSize: 16, color: 'var(--ink)' }}>
-                  Desktop Banner 2 (Right Side)
-                </h2>
-                <span style={{ fontSize: 10, color: 'var(--ink-muted)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                  Placement: header-right
-                </span>
-              </div>
-
-              <div style={{ 
-                height: 75, 
-                width: '100%', 
-                backgroundColor: 'var(--bg-page)', 
-                border: '1.5px dashed var(--ink-border)', 
-                borderRadius: 4, 
-                overflow: 'hidden', 
-                display: 'flex', 
-                alignItems: 'center', 
-                justifyContent: 'center', 
-                marginBottom: 20 
-              }}>
-                {banner2.imageUrl ? (
-                  <img 
-                    src={banner2.imageUrl} 
-                    alt="Desktop Banner 2 Preview" 
-                    style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
-                  />
-                ) : (
-                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', width: '100%', height: '100%', color: 'var(--ink-ghost)', fontSize: 11, fontFamily: "'Hind Siliguri', sans-serif" }}>
-                    <span>NO IMAGE</span>
-                    <span style={{ fontSize: 9, marginTop: 2 }}>Crops to 75px height automatically</span>
-                  </div>
-                )}
-              </div>
-
-              {/* Form Controls */}
-              <div>
-                <label style={labelStyle}>Banner Image URL</label>
-                <input 
-                  type="url" 
-                  style={inputStyle} 
-                  value={banner2.imageUrl} 
-                  onChange={(e) => setBanner2({ ...banner2, imageUrl: e.target.value })} 
-                  placeholder="https://example.com/banner-right.jpg" 
-                />
-
-                <label style={labelStyle}>Redirection Link (Background Link)</label>
-                <input 
-                  type="url" 
-                  style={inputStyle} 
-                  value={banner2.ctaUrl} 
-                  onChange={(e) => setBanner2({ ...banner2, ctaUrl: e.target.value })} 
-                  placeholder="https://target-advertiser.com" 
-                />
-
-                <button 
-                  onClick={() => saveBanner(2)} 
-                  className="admin-btn-primary" 
-                  style={{ width: '100%', height: 42, fontSize: 13, fontWeight: 600 }}
-                  disabled={saving !== null}
-                >
-                  {saving === 2 ? 'Saving Banner 2...' : 'Save Desktop Banner 2'}
-                </button>
-              </div>
-            </section>
+            {/* Banner 2 */}
+            <BannerCropper 
+              label="Desktop Banner 2 (Right Side)"
+              placement="header-right"
+              initialImageUrl={rightBanner?.imageUrl || ''}
+              initialCtaUrl={rightBanner?.ctaUrl || ''}
+              onSave={(img, link) => handleSaveBanner('header-right', img, link)}
+              saving={savingId === 'header-right'}
+            />
 
           </div>
         )}
 
       </div>
     </div>
+  );
+}
+
+interface BannerCropperProps {
+  label: string;
+  placement: 'header-left' | 'header-right';
+  initialImageUrl: string;
+  initialCtaUrl: string;
+  onSave: (imageUrl: string, ctaUrl: string) => Promise<void>;
+  saving: boolean;
+}
+
+function BannerCropper({ label, placement, initialImageUrl, initialCtaUrl, onSave, saving }: BannerCropperProps) {
+  const [imageUrl, setImageUrl] = useState(initialImageUrl);
+  const [ctaUrl, setCtaUrl] = useState(initialCtaUrl);
+  const [fileSrc, setFileSrc] = useState<string | null>(null);
+  const [zoom, setZoom] = useState(1);
+  const [offset, setOffset] = useState({ x: 0, y: 0 });
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
+
+  useEffect(() => {
+    setImageUrl(initialImageUrl);
+    setCtaUrl(initialCtaUrl);
+  }, [initialImageUrl, initialCtaUrl]);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        setFileSrc(reader.result as string);
+        setZoom(1);
+        setOffset({ x: 0, y: 0 });
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleMouseDown = (e: React.MouseEvent) => {
+    if (!fileSrc) return;
+    setIsDragging(true);
+    setDragStart({ x: e.clientX - offset.x, y: e.clientY - offset.y });
+  };
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!isDragging || !fileSrc) return;
+    setOffset({
+      x: e.clientX - dragStart.x,
+      y: e.clientY - dragStart.y
+    });
+  };
+
+  const handleMouseUpOrLeave = () => {
+    setIsDragging(false);
+  };
+
+  const handleUploadAndSave = async () => {
+    if (!fileSrc) {
+      // Just save link/existing URL
+      await onSave(imageUrl, ctaUrl);
+      return;
+    }
+
+    const img = new Image();
+    img.src = fileSrc;
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      canvas.width = 600;
+      canvas.height = 150;
+      const ctx = canvas.getContext('2d');
+      if (ctx) {
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        const imgRatio = img.width / img.height;
+        // Visual height is 75px, canvas height is 150px (2x).
+        // Visual width is 300px, canvas width is 600px (2x).
+        const drawHeight = 150;
+        const drawWidth = 150 * imgRatio;
+
+        const finalWidth = drawWidth * zoom;
+        const finalHeight = drawHeight * zoom;
+
+        // Centered position + scaled user offsets
+        const x = (600 - finalWidth) / 2 + (offset.x * 2);
+        const y = (150 - finalHeight) / 2 + (offset.y * 2);
+
+        ctx.drawImage(img, x, y, finalWidth, finalHeight);
+
+        canvas.toBlob(async (blob) => {
+          if (!blob) return;
+          const formData = new FormData();
+          formData.append('file', blob, `${placement}-cropped.jpg`);
+
+          try {
+            const uploadRes = await fetch('/api/admin/upload', {
+              method: 'POST',
+              body: formData
+            });
+            const uploadData = await uploadRes.json();
+            if (uploadData.error) throw new Error(uploadData.error);
+
+            await onSave(uploadData.url, ctaUrl);
+            setFileSrc(null); // Clear cropper after save
+          } catch (err) {
+            alert('Upload failed: ' + (err instanceof Error ? err.message : 'Unknown error'));
+          }
+        }, 'image/jpeg', 0.9);
+      }
+    };
+  };
+
+  return (
+    <section style={{ backgroundColor: 'var(--bg-surface)', border: '1px solid var(--ink-border)', borderRadius: 6, padding: '24px', boxShadow: '0 1px 3px rgba(0,0,0,0.02)' }}>
+      <div className="flex items-center justify-between mb-4">
+        <h2 style={{ fontFamily: "var(--font-body)", fontWeight: 700, fontSize: 16, color: 'var(--ink)' }}>
+          {label}
+        </h2>
+        <span style={{ fontSize: 10, color: 'var(--ink-muted)', fontWeight: 600, textTransform: 'uppercase' }}>
+          {placement}
+        </span>
+      </div>
+
+      {/* Interactive Cropping Preview Area */}
+      <div 
+        onMouseDown={handleMouseDown}
+        onMouseMove={handleMouseMove}
+        onMouseUp={handleMouseUpOrLeave}
+        onMouseLeave={handleMouseUpOrLeave}
+        style={{ 
+          height: 75, 
+          width: '100%', 
+          backgroundColor: '#fafafa', 
+          border: '1.5px dashed var(--ink-border)', 
+          borderRadius: 4, 
+          overflow: 'hidden', 
+          position: 'relative',
+          cursor: fileSrc ? (isDragging ? 'grabbing' : 'grab') : 'default',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          userSelect: 'none',
+          marginBottom: 16
+        }}
+      >
+        {fileSrc ? (
+          <img 
+            src={fileSrc} 
+            alt="Cropping in progress" 
+            draggable={false}
+            style={{ 
+              position: 'absolute',
+              transform: `translate(${offset.x}px, ${offset.y}px) scale(${zoom})`,
+              maxWidth: 'none',
+              maxHeight: 'none',
+              height: '100%',
+              objectFit: 'contain'
+            }} 
+          />
+        ) : imageUrl ? (
+          <img 
+            src={imageUrl} 
+            alt="Current Banner" 
+            draggable={false}
+            style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
+          />
+        ) : (
+          <div style={{ color: 'var(--ink-ghost)', fontSize: 11, textAlign: 'center', fontFamily: "'Hind Siliguri', sans-serif" }}>
+            <span>NO IMAGE UPLOADED</span>
+          </div>
+        )}
+
+        {/* Overlay indicator */}
+        {fileSrc && (
+          <div style={{ position: 'absolute', bottom: 4, right: 6, backgroundColor: 'rgba(0,0,0,0.6)', color: '#fff', fontSize: 8, padding: '2px 4px', borderRadius: 2, pointerEvents: 'none' }}>
+            DRAG TO ADJUST
+          </div>
+        )}
+      </div>
+
+      {/* Image selector */}
+      <div style={{ marginBottom: 16 }}>
+        <span style={{ fontFamily: "'Hind Siliguri', sans-serif", fontSize: 11, fontWeight: 600, textTransform: 'uppercase', color: 'var(--ink-muted)', display: 'block', marginBottom: 6 }}>
+          Upload Banner Image
+        </span>
+        <input 
+          type="file" 
+          accept="image/*" 
+          onChange={handleFileChange} 
+          style={{ fontFamily: "'Hind Siliguri', sans-serif", fontSize: 12, width: '100%' }}
+        />
+      </div>
+
+      {/* Zoom controls */}
+      {fileSrc && (
+        <div style={{ marginBottom: 16 }}>
+          <div className="flex justify-between items-center" style={{ marginBottom: 4 }}>
+            <span style={{ fontFamily: "'Hind Siliguri', sans-serif", fontSize: 11, fontWeight: 600, textTransform: 'uppercase', color: 'var(--ink-muted)' }}>Zoom Scale</span>
+            <span style={{ fontSize: 11, fontWeight: 600 }}>{zoom.toFixed(2)}x</span>
+          </div>
+          <input 
+            type="range" 
+            min="1" 
+            max="3" 
+            step="0.02" 
+            value={zoom} 
+            onChange={(e) => setZoom(parseFloat(e.target.value))} 
+            style={{ width: '100%', cursor: 'pointer' }}
+          />
+        </div>
+      )}
+
+      {/* Redirect link */}
+      <div>
+        <span style={{ fontFamily: "'Hind Siliguri', sans-serif", fontSize: 11, fontWeight: 600, textTransform: 'uppercase', color: 'var(--ink-muted)', display: 'block', marginBottom: 6 }}>
+          Redirection Link (Background Link)
+        </span>
+        <input 
+          type="url" 
+          value={ctaUrl} 
+          onChange={(e) => setCtaUrl(e.target.value)} 
+          placeholder="https://target-advertiser.com" 
+          style={{ 
+            width: '100%', 
+            padding: '10px 12px', 
+            border: '1px solid var(--ink-border)', 
+            background: 'var(--bg-surface)', 
+            color: 'var(--ink)', 
+            fontFamily: "'Hind Siliguri', sans-serif", 
+            fontSize: 13, 
+            borderRadius: 4,
+            marginBottom: 20
+          }}
+          required
+        />
+
+        <div className="flex gap-2">
+          <button 
+            onClick={handleUploadAndSave} 
+            className="admin-btn-primary" 
+            style={{ flex: 1, height: 42, fontSize: 13, fontWeight: 600 }}
+            disabled={saving}
+          >
+            {saving ? 'Saving...' : fileSrc ? 'Crop & Save Banner' : 'Update Redirect Link'}
+          </button>
+          {fileSrc && (
+            <button 
+              onClick={() => setFileSrc(null)} 
+              className="admin-btn-secondary"
+              style={{ height: 42 }}
+            >
+              Cancel Crop
+            </button>
+          )}
+        </div>
+      </div>
+    </section>
   );
 }
