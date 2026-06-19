@@ -147,15 +147,43 @@ export default function HeroSlideshow({ articles }: HeroSlideshowProps) {
                   </div>
                   <div className="flex items-center justify-between mt-3">
                     {/* Slide dots */}
-                    <div className="flex gap-2">
-                      {articles.map((_, dotIdx) => (
-                        <button
-                          key={dotIdx}
-                          onClick={(e) => { e.preventDefault(); setCurrentIndex(dotIdx); }}
-                          className={`w-2 h-2 rounded-full transition-colors ${dotIdx === currentIndex ? 'bg-[#d33f3f]' : 'bg-gray-300 hover:bg-gray-400'}`}
-                          aria-label={`Go to slide ${dotIdx + 1}`}
-                        />
-                      ))}
+                    <div className="flex items-center gap-3">
+                      <button
+                        onClick={(e) => {
+                          e.preventDefault();
+                          setCurrentIndex((prev) => (prev - 1 + articles.length) % articles.length);
+                        }}
+                        className="text-gray-400 hover:text-gray-700 transition-colors p-1 flex items-center justify-center"
+                        aria-label="Previous slide"
+                      >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" />
+                        </svg>
+                      </button>
+                      
+                      <div className="flex gap-2">
+                        {articles.map((_, dotIdx) => (
+                          <button
+                            key={dotIdx}
+                            onClick={(e) => { e.preventDefault(); setCurrentIndex(dotIdx); }}
+                            className={`w-2 h-2 rounded-full transition-colors ${dotIdx === currentIndex ? 'bg-[#d33f3f]' : 'bg-gray-300 hover:bg-gray-400'}`}
+                            aria-label={`Go to slide ${dotIdx + 1}`}
+                          />
+                        ))}
+                      </div>
+
+                      <button
+                        onClick={(e) => {
+                          e.preventDefault();
+                          setCurrentIndex((prev) => (prev + 1) % articles.length);
+                        }}
+                        className="text-gray-400 hover:text-gray-700 transition-colors p-1 flex items-center justify-center"
+                        aria-label="Next slide"
+                      >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
+                        </svg>
+                      </button>
                     </div>
                     <span className="text-[11px] font-bold text-[#d33f3f]">
                       আরো পড়ুন
