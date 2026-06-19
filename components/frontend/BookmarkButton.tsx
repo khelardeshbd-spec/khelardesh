@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useSession, signIn } from 'next-auth/react';
 
 interface Article {
   id: number;
@@ -23,6 +24,7 @@ export default function BookmarkButton({
   variant?: 'default' | 'circle';
 }) {
   const [isSaved, setIsSaved] = useState(false);
+  const { data: session } = useSession();
 
   useEffect(() => {
     try {
@@ -35,6 +37,12 @@ export default function BookmarkButton({
 
   const toggleBookmark = (e: React.MouseEvent) => {
     e.preventDefault(); // prevent navigation if inside a Link
+    
+    if (!session) {
+      signIn('google');
+      return;
+    }
+
     try {
       let saved = JSON.parse(localStorage.getItem('khelardesh_saved') || '[]');
       if (isSaved) {

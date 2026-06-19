@@ -5,6 +5,7 @@ import StickyScrollHeader from '@/components/frontend/StickyScrollHeader';
 import BottomNav from '@/components/frontend/BottomNav';
 import LiveTicker from '@/components/frontend/LiveTicker';
 import Footer from '@/components/frontend/Footer';
+import SessionProviderWrapper from '@/components/frontend/SessionProviderWrapper';
 
 export const metadata: Metadata = {
   title: {
@@ -42,13 +43,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
       </head>
       <body>
-        {/* <SmartHeader /> removed as per user request */}
-        <StickyScrollHeader />
-        <LiveTicker />
-        <main id="main-content" tabIndex={-1}>
-          {children}
-        </main>
-        <Footer />
+        <SessionProviderWrapper>
+          {/* <SmartHeader /> removed as per user request */}
+          <StickyScrollHeader />
+          <LiveTicker />
+          <main id="main-content" tabIndex={-1}>
+            {children}
+          </main>
+          <Footer />
+        </SessionProviderWrapper>
       </body>
     </html>
   );
