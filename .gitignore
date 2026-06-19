@@ -47,3 +47,6 @@ dev.db
 out.html
 scripts/create-sidebar-table.mjs
 scripts/alter-scores-table.mjs
+
+# Temporary scratch files
+/scratch/
