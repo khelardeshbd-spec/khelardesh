@@ -95,10 +95,7 @@ export default async function SportPage({ params }: PageProps) {
     <div style={{ backgroundColor: 'var(--bg-page)', minHeight: '100vh' }}>
 
       {/* Desktop */}
-      <div 
-        className="hidden lg:grid max-w-[1200px] mx-auto px-6 pb-12 gap-8"
-        style={{ gridTemplateColumns: '3fr 1fr' }}
-      >
+      <div className="hidden lg:block max-w-[800px] mx-auto px-6 pb-12">
         {/* Main Column (Left): Sport heading & Feed */}
         <div className="pt-8">
           {/* Sport heading */}
@@ -121,12 +118,9 @@ export default async function SportPage({ params }: PageProps) {
           </div>
 
           {lead && <div className="mb-8 mt-2"><LeadStory article={lead} /></div>}
-          {articlesList.map((article, i) => (
+          {articlesList.map((article) => (
             <div key={article.id}>
               <ArticleCard article={article} />
-              {i === 2 && inlineSponsors[0] && (
-                <SponsorBlock {...inlineSponsors[0]} />
-              )}
             </div>
           ))}
           {articlesList.length === 0 && (
@@ -134,20 +128,6 @@ export default async function SportPage({ params }: PageProps) {
               এই বিভাগে কোনো খবর নেই।
             </p>
           )}
-        </div>
-
-        {/* Right Column: Scores & Sponsors (independently scrollable) */}
-        <div 
-          style={{ 
-            position: 'sticky', 
-            top: '120px', 
-            maxHeight: 'calc(100vh - 140px)', 
-            overflowY: 'auto',
-            paddingLeft: '4px'
-          }}
-          className="scrollbar-none pt-8"
-        >
-          <Sidebar scores={scoresList} sponsors={sponsorsList} />
         </div>
       </div>
 
@@ -172,12 +152,9 @@ export default async function SportPage({ params }: PageProps) {
         </div>
 
         {lead && <div className="pt-4"><LeadStory article={lead} /></div>}
-        {articlesList.map((article, i) => (
+        {articlesList.map((article) => (
           <div key={article.id}>
             <ArticleCard article={article} />
-            {i === 2 && inlineSponsors[0] && (
-              <SponsorBlock {...inlineSponsors[0]} />
-            )}
           </div>
         ))}
         {articlesList.length === 0 && (
