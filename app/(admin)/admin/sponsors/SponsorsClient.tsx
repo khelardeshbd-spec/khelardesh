@@ -43,6 +43,11 @@ export default function SponsorsClient() {
     const label = placement === 'header-left' ? 'Desktop Banner 1' : 'Desktop Banner 2';
     const displayOrder = placement === 'header-left' ? 1 : 2;
 
+    if (!newCtaUrl || !newCtaUrl.trim()) {
+      setError('Redirection link is required.');
+      return;
+    }
+
     setSavingId(placement);
     setError('');
     try {
@@ -74,6 +79,39 @@ export default function SponsorsClient() {
       alert(`${label} saved successfully!`);
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : 'Error saving banner');
+    } finally {
+      setSavingId(null);
+    }
+  }
+
+  async function handleDeleteBanner(placement: 'header-left' | 'header-right') {
+    const existing = sponsors.find((s) => s.placement === placement);
+    const label = placement === 'header-left' ? 'Desktop Banner 1' : 'Desktop Banner 2';
+    if (!existing || !existing.id) {
+      alert('Banner is already empty!');
+      return;
+    }
+
+    if (!confirm(`Are you sure you want to empty ${label}? This will remove the image and redirection link.`)) {
+      return;
+    }
+
+    setSavingId(placement);
+    setError('');
+    try {
+      const res = await fetch(`/api/admin/sponsors/${existing.id}`, {
+        method: 'DELETE'
+      });
+
+      if (!res.ok) {
+        const err = await res.json() as any;
+        throw new Error(err.error);
+      }
+
+      await loadSponsors();
+      alert(`${label} emptied successfully!`);
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Error emptying banner');
     } finally {
       setSavingId(null);
     }
@@ -117,6 +155,7 @@ export default function SponsorsClient() {
               initialImageUrl={leftBanner?.imageUrl || ''}
               initialCtaUrl={leftBanner?.ctaUrl || ''}
               onSave={(img, link) => handleSaveBanner('header-left', img, link)}
+              onDelete={() => handleDeleteBanner('header-left')}
               saving={savingId === 'header-left'}
             />
 
@@ -127,6 +166,7 @@ export default function SponsorsClient() {
               initialImageUrl={rightBanner?.imageUrl || ''}
               initialCtaUrl={rightBanner?.ctaUrl || ''}
               onSave={(img, link) => handleSaveBanner('header-right', img, link)}
+              onDelete={() => handleDeleteBanner('header-right')}
               saving={savingId === 'header-right'}
             />
 
@@ -144,10 +184,11 @@ interface BannerCropperProps {
   initialImageUrl: string;
   initialCtaUrl: string;
   onSave: (imageUrl: string, ctaUrl: string) => Promise<void>;
+  onDelete: () => Promise<void>;
   saving: boolean;
 }
 
-function BannerCropper({ label, placement, initialImageUrl, initialCtaUrl, onSave, saving }: BannerCropperProps) {
+function BannerCropper({ label, placement, initialImageUrl, initialCtaUrl, onSave, onDelete, saving }: BannerCropperProps) {
   const [imageUrl, setImageUrl] = useState(initialImageUrl);
   const [ctaUrl, setCtaUrl] = useState(initialCtaUrl);
   const [fileSrc, setFileSrc] = useState<string | null>(null);
@@ -199,6 +240,11 @@ function BannerCropper({ label, placement, initialImageUrl, initialCtaUrl, onSav
   };
 
   const handleUploadAndSave = async () => {
+    if (!ctaUrl || !ctaUrl.trim()) {
+      alert('Redirection link is required.');
+      return;
+    }
+
     if (!fileSrc) {
       // Just save link/existing URL
       await onSave(imageUrl, ctaUrl);
@@ -270,6 +316,8 @@ function BannerCropper({ label, placement, initialImageUrl, initialCtaUrl, onSav
       previewImgHeight = 290 / imageRatio;
     }
   }
+
+  const isSaveDisabled = saving || !ctaUrl || !ctaUrl.trim();
 
   return (
     <section style={{ backgroundColor: 'var(--bg-surface)', border: '1px solid var(--ink-border)', borderRadius: 6, padding: '24px', boxShadow: '0 1px 3px rgba(0,0,0,0.02)' }}>
@@ -397,22 +445,52 @@ function BannerCropper({ label, placement, initialImageUrl, initialCtaUrl, onSav
           required
         />
 
-        <div className="flex gap-2">
-          <button 
-            onClick={handleUploadAndSave} 
-            className="admin-btn-primary" 
-            style={{ flex: 1, height: 42, fontSize: 13, fontWeight: 600 }}
-            disabled={saving}
-          >
-            {saving ? 'Saving...' : fileSrc ? 'Crop & Save Banner' : 'Update Redirect Link'}
-          </button>
-          {fileSrc && (
+        <div className="flex flex-col gap-2">
+          <div className="flex gap-2">
             <button 
-              onClick={() => { setFileSrc(null); setImageRatio(null); }} 
-              className="admin-btn-secondary"
-              style={{ height: 42 }}
+              onClick={handleUploadAndSave} 
+              className="admin-btn-primary" 
+              style={{ 
+                flex: 1, 
+                height: 42, 
+                fontSize: 13, 
+                fontWeight: 600,
+                opacity: isSaveDisabled ? 0.5 : 1,
+                cursor: isSaveDisabled ? 'not-allowed' : 'pointer'
+              }}
+              disabled={isSaveDisabled}
             >
-              Cancel Crop
+              {saving ? 'Saving...' : fileSrc ? 'Crop & Save Banner' : 'Update Redirect Link'}
+            </button>
+            {fileSrc && (
+              <button 
+                onClick={() => { setFileSrc(null); setImageRatio(null); }} 
+                className="admin-btn-secondary"
+                style={{ height: 42 }}
+              >
+                Cancel Crop
+              </button>
+            )}
+          </div>
+
+          {initialImageUrl && !fileSrc && (
+            <button 
+              type="button"
+              onClick={onDelete}
+              className="admin-btn-secondary"
+              style={{ 
+                width: '100%', 
+                height: 42, 
+                fontSize: 13, 
+                fontWeight: 600, 
+                color: '#C0392B', 
+                borderColor: '#C0392B',
+                opacity: saving ? 0.5 : 1,
+                cursor: saving ? 'not-allowed' : 'pointer'
+              }}
+              disabled={saving}
+            >
+              {saving ? 'Please wait...' : 'Empty Banner'}
             </button>
           )}
         </div>
