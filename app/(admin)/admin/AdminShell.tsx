@@ -31,21 +31,20 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
       >
         {/* Logo area */}
         <div
-          className="px-5 py-5 border-b"
+          className="px-5 py-4 border-b flex flex-col items-center justify-center"
           style={{ borderColor: 'var(--ink-border)' }}
         >
-          <p
+          <img
+            src="/logo.png"
+            alt="খেলারদেশ"
             style={{
-              fontFamily: "var(--font-body)",
-              fontWeight: 900,
-              fontSize: 22,
-              color: 'var(--ink)',
-              letterSpacing: '-0.01em',
-              lineHeight: 1,
+              height: '55px',
+              objectFit: 'contain',
+              filter: 'var(--logo-filter, none)',
+              display: 'block',
+              marginBottom: '2px',
             }}
-          >
-            খেলারদেশ
-          </p>
+          />
           <p
             style={{
               fontFamily: "'Hind Siliguri', sans-serif",
@@ -53,7 +52,6 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
               letterSpacing: '0.12em',
               textTransform: 'uppercase',
               color: 'var(--ink-muted)',
-              marginTop: 4,
             }}
           >
             Admin Panel
