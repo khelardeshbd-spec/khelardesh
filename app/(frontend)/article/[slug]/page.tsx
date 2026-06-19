@@ -292,24 +292,7 @@ export default async function ArticlePage({ params }: PageProps) {
                     </p>
                   )}
 
-                  {showRecirculation && (
-                    <div 
-                      className="my-8 p-5 border rounded-lg flex flex-col gap-1.5"
-                      style={{
-                        borderColor: 'var(--ink-border)',
-                        backgroundColor: 'var(--bg-surface)'
-                      }}
-                    >
-                      <span className="text-[10px] font-bold tracking-wider uppercase text-[var(--ink-muted)]">WHAT TO READ NEXT</span>
-                      <Link 
-                        href={`/article/${recircleArticle.slug}`} 
-                        className="text-base font-bold text-[var(--ink)] hover:text-[#1a5c2e] transition-colors leading-snug"
-                        style={{ fontFamily: 'var(--font-headline)' }}
-                      >
-                        {recircleArticle.headlineBn || recircleArticle.headline}
-                      </Link>
-                    </div>
-                  )}
+                  {/* Removed inline recirculation */}
                 </div>
               );
             })}
