@@ -6,7 +6,6 @@ import { formatDatetime, timeAgo } from '@/lib/timeAgo';
 import BookmarkButton from '@/components/frontend/BookmarkButton';
 import ShareButton from '@/components/frontend/ShareButton';
 import ReadingProgressBar from './ReadingProgressBar';
-import BottomNav from '@/components/frontend/BottomNav';
 import CommentSection from '@/components/frontend/CommentSection';
 import ScrollToTopButton from '@/components/frontend/ScrollToTopButton';
 import ViewTracker from '@/components/frontend/ViewTracker';
@@ -50,6 +49,19 @@ export default async function ArticlePage({ params }: PageProps) {
     kicker, sport, mediaType, mediaUrl, mediaCaption,
     byline, publishedAt,
   } = article;
+
+  // Fetch composer profile image if available
+  let composerPhotoUrl = null;
+  if (byline) {
+    const { data: composer } = await supabaseAdmin
+      .from('Composer')
+      .select('photoUrl')
+      .eq('name', byline)
+      .maybeSingle();
+    if (composer) {
+      composerPhotoUrl = composer.photoUrl;
+    }
+  }
 
   const displayHeadline = headlineBn || headline;
   const isVideo = mediaType === 'video';
@@ -120,7 +132,6 @@ export default async function ArticlePage({ params }: PageProps) {
         </div>
       </div>
 
-
       <div className="max-w-[680px] mx-auto px-4 pb-16">
         
         {/* Main Editorial Article Column */}
@@ -171,16 +182,6 @@ export default async function ArticlePage({ params }: PageProps) {
                 />
               )}
             </div>
-            {/* Deck displayed below image with normal font, smaller size and dark color */}
-            {deck && (
-              <p
-                lang="bn"
-                className="mt-3 px-4 sm:px-0 text-sm text-[var(--ink)] leading-relaxed"
-                style={{ fontFamily: "var(--font-body)", fontWeight: 400 }}
-              >
-                {deck}
-              </p>
-            )}
             {mediaCaption && (
               <p
                 className="mt-1.5 px-4 sm:px-0 text-xs text-[var(--ink-muted)] leading-relaxed italic"
@@ -204,7 +205,11 @@ export default async function ArticlePage({ params }: PageProps) {
                   color: 'var(--ink)'
                 }}
               >
-                {byline ? byline.slice(0, 2) : 'KD'}
+                {composerPhotoUrl ? (
+                  <img src={composerPhotoUrl} alt={byline || 'Byline'} className="w-full h-full object-cover" />
+                ) : (
+                  byline ? byline.slice(0, 2) : 'KD'
+                )}
               </div>
               {/* Stacked Name and Date/Time */}
               <div className="flex flex-col min-w-0 text-left">
@@ -218,15 +223,15 @@ export default async function ArticlePage({ params }: PageProps) {
                   className="text-[10px] text-[var(--ink-muted)] mt-0.5 leading-none" 
                   style={{ fontFamily: 'var(--font-body)' }}
                 >
-                  {time} · {exactTime}
+                  {exactTime} ({time})
                 </span>
               </div>
             </div>
 
             <div className="flex items-center gap-2 flex-shrink-0">
               <ShareButton />
-              <BookmarkButton article={articleForBookmark} variant="circle" />
-              <Link 
+              <BookmarkButton article={articleForBookmark} />
+              <Link
                 href="#comments"
                 className="w-8 h-8 rounded-full flex items-center justify-center border hover:bg-[var(--ink-ghost)] transition-colors cursor-pointer text-[var(--ink-muted)] hover:text-[var(--ink)] flex-shrink-0"
                 style={{ 
@@ -298,7 +303,11 @@ export default async function ArticlePage({ params }: PageProps) {
                 color: 'var(--ink)'
               }}
             >
-              {byline ? byline.slice(0, 2) : 'KD'}
+              {composerPhotoUrl ? (
+                <img src={composerPhotoUrl} alt={byline || 'Byline'} className="w-full h-full object-cover" />
+              ) : (
+                byline ? byline.slice(0, 2) : 'KD'
+              )}
             </div>
             <div>
               <h4 className="text-sm font-bold text-[var(--ink)]" style={{ fontFamily: 'var(--font-body)' }}>
