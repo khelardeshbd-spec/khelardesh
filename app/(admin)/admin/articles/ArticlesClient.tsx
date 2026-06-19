@@ -126,7 +126,7 @@ export default function ArticlesClient({ initialArticles }: ArticlesClientProps)
           <Search size={16} className="absolute left-3 text-[var(--ink-ghost)] pointer-events-none" />
           <input
             type="text"
-            placeholder="নিবন্ধ খুঁজুন (শিরোনাম, খেলা বা প্রতিবেদক)..."
+            placeholder="খুঁজুন"
             className="admin-input"
             style={{ paddingLeft: '36px' }}
             value={searchQuery}
