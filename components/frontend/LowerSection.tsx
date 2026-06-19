@@ -20,8 +20,11 @@ interface Article {
 interface LowerSectionProps {
   footballArticles: Article[];
   cricketArticles: Article[];
-  specialArticles: Article[];
+  interviewArticles: Article[];
   featureArticles: Article[];
+  specialArticles: Article[];
+  guestArticles: Article[];
+  othersArticles: Article[];
 }
 
 function sportLabel(sport?: string | null) {
@@ -71,7 +74,7 @@ function Kicker({ sport }: { sport?: string | null }) {
 function CardLead({ article }: { article: Article }) {
   const headline = article.headlineBn || article.headline;
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', width: '100%', maxWidth: '800px', margin: '0 auto 24px' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', width: '100%', marginBottom: 24 }}>
       <Kicker sport={article.sport} />
       <Link href={`/article/${article.slug}`} style={{ textDecoration: 'none', display: 'block', marginBottom: 12 }}>
         {article.mediaUrl && (
@@ -87,7 +90,7 @@ function CardLead({ article }: { article: Article }) {
         )}
         <h2 style={{
           fontFamily: 'var(--font-headline)',
-          fontSize: 'clamp(1.5rem, 2.5vw, 2rem)',
+          fontSize: 'clamp(1.3rem, 2.2vw, 1.8rem)',
           fontWeight: 700,
           lineHeight: 1.15,
           color: 'var(--ink)',
@@ -99,7 +102,7 @@ function CardLead({ article }: { article: Article }) {
         {article.deck && (
           <p style={{
             fontFamily: 'var(--font-body)',
-            fontSize: 14,
+            fontSize: 13,
             lineHeight: 1.6,
             color: 'var(--ink)',
             opacity: 0.85,
@@ -143,20 +146,20 @@ function CategoryDropdown({ articles, hasPoster }: { articles: Article[], hasPos
           background: 'none',
           border: '1px solid var(--ink-border)',
           borderRadius: '4px',
-          padding: '6px 12px',
+          padding: '4px 10px',
           fontFamily: 'var(--font-body)',
-          fontSize: '12px',
+          fontSize: '11px',
           fontWeight: 600,
           color: 'var(--ink)',
           cursor: 'pointer',
           display: 'flex',
           alignItems: 'center',
-          gap: '6px',
+          gap: '4px',
           backgroundColor: '#fafafa',
           transition: 'all 0.2s ease',
         }}
       >
-        অন্যান্য খবর <span style={{ fontSize: '9px', transition: 'transform 0.2s', transform: isOpen ? 'rotate(180deg)' : 'none', display: 'inline-block' }}>▼</span>
+        অন্যান্য খবর <span style={{ fontSize: '8px', transition: 'transform 0.2s', transform: isOpen ? 'rotate(180deg)' : 'none', display: 'inline-block' }}>▼</span>
       </button>
 
       {isOpen && (
@@ -168,11 +171,11 @@ function CategoryDropdown({ articles, hasPoster }: { articles: Article[], hasPos
           border: '1px solid var(--ink-border)',
           borderRadius: '6px',
           boxShadow: '0 4px 12px rgba(0, 0, 0, 0.08)',
-          width: '280px',
-          maxHeight: '350px',
+          width: '260px',
+          maxHeight: '300px',
           overflowY: 'auto',
           zIndex: 100,
-          padding: '8px 0',
+          padding: '6px 0',
         }}>
           {displayArticles.map((art) => (
             <Link
@@ -181,11 +184,11 @@ function CategoryDropdown({ articles, hasPoster }: { articles: Article[], hasPos
               onClick={() => setIsOpen(false)}
               style={{
                 display: 'block',
-                padding: '10px 16px',
+                padding: '8px 12px',
                 textDecoration: 'none',
                 color: 'var(--ink)',
                 borderBottom: '1px solid #f5f5f5',
-                fontSize: '13px',
+                fontSize: '12px',
                 lineHeight: '1.4',
                 fontFamily: 'var(--font-body)',
                 fontWeight: 500,
@@ -210,19 +213,19 @@ function CategorySection({ title, articles }: { title: string, articles: Article
     : false;
 
   return (
-    <div style={{ marginBottom: 40 }}>
+    <div style={{ marginBottom: 32 }}>
       {/* Category Header */}
       <div style={{
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',
-        borderBottom: '2px solid #121212',
-        paddingBottom: 8,
-        marginBottom: 20
+        borderBottom: '1.5px solid #121212',
+        paddingBottom: 6,
+        marginBottom: 16
       }}>
         <h2 style={{
           fontFamily: 'var(--font-headline)',
-          fontSize: '1.5rem',
+          fontSize: '1.3rem',
           fontWeight: 800,
           color: '#121212',
           margin: 0
@@ -238,11 +241,13 @@ function CategorySection({ title, articles }: { title: string, articles: Article
       ) : (
         <p style={{
           fontFamily: 'var(--font-body)',
-          fontSize: 13,
+          fontSize: 12,
           color: 'var(--ink-muted)',
           fontStyle: 'italic',
           textAlign: 'center',
-          padding: '20px 0'
+          padding: '16px 0',
+          border: '1px dashed var(--ink-border)',
+          borderRadius: '4px'
         }}>
           গত দুই দিনের কোনো খবর নেই। অন্যান্য খবরের জন্য মেনুটি দেখুন।
         </p>
@@ -251,19 +256,115 @@ function CategorySection({ title, articles }: { title: string, articles: Article
   );
 }
 
+function SidebarList({ articles }: { articles: Article[] }) {
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+      <h3 style={{
+        fontFamily: 'var(--font-body)',
+        fontSize: 13,
+        fontWeight: 800,
+        textTransform: 'uppercase',
+        color: '#121212',
+        borderBottom: '2.5px solid #121212',
+        paddingBottom: 6,
+        marginBottom: 8
+      }}>
+        অন্যান্য খবর
+      </h3>
+      {articles.map((article, i) => {
+        const headline = article.headlineBn || article.headline;
+        return (
+          <div
+            key={article.id}
+            style={{
+              paddingBottom: 16,
+              borderBottom: i < articles.length - 1 ? '1px solid var(--ink-border)' : 'none',
+              display: 'flex',
+              alignItems: 'flex-start',
+              gap: 12,
+            }}
+          >
+            {article.mediaUrl && (
+              <div style={{ width: 64, height: 64, flexShrink: 0, overflow: 'hidden', border: '1px solid var(--ink-border)', position: 'relative' }}>
+                <Image src={article.mediaUrl} alt={headline} fill style={{ objectFit: 'cover' }} />
+              </div>
+            )}
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <Kicker sport={article.sport} />
+              <Link href={`/article/${article.slug}`} style={{ textDecoration: 'none' }}>
+                <h4 style={{
+                  fontFamily: 'var(--font-headline)',
+                  fontSize: '0.95rem',
+                  fontWeight: 700,
+                  lineHeight: 1.25,
+                  color: 'var(--ink)',
+                  margin: 0
+                }}>
+                  {headline}
+                </h4>
+              </Link>
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
 export default function LowerSection({
   footballArticles,
   cricketArticles,
-  specialArticles,
+  interviewArticles,
   featureArticles,
+  specialArticles,
+  guestArticles,
+  othersArticles,
 }: LowerSectionProps) {
   return (
     <section aria-label="সংবাদ বিভাগ" style={{ marginBottom: 32, marginTop: 24 }}>
-      {/* Order Constraint: Football -> Cricket -> Khelardesh Bises -> Features */}
-      <CategorySection title="ফুটবল" articles={footballArticles} />
-      <CategorySection title="ক্রিকেট" articles={cricketArticles} />
-      <CategorySection title="খেলার দেশ বিশেষ" articles={specialArticles} />
-      <CategorySection title="ফিচার" articles={featureArticles} />
+      <style>{`
+        .hp-main-grid {
+          display: grid;
+          grid-template-columns: 2.8fr 1.2fr;
+          gap: 32px;
+        }
+        .hp-sidebar {
+          border-left: 1px solid var(--ink-border);
+          padding-left: 24px;
+        }
+        @media (max-width: 1023px) {
+          .hp-main-grid {
+            grid-template-columns: 1fr;
+            gap: 24px;
+          }
+          .hp-sidebar {
+            border-left: none;
+            padding-left: 0;
+            border-top: 1px solid var(--ink-border);
+            padding-top: 24px;
+          }
+        }
+      `}</style>
+
+      <div className="hp-main-grid">
+        {/* Main Feed Column */}
+        <div>
+          {/* Order Constraint: Football -> Cricket -> Interview -> Feature -> Special -> Guest Column */}
+          <CategorySection title="ফুটবল" articles={footballArticles} />
+          <CategorySection title="ক্রিকেট" articles={cricketArticles} />
+          <CategorySection title="ইন্টারভিউ" articles={interviewArticles} />
+          <CategorySection title="ফিচার" articles={featureArticles} />
+          <CategorySection title="খেলার দেশ বিশেষ" articles={specialArticles} />
+          <CategorySection title="অতিথি কলাম" articles={guestArticles} />
+        </div>
+
+        {/* Sidebar Column */}
+        {othersArticles.length > 0 && (
+          <div className="hp-sidebar">
+            <SidebarList articles={othersArticles} />
+          </div>
+        )}
+      </div>
     </section>
   );
 }

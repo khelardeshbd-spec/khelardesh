@@ -44,8 +44,11 @@ export default async function HomePage() {
     leadResult,
     footballResult,
     cricketResult,
-    specialResult,
+    interviewResult,
     featureResult,
+    specialResult,
+    guestResult,
+    othersResult,
     scoresResult,
     sponsorsResult
   ] = await Promise.allSettled([
@@ -70,13 +73,31 @@ export default async function HomePage() {
     supabaseAdmin
       .from('Article')
       .select('id, slug, headline, headlineBn, deck, sport, mediaType, mediaUrl, byline, publishedAt')
-      .eq('sport', 'special')
+      .eq('sport', 'interview')
       .order('publishedAt', { ascending: false })
       .limit(10),
     supabaseAdmin
       .from('Article')
       .select('id, slug, headline, headlineBn, deck, sport, mediaType, mediaUrl, byline, publishedAt')
       .eq('sport', 'feature')
+      .order('publishedAt', { ascending: false })
+      .limit(10),
+    supabaseAdmin
+      .from('Article')
+      .select('id, slug, headline, headlineBn, deck, sport, mediaType, mediaUrl, byline, publishedAt')
+      .eq('sport', 'special')
+      .order('publishedAt', { ascending: false })
+      .limit(10),
+    supabaseAdmin
+      .from('Article')
+      .select('id, slug, headline, headlineBn, deck, sport, mediaType, mediaUrl, byline, publishedAt')
+      .eq('sport', 'guest-column')
+      .order('publishedAt', { ascending: false })
+      .limit(10),
+    supabaseAdmin
+      .from('Article')
+      .select('id, slug, headline, headlineBn, deck, sport, mediaType, mediaUrl, byline, publishedAt')
+      .in('sport', ['others', 'other', 'basketball', 'tennis', 'f1', 'rugby', 'athletics', 'table-tennis', 'golf'])
       .order('publishedAt', { ascending: false })
       .limit(10),
     supabaseAdmin
@@ -117,8 +138,11 @@ export default async function HomePage() {
   }
   const footballArticles = footballResult.status === 'fulfilled' ? (footballResult.value.data ?? []) : [];
   const cricketArticles = cricketResult.status === 'fulfilled' ? (cricketResult.value.data ?? []) : [];
-  const specialArticles = specialResult.status === 'fulfilled' ? (specialResult.value.data ?? []) : [];
+  const interviewArticles = interviewResult.status === 'fulfilled' ? (interviewResult.value.data ?? []) : [];
   const featureArticles = featureResult.status === 'fulfilled' ? (featureResult.value.data ?? []) : [];
+  const specialArticles = specialResult.status === 'fulfilled' ? (specialResult.value.data ?? []) : [];
+  const guestArticles = guestResult.status === 'fulfilled' ? (guestResult.value.data ?? []) : [];
+  const othersArticles = othersResult.status === 'fulfilled' ? (othersResult.value.data ?? []) : [];
   const scores = scoresResult.status === 'fulfilled' ? (scoresResult.value.data ?? []) : [];
   const sponsors = sponsorsResult.status === 'fulfilled' ? (sponsorsResult.value.data ?? []) : [];
 
@@ -307,8 +331,11 @@ export default async function HomePage() {
         <LowerSection
           footballArticles={footballArticles}
           cricketArticles={cricketArticles}
-          specialArticles={specialArticles}
+          interviewArticles={interviewArticles}
           featureArticles={featureArticles}
+          specialArticles={specialArticles}
+          guestArticles={guestArticles}
+          othersArticles={othersArticles}
         />
 
       </div>
