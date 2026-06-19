@@ -106,7 +106,7 @@ export default function ArticlesClient({ initialArticles }: ArticlesClientProps)
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
         <div>
           <h1 style={{ fontFamily: "var(--font-body)", fontWeight: 800, fontSize: 24, color: 'var(--ink)' }}>
-            নিবন্ধসমূহ
+            আর্টিকেল সমূহ
           </h1>
           <p style={{ fontFamily: "'Hind Siliguri', sans-serif", fontSize: 12, color: 'var(--ink-muted)' }}>
             Manage, edit, search and filter all sports stories
