@@ -246,14 +246,11 @@ export default function EditArticlePage({ params }: { params: { id: string } }) 
       {/* Top Floating Control Bar */}
       <div 
         style={{
-          position: 'sticky', 
-          top: 0, 
-          zIndex: 100,
           backgroundColor: 'var(--bg-surface)',
           borderBottom: '1.5px solid var(--ink-border)',
           padding: '12px 16px',
         }}
-        className="flex items-center justify-between gap-4 flex-wrap"
+        className="static lg:sticky lg:top-0 z-30 flex items-center justify-between gap-4 flex-wrap"
       >
         <div className="flex items-center gap-4 flex-wrap">
           <div className="flex items-center gap-3">
