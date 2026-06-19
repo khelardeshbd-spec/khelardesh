@@ -158,6 +158,9 @@ export default async function HomePage() {
   const leftSponsor = sponsors.find((s) => s.placement === 'header-left');
   const rightSponsor = sponsors.find((s) => s.placement === 'header-right');
 
+  const showLeft = !!(leftSponsor && leftSponsor.imageUrl);
+  const showRight = !!(rightSponsor && rightSponsor.imageUrl);
+
   return (
     <div style={{ backgroundColor: '#ffffff', color: '#121212', minHeight: '100vh', padding: '8px 0', fontFamily: 'var(--font-body)' }}>
       <div className="max-w-[1200px] mx-auto bg-[#ffffff] px-6 py-2" id="main-constrained">
@@ -167,51 +170,33 @@ export default async function HomePage() {
           {/* Tier 1: Logo and Sponsors (Symmetrical Layout) */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 items-center border-b border-[#e2e2e2] pb-2 mb-1.5">
             {/* Left Sponsor Block */}
-            <div className="hidden lg:flex lg:col-span-3 h-[75px] bg-[#fafafa] text-[#121212] flex-col justify-center items-center border border-[#e2e2e2] rounded-[3px] overflow-hidden">
-              {leftSponsor ? (
+            {showLeft && (
+              <div className="hidden lg:flex lg:col-span-3 h-[75px] bg-[#fafafa] text-[#121212] flex-col justify-center items-center border border-[#e2e2e2] rounded-[3px] overflow-hidden">
                 <a href={leftSponsor.ctaUrl || '#'} target="_blank" rel="noopener noreferrer" className="w-full h-full block">
-                  {leftSponsor.imageUrl ? (
-                    <img src={leftSponsor.imageUrl} alt={leftSponsor.label || "Left Sponsor"} className="w-full h-full object-cover" />
-                  ) : (
-                    <div className="w-full h-full flex flex-col justify-center items-center p-2">
-                      <span className="text-xs font-bold text-center">{leftSponsor.title || leftSponsor.label}</span>
-                      <span className="text-[8px] text-gray-400 mt-1 uppercase font-sans">Sponsor</span>
-                    </div>
-                  )}
+                  <img src={leftSponsor.imageUrl!} alt={leftSponsor.label || "Left Sponsor"} className="w-full h-full object-cover" />
                 </a>
-              ) : (
-                <div className="flex flex-col items-center">
-                  <span className="text-[10px] font-bold text-gray-400 font-sans tracking-wider">ADVERTISEMENT</span>
-                  <span className="text-[9px] text-gray-300 font-sans mt-0.5">বিজ্ঞাপন দিন</span>
-                </div>
-              )}
-            </div>
+              </div>
+            )}
 
             {/* Center Logo */}
-            <div className="col-span-1 lg:col-span-6 text-center flex flex-col items-center">
+            <div className={`col-span-1 ${
+              showLeft && showRight
+                ? 'lg:col-span-6'
+                : showLeft || showRight
+                  ? 'lg:col-span-9'
+                  : 'lg:col-span-12'
+            } text-center flex flex-col items-center`}>
               <img src="/images/khelardesh_logo.png" alt="খেলারদেশ" className="mx-auto select-none" style={{ maxWidth: '100%', height: 'auto', maxHeight: '75px' }} />
             </div>
 
             {/* Right Sponsor Block */}
-            <div className="hidden lg:flex lg:col-span-3 h-[75px] bg-[#fafafa] text-[#121212] flex-col justify-center items-center border border-[#e2e2e2] rounded-[3px] overflow-hidden">
-              {rightSponsor ? (
+            {showRight && (
+              <div className="hidden lg:flex lg:col-span-3 h-[75px] bg-[#fafafa] text-[#121212] flex-col justify-center items-center border border-[#e2e2e2] rounded-[3px] overflow-hidden">
                 <a href={rightSponsor.ctaUrl || '#'} target="_blank" rel="noopener noreferrer" className="w-full h-full block">
-                  {rightSponsor.imageUrl ? (
-                    <img src={rightSponsor.imageUrl} alt={rightSponsor.label || "Right Sponsor"} className="w-full h-full object-cover" />
-                  ) : (
-                    <div className="w-full h-full flex flex-col justify-center items-center p-2">
-                      <span className="text-xs font-bold text-center">{rightSponsor.title || rightSponsor.label}</span>
-                      <span className="text-[8px] text-gray-400 mt-1 uppercase font-sans">Sponsor</span>
-                    </div>
-                  )}
+                  <img src={rightSponsor.imageUrl!} alt={rightSponsor.label || "Right Sponsor"} className="w-full h-full object-cover" />
                 </a>
-              ) : (
-                <div className="flex flex-col items-center">
-                  <span className="text-[10px] font-bold text-gray-400 font-sans tracking-wider">ADVERTISEMENT</span>
-                  <span className="text-[9px] text-gray-300 font-sans mt-0.5">বিজ্ঞাপন দিন</span>
-                </div>
-              )}
-            </div>
+              </div>
+            )}
           </div>
 
           {/* Tier 2: Controls & Info Bar */}
