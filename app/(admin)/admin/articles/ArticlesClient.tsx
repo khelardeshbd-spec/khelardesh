@@ -63,7 +63,7 @@ export default function ArticlesClient({ initialArticles }: ArticlesClientProps)
     });
 
     return result;
-  }, [articlesWithViews, searchQuery, sortField, sortAsc]);
+  }, [initialArticles, searchQuery, sortField, sortAsc]);
 
   const handleSort = (field: 'publishedAt' | 'headline' | 'sport' | 'views') => {
     if (sortField === field) {
