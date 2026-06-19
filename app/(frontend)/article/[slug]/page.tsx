@@ -8,6 +8,7 @@ import ShareButton from '@/components/frontend/ShareButton';
 import ReadingProgressBar from './ReadingProgressBar';
 import BottomNav from '@/components/frontend/BottomNav';
 import CommentSection from '@/components/frontend/CommentSection';
+import ScrollToTopButton from '@/components/frontend/ScrollToTopButton';
 
 export const dynamic = 'force-dynamic';
 
@@ -312,6 +313,7 @@ export default async function ArticlePage({ params }: PageProps) {
         </article>
 
       </div>
+      <ScrollToTopButton />
     </div>
   );
 }
