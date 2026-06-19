@@ -10,14 +10,21 @@ export const NAV_ITEMS = [
     label: 'ফুটবল',
     slug: 'football',
     subItems: [
-      { label: 'আন্তর্জাতিক ফুটবল', slug: 'international-football' },
-      { label: 'ক্লাব ফুটবল', slug: 'club-football' },
+      { label: 'দেশের ফুটবল', slug: 'bd-football' },
+      { label: 'বিদেশের ফুটবল', slug: 'international-football' },
+      { label: 'পাড়া মহল্লার ফুটবল', slug: 'club-football' },
       { label: 'ফুটবল বিশ্বকাপ ২০২৬', slug: 'world-cup-2026' },
     ],
   },
-  { label: 'বাংলাদেশের ফুটবল', slug: 'bd-football' },
-  { label: 'ক্রিকেট', slug: 'cricket' },
-  { label: 'বাংলাদেশের ক্রিকেট', slug: 'bd-cricket' },
+  {
+    label: 'ক্রিকেট',
+    slug: 'cricket',
+    subItems: [
+      { label: 'দেশের ক্রিকেট', slug: 'bd-cricket' },
+      { label: 'বিদেশের ক্রিকেট', slug: 'international-cricket' },
+      { label: 'পাড়া মহল্লার ক্রিকেট', slug: 'local-cricket' }
+    ],
+  },
   { label: 'ইন্টারভিউ', slug: 'interview' },
   { label: 'ফিচার', slug: 'feature' },
   { label: 'খেলার দেশ বিশেষ', slug: 'special' },

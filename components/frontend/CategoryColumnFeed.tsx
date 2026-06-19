@@ -21,6 +21,7 @@ interface Props {
   category: string;
   skipIds?: number[];
   initialPage?: number;
+  limit?: number;
 }
 
 // CategoryColumnFeed loads real database articles for specified sport/sport-section
@@ -132,16 +133,15 @@ function ColumnArticleCard({ article }: { article: Article }) {
   );
 }
 
-export default function CategoryColumnFeed({ category, skipIds = [], initialPage = 1 }: Props) {
+export default function CategoryColumnFeed({ category, skipIds = [], initialPage = 1, limit }: Props) {
   const [articles, setArticles] = useState<Article[]>([]);
   const [page, setPage] = useState(initialPage);
   const [hasMore, setHasMore] = useState(true);
   const [loading, setLoading] = useState(false);
-  const [usedFallback, setUsedFallback] = useState(false);
   const sentinelRef = useRef<HTMLDivElement>(null);
 
   const loadMore = useCallback(async () => {
-    if (loading || !hasMore) return;
+    if (loading || !hasMore || (limit && articles.length >= limit)) return;
     setLoading(true);
     try {
       const res = await fetch(`/api/articles?sport=${category}&page=${page}`);
@@ -160,7 +160,7 @@ export default function CategoryColumnFeed({ category, skipIds = [], initialPage
           return [...prev, ...incoming.filter((a) => !existingIds.has(a.id))];
         });
         const { pagination } = data;
-        if (page >= pagination.totalPages) setHasMore(false);
+        if (page >= pagination.totalPages || limit) setHasMore(false);
         setPage((p) => p + 1);
       }
     } catch {
@@ -169,24 +169,26 @@ export default function CategoryColumnFeed({ category, skipIds = [], initialPage
       setLoading(false);
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page, loading, hasMore, skipIds, category]);
+  }, [page, loading, hasMore, skipIds, category, limit]);
 
   // IntersectionObserver — trigger load when sentinel enters view
   useEffect(() => {
-    if (!sentinelRef.current) return;
+    if (!sentinelRef.current || limit) return;
     const observer = new IntersectionObserver(
       (entries) => { if (entries[0].isIntersecting) loadMore(); },
       { rootMargin: '200px' }
     );
     observer.observe(sentinelRef.current);
     return () => observer.disconnect();
-  }, [loadMore]);
+  }, [loadMore, limit]);
 
   // Load first batch immediately
   useEffect(() => {
     loadMore();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const displayedArticles = limit ? articles.slice(0, limit) : articles;
 
   return (
     <div style={{ width: '100%', marginTop: '1rem' }}>
@@ -203,13 +205,13 @@ export default function CategoryColumnFeed({ category, skipIds = [], initialPage
 
       {/* Article list */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-        {articles.map((article) => (
+        {displayedArticles.map((article) => (
           <ColumnArticleCard key={article.id} article={article} />
         ))}
       </div>
 
       {/* Infinite scroll sentinel */}
-      <div ref={sentinelRef} style={{ height: 1 }} />
+      {!limit && <div ref={sentinelRef} style={{ height: 1 }} />}
 
       {/* Loading skeleton */}
       {loading && (
@@ -225,21 +227,38 @@ export default function CategoryColumnFeed({ category, skipIds = [], initialPage
         </div>
       )}
 
-      {/* End of feed */}
-      {!hasMore && articles.length > 0 && (
-        <p
-          lang="bn"
-          style={{
-            fontFamily: 'var(--font-body)',
-            textAlign: 'center',
-            fontSize: 11,
-            color: '#aaaaaa',
-            paddingTop: '1rem',
-            paddingBottom: '1rem',
-          }}
-        >
-          — আর কোনো খবর নেই —
-        </p>
+      {/* View All or End of feed */}
+      {limit ? (
+        displayedArticles.length > 0 && (
+          <div style={{ marginTop: '2rem', textAlign: 'center' }}>
+            <Link
+              href={`/sport/${category}`}
+              className="inline-flex items-center gap-2 text-[11px] font-bold text-[#121212] hover:text-[#d33f3f] transition-colors"
+              style={{ fontFamily: 'var(--font-body)', letterSpacing: '0.05em' }}
+            >
+              সব খবর দেখুন
+              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
+              </svg>
+            </Link>
+          </div>
+        )
+      ) : (
+        !hasMore && articles.length > 0 && (
+          <p
+            lang="bn"
+            style={{
+              fontFamily: 'var(--font-body)',
+              textAlign: 'center',
+              fontSize: 11,
+              color: '#aaaaaa',
+              paddingTop: '1rem',
+              paddingBottom: '1rem',
+            }}
+          >
+            — আর কোনো খবর নেই —
+          </p>
+        )
       )}
     </div>
   );

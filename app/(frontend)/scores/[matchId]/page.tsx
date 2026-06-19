@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import TacticalPitch from '@/components/frontend/TacticalPitch';
+import CommentSection from '@/components/frontend/CommentSection';
 interface MatchDetails {
   matchId: string;
   league: string;
@@ -626,8 +627,13 @@ export default function MatchCenterPage({ params }: { params: { matchId: string 
 
             </div>
           )}
-
         </div>
+
+        {/* COMMENT SECTION */}
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 sm:p-6 mb-8 mt-6">
+          <CommentSection articleSlug={`match-${params.matchId}`} />
+        </div>
+
       </div>
     </div>
   );
