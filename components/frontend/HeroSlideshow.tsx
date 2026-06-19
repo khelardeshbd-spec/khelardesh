@@ -49,6 +49,7 @@ export default function HeroSlideshow({ articles }: HeroSlideshowProps) {
   if (!articles || articles.length === 0) return null;
 
   const onTouchStartAction = (e: React.TouchEvent) => {
+    if (typeof window !== 'undefined' && window.innerWidth >= 768) return;
     if (e.targetTouches.length === 2) {
       setIsPaused(true);
       if (autoplayTimeoutRef.current) {
@@ -61,31 +62,38 @@ export default function HeroSlideshow({ articles }: HeroSlideshowProps) {
   };
 
   const onTouchMoveAction = (e: React.TouchEvent) => {
+    if (typeof window !== 'undefined' && window.innerWidth >= 768) return;
     if (e.targetTouches.length === 2 && touchStart !== null) {
       const avgClientX = (e.targetTouches[0].clientX + e.targetTouches[1].clientX) / 2;
       setTouchEnd(avgClientX);
     }
   };
 
-  const onTouchEndAction = () => {
-    if (touchStart === null || touchEnd === null) return;
-    const distance = touchStart - touchEnd;
-    if (distance > minSwipeDistance) {
-      setCurrentIndex((prev) => (prev + 1) % articles.length);
-    } else if (distance < -minSwipeDistance) {
-      setCurrentIndex((prev) => (prev - 1 + articles.length) % articles.length);
-    }
-    
-    setTouchStart(null);
-    setTouchEnd(null);
-
-    // Resume autoplay after 8 seconds of no touch interaction
+  const handleManualNavigation = (newIndex: number) => {
+    setCurrentIndex(newIndex);
+    setIsPaused(true);
     if (autoplayTimeoutRef.current) {
       clearTimeout(autoplayTimeoutRef.current);
     }
     autoplayTimeoutRef.current = setTimeout(() => {
       setIsPaused(false);
-    }, 8000);
+    }, 10000);
+  };
+
+  const onTouchEndAction = () => {
+    if (touchStart === null || touchEnd === null) return;
+    const distance = touchStart - touchEnd;
+    let nextIdx = currentIndex;
+    if (distance > minSwipeDistance) {
+      nextIdx = (currentIndex + 1) % articles.length;
+    } else if (distance < -minSwipeDistance) {
+      nextIdx = (currentIndex - 1 + articles.length) % articles.length;
+    }
+    
+    setTouchStart(null);
+    setTouchEnd(null);
+
+    handleManualNavigation(nextIdx);
   };
 
   return (
@@ -179,7 +187,7 @@ export default function HeroSlideshow({ articles }: HeroSlideshowProps) {
               <button
                 onClick={(e) => {
                   e.preventDefault();
-                  setCurrentIndex((prev) => (prev - 1 + articles.length) % articles.length);
+                  handleManualNavigation((currentIndex - 1 + articles.length) % articles.length);
                 }}
                 className="text-gray-400 hover:text-gray-700 transition-colors p-1 flex items-center justify-center cursor-pointer"
                 aria-label="Previous slide"
@@ -193,7 +201,7 @@ export default function HeroSlideshow({ articles }: HeroSlideshowProps) {
                 {articles.map((_, dotIdx) => (
                   <button
                     key={dotIdx}
-                    onClick={(e) => { e.preventDefault(); setCurrentIndex(dotIdx); }}
+                    onClick={(e) => { e.preventDefault(); handleManualNavigation(dotIdx); }}
                     className={`w-2 h-2 rounded-full transition-colors cursor-pointer ${dotIdx === currentIndex ? 'bg-[#d33f3f]' : 'bg-gray-300 hover:bg-gray-400'}`}
                     aria-label={`Go to slide ${dotIdx + 1}`}
                   />
@@ -203,7 +211,7 @@ export default function HeroSlideshow({ articles }: HeroSlideshowProps) {
               <button
                 onClick={(e) => {
                   e.preventDefault();
-                  setCurrentIndex((prev) => (prev + 1) % articles.length);
+                  handleManualNavigation((currentIndex + 1) % articles.length);
                 }}
                 className="text-gray-400 hover:text-gray-700 transition-colors p-1 flex items-center justify-center cursor-pointer"
                 aria-label="Next slide"
