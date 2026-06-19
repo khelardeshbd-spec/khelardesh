@@ -253,22 +253,44 @@ export default async function ArticlePage({ params }: PageProps) {
               const showRecirculation = i === 1 && articlesList.length > 0;
               const recircleArticle = articlesList[0];
 
+              const imgMatch = para.match(/^\[IMAGE:\s*(.*?)\s*\|\s*(.*?)\s*\]$/i);
+              const adMatch = para.match(/^\[AD:\s*(.*?)\s*\|\s*(.*?)\s*\]$/i);
+
               return (
                 <div key={i}>
-                  <p
-                    lang="bn"
-                    style={{
-                      fontFamily: "var(--font-body)",
-                      fontWeight: 400,
-                      fontSize: '19px',
-                      lineHeight: '1.75',
-                      color: 'var(--ink)',
-                      marginBottom: '1.6em',
-                      letterSpacing: '0.01em',
-                    }}
-                  >
-                    {para}
-                  </p>
+                  {imgMatch ? (
+                    <div className="my-6">
+                      <div className="w-full relative overflow-hidden rounded-md border border-[var(--ink-border)] bg-[var(--bg-surface)]" style={{ aspectRatio: '16/9' }}>
+                        <img src={imgMatch[1]} alt={imgMatch[2] || 'Image'} className="w-full h-full object-cover" />
+                      </div>
+                      {imgMatch[2] && (
+                        <p className="mt-1.5 text-xs text-[var(--ink-muted)] leading-relaxed italic text-center">
+                          {imgMatch[2]}
+                        </p>
+                      )}
+                    </div>
+                  ) : adMatch ? (
+                    <div className="my-6">
+                      <a href={adMatch[2] || '#'} target="_blank" rel="noopener noreferrer" className="block w-full overflow-hidden rounded-md border border-[var(--ink-border)] bg-[var(--bg-surface)] hover:opacity-95 transition-opacity" style={{ aspectRatio: '21/9' }}>
+                        <img src={adMatch[1]} alt="Advertisement" className="w-full h-full object-cover" />
+                      </a>
+                    </div>
+                  ) : (
+                    <p
+                      lang="bn"
+                      style={{
+                        fontFamily: "var(--font-body)",
+                        fontWeight: 400,
+                        fontSize: '19px',
+                        lineHeight: '1.75',
+                        color: 'var(--ink)',
+                        marginBottom: '1.6em',
+                        letterSpacing: '0.01em',
+                      }}
+                    >
+                      {para}
+                    </p>
+                  )}
 
                   {showRecirculation && (
                     <div 

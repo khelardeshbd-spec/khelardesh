@@ -3,7 +3,49 @@
 import { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { Layout, ArrowLeft, Check, Sparkles, Image as ImageIcon, Video } from 'lucide-react';
+import { Layout, ArrowLeft, Check, Sparkles, Image as ImageIcon, Video, Plus, Trash2 } from 'lucide-react';
+
+interface EditorBlock {
+  id: string;
+  type: 'paragraph' | 'image' | 'ad';
+  value?: string;
+  url?: string;
+  caption?: string;
+  imageUrl?: string;
+  ctaUrl?: string;
+}
+
+function parseBodyToBlocks(bodyStr: string): EditorBlock[] {
+  if (!bodyStr) return [{ id: 'block-init', type: 'paragraph', value: '' }];
+  const parts = bodyStr.split(/\n\n+/);
+  return parts.map((part, index) => {
+    const id = `block-${index}-${Date.now()}`;
+    const imgMatch = part.trim().match(/^\[IMAGE:\s*(.*?)\s*\|\s*(.*?)\s*\]$/i);
+    if (imgMatch) {
+      return { id, type: 'image', url: imgMatch[1], caption: imgMatch[2] };
+    }
+    const adMatch = part.trim().match(/^\[AD:\s*(.*?)\s*\|\s*(.*?)\s*\]$/i);
+    if (adMatch) {
+      return { id, type: 'ad', imageUrl: adMatch[1], ctaUrl: adMatch[2] };
+    }
+    return { id, type: 'paragraph', value: part };
+  });
+}
+
+function serializeBlocksToBody(blocks: EditorBlock[]): string {
+  return blocks
+    .map(block => {
+      if (block.type === 'image') {
+        return `[IMAGE: ${block.url || ''} | ${block.caption || ''}]`;
+      }
+      if (block.type === 'ad') {
+        return `[AD: ${block.imageUrl || ''} | ${block.ctaUrl || ''}]`;
+      }
+      return block.value || '';
+    })
+    .filter(val => val.trim() !== '')
+    .join('\n\n');
+}
 
 const SPORTS = [
   { value: 'football', label: 'ফুটবল' },
@@ -59,16 +101,42 @@ export default function NewArticlePage() {
 
   const sportLabel = SPORTS.find(s => s.value === sport)?.label || 'খেলাধুলা';
 
-  // Parser to capture text blocks from editable div
-  const updateBodyFromDOM = (htmlContent: string) => {
-    const cleanText = htmlContent
-      .replace(/<div><br><\/div>/g, '\n')
-      .replace(/<div>/g, '\n')
-      .replace(/<\/div>/g, '')
-      .replace(/<br>/g, '\n')
-      // remove raw html tags
-      .replace(/<[^>]*>/g, '');
-    setBody(cleanText);
+  // Blocks state for editor
+  const [blocks, setBlocks] = useState<EditorBlock[]>([
+    { id: 'block-init', type: 'paragraph', value: '' }
+  ]);
+  const [activeMenuBlockId, setActiveMenuBlockId] = useState<string | null>(null);
+
+  const addBlock = (index: number, type: 'paragraph' | 'image' | 'ad') => {
+    const newBlock: EditorBlock = {
+      id: `block-${Date.now()}-${Math.random()}`,
+      type,
+      value: '',
+      url: '',
+      caption: '',
+      imageUrl: '',
+      ctaUrl: ''
+    };
+    const newBlocks = [...blocks];
+    newBlocks.splice(index + 1, 0, newBlock);
+    setBlocks(newBlocks);
+    setBody(serializeBlocksToBody(newBlocks));
+  };
+
+  const removeBlock = (id: string) => {
+    if (blocks.length === 1 && blocks[0].type === 'paragraph') {
+      updateBlock(blocks[0].id, { value: '' });
+      return;
+    }
+    const newBlocks = blocks.filter(b => b.id !== id);
+    setBlocks(newBlocks);
+    setBody(serializeBlocksToBody(newBlocks));
+  };
+
+  const updateBlock = (id: string, updates: Partial<EditorBlock>) => {
+    const newBlocks = blocks.map(b => b.id === id ? { ...b, ...updates } : b);
+    setBlocks(newBlocks);
+    setBody(serializeBlocksToBody(newBlocks));
   };
 
   async function handleUpload(file: File) {
@@ -480,36 +548,208 @@ export default function NewArticlePage() {
           </div>
         </div>
 
-        {/* Paragraphs body contentEditable editor */}
-        <div style={{ fontFamily: "'Hind Siliguri', sans-serif", fontSize: '11px', fontWeight: 600, color: 'var(--ink-muted)', marginBottom: '8px' }}>
-          নিবন্ধের মূল বিষয়বস্তু (ENTER প্রেস করে নতুন অনুচ্ছেদ শুরু করুন):
-        </div>
-        
-        <div
-          contentEditable
-          suppressContentEditableWarning
-          onBlur={(e) => updateBodyFromDOM(e.currentTarget.innerHTML)}
-          style={{
-            minHeight: '280px',
-            fontFamily: "var(--font-body)",
-            fontWeight: 400,
-            fontSize: '19px',
-            lineHeight: '1.75',
-            color: 'var(--ink)',
-            outline: 'none',
-            border: '1.5px dashed var(--ink-border)',
-            padding: '16px',
-            borderRadius: '6px',
-            backgroundColor: 'var(--bg-surface)'
-          }}
-          className="prose-field placeholder-editable"
-          data-placeholder="এখন থেকে শুরু করুন"
-        >
-          {body ? (
-            body.split(/\n\n+/).map((p, i) => (
-              <div key={i} style={{ marginBottom: '1.6em' }}>{p}</div>
-            ))
-          ) : null}
+        <div style={{
+          minHeight: '280px',
+          border: '1.5px dashed var(--ink-border)',
+          padding: '16px',
+          borderRadius: '6px',
+          backgroundColor: 'var(--bg-surface)'
+        }}>
+          {blocks.map((block, index) => (
+            <div key={block.id} className="group relative mb-4">
+              {block.type === 'paragraph' && (
+                <textarea
+                  value={block.value || ''}
+                  onChange={(e) => {
+                    updateBlock(block.id, { value: e.target.value });
+                    e.target.style.height = 'auto';
+                    e.target.style.height = e.target.scrollHeight + 'px';
+                  }}
+                  ref={(el) => {
+                    if (el) {
+                      el.style.height = 'auto';
+                      el.style.height = el.scrollHeight + 'px';
+                    }
+                  }}
+                  rows={1}
+                  placeholder="এখন থেকে শুরু করুন..."
+                  style={{
+                    width: '100%',
+                    fontFamily: "var(--font-body)",
+                    fontWeight: 400,
+                    fontSize: '19px',
+                    lineHeight: '1.75',
+                    color: 'var(--ink)',
+                    outline: 'none',
+                    border: 'none',
+                    background: 'transparent',
+                    resize: 'none',
+                    overflow: 'hidden'
+                  }}
+                />
+              )}
+
+              {block.type === 'image' && (
+                <div className="relative border border-[var(--ink-border)] rounded-lg p-4 bg-[var(--bg-surface)] my-4 flex flex-col gap-2">
+                  <button 
+                    type="button"
+                    onClick={() => removeBlock(block.id)}
+                    className="absolute top-2 right-2 text-red-500 hover:text-red-700 bg-white/80 p-1.5 rounded-full border border-red-200 z-10"
+                    title="Remove block"
+                  >
+                    <Trash2 size={16} />
+                  </button>
+                  <div className="text-xs font-bold text-[var(--ink-muted)] mb-1 flex items-center gap-1">
+                    <ImageIcon size={14} /> IMAGE CARD (ছবি)
+                  </div>
+                  {block.url ? (
+                    <div className="relative aspect-video rounded overflow-hidden bg-gray-100 border border-[var(--ink-border)]" style={{ maxHeight: 300 }}>
+                      <img src={block.url} alt="Card preview" className="w-full h-full object-contain" />
+                    </div>
+                  ) : (
+                    <div className="border-2 border-dashed border-[var(--ink-border)] rounded p-6 flex flex-col items-center justify-center gap-2">
+                      <input 
+                        type="file" 
+                        accept="image/*"
+                        id={`file-${block.id}`}
+                        className="hidden"
+                        onChange={async (e) => {
+                          const file = e.target.files?.[0];
+                          if (file) {
+                            const url = await handleUpload(file);
+                            updateBlock(block.id, { url });
+                          }
+                        }}
+                      />
+                      <label htmlFor={`file-${block.id}`} className="cursor-pointer bg-[var(--ink)] text-[var(--bg-page)] px-4 py-2 rounded text-xs font-semibold hover:opacity-90 transition-opacity">
+                        Select/Upload Image
+                      </label>
+                      <span className="text-[10px] text-[var(--ink-muted)]">or paste URL below:</span>
+                      <input
+                        type="text"
+                        placeholder="Image URL"
+                        value={block.url || ''}
+                        onChange={(e) => updateBlock(block.id, { url: e.target.value })}
+                        className="w-full text-xs p-2 border border-[var(--ink-border)] rounded bg-transparent text-[var(--ink)]"
+                      />
+                    </div>
+                  )}
+                  <input
+                    type="text"
+                    placeholder="Image caption (ছবি ক্যাপশন)..."
+                    value={block.caption || ''}
+                    onChange={(e) => updateBlock(block.id, { caption: e.target.value })}
+                    className="w-full text-sm p-2 border-b border-[var(--ink-border)] rounded bg-transparent text-[var(--ink)] focus:outline-none focus:border-[var(--ink)]"
+                  />
+                </div>
+              )}
+
+              {block.type === 'ad' && (
+                <div className="relative border border-[var(--ink-border)] rounded-lg p-4 bg-[var(--bg-surface)] my-4 flex flex-col gap-2">
+                  <button 
+                    type="button"
+                    onClick={() => removeBlock(block.id)}
+                    className="absolute top-2 right-2 text-red-500 hover:text-red-700 bg-white/80 p-1.5 rounded-full border border-red-200 z-10"
+                    title="Remove block"
+                  >
+                    <Trash2 size={16} />
+                  </button>
+                  <div className="text-xs font-bold text-[var(--ink-muted)] mb-1 flex items-center gap-1">
+                    <Sparkles size={14} /> AD CARD (SPONSOR BANNER)
+                  </div>
+                  {block.imageUrl ? (
+                    <div className="relative aspect-[21/9] rounded overflow-hidden bg-gray-100 border border-[var(--ink-border)]" style={{ maxHeight: 150 }}>
+                      <img src={block.imageUrl} alt="Ad preview" className="w-full h-full object-cover" />
+                    </div>
+                  ) : (
+                    <div className="border-2 border-dashed border-[var(--ink-border)] rounded p-6 flex flex-col items-center justify-center gap-2">
+                      <input 
+                        type="file" 
+                        accept="image/*"
+                        id={`file-ad-${block.id}`}
+                        className="hidden"
+                        onChange={async (e) => {
+                          const file = e.target.files?.[0];
+                          if (file) {
+                            const url = await handleUpload(file);
+                            updateBlock(block.id, { imageUrl: url });
+                          }
+                        }}
+                      />
+                      <label htmlFor={`file-ad-${block.id}`} className="cursor-pointer bg-[var(--ink)] text-[var(--bg-page)] px-4 py-2 rounded text-xs font-semibold hover:opacity-90 transition-opacity">
+                        Select/Upload Banner Image
+                      </label>
+                      <span className="text-[10px] text-[var(--ink-muted)]">or paste image URL below:</span>
+                      <input
+                        type="text"
+                        placeholder="Banner Image URL"
+                        value={block.imageUrl || ''}
+                        onChange={(e) => updateBlock(block.id, { imageUrl: e.target.value })}
+                        className="w-full text-xs p-2 border border-[var(--ink-border)] rounded bg-transparent text-[var(--ink)]"
+                      />
+                    </div>
+                  )}
+                  <input
+                    type="text"
+                    placeholder="CTA Link URL (বিজ্ঞাপন লিংক)..."
+                    value={block.ctaUrl || ''}
+                    onChange={(e) => updateBlock(block.id, { ctaUrl: e.target.value })}
+                    className="w-full text-sm p-2 border-b border-[var(--ink-border)] rounded bg-transparent text-[var(--ink)] focus:outline-none focus:border-[var(--ink)]"
+                  />
+                </div>
+              )}
+
+              {/* Hovering Plus icon dropdown */}
+              <div className="flex justify-center my-2 opacity-50 hover:opacity-100 transition-opacity relative">
+                <div className="absolute inset-0 flex items-center" aria-hidden="true">
+                  <div className="w-full border-t border-dashed border-[var(--ink-border)]"></div>
+                </div>
+                <div className="relative flex justify-center">
+                  <button
+                    type="button"
+                    onClick={() => setActiveMenuBlockId(activeMenuBlockId === block.id ? null : block.id)}
+                    className="inline-flex items-center justify-center w-6 h-6 rounded-full border border-[var(--ink-border)] bg-[var(--bg-surface)] text-[var(--ink)] hover:bg-[var(--ink-ghost)] hover:scale-110 transition-all"
+                  >
+                    <Plus size={12} />
+                  </button>
+                  {activeMenuBlockId === block.id && (
+                    <div className="absolute top-7 z-50 bg-[var(--bg-surface)] border border-[var(--ink-border)] rounded-md shadow-lg py-1 min-w-[140px] text-xs">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          addBlock(index, 'paragraph');
+                          setActiveMenuBlockId(null);
+                        }}
+                        className="w-full px-3 py-1.5 text-left hover:bg-[var(--ink-ghost)] flex items-center gap-1.5 text-[var(--ink)]"
+                      >
+                        <Plus size={12} /> Paragraph (অনুচ্ছেদ)
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          addBlock(index, 'image');
+                          setActiveMenuBlockId(null);
+                        }}
+                        className="w-full px-3 py-1.5 text-left hover:bg-[var(--ink-ghost)] flex items-center gap-1.5 text-[var(--ink)]"
+                      >
+                        <ImageIcon size={12} /> Image Card (ছবি ক্যাপশন)
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          addBlock(index, 'ad');
+                          setActiveMenuBlockId(null);
+                        }}
+                        className="w-full px-3 py-1.5 text-left hover:bg-[var(--ink-ghost)] flex items-center gap-1.5 text-[var(--ink)]"
+                      >
+                        <Sparkles size={12} /> Ad Card (বিজ্ঞাপন ব্যানার)
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
 
       </div>
