@@ -32,7 +32,7 @@ export default function NewArticlePage() {
   const [headlineBn, setHeadlineBn] = useState('');
   const [deck, setDeck] = useState('');
   const [kicker, setKicker] = useState('');
-  const [byline, setByline] = useState('Staff Reporter');
+  const [byline, setByline] = useState('');
   const [sport, setSport] = useState('football');
   const [mediaType, setMediaType] = useState<'photo' | 'video'>('photo');
   const [mediaUrl, setMediaUrl] = useState('');
@@ -46,7 +46,11 @@ export default function NewArticlePage() {
     fetch('/api/admin/composers')
       .then(res => res.json())
       .then(data => {
-        setComposers(data.composers ?? []);
+        const list = data.composers ?? [];
+        setComposers(list);
+        if (list.length > 0) {
+          setByline(list[0].name);
+        }
       });
   }, []);
 
@@ -459,12 +463,10 @@ export default function NewArticlePage() {
                   value={byline}
                   onChange={(e) => setByline(e.target.value)}
                 >
-                  <option value="Staff Reporter">Staff Reporter</option>
-                  <option value="খেলারদেশ প্রতিনিধি">খেলারদেশ প্রতিনিধি</option>
                   {composers.map((c) => (
                     <option key={c.id} value={c.name}>{c.name}</option>
                   ))}
-                  {byline && !['Staff Reporter', 'খেলারদেশ প্রতিনিধি', ...composers.map(c => c.name)].includes(byline) && (
+                  {byline && !composers.map(c => c.name).includes(byline) && (
                     <option value={byline}>{byline}</option>
                   )}
                 </select>

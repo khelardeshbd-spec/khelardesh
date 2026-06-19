@@ -507,12 +507,10 @@ export default function EditArticlePage({ params }: { params: { id: string } }) 
                   value={byline}
                   onChange={(e) => setByline(e.target.value)}
                 >
-                  <option value="Staff Reporter">Staff Reporter</option>
-                  <option value="খেলারদেশ প্রতিনিধি">খেলারদেশ প্রতিনিধি</option>
                   {composers.map((c) => (
                     <option key={c.id} value={c.name}>{c.name}</option>
                   ))}
-                  {byline && !['Staff Reporter', 'খেলারদেশ প্রতিনিধি', ...composers.map(c => c.name)].includes(byline) && (
+                  {byline && !composers.map(c => c.name).includes(byline) && (
                     <option value={byline}>{byline}</option>
                   )}
                 </select>
