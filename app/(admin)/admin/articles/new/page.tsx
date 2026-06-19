@@ -320,10 +320,33 @@ export default function NewArticlePage() {
 
 
 
+        {/* Media Caption */}
+        <div className="mb-6">
+          <input
+            type="text"
+            placeholder="ছবির ক্যাপশন লিখুন..."
+            style={{
+              width: '100%',
+              fontFamily: "'Source Serif 4', Georgia, serif",
+              fontStyle: 'italic',
+              fontSize: '12px',
+              color: 'var(--ink-muted)',
+              border: 'none',
+              borderBottom: '1px dashed var(--ink-border)',
+              background: 'transparent',
+              padding: '4px 0',
+              outline: 'none',
+            }}
+            className="focus:border-[var(--ink)] placeholder:text-[var(--ink-muted)] placeholder:font-normal"
+            value={mediaCaption}
+            onChange={(e) => setMediaCaption(e.target.value)}
+          />
+        </div>
+
         {/* Article Summary / Deck */}
         <div className="mb-6">
           <textarea
-            placeholder="নিবন্ধের সংক্ষেপ বা সারসংক্ষেপ লিখুন (Enter article deck explaining the scoops)..."
+            placeholder="নিবন্ধের সংক্ষেপ বা সারসংক্ষেপ লিখুন..."
             rows={2}
             style={{
               width: '100%',
@@ -342,29 +365,6 @@ export default function NewArticlePage() {
             className="focus:border-[var(--ink)] placeholder:text-[var(--ink-muted)]"
             value={deck}
             onChange={(e) => setDeck(e.target.value)}
-          />
-        </div>
-
-        {/* Media Caption */}
-        <div className="mb-6">
-          <input
-            type="text"
-            placeholder="ছবির ক্যাপশন লিখুন (Photo caption ghost value)..."
-            style={{
-              width: '100%',
-              fontFamily: "'Source Serif 4', Georgia, serif",
-              fontStyle: 'italic',
-              fontSize: '12px',
-              color: 'var(--ink-muted)',
-              border: 'none',
-              borderBottom: '1px dashed var(--ink-border)',
-              background: 'transparent',
-              padding: '4px 0',
-              outline: 'none',
-            }}
-            className="focus:border-[var(--ink)] placeholder:text-[var(--ink-muted)] placeholder:font-normal"
-            value={mediaCaption}
-            onChange={(e) => setMediaCaption(e.target.value)}
           />
         </div>
 
