@@ -1,67 +1,104 @@
-const { Client } = require('pg');
+const { createClient } = require('@supabase/supabase-js');
+const fs = require('fs');
+const path = require('path');
 
-const directUrl = process.env.DIRECT_URL || "postgresql://postgres.uvuqxixoncdbjupupxow:ShahMdEliausKomol@aws-1-ap-south-1.pooler.supabase.com:5432/postgres";
-
-async function run() {
-  const client = new Client({
-    connectionString: directUrl,
-    ssl: {
-      rejectUnauthorized: false
-    }
-  });
-
-  try {
-    await client.connect();
-    console.log("Connected to PostgreSQL database.");
-
-    const query = `
-      INSERT INTO "Article" (
-        "slug", "headline", "headlineBn", "deck", "body", "kicker", "sport", "mediaType", "mediaUrl", "byline", "isLead", "publishedAt", "updatedAt"
-      ) VALUES 
-      (
-        'shakib-exclusive-interview',
-        'Exclusive Interview with Shakib Al Hasan',
-        'সাকিব আল হাসানের এক্সক্লুসিভ সাক্ষাৎকার: মনের সব না-বলা কথা',
-        'বাংলাদেশ ক্রিকেট দলের অলরাউন্ডার সাকিব আল হাসানের মুখোমুখি খেলারদেশ। ভবিষ্যতের পরিকল্পনা এবং দলের বর্তমান অবস্থা নিয়ে খোলামেলা আলোচনা।',
-        'খেলাধুলার সব খবর ও বিশ্লেষণ সবার আগে পেতে চোখ রাখুন খেলারদেশে। বিস্তারিত সাক্ষাৎকার নিচে পড়ুন। সাকিব আল হাসান জানিয়েছেন, তিনি আরও কয়েক বছর আন্তর্জাতিক ক্রিকেট চালিয়ে যেতে চান। দলের তরুণ খেলোয়াড়দের প্রতি তিনি আশাবাদী। মাঠের লড়াইয়ে নিজেদের সেরাটা দেওয়ার জন্য প্রস্তুতি নেওয়া হচ্ছে।',
-        'ইন্টারভিউ',
-        'interview',
-        'image',
-        'https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?q=80&w=600&auto=format&fit=crop',
-        'সাজিদ রহমান',
-        false,
-        NOW(),
-        NOW()
-      ),
-      (
-        'evolution-of-bangladesh-football',
-        'The Rise and Evolution of Bangladesh Football',
-        'বাংলাদেশের ফুটবলের রূপান্তর এবং নতুন সম্ভাবনা',
-        'গত এক দশকে বাংলাদেশের ঘরোয়া ও আন্তর্জাতিক ফুটবলের বিবর্তন। যুব ফুটবল একাডেমি থেকে উঠে আসা তরুণদের নিয়ে বিশেষ প্রতিবেদন।',
-        'খেলারদেশ বিশেষ প্রতিবেদন। ফুটবলের রূপান্তর এবং সম্ভাবনার নানা দিক নিয়ে আলোচনা। বাংলাদেশের ফুটবলে দর্শক সংখ্যা দিন দিন বৃদ্ধি পাচ্ছে। নতুন নতুন স্পন্সর এগিয়ে আসছে এবং পাইপলাইনে তরুণ প্রতিভাবান ফুটবলারদের সংখ্যা বেশ সন্তোষজনক।',
-        'ফিচার',
-        'feature',
-        'image',
-        'https://images.unsplash.com/photo-1518063319789-7217e6706b04?q=80&w=600&auto=format&fit=crop',
-        'ফুটবল ডেস্ক',
-        false,
-        NOW() - INTERVAL '1 hour',
-        NOW() - INTERVAL '1 hour'
-      )
-      ON CONFLICT ("slug") DO UPDATE SET
-        "headlineBn" = EXCLUDED."headlineBn",
-        "deck" = EXCLUDED."deck",
-        "publishedAt" = EXCLUDED."publishedAt";
-    `;
-
-    await client.query(query);
-    console.log("Demo articles for 'interview' and 'feature' successfully inserted.");
-
-  } catch (err) {
-    console.error("Database operation failed:", err);
-  } finally {
-    await client.end();
+// Parse .env.local manually to get Supabase credentials
+const envPath = path.join(process.cwd(), '.env.local');
+const envContent = fs.readFileSync(envPath, 'utf8');
+const env = {};
+envContent.split('\n').forEach(line => {
+  const parts = line.split('=');
+  if (parts.length >= 2) {
+    const key = parts[0].trim();
+    const val = parts.slice(1).join('=').trim().replace(/^['"]|['"]$/g, '');
+    env[key] = val;
   }
+});
+
+const supabaseUrl = env.NEXT_PUBLIC_SUPABASE_URL;
+const supabaseSecret = env.SUPABASE_SECRET_KEY || env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+if (!supabaseUrl || !supabaseSecret) {
+  console.error('Missing Supabase URL or secret key in .env.local');
+  process.exit(1);
 }
 
-run();
+const supabase = createClient(supabaseUrl, supabaseSecret);
+
+async function main() {
+  console.log('Fetching template article: madrid-unravel-final-ten...');
+  const { data: templates, error: fetchErr } = await supabase
+    .from('Article')
+    .select('*')
+    .eq('slug', 'madrid-unravel-final-ten')
+    .limit(1);
+
+  if (fetchErr || !templates || templates.length === 0) {
+    console.log('Template article not found by slug. Fetching any latest article...');
+    const { data: fallback, error: fallbackErr } = await supabase
+      .from('Article')
+      .select('*')
+      .order('publishedAt', { ascending: false })
+      .limit(1);
+
+    if (fallbackErr || !fallback || fallback.length === 0) {
+      console.error('No template articles found in database at all.');
+      process.exit(1);
+    }
+    templates.push(fallback[0]);
+  }
+
+  const template = templates[0];
+  console.log(`Using template article: "${template.headline}" / "${template.headlineBn}"`);
+
+  const categories = [
+    { sport: 'football', name: 'ফুটবল' },
+    { sport: 'cricket', name: 'ক্রিকেট' },
+    { sport: 'interview', name: 'ইন্টারভিউ' },
+    { sport: 'feature', name: 'ফিচার' },
+    { sport: 'special', name: 'খেলার দেশ বিশেষ' },
+    { sport: 'guest-column', name: 'অতিথি কলাম' }
+  ];
+
+  const now = new Date();
+
+  for (const cat of categories) {
+    console.log(`Inserting 3 articles for category: ${cat.sport} (${cat.name})...`);
+    for (let i = 1; i <= 3; i++) {
+      const slug = `${cat.sport}-demo-article-${i}-${Math.floor(Math.random() * 10000)}`;
+      const headline = `${template.headline} (${cat.sport.toUpperCase()} Demo ${i})`;
+      const headlineBn = template.headlineBn 
+        ? `${template.headlineBn} (${cat.name} ডেমো ${i})` 
+        : `${template.headline} (${cat.name} ডেমো ${i})`;
+
+      // Create copies with current dates so they are considered "recent" (< 2 days)
+      const newArticle = {
+        ...template,
+        id: undefined, // Let db autogenerate or use default sequence
+        slug,
+        headline,
+        headlineBn,
+        sport: cat.sport,
+        isLead: false,
+        publishedAt: new Date(now.getTime() - i * 3600 * 1000).toISOString() // staggered by hours
+      };
+
+      delete newArticle.id; // ensure ID is generated by database
+
+      const { data, error } = await supabase
+        .from('Article')
+        .insert([newArticle])
+        .select();
+
+      if (error) {
+        console.error(`Error inserting ${slug}:`, error.message);
+      } else {
+        console.log(`Successfully inserted: ${slug}`);
+      }
+    }
+  }
+
+  console.log('All demo articles populated!');
+}
+
+main();
