@@ -25,6 +25,10 @@ export default function SavedPage() {
   const { data: session, status } = useSession();
 
   const loadSaved = () => {
+    if (!session) {
+      setSavedArticles([]);
+      return;
+    }
     try {
       const saved = JSON.parse(localStorage.getItem('khelardesh_saved') || '[]');
       setSavedArticles(saved);
@@ -35,10 +39,15 @@ export default function SavedPage() {
 
   useEffect(() => {
     setMounted(true);
-    loadSaved();
     window.addEventListener('khelardesh_saved_changed', loadSaved);
     return () => window.removeEventListener('khelardesh_saved_changed', loadSaved);
   }, []);
+
+  useEffect(() => {
+    if (mounted) {
+      loadSaved();
+    }
+  }, [mounted, session]);
 
   useEffect(() => {
     if (status === 'unauthenticated') {
