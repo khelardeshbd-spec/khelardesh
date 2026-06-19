@@ -88,24 +88,11 @@ export default async function SportPage({ params }: PageProps) {
 
       {/* Desktop */}
       <div 
-        className="hidden lg:grid max-w-[1200px] mx-auto px-6 pb-12 gap-6"
-        style={{ gridTemplateColumns: '18fr 64fr 18fr' }}
+        className="hidden lg:grid max-w-[1200px] mx-auto px-6 pb-12 gap-8"
+        style={{ gridTemplateColumns: '3fr 1fr' }}
       >
-        {/* Left Column (18%): Logo at top & BriefsColumn */}
-        <div 
-          className="flex flex-col h-screen sticky top-0 pb-4 gap-4"
-          style={{ overflow: 'hidden' }}
-        >
-          <div className="flex-shrink-0 pt-2">
-            <Masthead />
-          </div>
-          <div className="flex-grow overflow-y-auto scrollbar-none pr-1">
-            <BriefsColumn articles={articlesList} />
-          </div>
-        </div>
-
-        {/* Middle Column (64%): Main article feed */}
-        <div className="pt-28">
+        {/* Main Column (Left): Sport heading & Feed */}
+        <div className="pt-8">
           {/* Sport heading */}
           <div
             className="pb-2 mb-6"
@@ -115,7 +102,7 @@ export default async function SportPage({ params }: PageProps) {
               style={{
                 fontFamily: "var(--font-body)",
                 fontWeight: 900,
-                fontSize: 'clamp(28px, 4vw, 48px)',
+                fontSize: 'clamp(24px, 3.5vw, 36px)',
                 letterSpacing: '-0.01em',
                 color: 'var(--ink)',
                 marginBottom: 4,
@@ -141,7 +128,7 @@ export default async function SportPage({ params }: PageProps) {
           )}
         </div>
 
-        {/* Right Column (18%): Scores & Sponsors (independently scrollable) */}
+        {/* Right Column: Scores & Sponsors (independently scrollable) */}
         <div 
           style={{ 
             position: 'sticky', 
@@ -150,7 +137,7 @@ export default async function SportPage({ params }: PageProps) {
             overflowY: 'auto',
             paddingLeft: '4px'
           }}
-          className="scrollbar-none pt-28"
+          className="scrollbar-none pt-8"
         >
           <Sidebar scores={scoresList} sponsors={sponsorsList} />
         </div>
