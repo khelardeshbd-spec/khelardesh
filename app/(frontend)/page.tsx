@@ -15,8 +15,7 @@ import { MotionDiv } from '@/components/frontend/MotionDiv';
 import { staggerContainer, fadeUp } from '@/lib/animations';
 import CategoryColumnFeed from '@/components/frontend/CategoryColumnFeed';
 import LowerSection from '@/components/frontend/LowerSection';
-import LoginButton from '@/components/frontend/LoginButton';
-import LogoutButton from '@/components/frontend/LogoutButton';
+import ProfileMenu from '@/components/frontend/ProfileMenu';
 
 export const dynamic = 'force-dynamic';
 
@@ -190,25 +189,8 @@ export default async function HomePage() {
             </div>
 
             {/* Right: Actions */}
-            <div className="flex items-center justify-end gap-2 sm:gap-3">
-              {session?.user ? (
-                <div className="flex items-center gap-2.5">
-                  {session.user.image ? (
-                    <img 
-                      src={session.user.image} 
-                      alt={session.user.name || 'User'} 
-                      className="w-8 h-8 rounded-full border border-gray-200"
-                    />
-                  ) : (
-                    <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-[10px] font-bold text-gray-700 border border-gray-200">
-                      {session.user.name ? session.user.name.slice(0, 2) : 'U'}
-                    </div>
-                  )}
-                  <LogoutButton />
-                </div>
-              ) : (
-                <LoginButton />
-              )}
+            <div className="flex items-center justify-end">
+              <ProfileMenu user={session?.user} />
             </div>
           </div>
 
