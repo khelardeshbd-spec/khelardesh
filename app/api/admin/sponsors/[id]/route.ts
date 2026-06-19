@@ -19,11 +19,11 @@ export async function PUT(
   try {
     const id = parseInt(params.id, 10)
     const body = await request.json() as any
-    const { label, title, subtitle, ctaText, ctaUrl, placement, isActive, displayOrder } = body
+    const { label, title, subtitle, ctaText, ctaUrl, placement, isActive, displayOrder, imageUrl } = body
 
     const { data: sponsor, error } = await supabaseAdmin
       .from('Sponsor')
-      .update({ label, title, subtitle, ctaText, ctaUrl, placement, isActive, displayOrder })
+      .update({ label, title, subtitle, ctaText, ctaUrl, placement, isActive, displayOrder, imageUrl })
       .eq('id', id)
       .select()
       .single()

@@ -27,21 +27,31 @@ export async function POST(request: Request) {
   const { authOptions } = require('@/lib/auth')
   const session = await getServerSession(authOptions)
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-
   try {
     const body = await request.json() as any
     const {
-      label = 'Sponsor', title, subtitle, ctaText,
+      label = 'Sponsor', title = '', subtitle = '', ctaText = '',
       ctaUrl, placement = 'inline', isActive = true, displayOrder = 0,
+      imageUrl = null
     } = body
 
-    if (!title || !subtitle || !ctaText || !ctaUrl) {
-      return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
+    if (!ctaUrl) {
+      return NextResponse.json({ error: 'Missing CTA URL' }, { status: 400 })
     }
 
     const { data: sponsor, error } = await supabaseAdmin
       .from('Sponsor')
-      .insert({ label, title, subtitle, ctaText, ctaUrl, placement, isActive, displayOrder })
+      .insert({ 
+        label, 
+        title, 
+        subtitle, 
+        ctaText, 
+        ctaUrl, 
+        placement, 
+        isActive, 
+        displayOrder,
+        imageUrl
+      })
       .select()
       .single()
 

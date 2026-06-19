@@ -12,6 +12,7 @@ interface Sponsor {
   placement: string;
   isActive: boolean;
   displayOrder: number;
+  imageUrl?: string | null;
 }
 
 /**
@@ -26,7 +27,7 @@ export default function AdminSponsorsPage() {
   const [error, setError] = useState('');
   const [editId, setEditId] = useState<number | null>(null);
 
-  const emptyForm = { label: 'Sponsor', title: '', subtitle: '', ctaText: '', ctaUrl: '', placement: 'inline', isActive: true, displayOrder: 0 };
+  const emptyForm = { label: 'Sponsor', title: '', subtitle: '', ctaText: '', ctaUrl: '', placement: 'inline', isActive: true, displayOrder: 0, imageUrl: '' };
   const [form, setForm] = useState(emptyForm);
 
   useEffect(() => { loadSponsors(); }, []);
@@ -40,7 +41,7 @@ export default function AdminSponsorsPage() {
 
   function startEdit(s: Sponsor) {
     setEditId(s.id);
-    setForm({ label: s.label, title: s.title, subtitle: s.subtitle, ctaText: s.ctaText, ctaUrl: s.ctaUrl, placement: s.placement, isActive: s.isActive, displayOrder: s.displayOrder });
+    setForm({ label: s.label, title: s.title || '', subtitle: s.subtitle || '', ctaText: s.ctaText || '', ctaUrl: s.ctaUrl, placement: s.placement, isActive: s.isActive, displayOrder: s.displayOrder, imageUrl: s.imageUrl || '' });
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
@@ -114,24 +115,30 @@ export default function AdminSponsorsPage() {
                 <select style={inputStyle} value={form.placement} onChange={(e) => setForm({ ...form, placement: e.target.value })}>
                   <option value="inline">Inline</option>
                   <option value="sidebar">Sidebar</option>
+                  <option value="header-left">Header Left (Desktop Header Banner)</option>
+                  <option value="header-right">Header Right (Desktop Header Banner)</option>
                 </select>
               </div>
             </div>
             <div>
+              <label style={labelStyle}>Image URL (Required for Header Banner ads)</label>
+              <input type="url" style={inputStyle} value={form.imageUrl} onChange={(e) => setForm({ ...form, imageUrl: e.target.value })} placeholder="https://example.com/banner-image.jpg" />
+            </div>
+            <div>
               <label style={labelStyle}>Title</label>
-              <input type="text" style={inputStyle} value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} required lang="bn" />
+              <input type="text" style={inputStyle} value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} lang="bn" />
             </div>
             <div>
               <label style={labelStyle}>Subtitle / Tagline</label>
-              <input type="text" style={inputStyle} value={form.subtitle} onChange={(e) => setForm({ ...form, subtitle: e.target.value })} required lang="bn" />
+              <input type="text" style={inputStyle} value={form.subtitle} onChange={(e) => setForm({ ...form, subtitle: e.target.value })} lang="bn" />
             </div>
             <div className="grid grid-cols-2 gap-3">
               <div>
                 <label style={labelStyle}>CTA Text</label>
-                <input type="text" style={inputStyle} value={form.ctaText} onChange={(e) => setForm({ ...form, ctaText: e.target.value })} required lang="bn" />
+                <input type="text" style={inputStyle} value={form.ctaText} onChange={(e) => setForm({ ...form, ctaText: e.target.value })} lang="bn" />
               </div>
               <div>
-                <label style={labelStyle}>CTA URL</label>
+                <label style={labelStyle}>CTA URL (Ad Target Link)</label>
                 <input type="url" style={inputStyle} value={form.ctaUrl} onChange={(e) => setForm({ ...form, ctaUrl: e.target.value })} required />
               </div>
             </div>
@@ -169,9 +176,10 @@ export default function AdminSponsorsPage() {
                 <thead>
                   <tr>
                     <th style={thStyle}>Label</th>
+                    <th style={thStyle}>Image Preview</th>
                     <th style={thStyle}>Title</th>
                     <th style={thStyle}>Placement</th>
-                    <th style={thStyle}>CTA</th>
+                    <th style={thStyle}>Link Target</th>
                     <th style={thStyle}>Order</th>
                     <th style={thStyle}>Active</th>
                     <th style={thStyle}>Actions</th>
@@ -181,9 +189,16 @@ export default function AdminSponsorsPage() {
                   {sponsors.map((s) => (
                     <tr key={s.id}>
                       <td style={tdStyle}>{s.label}</td>
-                      <td style={tdStyle} lang="bn">{s.title}</td>
+                      <td style={tdStyle}>
+                        {s.imageUrl ? (
+                          <img src={s.imageUrl} alt="Ad Preview" style={{ height: 28, maxWidth: 100, objectFit: 'contain', border: '1.5px solid var(--ink-border)', borderRadius: 2 }} />
+                        ) : (
+                          <span style={{ color: 'var(--ink-muted)' }}>—</span>
+                        )}
+                      </td>
+                      <td style={tdStyle} lang="bn">{s.title || <span style={{ color: 'var(--ink-muted)' }}>—</span>}</td>
                       <td style={{ ...tdStyle, color: 'var(--ink-muted)' }}>{s.placement}</td>
-                      <td style={{ ...tdStyle, color: 'var(--ink-muted)' }} lang="bn">{s.ctaText}</td>
+                      <td style={{ ...tdStyle, color: 'var(--ink-muted)', maxWidth: 150, textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' }}>{s.ctaUrl}</td>
                       <td style={{ ...tdStyle, color: 'var(--ink-muted)' }}>{s.displayOrder}</td>
                       <td style={tdStyle}>
                         <button

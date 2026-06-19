@@ -458,7 +458,7 @@ export default function DashboardClient({ initialArticles, totalScoresCount }: D
         <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
           <div>
             <h2 style={{ fontFamily: "var(--font-body)", fontWeight: 700, fontSize: 16, color: 'var(--ink)' }}>
-              ভিজিটর ইনসাইট / Visitors&apos; Insights
+              ভিজিটর ইনসাইট
             </h2>
             <p style={{ fontFamily: "'Hind Siliguri', sans-serif", fontSize: 11, color: 'var(--ink-muted)' }}>
               Reader traffic trend and dynamic session spikes

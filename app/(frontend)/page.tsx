@@ -155,6 +155,8 @@ export default async function HomePage() {
   const sponsors = sponsorsResult.status === 'fulfilled' ? (sponsorsResult.value.data ?? []) : [];
 
   const inlineSponsors = sponsors.filter((s) => s.placement === 'inline');
+  const leftSponsor = sponsors.find((s) => s.placement === 'header-left');
+  const rightSponsor = sponsors.find((s) => s.placement === 'header-right');
 
   return (
     <div style={{ backgroundColor: '#ffffff', color: '#121212', minHeight: '100vh', padding: '8px 0', fontFamily: 'var(--font-body)' }}>
@@ -166,12 +168,12 @@ export default async function HomePage() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 items-center border-b border-[#e2e2e2] pb-2 mb-1.5">
             {/* Left Sponsor Block */}
             <div className="hidden lg:flex lg:col-span-3 h-[75px] bg-[#fafafa] text-[#121212] p-2 flex-col justify-center items-center border border-[#e2e2e2] rounded-[3px]">
-              {sponsors[0] ? (
-                <a href={sponsors[0].linkUrl || '#'} target="_blank" rel="noopener noreferrer" className="w-full h-full flex flex-col justify-center items-center">
-                  {sponsors[0].logoUrl ? (
-                    <img src={sponsors[0].logoUrl} alt={sponsors[0].name} className="max-h-[40px] w-auto object-contain" />
+              {leftSponsor ? (
+                <a href={leftSponsor.ctaUrl || '#'} target="_blank" rel="noopener noreferrer" className="w-full h-full flex flex-col justify-center items-center">
+                  {leftSponsor.imageUrl ? (
+                    <img src={leftSponsor.imageUrl} alt={leftSponsor.label || "Left Sponsor"} className="max-h-[55px] w-auto object-contain" />
                   ) : (
-                    <span className="text-xs font-bold">{sponsors[0].name}</span>
+                    <span className="text-xs font-bold">{leftSponsor.title || leftSponsor.label}</span>
                   )}
                   <span className="text-[8px] text-gray-400 mt-1 uppercase font-sans">Sponsor</span>
                 </a>
@@ -190,12 +192,12 @@ export default async function HomePage() {
 
             {/* Right Sponsor Block */}
             <div className="hidden lg:flex lg:col-span-3 h-[75px] bg-[#fafafa] text-[#121212] p-2 flex-col justify-center items-center border border-[#e2e2e2] rounded-[3px]">
-              {sponsors[1] ? (
-                <a href={sponsors[1].linkUrl || '#'} target="_blank" rel="noopener noreferrer" className="w-full h-full flex flex-col justify-center items-center">
-                  {sponsors[1].logoUrl ? (
-                    <img src={sponsors[1].logoUrl} alt={sponsors[1].name} className="max-h-[40px] w-auto object-contain" />
+              {rightSponsor ? (
+                <a href={rightSponsor.ctaUrl || '#'} target="_blank" rel="noopener noreferrer" className="w-full h-full flex flex-col justify-center items-center">
+                  {rightSponsor.imageUrl ? (
+                    <img src={rightSponsor.imageUrl} alt={rightSponsor.label || "Right Sponsor"} className="max-h-[55px] w-auto object-contain" />
                   ) : (
-                    <span className="text-xs font-bold">{sponsors[1].name}</span>
+                    <span className="text-xs font-bold">{rightSponsor.title || rightSponsor.label}</span>
                   )}
                   <span className="text-[8px] text-gray-400 mt-1 uppercase font-sans">Sponsor</span>
                 </a>
