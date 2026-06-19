@@ -3,12 +3,13 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import AdminLogout from './AdminLogout';
-import { LayoutDashboard, Pencil, Trophy, Megaphone, Sidebar, ExternalLink } from 'lucide-react';
+import { LayoutDashboard, Pencil, Trophy, Megaphone, Sidebar, ExternalLink, Users } from 'lucide-react';
 
 const NAV = [
   { href: '/admin/dashboard', label: 'Dashboard', icon: <LayoutDashboard size={15} /> },
   { href: '/admin/articles', label: 'Articles', icon: <Pencil size={15} /> },
   { href: '/admin/sponsors', label: 'Sponsors', icon: <Megaphone size={15} /> },
+  { href: '/admin/composers', label: 'Composers', icon: <Users size={15} /> },
 ];
 
 export default function AdminShell({ children }: { children: React.ReactNode }) {

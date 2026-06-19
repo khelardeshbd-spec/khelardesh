@@ -52,14 +52,6 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
     }
 
-    // Auto-unpin existing lead if this article is set as lead
-    if (isLead) {
-      await supabaseAdmin
-        .from('Article')
-        .update({ isLead: false })
-        .eq('isLead', true)
-    }
-
     // Generate unique slug
     const baseSlug = slugify(headline || headlineBn || 'article')
     const { data: existing } = await supabaseAdmin

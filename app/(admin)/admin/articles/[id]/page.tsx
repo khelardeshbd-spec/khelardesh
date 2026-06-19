@@ -42,10 +42,20 @@ export default function EditArticlePage({ params }: { params: { id: string } }) 
   const [body, setBody] = useState('');
   const [status, setStatus] = useState('published');
 
+  const [composers, setComposers] = useState<{ id: number; name: string; photoUrl?: string | null }[]>([]);
+
   const [mediaPreview, setMediaPreview] = useState<string | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
 
   const sportLabel = SPORTS.find(s => s.value === sport)?.label || 'খেলাধুলা';
+
+  useEffect(() => {
+    fetch('/api/admin/composers')
+      .then(res => res.json())
+      .then(data => {
+        setComposers(data.composers ?? []);
+      });
+  }, []);
 
   useEffect(() => {
     fetch(`/api/admin/articles/${params.id}`)
@@ -176,32 +186,44 @@ export default function EditArticlePage({ params }: { params: { id: string } }) 
         }}
         className="flex items-center justify-between gap-4 flex-wrap"
       >
-        <div className="flex items-center gap-3">
-          <Link href="/admin/articles" className="admin-btn-secondary flex items-center gap-1.5" style={{ padding: '6px 12px' }}>
-            <ArrowLeft size={14} />
-            <span>Articles</span>
-          </Link>
-          
-          <span style={{ fontSize: '12px', fontWeight: 600, color: 'var(--ink-muted)', fontFamily: "'Hind Siliguri', sans-serif" }} className="ml-2">
-            Section:
-          </span>
-          <select 
-            style={{ 
-              backgroundColor: 'var(--bg-page)', 
-              color: 'var(--ink)', 
-              border: '1px solid var(--ink-border)',
-              padding: '5px 10px',
-              fontSize: '12px',
-              borderRadius: '4px',
-              fontFamily: "'Hind Siliguri', sans-serif",
-            }}
-            value={sport}
-            onChange={(e) => setSport(e.target.value)}
-          >
-            {SPORTS.map((s) => (
-              <option key={s.value} value={s.value}>{s.label}</option>
-            ))}
-          </select>
+        <div className="flex items-center gap-4 flex-wrap">
+          <div className="flex items-center gap-3">
+            <Link href="/admin/articles" className="admin-btn-secondary flex items-center gap-1.5" style={{ padding: '6px 12px' }}>
+              <ArrowLeft size={14} />
+              <span>Articles</span>
+            </Link>
+            
+            <span style={{ fontSize: '12px', fontWeight: 600, color: 'var(--ink-muted)', fontFamily: "'Hind Siliguri', sans-serif" }} className="ml-2">
+              Section:
+            </span>
+            <select 
+              style={{ 
+                backgroundColor: 'var(--bg-page)', 
+                color: 'var(--ink)', 
+                border: '1px solid var(--ink-border)',
+                padding: '5px 10px',
+                fontSize: '12px',
+                borderRadius: '4px',
+                fontFamily: "'Hind Siliguri', sans-serif",
+              }}
+              value={sport}
+              onChange={(e) => setSport(e.target.value)}
+            >
+              {SPORTS.map((s) => (
+                <option key={s.value} value={s.value}>{s.label}</option>
+              ))}
+            </select>
+          </div>
+
+          <label style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12px', fontWeight: 600, color: 'var(--ink)', cursor: 'pointer', fontFamily: "'Hind Siliguri', sans-serif" }}>
+            <input 
+              type="checkbox" 
+              checked={isLead} 
+              onChange={(e) => setIsLead(e.target.checked)}
+              style={{ width: '15px', height: '15px', cursor: 'pointer' }}
+            />
+            <span>Hero News (হিরো নিউজ)</span>
+          </label>
         </div>
 
         <div className="flex items-center gap-2">
@@ -455,32 +477,45 @@ export default function EditArticlePage({ params }: { params: { id: string } }) 
             <div 
               className="w-9 h-9 rounded-full flex items-center justify-center border overflow-hidden text-xs font-bold bg-[var(--bg-surface)] border-[var(--ink-border)] text-[var(--ink)]"
             >
-              {byline ? byline.slice(0, 2).toUpperCase() : 'KD'}
+              {(() => {
+                const matched = composers.find(c => c.name === byline);
+                return matched?.photoUrl ? (
+                  <img src={matched.photoUrl} alt={byline} className="w-full h-full object-cover" />
+                ) : (
+                  byline ? byline.slice(0, 2).toUpperCase() : 'KD'
+                );
+              })()}
             </div>
             
-            {/* Byline Input */}
+            {/* Byline Dropdown Select */}
             <div className="flex flex-col">
               <div className="flex items-center gap-1">
                 <span className="text-xs text-[var(--ink-muted)]">By:</span>
-                <input
-                  type="text"
-                  placeholder="Staff Reporter"
+                <select
                   style={{
-                    fontFamily: "'Abu JM Akkas', 'Hind Siliguri', sans-serif",
+                    fontFamily: "'Hind Siliguri', sans-serif",
                     fontSize: '12px',
                     fontWeight: 'bold',
                     color: 'var(--ink)',
                     border: 'none',
                     borderBottom: '1px dashed var(--ink-border)',
                     background: 'transparent',
-                    width: '150px',
                     padding: '2px 0',
                     outline: 'none',
+                    cursor: 'pointer'
                   }}
-                  className="focus:border-[var(--ink)] placeholder:text-[var(--ink-muted)]"
                   value={byline}
                   onChange={(e) => setByline(e.target.value)}
-                />
+                >
+                  <option value="Staff Reporter">Staff Reporter</option>
+                  <option value="খেলারদেশ প্রতিনিধি">খেলারদেশ প্রতিনিধি</option>
+                  {composers.map((c) => (
+                    <option key={c.id} value={c.name}>{c.name}</option>
+                  ))}
+                  {byline && !['Staff Reporter', 'খেলারদেশ প্রতিনিধি', ...composers.map(c => c.name)].includes(byline) && (
+                    <option value={byline}>{byline}</option>
+                  )}
+                </select>
               </div>
               <span className="text-[10px] text-[var(--ink-muted)] mt-1">আজ · এইমাত্র</span>
             </div>

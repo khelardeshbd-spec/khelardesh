@@ -53,15 +53,6 @@ export async function PUT(
       byline, isLead,
     } = body
 
-    // Auto-unpin existing lead
-    if (isLead) {
-      await supabaseAdmin
-        .from('Article')
-        .update({ isLead: false })
-        .eq('isLead', true)
-        .neq('id', id)
-    }
-
     const { data: article, error } = await supabaseAdmin
       .from('Article')
       .update({
