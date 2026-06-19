@@ -40,7 +40,15 @@ export default async function HomePage() {
   const session = await getServerSession(authOptions);
 
   // Fetch data server-side via Supabase
-  const [leadResult, articlesResult, scoresResult, sponsorsResult] = await Promise.allSettled([
+  const [
+    leadResult,
+    footballResult,
+    cricketResult,
+    specialResult,
+    featureResult,
+    scoresResult,
+    sponsorsResult
+  ] = await Promise.allSettled([
     supabaseAdmin
       .from('Article')
       .select('*')
@@ -50,9 +58,27 @@ export default async function HomePage() {
     supabaseAdmin
       .from('Article')
       .select('id, slug, headline, headlineBn, deck, sport, mediaType, mediaUrl, byline, publishedAt')
-      .eq('isLead', false)
+      .in('sport', ['football', 'bd-football', 'international-football', 'club-football'])
       .order('publishedAt', { ascending: false })
-      .limit(20),
+      .limit(10),
+    supabaseAdmin
+      .from('Article')
+      .select('id, slug, headline, headlineBn, deck, sport, mediaType, mediaUrl, byline, publishedAt')
+      .in('sport', ['cricket', 'bd-cricket', 'international-cricket', 'local-cricket'])
+      .order('publishedAt', { ascending: false })
+      .limit(10),
+    supabaseAdmin
+      .from('Article')
+      .select('id, slug, headline, headlineBn, deck, sport, mediaType, mediaUrl, byline, publishedAt')
+      .eq('sport', 'special')
+      .order('publishedAt', { ascending: false })
+      .limit(10),
+    supabaseAdmin
+      .from('Article')
+      .select('id, slug, headline, headlineBn, deck, sport, mediaType, mediaUrl, byline, publishedAt')
+      .eq('sport', 'feature')
+      .order('publishedAt', { ascending: false })
+      .limit(10),
     supabaseAdmin
       .from('ScoreCard')
       .select('*')
@@ -89,7 +115,10 @@ export default async function HomePage() {
       mediaUrl: 'https://images.unsplash.com/photo-1518605368461-1e1296cb3b5e?q=80&w=2940&auto=format&fit=crop'
     });
   }
-  const articles = articlesResult.status === 'fulfilled' ? (articlesResult.value.data ?? []) : [];
+  const footballArticles = footballResult.status === 'fulfilled' ? (footballResult.value.data ?? []) : [];
+  const cricketArticles = cricketResult.status === 'fulfilled' ? (cricketResult.value.data ?? []) : [];
+  const specialArticles = specialResult.status === 'fulfilled' ? (specialResult.value.data ?? []) : [];
+  const featureArticles = featureResult.status === 'fulfilled' ? (featureResult.value.data ?? []) : [];
   const scores = scoresResult.status === 'fulfilled' ? (scoresResult.value.data ?? []) : [];
   const sponsors = sponsorsResult.status === 'fulfilled' ? (sponsorsResult.value.data ?? []) : [];
 
@@ -274,7 +303,12 @@ export default async function HomePage() {
         </div>
 
         {/* LOWER SECTION */}
-        <LowerSection articles={articles} />
+        <LowerSection
+          footballArticles={footballArticles}
+          cricketArticles={cricketArticles}
+          specialArticles={specialArticles}
+          featureArticles={featureArticles}
+        />
 
       </div>
     </div>

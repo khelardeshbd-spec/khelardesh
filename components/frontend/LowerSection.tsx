@@ -1,6 +1,8 @@
+'use client';
+
+import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import CategoryColumnFeed from './CategoryColumnFeed';
 
 interface Article {
   id: number;
@@ -16,7 +18,10 @@ interface Article {
 }
 
 interface LowerSectionProps {
-  articles: Article[];
+  footballArticles: Article[];
+  cricketArticles: Article[];
+  specialArticles: Article[];
+  featureArticles: Article[];
 }
 
 function sportLabel(sport?: string | null) {
@@ -46,7 +51,6 @@ function sportLabel(sport?: string | null) {
   return map[sport.toLowerCase()] ?? sport;
 }
 
-/* ─── Kicker label ─────────────────────────────── */
 function Kicker({ sport }: { sport?: string | null }) {
   return (
     <span style={{
@@ -64,11 +68,10 @@ function Kicker({ sport }: { sport?: string | null }) {
   );
 }
 
-/* ─── CardLead: Large Featured Article ─── */
 function CardLead({ article }: { article: Article }) {
   const headline = article.headlineBn || article.headline;
   return (
-    <div style={{ gridArea: 'lead', display: 'flex', flexDirection: 'column' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', width: '100%', maxWidth: '800px', margin: '0 auto 24px' }}>
       <Kicker sport={article.sport} />
       <Link href={`/article/${article.slug}`} style={{ textDecoration: 'none', display: 'block', marginBottom: 12 }}>
         {article.mediaUrl && (
@@ -77,6 +80,7 @@ function CardLead({ article }: { article: Article }) {
               src={article.mediaUrl}
               alt={headline || 'Image'}
               fill
+              sizes="(max-width: 768px) 100vw, 800px"
               style={{ objectFit: 'cover' }}
             />
           </div>
@@ -113,237 +117,153 @@ function CardLead({ article }: { article: Article }) {
   );
 }
 
-/* ─── CardStandard: Medium Article ─── */
-function CardStandard({ article, area }: { article: Article, area: string }) {
-  const headline = article.headlineBn || article.headline;
+function CategoryDropdown({ articles, hasPoster }: { articles: Article[], hasPoster: boolean }) {
+  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  const displayArticles = hasPoster ? articles.slice(1) : articles;
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  if (displayArticles.length === 0) return null;
+
   return (
-    <div style={{ gridArea: area, display: 'flex', flexDirection: 'column' }}>
-      <Kicker sport={article.sport} />
-      <Link href={`/article/${article.slug}`} style={{ textDecoration: 'none', display: 'block', marginBottom: 12 }}>
-        {article.mediaUrl && (
-          <div style={{ width: '100%', aspectRatio: '16/9', overflow: 'hidden', border: '1px solid var(--ink-border)', marginBottom: 12, position: 'relative' }}>
-            <Image
-              src={article.mediaUrl}
-              alt={headline || 'Image'}
-              fill
-              style={{ objectFit: 'cover' }}
-            />
-          </div>
-        )}
-        <h3 style={{
-          fontFamily: 'var(--font-headline)',
-          fontSize: '1.2rem',
-          fontWeight: 700,
-          lineHeight: 1.25,
+    <div ref={dropdownRef} style={{ position: 'relative', display: 'inline-block' }}>
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        style={{
+          background: 'none',
+          border: '1px solid var(--ink-border)',
+          borderRadius: '4px',
+          padding: '6px 12px',
+          fontFamily: 'var(--font-body)',
+          fontSize: '12px',
+          fontWeight: 600,
           color: 'var(--ink)',
+          cursor: 'pointer',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '6px',
+          backgroundColor: '#fafafa',
+          transition: 'all 0.2s ease',
+        }}
+      >
+        অন্যান্য খবর <span style={{ fontSize: '9px', transition: 'transform 0.2s', transform: isOpen ? 'rotate(180deg)' : 'none', display: 'inline-block' }}>▼</span>
+      </button>
+
+      {isOpen && (
+        <div style={{
+          position: 'absolute',
+          right: 0,
+          top: 'calc(100% + 4px)',
+          backgroundColor: '#ffffff',
+          border: '1px solid var(--ink-border)',
+          borderRadius: '6px',
+          boxShadow: '0 4px 12px rgba(0, 0, 0, 0.08)',
+          width: '280px',
+          maxHeight: '350px',
+          overflowY: 'auto',
+          zIndex: 100,
+          padding: '8px 0',
         }}>
-          {headline}
-        </h3>
-      </Link>
-      <div style={{ marginTop: 'auto' }}>
-        <span style={{ fontFamily: 'var(--font-body)', fontSize: 11, color: 'var(--ink-muted)', fontStyle: 'italic' }}>
-          {article.byline || 'স্টাফ রিপোর্টার'}
-        </span>
-      </div>
+          {displayArticles.map((art) => (
+            <Link
+              key={art.id}
+              href={`/article/${art.slug}`}
+              onClick={() => setIsOpen(false)}
+              style={{
+                display: 'block',
+                padding: '10px 16px',
+                textDecoration: 'none',
+                color: 'var(--ink)',
+                borderBottom: '1px solid #f5f5f5',
+                fontSize: '13px',
+                lineHeight: '1.4',
+                fontFamily: 'var(--font-body)',
+                fontWeight: 500,
+              }}
+            >
+              {art.headlineBn || art.headline}
+            </Link>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
 
-/* ─── CardList: Sidebar Feed ─── */
-function CardList({ articles }: { articles: Article[] }) {
-  return (
-    <div style={{
-      display: 'flex',
-      flexDirection: 'column',
-      gap: 16,
-    }}>
-      <span style={{
-        fontFamily: 'var(--font-body)',
-        fontSize: 10,
-        fontWeight: 700,
-        letterSpacing: '0.15em',
-        textTransform: 'uppercase',
-        color: 'var(--ink-muted)',
-        display: 'block',
-        marginBottom: 8,
-      }}>
-        অন্যান্য
-      </span>
-      {articles.map((article, i) => {
-        const headline = article.headlineBn || article.headline;
-        return (
-          <div
-            key={article.id}
-            style={{
-              paddingBottom: 16,
-              borderBottom: i < articles.length - 1 ? '1px solid var(--ink-border)' : 'none',
-              display: 'flex',
-              alignItems: 'flex-start',
-              gap: 12,
-            }}
-          >
-            {article.mediaUrl && (
-              <div style={{ width: 64, height: 64, flexShrink: 0, overflow: 'hidden', border: '1px solid var(--ink-border)', position: 'relative' }}>
-                <Image src={article.mediaUrl} alt={headline || 'Image'} fill style={{ objectFit: 'cover' }} />
-              </div>
-            )}
-            <div style={{ flex: 1, minWidth: 0 }}>
-              <Kicker sport={article.sport} />
-              <Link href={`/article/${article.slug}`} style={{ textDecoration: 'none' }}>
-                <h4 style={{
-                  fontFamily: 'var(--font-headline)',
-                  fontSize: '1rem',
-                  fontWeight: 700,
-                  lineHeight: 1.25,
-                  color: 'var(--ink)',
-                }}>
-                  {headline}
-                </h4>
-              </Link>
-            </div>
-          </div>
-        );
-      })}
-    </div>
-  );
-}
+function CategorySection({ title, articles }: { title: string, articles: Article[] }) {
+  if (!articles || articles.length === 0) return null;
 
-/* ─── Main Component ──────────────────────────── */
-export default function LowerSection({ articles }: LowerSectionProps) {
-  const a = articles;
-  if (!a || a.length === 0) return null;
-
-  // Distribute articles across the 3-column grid
-  const lead = a[0];
-  const sub1 = a[1];
-  const sub2 = a[2];
-  // the rest goes to list
-  const list = a.slice(3, 8);
+  const twoDaysAgo = Date.now() - 2 * 24 * 60 * 60 * 1000;
+  const latestArticle = articles[0];
+  const hasPoster = latestArticle && latestArticle.publishedAt 
+    ? new Date(latestArticle.publishedAt).getTime() >= twoDaysAgo 
+    : false;
 
   return (
-    <section aria-label="সংবাদ বিভাগ" style={{ marginBottom: 32 }}>
-      {/* ─── Responsive Grid Styles ─── */}
-      <style>{`
-        .ls-grid-clean {
-          display: grid;
-          grid-template-columns: repeat(3, 1fr);
-          grid-template-areas:
-            "lead lead strip"
-            "sub1 sub2 strip";
-          gap: 24px;
-        }
-        .ls-strip-container {
-          grid-area: strip;
-          border-left: 1px solid var(--ink-border);
-          padding-left: 24px;
-        }
-        @media (max-width: 1023px) {
-          .ls-grid-clean {
-            grid-template-columns: 1fr 1fr;
-            grid-template-areas:
-              "lead lead"
-              "sub1 sub2"
-              "strip strip";
-          }
-          .ls-strip-container {
-            border-left: none;
-            padding-left: 0;
-            border-top: 1px solid var(--ink-border);
-            padding-top: 24px;
-          }
-        }
-        @media (max-width: 639px) {
-          .ls-grid-clean {
-            grid-template-columns: 1fr;
-            grid-template-areas:
-              "lead"
-              "sub1"
-              "sub2"
-              "strip";
-          }
-        }
-      `}</style>
-
-      {/* ─── Section Header ─── */}
+    <div style={{ marginBottom: 40 }}>
+      {/* Category Header */}
       <div style={{
         display: 'flex',
+        justifyContent: 'space-between',
         alignItems: 'center',
-        gap: 8,
-        marginBottom: 24,
-        borderTop: '1px solid var(--ink-border)',
-        paddingTop: 8,
+        borderBottom: '2px solid #121212',
+        paddingBottom: 8,
+        marginBottom: 20
       }}>
-        <span style={{
-          fontFamily: 'var(--font-body)',
-          fontSize: 9,
-          fontWeight: 700,
-          letterSpacing: '0.2em',
-          textTransform: 'uppercase',
-          color: 'var(--ink)',
-          paddingRight: 8,
-          borderRight: '1px solid var(--ink-border)',
+        <h2 style={{
+          fontFamily: 'var(--font-headline)',
+          fontSize: '1.5rem',
+          fontWeight: 800,
+          color: '#121212',
+          margin: 0
         }}>
-          সর্বশেষ
-        </span>
-        <span style={{ flex: 1, height: 1, backgroundColor: 'var(--ink-border)' }} />
+          {title}
+        </h2>
+        <CategoryDropdown articles={articles} hasPoster={hasPoster} />
       </div>
 
-      {/* ─── Clean 3-Column Grid ─── */}
-      <div className="ls-grid-clean">
-        {lead && <CardLead article={lead} />}
-        {sub1 && <CardStandard article={sub1} area="sub1" />}
-        {sub2 && <CardStandard article={sub2} area="sub2" />}
-        {list.length > 0 && (
-          <div className="ls-strip-container">
-            <CardList articles={list} />
-          </div>
-        )}
-      </div>
+      {/* Big Poster layout if within 2 days */}
+      {hasPoster ? (
+        <CardLead article={latestArticle} />
+      ) : (
+        <p style={{
+          fontFamily: 'var(--font-body)',
+          fontSize: 13,
+          color: 'var(--ink-muted)',
+          fontStyle: 'italic',
+          textAlign: 'center',
+          padding: '20px 0'
+        }}>
+          গত দুই দিনের কোনো খবর নেই। অন্যান্য খবরের জন্য মেনুটি দেখুন।
+        </p>
+      )}
+    </div>
+  );
+}
 
-      {/* ─── More Stories Below ─── */}
-      <div style={{ marginTop: 32, borderTop: '1px solid var(--ink-border)', paddingTop: 8 }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 20 }}>
-          <span style={{
-            fontFamily: 'var(--font-body)',
-            fontSize: 9,
-            fontWeight: 700,
-            letterSpacing: '0.2em',
-            textTransform: 'uppercase',
-            color: 'var(--ink)',
-            paddingRight: 8,
-            borderRight: '1px solid var(--ink-border)',
-          }}>
-            আরও পড়ুন
-          </span>
-          <span style={{ flex: 1, height: 1, backgroundColor: 'var(--ink-border)' }} />
-        </div>
-
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '12px' }} className="more-stories-grid">
-          <style>{`
-            @media (max-width: 767px) {
-              .more-stories-grid { grid-template-columns: 1fr !important; }
-            }
-          `}</style>
-          <div style={{ borderRight: '1px solid var(--ink-border)', paddingRight: 20 }}>
-            <span style={{ fontFamily: 'var(--font-body)', fontSize: 9, fontWeight: 700, letterSpacing: '0.15em', textTransform: 'uppercase', color: 'var(--ink-muted)', display: 'block', marginBottom: 12 }}>
-              ইন্টারভিউ
-            </span>
-            <CategoryColumnFeed category="interview" limit={3} skipIds={[a[0]?.id, a[1]?.id, a[2]?.id, a[3]?.id, a[4]?.id, a[5]?.id, a[6]?.id, a[7]?.id].filter(Boolean) as number[]} />
-          </div>
-          <div style={{ borderRight: '1px solid var(--ink-border)', paddingRight: 20, paddingLeft: 4 }}>
-            <span style={{ fontFamily: 'var(--font-body)', fontSize: 9, fontWeight: 700, letterSpacing: '0.15em', textTransform: 'uppercase', color: 'var(--ink-muted)', display: 'block', marginBottom: 12 }}>
-              ফিচার
-            </span>
-            <CategoryColumnFeed category="feature" limit={3} skipIds={[a[0]?.id, a[1]?.id, a[2]?.id, a[3]?.id, a[4]?.id, a[5]?.id, a[6]?.id, a[7]?.id].filter(Boolean) as number[]} />
-          </div>
-          <div style={{ paddingLeft: 4 }}>
-            <span style={{ fontFamily: 'var(--font-body)', fontSize: 9, fontWeight: 700, letterSpacing: '0.15em', textTransform: 'uppercase', color: 'var(--ink-muted)', display: 'block', marginBottom: 12 }}>
-              খেলার দেশ বিশেষ
-            </span>
-            <CategoryColumnFeed category="special" limit={3} skipIds={[a[0]?.id, a[1]?.id, a[2]?.id, a[3]?.id, a[4]?.id, a[5]?.id, a[6]?.id, a[7]?.id].filter(Boolean) as number[]} />
-          </div>
-        </div>
-      </div>
+export default function LowerSection({
+  footballArticles,
+  cricketArticles,
+  specialArticles,
+  featureArticles,
+}: LowerSectionProps) {
+  return (
+    <section aria-label="সংবাদ বিভাগ" style={{ marginBottom: 32, marginTop: 24 }}>
+      {/* Order Constraint: Football -> Cricket -> Khelardesh Bises -> Features */}
+      <CategorySection title="ফুটবল" articles={footballArticles} />
+      <CategorySection title="ক্রিকেট" articles={cricketArticles} />
+      <CategorySection title="খেলার দেশ বিশেষ" articles={specialArticles} />
+      <CategorySection title="ফিচার" articles={featureArticles} />
     </section>
   );
 }

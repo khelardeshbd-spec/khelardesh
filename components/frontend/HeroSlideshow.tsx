@@ -25,6 +25,8 @@ export default function HeroSlideshow({ articles }: HeroSlideshowProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [touchStart, setTouchStart] = useState<number | null>(null);
   const [touchEnd, setTouchEnd] = useState<number | null>(null);
+  const [touchStartY, setTouchStartY] = useState<number | null>(null);
+  const [touchEndY, setTouchEndY] = useState<number | null>(null);
   const [isPaused, setIsPaused] = useState(false);
   const autoplayTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -50,23 +52,18 @@ export default function HeroSlideshow({ articles }: HeroSlideshowProps) {
 
   const onTouchStartAction = (e: React.TouchEvent) => {
     if (typeof window !== 'undefined' && window.innerWidth >= 768) return;
-    if (e.targetTouches.length === 2) {
-      setIsPaused(true);
-      if (autoplayTimeoutRef.current) {
-        clearTimeout(autoplayTimeoutRef.current);
-      }
-      setTouchEnd(null);
-      const avgClientX = (e.targetTouches[0].clientX + e.targetTouches[1].clientX) / 2;
-      setTouchStart(avgClientX);
-    }
+    const touch = e.touches[0];
+    setTouchStart(touch.clientX);
+    setTouchStartY(touch.clientY);
+    setTouchEnd(null);
+    setTouchEndY(null);
   };
 
   const onTouchMoveAction = (e: React.TouchEvent) => {
     if (typeof window !== 'undefined' && window.innerWidth >= 768) return;
-    if (e.targetTouches.length === 2 && touchStart !== null) {
-      const avgClientX = (e.targetTouches[0].clientX + e.targetTouches[1].clientX) / 2;
-      setTouchEnd(avgClientX);
-    }
+    const touch = e.touches[0];
+    setTouchEnd(touch.clientX);
+    setTouchEndY(touch.clientY);
   };
 
   const handleManualNavigation = (newIndex: number) => {
@@ -81,19 +78,27 @@ export default function HeroSlideshow({ articles }: HeroSlideshowProps) {
   };
 
   const onTouchEndAction = () => {
-    if (touchStart === null || touchEnd === null) return;
-    const distance = touchStart - touchEnd;
+    if (touchStart === null || touchEnd === null || touchStartY === null || touchEndY === null) return;
+    const distanceX = touchStart - touchEnd;
+    const distanceY = touchStartY - touchEndY;
     let nextIdx = currentIndex;
-    if (distance > minSwipeDistance) {
-      nextIdx = (currentIndex + 1) % articles.length;
-    } else if (distance < -minSwipeDistance) {
-      nextIdx = (currentIndex - 1 + articles.length) % articles.length;
+
+    if (Math.abs(distanceX) > minSwipeDistance && Math.abs(distanceX) > Math.abs(distanceY)) {
+      if (distanceX > 0) {
+        nextIdx = (currentIndex + 1) % articles.length;
+      } else {
+        nextIdx = (currentIndex - 1 + articles.length) % articles.length;
+      }
     }
     
     setTouchStart(null);
     setTouchEnd(null);
+    setTouchStartY(null);
+    setTouchEndY(null);
 
-    handleManualNavigation(nextIdx);
+    if (nextIdx !== currentIndex) {
+      handleManualNavigation(nextIdx);
+    }
   };
 
   return (
@@ -189,7 +194,7 @@ export default function HeroSlideshow({ articles }: HeroSlideshowProps) {
                   e.preventDefault();
                   handleManualNavigation((currentIndex - 1 + articles.length) % articles.length);
                 }}
-                className="text-gray-400 hover:text-gray-700 transition-colors p-1 flex items-center justify-center cursor-pointer"
+                className="hidden md:flex text-gray-400 hover:text-gray-700 transition-colors p-1 items-center justify-center cursor-pointer"
                 aria-label="Previous slide"
               >
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -213,7 +218,7 @@ export default function HeroSlideshow({ articles }: HeroSlideshowProps) {
                   e.preventDefault();
                   handleManualNavigation((currentIndex + 1) % articles.length);
                 }}
-                className="text-gray-400 hover:text-gray-700 transition-colors p-1 flex items-center justify-center cursor-pointer"
+                className="hidden md:flex text-gray-400 hover:text-gray-700 transition-colors p-1 items-center justify-center cursor-pointer"
                 aria-label="Next slide"
               >
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
