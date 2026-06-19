@@ -55,22 +55,22 @@ export default function EditArticlePage({ params }: { params: { id: string } }) 
   const fileRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    fetch(`/api/admin/articles`)
+    fetch(`/api/admin/articles/${params.id}`)
       .then((r) => r.json())
       .then((data: any) => {
-        const found = data.articles?.find((a: Article) => a.id === parseInt(params.id, 10));
+        const found = data.article;
         if (found) {
-          setHeadline(found.headline);
+          setHeadline(found.headline || '');
           setHeadlineBn(found.headlineBn ?? '');
-          setDeck(found.deck);
-          setKicker(found.kicker);
-          setByline(found.byline);
-          setSport(found.sport);
-          setMediaType(found.mediaType as 'photo' | 'video');
-          setMediaUrl(found.mediaUrl);
+          setDeck(found.deck || '');
+          setKicker(found.kicker || '');
+          setByline(found.byline || '');
+          setSport(found.sport || 'football');
+          setMediaType((found.mediaType as 'photo' | 'video') || 'photo');
+          setMediaUrl(found.mediaUrl || '');
           setMediaCaption(found.mediaCaption ?? '');
-          setIsLead(found.isLead);
-          setBody(found.body);
+          setIsLead(!!found.isLead);
+          setBody(found.body || '');
         }
         setLoading(false);
       });
@@ -78,7 +78,7 @@ export default function EditArticlePage({ params }: { params: { id: string } }) 
 
   const displayHeadline = headlineBn || headline;
   const isBn = !!headlineBn;
-  const paragraphs = body.split(/\n\n+/).map(p => p.trim()).filter(Boolean);
+  const paragraphs = (body || '').split(/\n\n+/).map(p => p.trim()).filter(Boolean);
 
   async function handleUpload(file: File): Promise<string> {
     const fd = new FormData();

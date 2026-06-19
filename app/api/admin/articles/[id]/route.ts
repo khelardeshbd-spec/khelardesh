@@ -3,6 +3,34 @@ export const dynamic = 'force-dynamic'
 import { NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
 
+export async function GET(
+  _request: Request,
+  { params }: { params: { id: string } }
+) {
+  const { getServerSession } = require('next-auth')
+  const { authOptions } = require('@/lib/auth')
+  const session = await getServerSession(authOptions)
+  if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+
+  try {
+    const id = parseInt(params.id, 10)
+    const { data: article, error } = await supabaseAdmin
+      .from('Article')
+      .select('*')
+      .eq('id', id)
+      .single()
+
+    if (error || !article) {
+      return NextResponse.json({ error: 'Article not found' }, { status: 404 })
+    }
+
+    return NextResponse.json({ article })
+  } catch (error) {
+    console.error('[GET /api/admin/articles/[id]]', error)
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+  }
+}
+
 /**
  * PUT /api/admin/articles/[id] — update article
  * DELETE /api/admin/articles/[id] — delete article
