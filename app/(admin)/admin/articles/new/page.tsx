@@ -66,7 +66,7 @@ export default function NewArticlePage() {
     return data.url as string;
   }
 
-  async function handlePublish() {
+  async function handlePublish(status: 'published' | 'draft' = 'published') {
     if (!headlineBn && !headline) {
       setError('দয়া করে অন্তত একটি শিরোনাম প্রদান করুন।');
       return;
@@ -100,6 +100,7 @@ export default function NewArticlePage() {
         mediaUrl: finalMediaUrl || '/media/placeholder-football.jpg',
         mediaCaption: mediaCaption || null,
         isLead,
+        status,
       };
 
       const res = await fetch('/api/admin/articles', {
@@ -173,7 +174,15 @@ export default function NewArticlePage() {
             </span>
           )}
           <button 
-            onClick={handlePublish} 
+            onClick={() => handlePublish('draft')} 
+            className="admin-btn-secondary flex items-center gap-1.5" 
+            style={{ padding: '8px 18px', border: '1.5px solid var(--ink-border)' }}
+            disabled={loading}
+          >
+            <span>{loading ? 'Saving...' : 'Save as Draft'}</span>
+          </button>
+          <button 
+            onClick={() => handlePublish('published')} 
             className="admin-btn-primary flex items-center gap-1.5" 
             style={{ padding: '8px 18px', backgroundColor: 'var(--ink)', color: 'var(--bg-page)' }}
             disabled={loading}
