@@ -163,18 +163,7 @@ export default function NewArticlePage() {
             ))}
           </select>
 
-          {/* Lead Switch */}
-          <label className="flex items-center gap-2 cursor-pointer ml-3 bg-[var(--ink-ghost)] px-2.5 py-1 rounded">
-            <input 
-              type="checkbox" 
-              checked={isLead} 
-              onChange={(e) => setIsLead(e.target.checked)}
-              className="accent-[var(--ink)]"
-            />
-            <span style={{ fontSize: '11px', fontWeight: 600, fontFamily: "'Hind Siliguri', sans-serif", color: 'var(--ink)' }}>
-              Pin as Lead (প্রধান সংবাদ)
-            </span>
-          </label>
+
         </div>
 
         <div className="flex items-center gap-2">
@@ -219,7 +208,7 @@ export default function NewArticlePage() {
         {/* Article Headline Input (Bengali / Primary) */}
         <div className="mb-4">
           <textarea
-            placeholder="প্রধান বাংলা শিরোনাম (এখানে সরাসরি টাইপ করুন...)"
+            placeholder="শিরোনাম"
             rows={2}
             style={{
               width: '100%',
@@ -242,29 +231,7 @@ export default function NewArticlePage() {
           />
         </div>
 
-        {/* Article English Headline (Secondary/Bilingual Option) */}
-        <div className="mb-6">
-          <input
-            type="text"
-            placeholder="Secondary English Headline (optional ghost placeholder...)"
-            style={{
-              width: '100%',
-              fontFamily: "Georgia, 'Times New Roman', Times, serif",
-              fontWeight: 700,
-              fontStyle: 'italic',
-              fontSize: 'clamp(16px, 2.5vw, 20px)',
-              color: 'var(--ink-muted)',
-              border: 'none',
-              borderBottom: '1px dashed var(--ink-border)',
-              background: 'transparent',
-              padding: '6px 0',
-              outline: 'none',
-            }}
-            className="focus:border-[var(--ink)] placeholder:text-[var(--ink-muted)] placeholder:font-normal"
-            value={headline}
-            onChange={(e) => setHeadline(e.target.value)}
-          />
-        </div>
+
 
         {/* Hidden File Input */}
         <input
@@ -351,29 +318,7 @@ export default function NewArticlePage() {
           </div>
         </div>
 
-        {/* Media URL Override / Path helper */}
-        <div className="mb-6 flex gap-2 items-center">
-          <span style={{ fontSize: '9px', textTransform: 'uppercase', color: 'var(--ink-muted)', fontFamily: "'Hind Siliguri', sans-serif" }}>Or paste direct asset path/URL:</span>
-          <input
-            type="text"
-            placeholder="e.g. /media/placeholder-football.jpg (optional override)"
-            style={{
-              flex: 1,
-              fontSize: '11px',
-              padding: '4px 8px',
-              background: 'transparent',
-              border: '1px solid var(--ink-border)',
-              color: 'var(--ink)',
-              borderRadius: '4px',
-              outline: 'none',
-            }}
-            value={mediaUrl}
-            onChange={(e) => {
-              setMediaUrl(e.target.value);
-              setMediaPreview(null);
-            }}
-          />
-        </div>
+
 
         {/* Article Summary / Deck */}
         <div className="mb-6">
