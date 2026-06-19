@@ -177,11 +177,12 @@ export default async function HomePage() {
           </div>
 
           {/* Tier 2: Controls & Info Bar */}
-          <div className="grid grid-cols-3 items-center border-b border-gray-200 py-3 mb-2 text-xs font-semibold uppercase w-full">
+          <div className="grid grid-cols-3 items-center border-b border-gray-200 py-1 sm:py-3 mb-1.5 sm:mb-2 text-xs font-semibold uppercase w-full">
             {/* Left: Icons */}
             <div className="flex items-center justify-start">
               {/* Search */}
-              <button 
+              <Link 
+                href="/search"
                 className="w-8 h-8 rounded-full flex items-center justify-center text-[#121212] hover:bg-gray-100 transition-all duration-200 cursor-pointer"
                 aria-label="Search"
               >
@@ -189,7 +190,7 @@ export default async function HomePage() {
                   <circle cx="11" cy="11" r="8"></circle>
                   <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
                 </svg>
-              </button>
+              </Link>
             </div>
 
             {/* Center: Bengali Date Info */}
