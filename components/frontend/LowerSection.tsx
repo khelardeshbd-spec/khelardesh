@@ -1,6 +1,5 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 
@@ -74,7 +73,7 @@ function Kicker({ sport }: { sport?: string | null }) {
 function CardLead({ article }: { article: Article }) {
   const headline = article.headlineBn || article.headline;
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', width: '100%', marginBottom: 24 }}>
+    <div style={{ display: 'flex', flexDirection: 'column', width: '100%', marginBottom: 12 }}>
       <Kicker sport={article.sport} />
       <Link href={`/article/${article.slug}`} style={{ textDecoration: 'none', display: 'block', marginBottom: 12 }}>
         {article.mediaUrl && (
@@ -120,90 +119,7 @@ function CardLead({ article }: { article: Article }) {
   );
 }
 
-function CategoryDropdown({ articles, hasPoster }: { articles: Article[], hasPoster: boolean }) {
-  const [isOpen, setIsOpen] = useState(false);
-  const dropdownRef = useRef<HTMLDivElement>(null);
-
-  const displayArticles = hasPoster ? articles.slice(1) : articles;
-
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setIsOpen(false);
-      }
-    }
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
-
-  if (displayArticles.length === 0) return null;
-
-  return (
-    <div ref={dropdownRef} style={{ position: 'relative', display: 'inline-block' }}>
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        style={{
-          background: 'none',
-          border: '1px solid var(--ink-border)',
-          borderRadius: '4px',
-          padding: '4px 10px',
-          fontFamily: 'var(--font-body)',
-          fontSize: '11px',
-          fontWeight: 600,
-          color: 'var(--ink)',
-          cursor: 'pointer',
-          display: 'flex',
-          alignItems: 'center',
-          gap: '4px',
-          backgroundColor: '#fafafa',
-          transition: 'all 0.2s ease',
-        }}
-      >
-        অন্যান্য খবর <span style={{ fontSize: '8px', transition: 'transform 0.2s', transform: isOpen ? 'rotate(180deg)' : 'none', display: 'inline-block' }}>▼</span>
-      </button>
-
-      {isOpen && (
-        <div style={{
-          position: 'absolute',
-          right: 0,
-          top: 'calc(100% + 4px)',
-          backgroundColor: '#ffffff',
-          border: '1px solid var(--ink-border)',
-          borderRadius: '6px',
-          boxShadow: '0 4px 12px rgba(0, 0, 0, 0.08)',
-          width: '260px',
-          maxHeight: '300px',
-          overflowY: 'auto',
-          zIndex: 100,
-          padding: '6px 0',
-        }}>
-          {displayArticles.map((art) => (
-            <Link
-              key={art.id}
-              href={`/article/${art.slug}`}
-              onClick={() => setIsOpen(false)}
-              style={{
-                display: 'block',
-                padding: '8px 12px',
-                textDecoration: 'none',
-                color: 'var(--ink)',
-                borderBottom: '1px solid #f5f5f5',
-                fontSize: '12px',
-                lineHeight: '1.4',
-                fontFamily: 'var(--font-body)',
-                fontWeight: 500,
-              }}
-            >
-              {art.headlineBn || art.headline}
-            </Link>
-          ))}
-        </div>
-      )}
-    </div>
-  );
-}
-
-function CategorySection({ title, articles }: { title: string, articles: Article[] }) {
+function CategorySection({ title, slug, articles }: { title: string, slug: string, articles: Article[] }) {
   if (!articles || articles.length === 0) return null;
 
   const twoDaysAgo = Date.now() - 2 * 24 * 60 * 60 * 1000;
@@ -213,7 +129,7 @@ function CategorySection({ title, articles }: { title: string, articles: Article
     : false;
 
   return (
-    <div style={{ marginBottom: 32 }}>
+    <div style={{ marginBottom: 36, paddingBottom: 16, borderBottom: '1px solid var(--ink-border)' }}>
       {/* Category Header */}
       <div style={{
         display: 'flex',
@@ -232,7 +148,6 @@ function CategorySection({ title, articles }: { title: string, articles: Article
         }}>
           {title}
         </h2>
-        <CategoryDropdown articles={articles} hasPoster={hasPoster} />
       </div>
 
       {/* Big Poster layout if within 2 days */}
@@ -249,9 +164,25 @@ function CategorySection({ title, articles }: { title: string, articles: Article
           border: '1px dashed var(--ink-border)',
           borderRadius: '4px'
         }}>
-          গত দুই দিনের কোনো খবর নেই। অন্যান্য খবরের জন্য মেনুটি দেখুন।
+          গত দুই দিনের কোনো খবর নেই।
         </p>
       )}
+
+      {/* Red Link at Bottom Right to View All */}
+      <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 12 }}>
+        <Link 
+          href={`/sport/${slug}`} 
+          style={{ 
+            fontFamily: 'var(--font-body)', 
+            fontSize: '12px', 
+            fontWeight: 700, 
+            color: 'var(--live-red)', 
+            textDecoration: 'none' 
+          }}
+        >
+          সব খবর দেখুন ›
+        </Link>
+      </div>
     </div>
   );
 }
@@ -350,12 +281,12 @@ export default function LowerSection({
         {/* Main Feed Column */}
         <div>
           {/* Order Constraint: Football -> Cricket -> Interview -> Feature -> Special -> Guest Column */}
-          <CategorySection title="ফুটবল" articles={footballArticles} />
-          <CategorySection title="ক্রিকেট" articles={cricketArticles} />
-          <CategorySection title="ইন্টারভিউ" articles={interviewArticles} />
-          <CategorySection title="ফিচার" articles={featureArticles} />
-          <CategorySection title="খেলার দেশ বিশেষ" articles={specialArticles} />
-          <CategorySection title="অতিথি কলাম" articles={guestArticles} />
+          <CategorySection title="ফুটবল" slug="football" articles={footballArticles} />
+          <CategorySection title="ক্রিকেট" slug="cricket" articles={cricketArticles} />
+          <CategorySection title="ইন্টারভিউ" slug="interview" articles={interviewArticles} />
+          <CategorySection title="ফিচার" slug="feature" articles={featureArticles} />
+          <CategorySection title="খেলার দেশ বিশেষ" slug="special" articles={specialArticles} />
+          <CategorySection title="অতিথি কলাম" slug="guest-column" articles={guestArticles} />
         </div>
 
         {/* Sidebar Column */}
