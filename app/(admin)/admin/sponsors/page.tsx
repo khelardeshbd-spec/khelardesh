@@ -15,213 +15,279 @@ interface Sponsor {
   imageUrl?: string | null;
 }
 
-/**
- * Sponsor Manager — Section 11.5
- * Table of sponsors with inline edit
- * Fields: Label · Title · Subtitle · CTA Text · CTA URL · Placement · Active toggle · Order
- */
 export default function AdminSponsorsPage() {
   const [sponsors, setSponsors] = useState<Sponsor[]>([]);
   const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
+  const [saving, setSaving] = useState<number | null>(null);
   const [error, setError] = useState('');
-  const [editId, setEditId] = useState<number | null>(null);
 
-  const emptyForm = { label: 'Sponsor', title: '', subtitle: '', ctaText: '', ctaUrl: '', placement: 'inline', isActive: true, displayOrder: 0, imageUrl: '' };
-  const [form, setForm] = useState(emptyForm);
+  // Simplified states for Banner 1 and Banner 2
+  const [banner1, setBanner1] = useState({ id: null as number | null, imageUrl: '', ctaUrl: '' });
+  const [banner2, setBanner2] = useState({ id: null as number | null, imageUrl: '', ctaUrl: '' });
 
-  useEffect(() => { loadSponsors(); }, []);
+  useEffect(() => {
+    loadSponsors();
+  }, []);
 
   async function loadSponsors() {
-    const res = await fetch('/api/admin/sponsors');
-    const data = await res.json() as any;
-    setSponsors(data.sponsors ?? []);
-    setLoading(false);
+    try {
+      const res = await fetch('/api/admin/sponsors');
+      const data = await res.json() as any;
+      const list = data.sponsors ?? [];
+      setSponsors(list);
+
+      // Find the existing banners
+      const b1 = list.find((s: Sponsor) => s.placement === 'header-left');
+      if (b1) {
+        setBanner1({ id: b1.id, imageUrl: b1.imageUrl || '', ctaUrl: b1.ctaUrl || '' });
+      } else {
+        setBanner1({ id: null, imageUrl: '', ctaUrl: '' });
+      }
+
+      const b2 = list.find((s: Sponsor) => s.placement === 'header-right');
+      if (b2) {
+        setBanner2({ id: b2.id, imageUrl: b2.imageUrl || '', ctaUrl: b2.ctaUrl || '' });
+      } else {
+        setBanner2({ id: null, imageUrl: '', ctaUrl: '' });
+      }
+    } catch (err) {
+      console.error(err);
+      setError('Failed to load sponsors');
+    } finally {
+      setLoading(false);
+    }
   }
 
-  function startEdit(s: Sponsor) {
-    setEditId(s.id);
-    setForm({ label: s.label, title: s.title || '', subtitle: s.subtitle || '', ctaText: s.ctaText || '', ctaUrl: s.ctaUrl, placement: s.placement, isActive: s.isActive, displayOrder: s.displayOrder, imageUrl: s.imageUrl || '' });
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }
+  async function saveBanner(bannerNum: 1 | 2) {
+    const banner = bannerNum === 1 ? banner1 : banner2;
+    const placement = bannerNum === 1 ? 'header-left' : 'header-right';
+    const label = bannerNum === 1 ? 'Desktop Banner 1' : 'Desktop Banner 2';
 
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    setSaving(true);
+    setSaving(bannerNum);
     setError('');
     try {
-      const url = editId ? `/api/admin/sponsors/${editId}` : '/api/admin/sponsors';
-      const method = editId ? 'PUT' : 'POST';
-      const res = await fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(form) });
+      const url = banner.id ? `/api/admin/sponsors/${banner.id}` : '/api/admin/sponsors';
+      const method = banner.id ? 'PUT' : 'POST';
+      const res = await fetch(url, {
+        method,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          id: banner.id,
+          label,
+          placement,
+          imageUrl: banner.imageUrl,
+          ctaUrl: banner.ctaUrl,
+          title: '',
+          subtitle: '',
+          ctaText: '',
+          isActive: true,
+          displayOrder: bannerNum
+        })
+      });
+
       if (!res.ok) {
         const err = await res.json() as any;
         throw new Error(err.error);
       }
-      setForm(emptyForm);
-      setEditId(null);
+
       await loadSponsors();
+      alert(`${label} saved successfully!`);
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : 'Error');
+      setError(err instanceof Error ? err.message : 'Error saving banner');
     } finally {
-      setSaving(false);
+      setSaving(null);
     }
   }
 
-  async function handleDelete(id: number) {
-    if (!confirm('Delete this sponsor?')) return;
-    await fetch(`/api/admin/sponsors/${id}`, { method: 'DELETE' });
-    await loadSponsors();
-  }
+  const labelStyle = { 
+    fontFamily: "'Hind Siliguri', sans-serif", 
+    fontSize: 11, 
+    fontWeight: 600, 
+    textTransform: 'uppercase' as const, 
+    color: 'var(--ink-muted)', 
+    display: 'block', 
+    marginBottom: 6 
+  };
 
-  async function toggleActive(s: Sponsor) {
-    await fetch(`/api/admin/sponsors/${s.id}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ...s, isActive: !s.isActive }),
-    });
-    await loadSponsors();
-  }
-
-  const labelStyle = { fontFamily: "'Hind Siliguri', sans-serif", fontSize: 10, fontWeight: 500, letterSpacing: '0.1em', textTransform: 'uppercase' as const, color: 'var(--ink-muted)', display: 'block', marginBottom: 4 };
-  const inputStyle = { width: '100%', padding: '8px 10px', border: '1px solid var(--ink-border)', background: 'var(--bg-surface)', color: 'var(--ink)', fontFamily: "'Hind Siliguri', sans-serif", fontSize: 14, borderRadius: 2 };
-  const thStyle = { fontFamily: "'Hind Siliguri', sans-serif", fontSize: 9, fontWeight: 500, letterSpacing: '0.12em', textTransform: 'uppercase' as const, color: 'var(--ink-ghost)', padding: '6px 8px', textAlign: 'left' as const, borderBottom: '1px solid var(--ink-border)' };
-  const tdStyle = { fontFamily: "'Hind Siliguri', sans-serif", fontSize: 12, color: 'var(--ink)', padding: '7px 8px', borderBottom: '0.5px solid var(--ink-border)', verticalAlign: 'middle' as const };
+  const inputStyle = { 
+    width: '100%', 
+    padding: '10px 12px', 
+    border: '1px solid var(--ink-border)', 
+    background: 'var(--bg-surface)', 
+    color: 'var(--ink)', 
+    fontFamily: "'Hind Siliguri', sans-serif", 
+    fontSize: 13, 
+    borderRadius: 4,
+    marginBottom: 16
+  };
 
   return (
-    <div style={{ minHeight: '100vh', backgroundColor: 'var(--bg-page)', padding: '24px' }}>
-      <div style={{ maxWidth: 900, margin: '0 auto' }}>
-        <div className="flex items-center justify-between mb-6">
-          <h1 style={{ fontFamily: "Georgia, 'Times New Roman', Times, serif", fontWeight: 700, fontSize: 24, color: 'var(--ink)' }}>
-            Sponsor Manager
-          </h1>
+    <div style={{ minHeight: '100vh', backgroundColor: 'var(--bg-page)', padding: '32px 24px' }}>
+      <div style={{ maxWidth: 1000, margin: '0 auto' }}>
+        
+        {/* Header */}
+        <div className="flex items-center justify-between mb-8 pb-4 border-b border-[var(--ink-border)]">
+          <div>
+            <h1 style={{ fontFamily: "Georgia, 'Times New Roman', Times, serif", fontWeight: 800, fontSize: 28, color: 'var(--ink)' }}>
+              Sponsor Manager
+            </h1>
+            <p style={{ fontFamily: "'Hind Siliguri', sans-serif", fontSize: 12, color: 'var(--ink-muted)', marginTop: 4 }}>
+              Manage the 2 desktop header banner ads that sit beside the logo.
+            </p>
+          </div>
           <a href="/admin/dashboard" className="admin-btn-secondary">← Dashboard</a>
         </div>
 
-        {error && <div style={{ color: '#C0392B', fontFamily: "'Hind Siliguri', sans-serif", fontSize: 13, marginBottom: 12 }}>{error}</div>}
+        {error && (
+          <div style={{ color: '#C0392B', fontFamily: "'Hind Siliguri', sans-serif", fontSize: 13, marginBottom: 20, padding: 12, backgroundColor: '#FDEDEC', borderRadius: 4 }}>
+            {error}
+          </div>
+        )}
 
-        {/* Form */}
-        <section style={{ marginBottom: 32, padding: 20, backgroundColor: 'var(--bg-surface)', border: '1px solid var(--ink-border)', borderRadius: 2 }}>
-          <h2 style={{ fontFamily: "'Hind Siliguri', sans-serif", fontSize: 10, fontWeight: 500, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--ink-muted)', marginBottom: 16 }}>
-            {editId ? `Editing Sponsor #${editId}` : 'New Sponsor'}
-          </h2>
-          <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-            <div className="grid grid-cols-2 gap-3">
-              <div>
-                <label style={labelStyle}>Label</label>
-                <input type="text" style={inputStyle} value={form.label} onChange={(e) => setForm({ ...form, label: e.target.value })} />
+        {loading ? (
+          <p style={{ color: 'var(--ink-muted)', fontFamily: "'Hind Siliguri', sans-serif", fontSize: 13 }}>Loading banners...</p>
+        ) : (
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '32px' }}>
+            
+            {/* Desktop Banner 1 */}
+            <section style={{ backgroundColor: 'var(--bg-surface)', border: '1px solid var(--ink-border)', borderRadius: 6, padding: '24px', boxShadow: '0 1px 3px rgba(0,0,0,0.02)' }}>
+              <div className="flex items-center justify-between mb-4">
+                <h2 style={{ fontFamily: "var(--font-body)", fontWeight: 700, fontSize: 16, color: 'var(--ink)' }}>
+                  Desktop Banner 1 (Left Side)
+                </h2>
+                <span style={{ fontSize: 10, color: 'var(--ink-muted)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                  Placement: header-left
+                </span>
               </div>
-              <div>
-                <label style={labelStyle}>Placement</label>
-                <select style={inputStyle} value={form.placement} onChange={(e) => setForm({ ...form, placement: e.target.value })}>
-                  <option value="inline">Inline</option>
-                  <option value="sidebar">Sidebar</option>
-                  <option value="header-left">Header Left (Desktop Header Banner)</option>
-                  <option value="header-right">Header Right (Desktop Header Banner)</option>
-                </select>
-              </div>
-            </div>
-            <div>
-              <label style={labelStyle}>Image URL (Required for Header Banner ads)</label>
-              <input type="url" style={inputStyle} value={form.imageUrl} onChange={(e) => setForm({ ...form, imageUrl: e.target.value })} placeholder="https://example.com/banner-image.jpg" />
-            </div>
-            <div>
-              <label style={labelStyle}>Title</label>
-              <input type="text" style={inputStyle} value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} lang="bn" />
-            </div>
-            <div>
-              <label style={labelStyle}>Subtitle / Tagline</label>
-              <input type="text" style={inputStyle} value={form.subtitle} onChange={(e) => setForm({ ...form, subtitle: e.target.value })} lang="bn" />
-            </div>
-            <div className="grid grid-cols-2 gap-3">
-              <div>
-                <label style={labelStyle}>CTA Text</label>
-                <input type="text" style={inputStyle} value={form.ctaText} onChange={(e) => setForm({ ...form, ctaText: e.target.value })} lang="bn" />
-              </div>
-              <div>
-                <label style={labelStyle}>CTA URL (Ad Target Link)</label>
-                <input type="url" style={inputStyle} value={form.ctaUrl} onChange={(e) => setForm({ ...form, ctaUrl: e.target.value })} required />
-              </div>
-            </div>
-            <div className="grid grid-cols-2 gap-3">
-              <div>
-                <label style={labelStyle}>Display Order</label>
-                <input type="number" style={inputStyle} value={form.displayOrder} onChange={(e) => setForm({ ...form, displayOrder: parseInt(e.target.value, 10) })} />
-              </div>
-              <div className="flex items-end pb-1">
-                <label className="flex items-center gap-2 cursor-pointer">
-                  <input type="checkbox" checked={form.isActive} onChange={(e) => setForm({ ...form, isActive: e.target.checked })} />
-                  <span style={{ fontFamily: "'Hind Siliguri', sans-serif", fontSize: 12, color: 'var(--ink)' }}>Active</span>
-                </label>
-              </div>
-            </div>
-            <div className="flex gap-2">
-              <button type="submit" className="admin-btn-primary" disabled={saving}>
-                {saving ? 'Saving...' : editId ? 'Update Sponsor' : 'Save Sponsor'}
-              </button>
-              {editId && <button type="button" onClick={() => { setEditId(null); setForm(emptyForm); }} className="admin-btn-secondary">Cancel</button>}
-            </div>
-          </form>
-        </section>
 
-        {/* Sponsors table */}
-        <section>
-          <h2 style={{ fontFamily: "'Hind Siliguri', sans-serif", fontSize: 10, fontWeight: 500, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--ink-muted)', marginBottom: 12 }}>
-            All Sponsors
-          </h2>
-          {loading ? (
-            <p style={{ color: 'var(--ink-muted)', fontFamily: "'Hind Siliguri', sans-serif", fontSize: 12 }}>Loading...</p>
-          ) : (
-            <div style={{ overflowX: 'auto' }}>
-              <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                <thead>
-                  <tr>
-                    <th style={thStyle}>Label</th>
-                    <th style={thStyle}>Image Preview</th>
-                    <th style={thStyle}>Title</th>
-                    <th style={thStyle}>Placement</th>
-                    <th style={thStyle}>Link Target</th>
-                    <th style={thStyle}>Order</th>
-                    <th style={thStyle}>Active</th>
-                    <th style={thStyle}>Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {sponsors.map((s) => (
-                    <tr key={s.id}>
-                      <td style={tdStyle}>{s.label}</td>
-                      <td style={tdStyle}>
-                        {s.imageUrl ? (
-                          <img src={s.imageUrl} alt="Ad Preview" style={{ height: 28, maxWidth: 100, objectFit: 'contain', border: '1.5px solid var(--ink-border)', borderRadius: 2 }} />
-                        ) : (
-                          <span style={{ color: 'var(--ink-muted)' }}>—</span>
-                        )}
-                      </td>
-                      <td style={tdStyle} lang="bn">{s.title || <span style={{ color: 'var(--ink-muted)' }}>—</span>}</td>
-                      <td style={{ ...tdStyle, color: 'var(--ink-muted)' }}>{s.placement}</td>
-                      <td style={{ ...tdStyle, color: 'var(--ink-muted)', maxWidth: 150, textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' }}>{s.ctaUrl}</td>
-                      <td style={{ ...tdStyle, color: 'var(--ink-muted)' }}>{s.displayOrder}</td>
-                      <td style={tdStyle}>
-                        <button
-                          onClick={() => toggleActive(s)}
-                          style={{ cursor: 'pointer', background: 'none', border: 'none', fontSize: 14, color: s.isActive ? '#2ecc71' : 'var(--ink-ghost)' }}
-                          title={s.isActive ? 'Active — click to deactivate' : 'Inactive — click to activate'}
-                        >
-                          {s.isActive ? '●' : '○'}
-                        </button>
-                      </td>
-                      <td style={tdStyle}>
-                        <div className="flex gap-2">
-                          <button onClick={() => startEdit(s)} style={{ color: 'var(--ink)', fontSize: 13, cursor: 'pointer', background: 'none', border: 'none' }}>✎</button>
-                          <button onClick={() => handleDelete(s.id)} style={{ color: '#C0392B', fontSize: 13, cursor: 'pointer', background: 'none', border: 'none' }}>✕</button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
-        </section>
+              <div style={{ 
+                height: 75, 
+                width: '100%', 
+                backgroundColor: 'var(--bg-page)', 
+                border: '1.5px dashed var(--ink-border)', 
+                borderRadius: 4, 
+                overflow: 'hidden', 
+                display: 'flex', 
+                alignItems: 'center', 
+                justifyContent: 'center', 
+                marginBottom: 20 
+              }}>
+                {banner1.imageUrl ? (
+                  <img 
+                    src={banner1.imageUrl} 
+                    alt="Desktop Banner 1 Preview" 
+                    style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
+                  />
+                ) : (
+                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', width: '100%', height: '100%', color: 'var(--ink-ghost)', fontSize: 11, fontFamily: "'Hind Siliguri', sans-serif" }}>
+                    <span>NO IMAGE</span>
+                    <span style={{ fontSize: 9, marginTop: 2 }}>Crops to 75px height automatically</span>
+                  </div>
+                )}
+              </div>
+
+              {/* Form Controls */}
+              <div>
+                <label style={labelStyle}>Banner Image URL</label>
+                <input 
+                  type="url" 
+                  style={inputStyle} 
+                  value={banner1.imageUrl} 
+                  onChange={(e) => setBanner1({ ...banner1, imageUrl: e.target.value })} 
+                  placeholder="https://example.com/banner-left.jpg" 
+                />
+
+                <label style={labelStyle}>Redirection Link (Background Link)</label>
+                <input 
+                  type="url" 
+                  style={inputStyle} 
+                  value={banner1.ctaUrl} 
+                  onChange={(e) => setBanner1({ ...banner1, ctaUrl: e.target.value })} 
+                  placeholder="https://target-advertiser.com" 
+                />
+
+                <button 
+                  onClick={() => saveBanner(1)} 
+                  className="admin-btn-primary" 
+                  style={{ width: '100%', height: 42, fontSize: 13, fontWeight: 600 }}
+                  disabled={saving !== null}
+                >
+                  {saving === 1 ? 'Saving Banner 1...' : 'Save Desktop Banner 1'}
+                </button>
+              </div>
+            </section>
+
+            {/* Desktop Banner 2 */}
+            <section style={{ backgroundColor: 'var(--bg-surface)', border: '1px solid var(--ink-border)', borderRadius: 6, padding: '24px', boxShadow: '0 1px 3px rgba(0,0,0,0.02)' }}>
+              <div className="flex items-center justify-between mb-4">
+                <h2 style={{ fontFamily: "var(--font-body)", fontWeight: 700, fontSize: 16, color: 'var(--ink)' }}>
+                  Desktop Banner 2 (Right Side)
+                </h2>
+                <span style={{ fontSize: 10, color: 'var(--ink-muted)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                  Placement: header-right
+                </span>
+              </div>
+
+              <div style={{ 
+                height: 75, 
+                width: '100%', 
+                backgroundColor: 'var(--bg-page)', 
+                border: '1.5px dashed var(--ink-border)', 
+                borderRadius: 4, 
+                overflow: 'hidden', 
+                display: 'flex', 
+                alignItems: 'center', 
+                justifyContent: 'center', 
+                marginBottom: 20 
+              }}>
+                {banner2.imageUrl ? (
+                  <img 
+                    src={banner2.imageUrl} 
+                    alt="Desktop Banner 2 Preview" 
+                    style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
+                  />
+                ) : (
+                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', width: '100%', height: '100%', color: 'var(--ink-ghost)', fontSize: 11, fontFamily: "'Hind Siliguri', sans-serif" }}>
+                    <span>NO IMAGE</span>
+                    <span style={{ fontSize: 9, marginTop: 2 }}>Crops to 75px height automatically</span>
+                  </div>
+                )}
+              </div>
+
+              {/* Form Controls */}
+              <div>
+                <label style={labelStyle}>Banner Image URL</label>
+                <input 
+                  type="url" 
+                  style={inputStyle} 
+                  value={banner2.imageUrl} 
+                  onChange={(e) => setBanner2({ ...banner2, imageUrl: e.target.value })} 
+                  placeholder="https://example.com/banner-right.jpg" 
+                />
+
+                <label style={labelStyle}>Redirection Link (Background Link)</label>
+                <input 
+                  type="url" 
+                  style={inputStyle} 
+                  value={banner2.ctaUrl} 
+                  onChange={(e) => setBanner2({ ...banner2, ctaUrl: e.target.value })} 
+                  placeholder="https://target-advertiser.com" 
+                />
+
+                <button 
+                  onClick={() => saveBanner(2)} 
+                  className="admin-btn-primary" 
+                  style={{ width: '100%', height: 42, fontSize: 13, fontWeight: 600 }}
+                  disabled={saving !== null}
+                >
+                  {saving === 2 ? 'Saving Banner 2...' : 'Save Desktop Banner 2'}
+                </button>
+              </div>
+            </section>
+
+          </div>
+        )}
+
       </div>
     </div>
   );

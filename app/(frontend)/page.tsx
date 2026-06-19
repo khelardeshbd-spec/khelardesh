@@ -167,15 +167,17 @@ export default async function HomePage() {
           {/* Tier 1: Logo and Sponsors (Symmetrical Layout) */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 items-center border-b border-[#e2e2e2] pb-2 mb-1.5">
             {/* Left Sponsor Block */}
-            <div className="hidden lg:flex lg:col-span-3 h-[75px] bg-[#fafafa] text-[#121212] p-2 flex-col justify-center items-center border border-[#e2e2e2] rounded-[3px]">
+            <div className="hidden lg:flex lg:col-span-3 h-[75px] bg-[#fafafa] text-[#121212] flex-col justify-center items-center border border-[#e2e2e2] rounded-[3px] overflow-hidden">
               {leftSponsor ? (
-                <a href={leftSponsor.ctaUrl || '#'} target="_blank" rel="noopener noreferrer" className="w-full h-full flex flex-col justify-center items-center">
+                <a href={leftSponsor.ctaUrl || '#'} target="_blank" rel="noopener noreferrer" className="w-full h-full block">
                   {leftSponsor.imageUrl ? (
-                    <img src={leftSponsor.imageUrl} alt={leftSponsor.label || "Left Sponsor"} className="max-h-[55px] w-auto object-contain" />
+                    <img src={leftSponsor.imageUrl} alt={leftSponsor.label || "Left Sponsor"} className="w-full h-full object-cover" />
                   ) : (
-                    <span className="text-xs font-bold">{leftSponsor.title || leftSponsor.label}</span>
+                    <div className="w-full h-full flex flex-col justify-center items-center p-2">
+                      <span className="text-xs font-bold text-center">{leftSponsor.title || leftSponsor.label}</span>
+                      <span className="text-[8px] text-gray-400 mt-1 uppercase font-sans">Sponsor</span>
+                    </div>
                   )}
-                  <span className="text-[8px] text-gray-400 mt-1 uppercase font-sans">Sponsor</span>
                 </a>
               ) : (
                 <div className="flex flex-col items-center">
@@ -191,15 +193,17 @@ export default async function HomePage() {
             </div>
 
             {/* Right Sponsor Block */}
-            <div className="hidden lg:flex lg:col-span-3 h-[75px] bg-[#fafafa] text-[#121212] p-2 flex-col justify-center items-center border border-[#e2e2e2] rounded-[3px]">
+            <div className="hidden lg:flex lg:col-span-3 h-[75px] bg-[#fafafa] text-[#121212] flex-col justify-center items-center border border-[#e2e2e2] rounded-[3px] overflow-hidden">
               {rightSponsor ? (
-                <a href={rightSponsor.ctaUrl || '#'} target="_blank" rel="noopener noreferrer" className="w-full h-full flex flex-col justify-center items-center">
+                <a href={rightSponsor.ctaUrl || '#'} target="_blank" rel="noopener noreferrer" className="w-full h-full block">
                   {rightSponsor.imageUrl ? (
-                    <img src={rightSponsor.imageUrl} alt={rightSponsor.label || "Right Sponsor"} className="max-h-[55px] w-auto object-contain" />
+                    <img src={rightSponsor.imageUrl} alt={rightSponsor.label || "Right Sponsor"} className="w-full h-full object-cover" />
                   ) : (
-                    <span className="text-xs font-bold">{rightSponsor.title || rightSponsor.label}</span>
+                    <div className="w-full h-full flex flex-col justify-center items-center p-2">
+                      <span className="text-xs font-bold text-center">{rightSponsor.title || rightSponsor.label}</span>
+                      <span className="text-[8px] text-gray-400 mt-1 uppercase font-sans">Sponsor</span>
+                    </div>
                   )}
-                  <span className="text-[8px] text-gray-400 mt-1 uppercase font-sans">Sponsor</span>
                 </a>
               ) : (
                 <div className="flex flex-col items-center">
