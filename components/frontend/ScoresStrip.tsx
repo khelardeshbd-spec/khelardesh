@@ -32,6 +32,13 @@ export default function ScoresStrip() {
     let lastTimestamp = 0;
 
     const speed = 40; // Pixels per second auto-scroll speed
+    
+    // Detect mobile viewport
+    const isMobile = window.matchMedia('(max-width: 768px)').matches;
+
+    if (isMobile) {
+      track.style.transform = 'none';
+    }
 
     const step = (time: number) => {
       const now = Date.now();
@@ -39,37 +46,53 @@ export default function ScoresStrip() {
       // Cap delta to prevent huge jumps (e.g., if tab is hidden/suspended)
       const cappedDelta = Math.min(delta, 0.1);
 
-      if (isDragging) {
-        // Handled by onMove
-      } else if (Math.abs(velocity) > 0.05) {
-        // Sliding with inertia
-        x += velocity * cappedDelta * 1000;
-        velocity *= 0.94; // Decelerate smoothly
-        
-        // Boundaries checks during sliding
-        const halfWidth = track.scrollWidth / 2;
-        if (halfWidth > 0) {
-          if (x > 0) {
-            x = -halfWidth + x;
-          } else if (Math.abs(x) >= halfWidth) {
-            x = x + halfWidth;
+      if (isMobile) {
+        // Native scroll auto-scrolling
+        if (now > pausedUntil) {
+          let scrollX = container.scrollLeft;
+          scrollX += speed * cappedDelta;
+          const halfWidth = track.scrollWidth / 2;
+          if (halfWidth > 0) {
+            if (scrollX >= halfWidth) {
+              scrollX = 0; // Wrap around seamlessly
+            }
           }
+          container.scrollLeft = scrollX;
         }
-        track.style.transform = `translate3d(${x}px, 0, 0)`;
-        xRef.current = x;
-        pausedUntil = Date.now() + 4000; // Keep autoplay paused while sliding
-      } else if (now > pausedUntil) {
-        // Autoplay scroll
-        x -= speed * cappedDelta;
+      } else {
+        // Desktop custom translation scroll & drag
+        if (isDragging) {
+          // Handled by onMove
+        } else if (Math.abs(velocity) > 0.05) {
+          // Sliding with inertia
+          x += velocity * cappedDelta * 1000;
+          velocity *= 0.94; // Decelerate smoothly
+          
+          // Boundaries checks during sliding
+          const halfWidth = track.scrollWidth / 2;
+          if (halfWidth > 0) {
+            if (x > 0) {
+              x = -halfWidth + x;
+            } else if (Math.abs(x) >= halfWidth) {
+              x = x + halfWidth;
+            }
+          }
+          track.style.transform = `translate3d(${x}px, 0, 0)`;
+          xRef.current = x;
+          pausedUntil = Date.now() + 4000; // Keep autoplay paused while sliding
+        } else if (now > pausedUntil) {
+          // Autoplay scroll
+          x -= speed * cappedDelta;
 
-        const halfWidth = track.scrollWidth / 2;
-        if (halfWidth > 0) {
-          if (Math.abs(x) >= halfWidth) {
-            x = 0; // Wrap around seamlessly
+          const halfWidth = track.scrollWidth / 2;
+          if (halfWidth > 0) {
+            if (Math.abs(x) >= halfWidth) {
+              x = 0; // Wrap around seamlessly
+            }
           }
+          track.style.transform = `translate3d(${x}px, 0, 0)`;
+          xRef.current = x;
         }
-        track.style.transform = `translate3d(${x}px, 0, 0)`;
-        xRef.current = x;
       }
       lastTime = time;
       frameId = requestAnimationFrame(step);
@@ -85,22 +108,23 @@ export default function ScoresStrip() {
       }
     };
 
-    // Drag start
-    const onStart = (e: MouseEvent | TouchEvent) => {
+    // Drag start (Desktop mouse only)
+    const onStart = (e: MouseEvent) => {
+      if (isMobile) return;
       isDragging = true;
       triggerPause();
-      startX = 'touches' in e ? e.touches[0].clientX : e.clientX;
+      startX = e.clientX;
       dragStartX = x;
       lastX = startX;
       lastTimestamp = performance.now();
       velocity = 0;
     };
 
-    // Drag move
-    const onMove = (e: MouseEvent | TouchEvent) => {
-      if (!isDragging) return;
+    // Drag move (Desktop mouse only)
+    const onMove = (e: MouseEvent) => {
+      if (isMobile || !isDragging) return;
       triggerPause();
-      const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX;
+      const clientX = e.clientX;
       const now = performance.now();
       const dt = now - lastTimestamp;
       
@@ -128,26 +152,32 @@ export default function ScoresStrip() {
       xRef.current = x; // Persist position
     };
 
-    // Drag end
+    // Drag end (Desktop mouse only)
     const onEnd = () => {
-      if (isDragging) {
+      if (!isMobile && isDragging) {
         isDragging = false;
         triggerPause();
         lastTime = performance.now(); // Reset lastTime starting baseline
       }
     };
 
-    // Desktop events
-    container.addEventListener('mousedown', onStart);
-    container.addEventListener('mouseenter', onHoverPause);
-    container.addEventListener('mousemove', onHoverPause);
-    window.addEventListener('mousemove', onMove);
-    window.addEventListener('mouseup', onEnd);
+    // Mobile interactions
+    const onMobileInteraction = () => {
+      triggerPause();
+    };
 
-    // Mobile events
-    container.addEventListener('touchstart', onStart, { passive: true });
-    window.addEventListener('touchmove', onMove, { passive: true });
-    window.addEventListener('touchend', onEnd);
+    if (isMobile) {
+      container.addEventListener('touchstart', onMobileInteraction, { passive: true });
+      container.addEventListener('touchmove', onMobileInteraction, { passive: true });
+      container.addEventListener('scroll', onMobileInteraction, { passive: true });
+    } else {
+      // Desktop mouse events
+      container.addEventListener('mousedown', onStart);
+      container.addEventListener('mouseenter', onHoverPause);
+      container.addEventListener('mousemove', onHoverPause);
+      window.addEventListener('mousemove', onMove);
+      window.addEventListener('mouseup', onEnd);
+    }
 
     frameId = requestAnimationFrame(step);
 
@@ -155,15 +185,17 @@ export default function ScoresStrip() {
       cancelAnimationFrame(frameId);
       xRef.current = x; // Ensure last frame position is saved
       
-      container.removeEventListener('mousedown', onStart);
-      container.removeEventListener('mouseenter', onHoverPause);
-      container.removeEventListener('mousemove', onHoverPause);
-      window.removeEventListener('mousemove', onMove);
-      window.removeEventListener('mouseup', onEnd);
-
-      container.removeEventListener('touchstart', onStart);
-      window.removeEventListener('touchmove', onMove);
-      window.removeEventListener('touchend', onEnd);
+      if (isMobile) {
+        container.removeEventListener('touchstart', onMobileInteraction);
+        container.removeEventListener('touchmove', onMobileInteraction);
+        container.removeEventListener('scroll', onMobileInteraction);
+      } else {
+        container.removeEventListener('mousedown', onStart);
+        container.removeEventListener('mouseenter', onHoverPause);
+        container.removeEventListener('mousemove', onHoverPause);
+        window.removeEventListener('mousemove', onMove);
+        window.removeEventListener('mouseup', onEnd);
+      }
     };
   }, [data]);
 
@@ -196,8 +228,8 @@ export default function ScoresStrip() {
       {/* Swipeable auto-scrolling container */}
       <div 
         ref={containerRef}
-        className="overflow-hidden w-full relative py-1 cursor-grab active:cursor-grabbing select-none"
-        style={{ touchAction: 'pan-y' }}
+        className="overflow-x-auto md:overflow-x-hidden scrollbar-none w-full relative py-1 md:cursor-grab md:active:cursor-grabbing select-none"
+        style={{ touchAction: 'auto' }}
       >
         <div 
           ref={trackRef}
