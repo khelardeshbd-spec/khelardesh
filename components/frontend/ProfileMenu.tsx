@@ -108,7 +108,7 @@ export default function ProfileMenu({ user }: ProfileMenuProps) {
 
             {/* Place Your Ad */}
             <Link
-              href="/admin/sponsors"
+              href="/contact"
               onClick={() => setIsOpen(false)}
               className="px-4 py-2 text-xs font-bold text-gray-700 hover:bg-gray-50 flex items-center gap-2 transition-colors"
             >
