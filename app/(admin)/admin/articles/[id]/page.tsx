@@ -2,43 +2,33 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
-
-export const dynamic = 'force-dynamic';
+import Link from 'next/link';
+import { ArrowLeft, Check, Trash2, Image as ImageIcon } from 'lucide-react';
 
 const SPORTS = [
-  'football', 'international-football', 'club-football', 'world-cup-2026',
-  'bd-football', 'cricket', 'bd-cricket', 'basketball', 'tennis',
-  'f1', 'rugby', 'table-tennis', 'golf', 'athletics',
-  'interview', 'feature', 'special', 'guest-column', 'other',
+  { value: 'football', label: 'ফুটবল' },
+  { value: 'bd-football', label: 'দেশের ফুটবল' },
+  { value: 'club-football', label: 'ক্লাব ফুটবল' },
+  { value: 'international-football', label: 'আন্তর্জাতিক ফুটবল' },
+  { value: 'cricket', label: 'ক্রিকেট' },
+  { value: 'bd-cricket', label: 'বাংলাদেশের ক্রিকেট' },
+  { value: 'basketball', label: 'বাস্কেটবল' },
+  { value: 'tennis', label: 'টেনিস' },
+  { value: 'f1', label: 'ফর্মুলা ওয়ান' },
+  { value: 'interview', label: 'ইন্টারভিউ' },
+  { value: 'feature', label: 'ফিচার' },
+  { value: 'special', label: 'খেলার দেশ বিশেষ' },
+  { value: 'guest-column', label: 'অতিথি কলাম' },
+  { value: 'other', label: 'অন্যান্য' },
 ];
 
-interface Article {
-  id: number;
-  slug: string;
-  headline: string;
-  headlineBn?: string | null;
-  deck: string;
-  body: string;
-  kicker: string;
-  sport: string;
-  mediaType: string;
-  mediaUrl: string;
-  mediaCaption?: string | null;
-  byline: string;
-  isLead: boolean;
-}
-
-/**
- * Edit Article Editor Console & Interactive Real-Time Live Preview — Section 11.3 & 10.9
- * Same layout as new, keeping visual parity.
- */
 export default function EditArticlePage({ params }: { params: { id: string } }) {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
 
-  // Live editable state
+  // Article state values
   const [headline, setHeadline] = useState('');
   const [headlineBn, setHeadlineBn] = useState('');
   const [deck, setDeck] = useState('');
@@ -50,9 +40,12 @@ export default function EditArticlePage({ params }: { params: { id: string } }) 
   const [mediaCaption, setMediaCaption] = useState('');
   const [isLead, setIsLead] = useState(false);
   const [body, setBody] = useState('');
+  const [status, setStatus] = useState('published');
 
   const [mediaPreview, setMediaPreview] = useState<string | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
+
+  const sportLabel = SPORTS.find(s => s.value === sport)?.label || 'খেলাধুলা';
 
   useEffect(() => {
     fetch(`/api/admin/articles/${params.id}`)
@@ -71,14 +64,22 @@ export default function EditArticlePage({ params }: { params: { id: string } }) 
           setMediaCaption(found.mediaCaption ?? '');
           setIsLead(!!found.isLead);
           setBody(found.body || '');
+          setStatus(found.status || 'published');
         }
         setLoading(false);
       });
   }, [params.id]);
 
-  const displayHeadline = headlineBn || headline;
-  const isBn = !!headlineBn;
-  const paragraphs = (body || '').split(/\n\n+/).map(p => p.trim()).filter(Boolean);
+  // Parser to capture text blocks from editable div
+  const updateBodyFromDOM = (htmlContent: string) => {
+    const cleanText = htmlContent
+      .replace(/<div><br><\/div>/g, '\n')
+      .replace(/<div>/g, '\n')
+      .replace(/<\/div>/g, '')
+      .replace(/<br>/g, '\n')
+      .replace(/<[^>]*>/g, '');
+    setBody(cleanText);
+  };
 
   async function handleUpload(file: File): Promise<string> {
     const fd = new FormData();
@@ -89,30 +90,42 @@ export default function EditArticlePage({ params }: { params: { id: string } }) 
     return data.url;
   }
 
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
+  async function handleSave(newStatus?: 'published' | 'draft') {
+    if (!headlineBn && !headline) {
+      setError('দয়া করে অন্তত একটি শিরোনাম প্রদান করুন।');
+      return;
+    }
+    if (!body || body.trim().length < 5) {
+      setError('দয়া করে নিবন্ধের বিস্তারিত বিবরণ লিখুন।');
+      return;
+    }
+
     setError('');
     setSaving(true);
+    const finalStatus = newStatus || status;
 
     try {
       let finalMediaUrl = mediaUrl;
 
-      if (fileRef.current?.files?.[0]) {
-        finalMediaUrl = await handleUpload(fileRef.current.files[0]);
+      // Handle media upload
+      const fileInput = fileRef.current;
+      if (fileInput?.files?.[0]) {
+        finalMediaUrl = await handleUpload(fileInput.files[0]);
       }
 
       const payload = {
-        headline,
+        headline: headline || headlineBn,
         headlineBn: headlineBn || null,
-        deck,
-        body,
-        kicker,
-        byline: byline || 'Staff Reporter',
+        deck: deck || '',
+        body: body.trim(),
+        kicker: kicker || sportLabel,
+        byline: byline || 'খেলারদেশ প্রতিনিধি',
         sport,
         mediaType,
-        mediaUrl: finalMediaUrl,
+        mediaUrl: finalMediaUrl || '/media/placeholder-football.jpg',
         mediaCaption: mediaCaption || null,
         isLead,
+        status: finalStatus,
       };
 
       const res = await fetch(`/api/admin/articles/${params.id}`, {
@@ -122,12 +135,13 @@ export default function EditArticlePage({ params }: { params: { id: string } }) 
       });
 
       if (!res.ok) {
-        const errorData = await res.json() as any;
-        throw new Error(errorData.error || 'Save failed');
+        const err = await res.json() as any;
+        throw new Error(err.error || 'Failed to update article');
       }
+
       router.push('/admin/articles');
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : 'Error saving');
+      setError(err instanceof Error ? err.message : 'Unknown error occurred');
     } finally {
       setSaving(false);
     }
@@ -139,256 +153,170 @@ export default function EditArticlePage({ params }: { params: { id: string } }) 
     router.push('/admin/articles');
   }
 
-  if (loading) return (
-    <div style={{ padding: 24, color: 'var(--ink-muted)', fontFamily: "'Hind Siliguri', sans-serif" }}>Loading article composer...</div>
-  );
+  if (loading) {
+    return (
+      <div style={{ padding: 24, color: 'var(--ink-muted)', fontFamily: "'Hind Siliguri', sans-serif" }}>
+        Loading article composer...
+      </div>
+    );
+  }
 
   return (
-    <div style={{ minHeight: '100vh', backgroundColor: 'var(--bg-page)' }} className="flex flex-col lg:flex-row">
-      {/* LEFT: Editor Console */}
+    <div style={{ minHeight: '100vh', backgroundColor: 'var(--bg-page)', paddingBottom: '160px' }}>
+      
+      {/* Top Floating Control Bar */}
       <div 
-        style={{ 
-          borderRight: '1px solid var(--ink-border)',
+        style={{
+          position: 'sticky', 
+          top: 0, 
+          zIndex: 100,
           backgroundColor: 'var(--bg-surface)',
+          borderBottom: '1.5px solid var(--ink-border)',
+          padding: '12px 16px',
         }}
-        className="w-full lg:w-[450px] p-6 lg:overflow-y-auto lg:h-screen flex flex-col"
+        className="flex items-center justify-between gap-4 flex-wrap"
       >
-        <div className="flex items-center justify-between mb-6">
-          <h1 style={{ fontFamily: "Georgia, 'Times New Roman', Times, serif", fontWeight: 700, fontSize: 20, color: 'var(--ink)' }}>
-            Edit Story
-          </h1>
-          <a href="/admin/articles" className="admin-btn-secondary" style={{ padding: '4px 10px', fontSize: 10 }}>← Back</a>
+        <div className="flex items-center gap-3">
+          <Link href="/admin/articles" className="admin-btn-secondary flex items-center gap-1.5" style={{ padding: '6px 12px' }}>
+            <ArrowLeft size={14} />
+            <span>Articles</span>
+          </Link>
+          
+          <span style={{ fontSize: '12px', fontWeight: 600, color: 'var(--ink-muted)', fontFamily: "'Hind Siliguri', sans-serif" }} className="ml-2">
+            Section:
+          </span>
+          <select 
+            style={{ 
+              backgroundColor: 'var(--bg-page)', 
+              color: 'var(--ink)', 
+              border: '1px solid var(--ink-border)',
+              padding: '5px 10px',
+              fontSize: '12px',
+              borderRadius: '4px',
+              fontFamily: "'Hind Siliguri', sans-serif",
+            }}
+            value={sport}
+            onChange={(e) => setSport(e.target.value)}
+          >
+            {SPORTS.map((s) => (
+              <option key={s.value} value={s.value}>{s.label}</option>
+            ))}
+          </select>
         </div>
 
-        {error && (
-          <div style={{ color: '#C0392B', fontFamily: "'Hind Siliguri', sans-serif", fontSize: 13, marginBottom: 16 }}>
-            {error}
-          </div>
-        )}
+        <div className="flex items-center gap-2">
+          {error && (
+            <span style={{ color: '#C0392B', fontSize: '11px', fontFamily: "'Hind Siliguri', sans-serif", marginRight: '8px' }}>
+              ⚠️ {error}
+            </span>
+          )}
 
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4 flex-1">
-          {/* Headline (EN) */}
-          <div>
-            <label htmlFor="headline" className="admin-label">Headline (EN)</label>
-            <input 
-              id="headline" 
-              type="text" 
-              required 
-              className="admin-input" 
-              value={headline}
-              onChange={(e) => setHeadline(e.target.value)}
-            />
-          </div>
+          <button 
+            onClick={handleDelete} 
+            className="admin-btn-danger flex items-center gap-1.5" 
+            style={{ padding: '8px 18px', backgroundColor: '#C0392B', color: '#fff' }}
+          >
+            <Trash2 size={14} />
+            <span>Delete</span>
+          </button>
 
-          {/* Headline (BN) */}
-          <div>
-            <label htmlFor="headlineBn" className="admin-label">Headline (BN)</label>
-            <input 
-              id="headlineBn" 
-              type="text" 
-              className="admin-input" 
-              value={headlineBn}
-              onChange={(e) => setHeadlineBn(e.target.value)}
-            />
-          </div>
+          <button 
+            onClick={() => handleSave('draft')} 
+            className="admin-btn-secondary flex items-center gap-1.5" 
+            style={{ padding: '8px 18px', border: '1.5px solid var(--ink-border)' }}
+            disabled={saving}
+          >
+            <span>{saving ? 'Saving...' : 'Save as Draft'}</span>
+          </button>
 
-          {/* Deck */}
-          <div>
-            <label htmlFor="deck" className="admin-label">Deck / Summary</label>
-            <input 
-              id="deck" 
-              type="text" 
-              required 
-              className="admin-input" 
-              value={deck}
-              onChange={(e) => setDeck(e.target.value)}
-            />
-          </div>
-
-          {/* Kicker */}
-          <div>
-            <label htmlFor="kicker" className="admin-label">Kicker (Category Line)</label>
-            <input 
-              id="kicker" 
-              type="text" 
-              required 
-              className="admin-input" 
-              value={kicker}
-              onChange={(e) => setKicker(e.target.value)}
-            />
-          </div>
-
-          {/* Byline */}
-          <div>
-            <label htmlFor="byline" className="admin-label">Byline</label>
-            <input 
-              id="byline" 
-              type="text" 
-              className="admin-input" 
-              value={byline}
-              onChange={(e) => setByline(e.target.value)}
-            />
-          </div>
-
-          {/* Sport */}
-          <div>
-            <label htmlFor="sport" className="admin-label">Sport Section</label>
-            <select 
-              id="sport" 
-              required 
-              className="admin-input"
-              value={sport}
-              onChange={(e) => setSport(e.target.value)}
-            >
-              {SPORTS.map((s) => (
-                <option key={s} value={s}>{s}</option>
-              ))}
-            </select>
-          </div>
-
-          {/* Media Type */}
-          <div>
-            <label className="admin-label">Media Type</label>
-            <div className="flex gap-4">
-              {(['photo', 'video'] as const).map((mt) => (
-                <label key={mt} className="flex items-center gap-2 cursor-pointer">
-                  <input
-                    type="radio"
-                    name="mediaType"
-                    value={mt}
-                    checked={mediaType === mt}
-                    onChange={() => setMediaType(mt)}
-                  />
-                  <span style={{ fontFamily: "'Hind Siliguri', sans-serif", fontSize: 12, color: 'var(--ink)' }}>
-                    {mt.charAt(0).toUpperCase() + mt.slice(1)}
-                  </span>
-                </label>
-              ))}
-            </div>
-          </div>
-
-          {/* Upload Media */}
-          <div>
-            <label htmlFor="mediaFile" className="admin-label">Replace Media File</label>
-            <input
-              id="mediaFile"
-              ref={fileRef}
-              type="file"
-              accept=".jpg,.jpeg,.png,.webp,.mp4"
-              className="admin-input"
-              style={{ paddingTop: 6 }}
-              onChange={(e) => {
-                const file = e.target.files?.[0];
-                if (file) {
-                  setMediaPreview(URL.createObjectURL(file));
-                }
-              }}
-            />
-            <p style={{ fontFamily: "'Hind Siliguri', sans-serif", fontSize: 9, color: 'var(--ink-muted)', marginTop: 4 }}>
-              Current URL: {mediaUrl || 'None'}
-            </p>
-            <input
-              id="mediaUrl"
-              type="text"
-              placeholder="Or paste media URL"
-              className="admin-input mt-1"
-              value={mediaUrl}
-              onChange={(e) => {
-                setMediaUrl(e.target.value);
-                setMediaPreview(null);
-              }}
-            />
-          </div>
-
-          {/* Media Caption */}
-          <div>
-            <label htmlFor="mediaCaption" className="admin-label">Media Caption</label>
-            <input 
-              id="mediaCaption" 
-              type="text" 
-              className="admin-input" 
-              value={mediaCaption}
-              onChange={(e) => setMediaCaption(e.target.value)}
-            />
-          </div>
-
-          {/* Pin as Lead */}
-          <div className="py-1">
-            <label className="flex items-center gap-2 cursor-pointer">
-              <input 
-                type="checkbox" 
-                checked={isLead} 
-                onChange={(e) => setIsLead(e.target.checked)}
-              />
-              <span style={{ fontFamily: "'Hind Siliguri', sans-serif", fontSize: 11, color: 'var(--ink)' }}>
-                Pin as Lead Story
-              </span>
-            </label>
-          </div>
-
-          {/* Body */}
-          <div className="flex-1 flex flex-col min-h-[180px]">
-            <label htmlFor="body" className="admin-label">Body Paragraphs</label>
-            <textarea
-              id="body"
-              required
-              className="admin-textarea flex-1 min-h-[140px] text-sm"
-              value={body}
-              onChange={(e) => setBody(e.target.value)}
-            />
-          </div>
-
-          {/* Actions */}
-          <div className="flex gap-2 pt-2 pb-6">
-            <button type="submit" className="admin-btn-primary flex-1" disabled={saving}>
-              {saving ? 'Saving...' : 'Save Story'}
-            </button>
-            <button type="button" onClick={handleDelete} className="admin-btn-danger">
-              Delete
-            </button>
-          </div>
-        </form>
+          <button 
+            onClick={() => handleSave('published')} 
+            className="admin-btn-primary flex items-center gap-1.5" 
+            style={{ padding: '8px 18px', backgroundColor: 'var(--ink)', color: 'var(--bg-page)' }}
+            disabled={saving}
+          >
+            <Check size={14} />
+            <span>{saving ? 'Saving...' : 'Save & Publish'}</span>
+          </button>
+        </div>
       </div>
 
-      {/* RIGHT: Live Visual Interactive Preview Panel */}
-      <div className="flex-1 lg:h-screen lg:overflow-y-auto p-4 lg:p-8 flex flex-col items-center">
-        {/* Simulator Device Header */}
-        <div 
-          style={{ 
-            fontFamily: "'Hind Siliguri', sans-serif",
-            fontSize: 10,
-            textTransform: 'uppercase',
-            color: 'var(--ink-muted)',
-            letterSpacing: '0.12em',
-            marginBottom: 12,
-            borderBottom: '1px dashed var(--ink-border)',
-            paddingBottom: 4,
-            width: '100%',
-            maxWidth: '680px',
-            textAlign: 'center'
-          }}
-        >
-          📰 Live Preview Simulator (Exact Render)
+      {/* Editor Main Canvas (Matches exact frontend article page layout) */}
+      <div className="w-full max-w-[680px] mx-auto px-4 pt-8">
+        
+        {/* Back link & breadcrumbs simulator */}
+        <div className="flex items-center gap-3 pb-6 border-b border-[var(--ink-border)] mb-6">
+          <div className="flex items-center gap-1.5 text-xs font-bold text-[var(--ink-muted)] bg-[var(--ink-ghost)] px-3 py-1 rounded-full pointer-events-none">
+            ← ফিরে যান
+          </div>
+          
+          <div 
+            className="flex items-center gap-1.5 text-xs font-semibold tracking-wider uppercase text-[var(--ink-muted)]"
+            style={{ fontFamily: 'var(--font-body)' }}
+          >
+            <span>মাঠ</span>
+            <span>/</span>
+            <span className="text-[#1a5c2e]">
+              {sportLabel}
+            </span>
+          </div>
         </div>
 
-        {/* Simulator Frame */}
-        <div 
-          style={{ 
-            backgroundColor: 'var(--bg-page)', 
-            border: '1.5px solid var(--ink-border)',
-            borderRadius: '4px',
-            width: '100%',
-            maxWidth: '680px',
-            boxShadow: '0 4px 24px rgba(0,0,0,0.05)',
-            minHeight: '80vh',
-            paddingBottom: '48px',
-            position: 'relative'
+        {/* Article Headline Input (Bengali / Primary) */}
+        <div className="mb-4">
+          <textarea
+            placeholder="শিরোনাম"
+            rows={2}
+            style={{
+              width: '100%',
+              fontFamily: "var(--font-headline)",
+              fontWeight: 800,
+              fontSize: 'clamp(28px, 4.5vw, 42px)',
+              lineHeight: 1.15,
+              letterSpacing: '-0.02em',
+              color: 'var(--ink)',
+              border: 'none',
+              borderBottom: '1px dashed var(--ink-border)',
+              background: 'transparent',
+              resize: 'none',
+              padding: '6px 0',
+              outline: 'none',
+            }}
+            className="focus:border-[var(--ink)] placeholder:text-[var(--ink-muted)] placeholder:font-normal"
+            value={headlineBn}
+            onChange={(e) => setHeadlineBn(e.target.value)}
+          />
+        </div>
+
+        {/* Hidden File Input */}
+        <input
+          ref={fileRef}
+          type="file"
+          accept=".jpg,.jpeg,.png,.webp,.mp4"
+          style={{ display: 'none' }}
+          onChange={(e) => {
+            const file = e.target.files?.[0];
+            if (file) {
+              setMediaPreview(URL.createObjectURL(file));
+            }
           }}
-        >
-          {/* Sim Media container */}
-          <div
-            className="w-full relative"
-            style={{ aspectRatio: '16/9', backgroundColor: 'var(--ink-ghost)', overflow: 'hidden' }}
+        />
+
+        {/* Media Frame (Click to select/upload file) */}
+        <div className="mb-4">
+          <div 
+            onClick={() => fileRef.current?.click()}
+            style={{ 
+              aspectRatio: '16/9', 
+              backgroundColor: 'var(--bg-surface)', 
+              position: 'relative',
+              cursor: 'pointer',
+              overflow: 'hidden',
+              borderRadius: '6px',
+              border: '1.5px dashed var(--ink-border)'
+            }}
+            className="group hover:opacity-95 transition flex items-center justify-center"
+            title="Click to select file to upload"
           >
             {mediaPreview || mediaUrl ? (
               mediaType === 'video' ? (
@@ -398,155 +326,205 @@ export default function EditArticlePage({ params }: { params: { id: string } }) 
                   muted
                   loop
                   playsInline
-                  style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                  className="w-full h-full object-cover"
                 />
               ) : (
                 <img
                   src={mediaPreview || mediaUrl}
-                  alt={displayHeadline}
-                  style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                  alt="Media preview"
+                  className="w-full h-full object-cover"
                 />
               )
             ) : (
-              <div className="absolute inset-0 flex flex-col items-center justify-center text-xs text-[var(--ink-muted)]">
-                <span>[No Media Attached]</span>
-                <span>Select a file or enter URL to preview</span>
+              <div className="absolute inset-0 flex flex-col items-center justify-center text-xs text-[var(--ink-muted)] p-6 text-center">
+                <div className="p-3 bg-[var(--ink-ghost)] rounded-full mb-3 text-[var(--ink-muted)]">
+                  <ImageIcon size={24} />
+                </div>
+                <span className="font-bold text-sm mb-1 text-[var(--ink)]">📷 ছবির ফ্রেমে ক্লিক করে মিডিয়া ফাইল যুক্ত করুন</span>
+                <span>(Accepts JPG, PNG, WEBP, or MP4)</span>
               </div>
             )}
-            <span
-              style={{
-                position: 'absolute', top: 10, left: 10,
-                backgroundColor: 'var(--ink)', color: 'var(--bg-page)',
-                fontFamily: "'Abu JM Akkas', 'Hind Siliguri', sans-serif",
-                fontSize: 7, fontWeight: 500, letterSpacing: '0.1em',
-                textTransform: 'uppercase', padding: '2px 5px', borderRadius: 1,
-              }}
-            >
-              {mediaType === 'video' ? '▶ Video' : 'Photo'}
-            </span>
-          </div>
 
-          {/* Sim Caption */}
-          {mediaCaption && (
-            <div className="px-6">
-              <p
+            <div className="absolute top-3 left-3 flex gap-2" onClick={(e) => e.stopPropagation()}>
+              <select
                 style={{
-                  fontFamily: "'Source Serif 4', Georgia, serif",
-                  fontStyle: 'italic', fontSize: 11,
-                  color: 'var(--ink-muted)', marginTop: 8,
+                  backgroundColor: 'var(--ink)',
+                  color: 'var(--bg-page)',
+                  fontSize: '9px',
+                  fontWeight: 'bold',
+                  padding: '4px 8px',
+                  border: 'none',
+                  borderRadius: '3px',
+                  cursor: 'pointer'
                 }}
+                value={mediaType}
+                onChange={(e) => setMediaType(e.target.value as 'photo' | 'video')}
               >
-                {mediaCaption}
-              </p>
+                <option value="photo">PHOTO</option>
+                <option value="video">VIDEO</option>
+              </select>
             </div>
-          )}
-
-          {/* Sim Content body */}
-          <div className="px-6 mt-6">
-            {/* Kicker · Sport */}
-            <p
-              style={{
-                fontFamily: "'Abu JM Akkas', 'Hind Siliguri', sans-serif",
-                fontSize: 11, fontWeight: 500,
-                letterSpacing: '0.14em', textTransform: 'uppercase',
-                color: 'var(--ink-muted)', marginBottom: 8,
-              }}
-              lang="bn"
-            >
-              {kicker}
-            </p>
-
-            {/* Headline */}
-            <h1
-              lang={isBn ? 'bn' : 'en'}
-              style={{
-                fontFamily: isBn
-                  ? "'Manowar Murshidabad', 'Noto Serif Bengali', serif"
-                  : "Georgia, 'Times New Roman', Times, serif",
-                fontWeight: 700,
-                fontStyle: !isBn ? 'italic' : 'normal',
-                fontSize: 'clamp(24px, 3.5vw, 34px)',
-                lineHeight: 1.15, letterSpacing: '-0.01em',
-                color: 'var(--ink)', marginBottom: 10,
-              }}
-            >
-              {displayHeadline}
-            </h1>
-
-            {/* English title if bilingual */}
-            {headlineBn && headline !== headlineBn && (
-              <h2
-                lang="en"
-                style={{
-                  fontFamily: "Georgia, 'Times New Roman', Times, serif",
-                  fontWeight: 700, fontStyle: 'italic',
-                  fontSize: 'clamp(15px, 2vw, 18px)',
-                  color: 'var(--ink-muted)', marginBottom: 10, lineHeight: 1.2,
-                }}
-              >
-                {headline}
-              </h2>
-            )}
-
-            {/* Deck */}
-            <p
-              lang={isBn ? 'bn' : 'en'}
-              style={{
-                fontFamily: isBn ? "'Abu JM Akkas', 'Hind Siliguri', sans-serif" : "'Source Serif 4', Georgia, serif",
-                fontWeight: 300, fontSize: '15px',
-                color: 'var(--ink-muted)', lineHeight: 1.65,
-                marginBottom: 14, borderBottom: '0.5px solid var(--ink-border)', paddingBottom: 12,
-              }}
-            >
-              {deck}
-            </p>
-
-            {/* Byline + Timestamp */}
-            <div className="flex items-center gap-2 mb-6">
-              <span
-                style={{
-                  fontFamily: "'Abu JM Akkas', 'Hind Siliguri', sans-serif",
-                  fontSize: 10, fontWeight: 400,
-                  letterSpacing: '0.1em', textTransform: 'uppercase',
-                  color: 'var(--ink-muted)',
-                }}
-              >
-                {byline}
+            
+            <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition">
+              <span className="text-white text-xs font-semibold px-3 py-1.5 bg-black/60 rounded">
+                Upload new media file
               </span>
-              <span style={{ color: 'var(--ink-muted)', fontSize: 10 }}>·</span>
-              <span
-                style={{
-                  fontFamily: "'Abu JM Akkas', 'Hind Siliguri', sans-serif",
-                  fontSize: 10, color: 'var(--ink-muted)',
-                }}
-              >
-                Just now
-              </span>
-            </div>
-
-            {/* Body paragraphs */}
-            <div>
-              {paragraphs.map((para, i) => (
-                <p
-                  key={i}
-                  lang={isBn ? 'bn' : 'en'}
-                  style={{
-                    fontFamily: isBn
-                      ? "'Abu JM Akkas', 'Hind Siliguri', sans-serif"
-                      : "'Source Serif 4', Georgia, serif",
-                    fontWeight: isBn ? 400 : 300,
-                    fontSize: isBn ? 17 : '18px',
-                    lineHeight: 1.85,
-                    color: 'var(--ink)',
-                    marginBottom: '1.25em',
-                  }}
-                >
-                  {para}
-                </p>
-              ))}
             </div>
           </div>
         </div>
+
+        {/* Media Caption */}
+        <div className="mb-6">
+          <input
+            type="text"
+            placeholder="ছবির ক্যাপশন লিখুন..."
+            style={{
+              width: '100%',
+              fontFamily: "'Source Serif 4', Georgia, serif",
+              fontStyle: 'italic',
+              fontSize: '12px',
+              color: 'var(--ink-muted)',
+              border: 'none',
+              borderBottom: '1px dashed var(--ink-border)',
+              background: 'transparent',
+              padding: '4px 0',
+              outline: 'none',
+            }}
+            className="focus:border-[var(--ink)] placeholder:text-[var(--ink-muted)] placeholder:font-normal"
+            value={mediaCaption}
+            onChange={(e) => setMediaCaption(e.target.value)}
+          />
+        </div>
+
+        {/* Article Summary / Deck */}
+        <div className="mb-6">
+          <textarea
+            placeholder="নিবন্ধের সংক্ষেপ বা সারসংক্ষেপ লিখুন..."
+            rows={2}
+            style={{
+              width: '100%',
+              fontFamily: "var(--font-body)",
+              fontWeight: 400,
+              fontSize: '15px',
+              lineHeight: 1.65,
+              color: 'var(--ink)',
+              border: 'none',
+              borderBottom: '1px dashed var(--ink-border)',
+              background: 'transparent',
+              resize: 'none',
+              padding: '6px 0',
+              outline: 'none',
+            }}
+            className="focus:border-[var(--ink)] placeholder:text-[var(--ink-muted)]"
+            value={deck}
+            onChange={(e) => setDeck(e.target.value)}
+          />
+        </div>
+
+        {/* Kicker Category Line */}
+        <div className="mb-6">
+          <input
+            type="text"
+            placeholder="কিকার বা উপশ্রেণী (যেমন: চ্যাম্পিয়নস লিগ · সেমিফাইনাল)..."
+            style={{
+              width: '100%',
+              fontFamily: "'Abu JM Akkas', 'Hind Siliguri', sans-serif",
+              fontSize: '12px',
+              fontWeight: 500,
+              letterSpacing: '0.14em',
+              textTransform: 'uppercase',
+              color: 'var(--ink-muted)',
+              border: 'none',
+              borderBottom: '1px dashed var(--ink-border)',
+              background: 'transparent',
+              padding: '4px 0',
+              outline: 'none',
+            }}
+            className="focus:border-[var(--ink)] placeholder:text-[var(--ink-muted)] placeholder:font-normal"
+            value={kicker}
+            onChange={(e) => setKicker(e.target.value)}
+          />
+        </div>
+
+        {/* Byline / Writer Name & Metadata row */}
+        <div className="flex items-center justify-between border-t border-b border-[var(--ink-border)] py-3 mb-8 gap-3 flex-wrap">
+          <div className="flex items-center gap-3">
+            {/* Writer Avatar */}
+            <div 
+              className="w-9 h-9 rounded-full flex items-center justify-center border overflow-hidden text-xs font-bold bg-[var(--bg-surface)] border-[var(--ink-border)] text-[var(--ink)]"
+            >
+              {byline ? byline.slice(0, 2).toUpperCase() : 'KD'}
+            </div>
+            
+            {/* Byline Input */}
+            <div className="flex flex-col">
+              <div className="flex items-center gap-1">
+                <span className="text-xs text-[var(--ink-muted)]">By:</span>
+                <input
+                  type="text"
+                  placeholder="Staff Reporter"
+                  style={{
+                    fontFamily: "'Abu JM Akkas', 'Hind Siliguri', sans-serif",
+                    fontSize: '12px',
+                    fontWeight: 'bold',
+                    color: 'var(--ink)',
+                    border: 'none',
+                    borderBottom: '1px dashed var(--ink-border)',
+                    background: 'transparent',
+                    width: '150px',
+                    padding: '2px 0',
+                    outline: 'none',
+                  }}
+                  className="focus:border-[var(--ink)] placeholder:text-[var(--ink-muted)]"
+                  value={byline}
+                  onChange={(e) => setByline(e.target.value)}
+                />
+              </div>
+              <span className="text-[10px] text-[var(--ink-muted)] mt-1">আজ · এইমাত্র</span>
+            </div>
+          </div>
+
+          <div className="text-[10px] text-[var(--ink-muted)] font-semibold uppercase" style={{ fontFamily: "'Hind Siliguri', sans-serif" }}>
+            {status === 'draft' ? 'Draft Mode' : 'Published'}
+          </div>
+        </div>
+
+        {/* Paragraphs body contentEditable editor */}
+        <div style={{ fontFamily: "'Hind Siliguri', sans-serif", fontSize: '11px', fontWeight: 600, color: 'var(--ink-muted)', marginBottom: '8px' }}>
+          নিবন্ধের মূল বিষয়বস্তু (ENTER প্রেস করে নতুন অনুচ্ছেদ শুরু করুন):
+        </div>
+        
+        <div
+          contentEditable
+          suppressContentEditableWarning
+          onBlur={(e) => updateBodyFromDOM(e.currentTarget.innerHTML)}
+          style={{
+            minHeight: '280px',
+            fontFamily: "var(--font-body)",
+            fontWeight: 400,
+            fontSize: '19px',
+            lineHeight: '1.75',
+            color: 'var(--ink)',
+            outline: 'none',
+            border: '1.5px dashed var(--ink-border)',
+            padding: '16px',
+            borderRadius: '6px',
+            backgroundColor: 'var(--bg-surface)'
+          }}
+          className="prose-field placeholder-editable"
+          data-placeholder="সংবাদের বিস্তারিত বিবরণ এখানে লিখুন..."
+        >
+          {body ? (
+            body.split(/\n\n+/).map((p, i) => (
+              <div key={i} style={{ marginBottom: '1.6em' }}>{p}</div>
+            ))
+          ) : (
+            <div style={{ color: 'var(--ink-muted)', fontStyle: 'italic', fontSize: '16px' }}>
+              এখানে সংবাদের মূল অনুচ্ছেদগুলো টাইপ করুন...
+            </div>
+          )}
+        </div>
+
       </div>
     </div>
   );
