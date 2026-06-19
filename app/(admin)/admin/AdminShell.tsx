@@ -8,9 +8,7 @@ import { LayoutDashboard, Pencil, Trophy, Megaphone, Sidebar, ExternalLink } fro
 const NAV = [
   { href: '/admin/dashboard', label: 'Dashboard', icon: <LayoutDashboard size={15} /> },
   { href: '/admin/articles', label: 'Articles', icon: <Pencil size={15} /> },
-  { href: '/admin/scores', label: 'Scores', icon: <Trophy size={15} /> },
   { href: '/admin/sponsors', label: 'Sponsors', icon: <Megaphone size={15} /> },
-  { href: '/admin/sidebar-content', label: 'Sidebar Content', icon: <Sidebar size={15} /> },
 ];
 
 export default function AdminShell({ children }: { children: React.ReactNode }) {

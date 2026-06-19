@@ -36,70 +36,33 @@ export default function DashboardClient({ initialArticles, totalScoresCount }: D
   const [sortAsc, setSortAsc] = useState(false);
   const [timeRange, setTimeRange] = useState<'24h' | '7d' | '30d'>('24h');
 
-  // Generate simulated views and live readers seed data
+  // Currently no real analytics data from the backend, defaulting to 0
   const [articlesData, setArticlesData] = useState(() => {
     return initialArticles.map((art) => {
-      // Deterministic total views based on ID and age
-      const ageHours = (new Date().getTime() - new Date(art.publishedAt).getTime()) / (1000 * 60 * 60);
-      const baseViews = Math.floor(Math.abs(Math.sin(art.id) * 8000)) + 1200;
-      const accumulation = Math.floor(Math.min(ageHours, 720) * 12); // accumulate views over time up to 30 days
-      const totalViews = baseViews + accumulation;
-
-      // Deterministic active viewers
-      let baseLive = Math.floor(Math.abs(Math.cos(art.id * 2.3) * 25));
-      if (ageHours < 12) {
-        baseLive = Math.floor(baseLive * 4.5) + 12; // fresh articles get more traffic
-      } else if (ageHours < 48) {
-        baseLive = Math.floor(baseLive * 2.2) + 4;
-      }
-      baseLive = Math.max(1, baseLive);
-
       return {
         ...art,
-        totalViews,
-        liveViewers: baseLive,
+        totalViews: 0,
+        liveViewers: 0,
       };
     });
   });
 
-  // Periodically fluctuate active viewers to make dashboard look real-time and premium
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setArticlesData((prev) => 
-        prev.map((art) => {
-          // 50% chance to change active count slightly
-          if (Math.random() > 0.5) {
-            const delta = Math.random() > 0.5 ? 1 : -1;
-            const newLive = Math.max(0, art.liveViewers + delta);
-            return {
-              ...art,
-              liveViewers: newLive,
-              // slowly increment total views too
-              totalViews: art.totalViews + (Math.random() > 0.9 ? 1 : 0),
-            };
-          }
-          return art;
-        })
-      );
-    }, 4000);
-
-    return () => clearInterval(interval);
-  }, []);
-
   // Compute stats
   const stats = useMemo(() => {
     const totalViews = articlesData.reduce((acc, a) => acc + a.totalViews, 0);
-    const totalLive = articlesData.reduce((acc, a) => acc + a.liveViewers, 0) + 18; // plus 18 on home/static pages
+    const totalLive = articlesData.reduce((acc, a) => acc + a.liveViewers, 0);
     
     // Find most viewed article
-    const topArticle = [...articlesData].sort((a, b) => b.totalViews - a.totalViews)[0];
+    const sortedArticles = [...articlesData].sort((a, b) => b.totalViews - a.totalViews);
+    const topArticle = sortedArticles.length > 0 && sortedArticles[0].totalViews > 0 ? sortedArticles[0] : null;
 
     // Sport breakdown
     const sportViews: Record<string, number> = {};
     articlesData.forEach(a => {
       sportViews[a.sport] = (sportViews[a.sport] || 0) + a.totalViews;
     });
-    const topSport = Object.entries(sportViews).sort((a, b) => b[1] - a[1])[0]?.[0] || 'football';
+    const topSportEntry = Object.entries(sportViews).sort((a, b) => b[1] - a[1])[0];
+    const topSport = topSportEntry && topSportEntry[1] > 0 ? topSportEntry[0] : 'N/A';
 
     return {
       totalViews,
@@ -159,14 +122,11 @@ export default function DashboardClient({ initialArticles, totalScoresCount }: D
 
   // Generate visitors trend charts SVG path coordinates
   const chartData = useMemo(() => {
-    // Generate synthetic time series points based on time range
+    // Generate real time series points (currently 0 as no backend data)
     const pointsCount = timeRange === '24h' ? 12 : timeRange === '7d' ? 7 : 15;
-    const baseValue = timeRange === '24h' ? 450 : timeRange === '7d' ? 3200 : 12000;
     
     const seededPoints = Array.from({ length: pointsCount }).map((_, i) => {
-      const angle = (i / (pointsCount - 1)) * Math.PI * 2.5;
-      const variation = Math.sin(angle) * (baseValue * 0.3) + Math.cos(angle * 1.8) * (baseValue * 0.15);
-      const val = Math.floor(baseValue + variation + Math.random() * (baseValue * 0.05));
+      const val = 0;
       
       let label = '';
       if (timeRange === '24h') {
@@ -189,23 +149,18 @@ export default function DashboardClient({ initialArticles, totalScoresCount }: D
     const width = 600;
     const height = 150;
     const padding = 20;
-    const maxVal = Math.max(...seededPoints.map(p => p.val)) * 1.15;
-    const minVal = Math.min(...seededPoints.map(p => p.val)) * 0.85;
+    const maxVal = 100; // Give it some scale so it doesn't crash on max=0 min=0
+    const minVal = 0;
     
     const coords = seededPoints.map((p, i) => {
       const x = padding + (i / (pointsCount - 1)) * (width - padding * 2);
-      const y = height - padding - ((p.val - minVal) / (maxVal - minVal)) * (height - padding * 2);
+      const y = height - padding; // Always at bottom since val=0
       return { x, y, val: p.val, label: p.label };
     });
 
     let pathD = `M ${coords[0].x} ${coords[0].y}`;
     for (let i = 1; i < coords.length; i++) {
-      // smooth curve using bezier
-      const cpX1 = coords[i-1].x + (coords[i].x - coords[i-1].x) / 2;
-      const cpY1 = coords[i-1].y;
-      const cpX2 = coords[i-1].x + (coords[i].x - coords[i-1].x) / 2;
-      const cpY2 = coords[i].y;
-      pathD += ` C ${cpX1} ${cpY1}, ${cpX2} ${cpY2}, ${coords[i].x} ${coords[i].y}`;
+      pathD += ` L ${coords[i].x} ${coords[i].y}`; // Just straight lines for 0
     }
 
     const fillD = `${pathD} L ${coords[coords.length - 1].x} ${height - padding} L ${coords[0].x} ${height - padding} Z`;
@@ -254,10 +209,9 @@ export default function DashboardClient({ initialArticles, totalScoresCount }: D
           style={{ fontFamily: "'Hind Siliguri', sans-serif", fontSize: 11, fontWeight: 600 }}
         >
           <span className="flex h-2.5 w-2.5 relative">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#117A65] opacity-75"></span>
             <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#117A65]"></span>
           </span>
-          LIVE ACTIVITY MONITOR: ACTIVE
+          ACTIVITY MONITOR: IDLE
         </div>
       </div>
 
@@ -285,14 +239,14 @@ export default function DashboardClient({ initialArticles, totalScoresCount }: D
               <span className="text-3xl font-extrabold text-[var(--ink)] tracking-tight">
                 {stats.totalLive}
               </span>
-              <span className="text-xs text-[#27AE60] font-medium flex items-center gap-0.5 animate-pulse">
-                ● active
+              <span className="text-xs text-[var(--ink-muted)] font-medium flex items-center gap-0.5">
+                ● tracking inactive
               </span>
             </div>
           </div>
           <div className="mt-3 pt-3 border-t border-[var(--ink-border)] flex justify-between items-center text-[10px] text-[var(--ink-muted)]">
-            <span>Home feed: 18 users</span>
-            <span className="font-semibold text-[var(--ink)]">Articles: {stats.totalLive - 18}</span>
+            <span>Home feed: 0 users</span>
+            <span className="font-semibold text-[var(--ink)]">Articles: 0</span>
           </div>
         </div>
 
@@ -390,10 +344,10 @@ export default function DashboardClient({ initialArticles, totalScoresCount }: D
             </div>
             <div className="flex items-baseline gap-2">
               <span className="text-3xl font-extrabold text-[var(--ink)] tracking-tight">
-                2m 54s
+                0m 0s
               </span>
-              <span className="text-xs text-[#27AE60] font-medium">
-                +12% vs last wk
+              <span className="text-xs text-[var(--ink-muted)] font-medium">
+                data unavailable
               </span>
             </div>
           </div>
@@ -517,9 +471,7 @@ export default function DashboardClient({ initialArticles, totalScoresCount }: D
       {/* Quick Action buttons */}
       <div className="flex gap-3 mb-8 flex-wrap">
         <Link href="/admin/articles/new" className="admin-btn-primary">+ New Article</Link>
-        <Link href="/admin/scores" className="admin-btn-secondary">Manage Scores</Link>
         <Link href="/admin/sponsors" className="admin-btn-secondary">Manage Sponsors</Link>
-        <Link href="/admin/sidebar-content" className="admin-btn-secondary">Sidebar Content</Link>
       </div>
 
       {/* Articles Readership Performance Console */}
