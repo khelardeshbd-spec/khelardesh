@@ -15,7 +15,7 @@ export default async function AdminDashboardPage() {
   const [{ data: articles }, { data: scores }] = await Promise.all([
     supabaseAdmin
       .from('Article')
-      .select('id, slug, headline, headlineBn, sport, isLead, publishedAt')
+      .select('id, slug, headline, headlineBn, sport, isLead, publishedAt, views')
       .order('publishedAt', { ascending: false })
       .limit(250),
     supabaseAdmin

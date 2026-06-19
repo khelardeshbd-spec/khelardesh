@@ -6,6 +6,7 @@ import BottomNav from '@/components/frontend/BottomNav';
 import LiveTicker from '@/components/frontend/LiveTicker';
 import Footer from '@/components/frontend/Footer';
 import SessionProviderWrapper from '@/components/frontend/SessionProviderWrapper';
+import PresenceTracker from '@/components/frontend/PresenceTracker';
 
 export const metadata: Metadata = {
   title: {
@@ -44,6 +45,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body>
         <SessionProviderWrapper>
+          <PresenceTracker />
           {/* <SmartHeader /> removed as per user request */}
           <StickyScrollHeader />
           <LiveTicker />

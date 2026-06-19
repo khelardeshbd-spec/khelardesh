@@ -9,6 +9,7 @@ import ReadingProgressBar from './ReadingProgressBar';
 import BottomNav from '@/components/frontend/BottomNav';
 import CommentSection from '@/components/frontend/CommentSection';
 import ScrollToTopButton from '@/components/frontend/ScrollToTopButton';
+import ViewTracker from '@/components/frontend/ViewTracker';
 
 export const dynamic = 'force-dynamic';
 
@@ -88,6 +89,7 @@ export default async function ArticlePage({ params }: PageProps) {
     <div style={{ backgroundColor: 'var(--bg-page)', minHeight: '100vh', color: 'var(--ink)' }}>
       {/* Scroll Progress Bar at the top */}
       <ReadingProgressBar />
+      <ViewTracker articleId={id} />
 
       {/* Back button / Breadcrumbs */}
       <div className="w-full max-w-[680px] mx-auto px-4 pt-6 pb-2">

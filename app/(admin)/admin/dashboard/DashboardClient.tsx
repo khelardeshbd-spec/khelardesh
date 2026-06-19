@@ -14,6 +14,7 @@ import {
   Pencil,
   Activity
 } from 'lucide-react';
+import { supabase } from '@/lib/supabase';
 
 interface Article {
   id: number;
@@ -36,21 +37,60 @@ export default function DashboardClient({ initialArticles, totalScoresCount }: D
   const [sortAsc, setSortAsc] = useState(false);
   const [timeRange, setTimeRange] = useState<'24h' | '7d' | '30d'>('24h');
 
-  // Currently no real analytics data from the backend, defaulting to 0
+  // Use real analytics data from the backend
   const [articlesData, setArticlesData] = useState(() => {
     return initialArticles.map((art) => {
       return {
         ...art,
-        totalViews: 0,
+        totalViews: (art as any).views || 0,
         liveViewers: 0,
       };
     });
   });
 
+  const [totalLiveUsers, setTotalLiveUsers] = useState(0);
+
+  useEffect(() => {
+    const channel = supabase.channel('global_presence');
+    
+    channel.on('presence', { event: 'sync' }, () => {
+      const state = channel.presenceState();
+      
+      let totalLive = 0;
+      const liveBySlug: Record<string, number> = {};
+      
+      for (const id in state) {
+        totalLive += state[id].length;
+        
+        // Count by slug
+        state[id].forEach((presence: any) => {
+          if (presence.slug) {
+            liveBySlug[presence.slug] = (liveBySlug[presence.slug] || 0) + 1;
+          }
+        });
+      }
+      
+      setTotalLiveUsers(totalLive);
+      
+      setArticlesData((prev) => 
+        prev.map((art) => ({
+          ...art,
+          liveViewers: liveBySlug[art.slug] || 0
+        }))
+      );
+    });
+
+    channel.subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, []);
+
   // Compute stats
   const stats = useMemo(() => {
     const totalViews = articlesData.reduce((acc, a) => acc + a.totalViews, 0);
-    const totalLive = articlesData.reduce((acc, a) => acc + a.liveViewers, 0);
+    const totalLive = totalLiveUsers;
     
     // Find most viewed article
     const sortedArticles = [...articlesData].sort((a, b) => b.totalViews - a.totalViews);
@@ -209,9 +249,10 @@ export default function DashboardClient({ initialArticles, totalScoresCount }: D
           style={{ fontFamily: "'Hind Siliguri', sans-serif", fontSize: 11, fontWeight: 600 }}
         >
           <span className="flex h-2.5 w-2.5 relative">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#117A65] opacity-75"></span>
             <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#117A65]"></span>
           </span>
-          ACTIVITY MONITOR: IDLE
+          LIVE ACTIVITY MONITOR: ACTIVE
         </div>
       </div>
 
@@ -239,14 +280,14 @@ export default function DashboardClient({ initialArticles, totalScoresCount }: D
               <span className="text-3xl font-extrabold text-[var(--ink)] tracking-tight">
                 {stats.totalLive}
               </span>
-              <span className="text-xs text-[var(--ink-muted)] font-medium flex items-center gap-0.5">
-                ● tracking inactive
+              <span className="text-xs text-[#27AE60] font-medium flex items-center gap-0.5 animate-pulse">
+                ● active
               </span>
             </div>
           </div>
           <div className="mt-3 pt-3 border-t border-[var(--ink-border)] flex justify-between items-center text-[10px] text-[var(--ink-muted)]">
-            <span>Home feed: 0 users</span>
-            <span className="font-semibold text-[var(--ink)]">Articles: 0</span>
+            <span>Tracking via Supabase</span>
+            <span className="font-semibold text-[var(--ink)]">Articles: {articlesData.reduce((acc, a) => acc + a.liveViewers, 0)}</span>
           </div>
         </div>
 

@@ -13,6 +13,7 @@ CREATE TABLE "Article" (
     "mediaCaption" TEXT,
     "byline" TEXT NOT NULL DEFAULT 'Staff Reporter',
     "isLead" BOOLEAN NOT NULL DEFAULT false,
+    "views" INTEGER NOT NULL DEFAULT 0,
     "publishedAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" DATETIME NOT NULL
