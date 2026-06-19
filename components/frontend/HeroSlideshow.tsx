@@ -145,47 +145,21 @@ export default function HeroSlideshow({ articles }: HeroSlideshowProps) {
                       {article.deck}
                     </p>
                   </div>
-                  <div className="flex items-center justify-between mt-3">
-                    {/* Slide dots */}
+                  <div className="flex items-center justify-between mt-3 opacity-0 pointer-events-none">
                     <div className="flex items-center gap-3">
-                      <button
-                        onClick={(e) => {
-                          e.preventDefault();
-                          setCurrentIndex((prev) => (prev - 1 + articles.length) % articles.length);
-                        }}
-                        className="text-gray-400 hover:text-gray-700 transition-colors p-1 flex items-center justify-center"
-                        aria-label="Previous slide"
-                      >
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" />
-                        </svg>
-                      </button>
-                      
+                      <div className="p-1 flex items-center justify-center">
+                        <div className="w-4 h-4" />
+                      </div>
                       <div className="flex gap-2">
                         {articles.map((_, dotIdx) => (
-                          <button
-                            key={dotIdx}
-                            onClick={(e) => { e.preventDefault(); setCurrentIndex(dotIdx); }}
-                            className={`w-2 h-2 rounded-full transition-colors ${dotIdx === currentIndex ? 'bg-[#d33f3f]' : 'bg-gray-300 hover:bg-gray-400'}`}
-                            aria-label={`Go to slide ${dotIdx + 1}`}
-                          />
+                          <div key={dotIdx} className="w-2 h-2 rounded-full" />
                         ))}
                       </div>
-
-                      <button
-                        onClick={(e) => {
-                          e.preventDefault();
-                          setCurrentIndex((prev) => (prev + 1) % articles.length);
-                        }}
-                        className="text-gray-400 hover:text-gray-700 transition-colors p-1 flex items-center justify-center"
-                        aria-label="Next slide"
-                      >
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
-                        </svg>
-                      </button>
+                      <div className="p-1 flex items-center justify-center">
+                        <div className="w-4 h-4" />
+                      </div>
                     </div>
-                    <span className="text-[11px] font-bold text-[#d33f3f]">
+                    <span className="text-[11px] font-bold">
                       আরো পড়ুন
                     </span>
                   </div>
@@ -194,6 +168,60 @@ export default function HeroSlideshow({ articles }: HeroSlideshowProps) {
             </Link>
           </div>
         ))}
+      </div>
+
+      {/* Static Overlay Grid for Navigation Controls */}
+      <div className="absolute inset-x-0 bottom-4 pointer-events-none z-10 px-4 md:px-0">
+        <div className="grid grid-cols-12 gap-4 w-full">
+          {/* Aligns perfectly with the text column (col-span-12 on mobile, md:col-span-4 on desktop) */}
+          <div className="col-span-12 md:col-span-4 flex items-center justify-between pointer-events-auto pr-1 md:pr-2">
+            <div className="flex items-center gap-3">
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  setCurrentIndex((prev) => (prev - 1 + articles.length) % articles.length);
+                }}
+                className="text-gray-400 hover:text-gray-700 transition-colors p-1 flex items-center justify-center cursor-pointer"
+                aria-label="Previous slide"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" />
+                </svg>
+              </button>
+              
+              <div className="flex gap-2">
+                {articles.map((_, dotIdx) => (
+                  <button
+                    key={dotIdx}
+                    onClick={(e) => { e.preventDefault(); setCurrentIndex(dotIdx); }}
+                    className={`w-2 h-2 rounded-full transition-colors cursor-pointer ${dotIdx === currentIndex ? 'bg-[#d33f3f]' : 'bg-gray-300 hover:bg-gray-400'}`}
+                    aria-label={`Go to slide ${dotIdx + 1}`}
+                  />
+                ))}
+              </div>
+
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  setCurrentIndex((prev) => (prev + 1) % articles.length);
+                }}
+                className="text-gray-400 hover:text-gray-700 transition-colors p-1 flex items-center justify-center cursor-pointer"
+                aria-label="Next slide"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
+                </svg>
+              </button>
+            </div>
+
+            <Link
+              href={`/article/${articles[currentIndex].slug}`}
+              className="text-[11px] font-bold text-[#d33f3f] hover:underline cursor-pointer"
+            >
+              আরো পড়ুন
+            </Link>
+          </div>
+        </div>
       </div>
     </div>
   );
