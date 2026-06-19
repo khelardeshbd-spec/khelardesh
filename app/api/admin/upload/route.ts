@@ -10,7 +10,8 @@ const supabase = createClient(
 
 export async function POST(req: NextRequest) {
   const { getServerSession } = require('next-auth');
-  const session = await getServerSession()
+  const { authOptions } = require('@/lib/auth');
+  const session = await getServerSession(authOptions)
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   const formData = await req.formData()
