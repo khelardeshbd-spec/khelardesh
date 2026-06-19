@@ -224,7 +224,8 @@ export default async function ArticlePage({ params }: PageProps) {
             <div className="flex items-center gap-2 flex-shrink-0">
               <ShareButton />
               <BookmarkButton article={articleForBookmark} variant="circle" />
-              <button 
+              <Link 
+                href="#comments"
                 className="w-8 h-8 rounded-full flex items-center justify-center border hover:bg-[var(--ink-ghost)] transition-colors cursor-pointer text-[var(--ink-muted)] hover:text-[var(--ink)] flex-shrink-0"
                 style={{ 
                   backgroundColor: 'var(--bg-surface)', 
@@ -235,7 +236,7 @@ export default async function ArticlePage({ params }: PageProps) {
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 20.97a.598.598 0 01-.78-.78l.893-2.61a8.887 8.887 0 01-1.023-3.33C4.5 7.444 8.53 3.75 13.5 3.75S21 7.444 21 12z" />
                 </svg>
-              </button>
+              </Link>
             </div>
           </div>
 
@@ -308,7 +309,9 @@ export default async function ArticlePage({ params }: PageProps) {
           </div>
 
           {/* Comment Section */}
-          <CommentSection articleSlug={slug} />
+          <div id="comments">
+            <CommentSection articleSlug={slug} />
+          </div>
 
         </article>
 
