@@ -893,3 +893,14 @@ html {
     padding-bottom: 60px;
   }
 }
+
+/* Contenteditable placeholder styling */
+.placeholder-editable:empty::before {
+  content: attr(data-placeholder);
+  color: var(--ink-muted);
+  opacity: 0.6;
+  font-style: italic;
+  pointer-events: none;
+  font-size: 16px;
+}
+

@@ -220,14 +220,16 @@ export default function EditArticlePage({ params }: { params: { id: string } }) 
             <span>Delete</span>
           </button>
 
-          <button 
-            onClick={() => handleSave('draft')} 
-            className="admin-btn-secondary flex items-center gap-1.5" 
-            style={{ padding: '8px 18px', border: '1.5px solid var(--ink-border)' }}
-            disabled={saving}
-          >
-            <span>{saving ? 'Saving...' : 'Save as Draft'}</span>
-          </button>
+          {status !== 'published' && (
+            <button 
+              onClick={() => handleSave('draft')} 
+              className="admin-btn-secondary flex items-center gap-1.5" 
+              style={{ padding: '8px 18px', border: '1.5px solid var(--ink-border)' }}
+              disabled={saving}
+            >
+              <span>{saving ? 'Saving...' : 'Save as Draft'}</span>
+            </button>
+          )}
 
           <button 
             onClick={() => handleSave('published')} 
@@ -512,17 +514,13 @@ export default function EditArticlePage({ params }: { params: { id: string } }) 
             backgroundColor: 'var(--bg-surface)'
           }}
           className="prose-field placeholder-editable"
-          data-placeholder="সংবাদের বিস্তারিত বিবরণ এখানে লিখুন..."
+          data-placeholder="এখন থেকে শুরু করুন"
         >
           {body ? (
             body.split(/\n\n+/).map((p, i) => (
               <div key={i} style={{ marginBottom: '1.6em' }}>{p}</div>
             ))
-          ) : (
-            <div style={{ color: 'var(--ink-muted)', fontStyle: 'italic', fontSize: '16px' }}>
-              এখানে সংবাদের মূল অনুচ্ছেদগুলো টাইপ করুন...
-            </div>
-          )}
+          ) : null}
         </div>
 
       </div>

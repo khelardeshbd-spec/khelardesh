@@ -14,7 +14,7 @@ export default async function AdminArticlesPage() {
   // Fetch all articles till date
   const { data: articles } = await supabaseAdmin
     .from('Article')
-    .select('id, slug, headline, headlineBn, sport, isLead, publishedAt, byline, views')
+    .select('id, slug, headline, headlineBn, sport, isLead, publishedAt, byline, views, status')
     .order('publishedAt', { ascending: false });
 
   const safeArticles = articles ?? [];

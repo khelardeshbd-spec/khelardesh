@@ -14,6 +14,7 @@ interface Article {
   publishedAt: string;
   byline: string;
   views: number;
+  status?: string;
 }
 
 interface ArticlesClientProps {
@@ -24,10 +25,15 @@ export default function ArticlesClient({ initialArticles }: ArticlesClientProps)
   const [searchQuery, setSearchQuery] = useState('');
   const [sortField, setSortField] = useState<'publishedAt' | 'headline' | 'sport' | 'views'>('publishedAt');
   const [sortAsc, setSortAsc] = useState(false);
+  const [showOnlyDrafts, setShowOnlyDrafts] = useState(false);
 
   // Sort and filter logic
   const sortedAndFilteredArticles = useMemo(() => {
     let result = [...initialArticles];
+
+    if (showOnlyDrafts) {
+      result = result.filter(a => a.status === 'draft');
+    }
 
     if (searchQuery.trim()) {
       const q = searchQuery.toLowerCase();
@@ -63,7 +69,7 @@ export default function ArticlesClient({ initialArticles }: ArticlesClientProps)
     });
 
     return result;
-  }, [initialArticles, searchQuery, sortField, sortAsc]);
+  }, [initialArticles, searchQuery, sortField, sortAsc, showOnlyDrafts]);
 
   const handleSort = (field: 'publishedAt' | 'headline' | 'sport' | 'views') => {
     if (sortField === field) {
@@ -100,17 +106,26 @@ export default function ArticlesClient({ initialArticles }: ArticlesClientProps)
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
         <div>
           <h1 style={{ fontFamily: "var(--font-body)", fontWeight: 800, fontSize: 24, color: 'var(--ink)' }}>
-            নিবন্ধসমূহ / Articles
+            নিবন্ধসমূহ
           </h1>
           <p style={{ fontFamily: "'Hind Siliguri', sans-serif", fontSize: 12, color: 'var(--ink-muted)' }}>
             Manage, edit, search and filter all sports stories
           </p>
         </div>
 
-        <Link href="/admin/articles/new" className="admin-btn-primary flex items-center gap-2">
-          <Plus size={16} />
-          <span>New Article</span>
-        </Link>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => setShowOnlyDrafts(!showOnlyDrafts)}
+            className={showOnlyDrafts ? "admin-btn-primary" : "admin-btn-secondary"}
+            style={{ height: 42, fontSize: 13, fontWeight: 600, padding: '0 16px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+          >
+            {showOnlyDrafts ? 'Show All' : 'Drafts'}
+          </button>
+          <Link href="/admin/articles/new" className="admin-btn-primary flex items-center gap-2" style={{ height: 42 }}>
+            <Plus size={16} />
+            <span>New Article</span>
+          </Link>
+        </div>
       </div>
 
       {/* Control bar: Search and Filters */}
