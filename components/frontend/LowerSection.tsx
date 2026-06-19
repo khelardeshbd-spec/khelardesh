@@ -162,6 +162,7 @@ function CategorySection({ title, slug, articles }: { title: string, slug: strin
   const twoDaysAgo = Date.now() - 2 * 24 * 60 * 60 * 1000;
   const latestArticle = articles[0];
   const secondArticle = articles[1];
+  const thirdArticle = articles[2];
   const hasPoster = latestArticle && latestArticle.publishedAt 
     ? new Date(latestArticle.publishedAt).getTime() >= twoDaysAgo 
     : false;
@@ -188,16 +189,15 @@ function CategorySection({ title, slug, articles }: { title: string, slug: strin
         </h2>
       </div>
 
-      {/* Grid Container for 2 newses */}
+      {/* Grid Container for newses */}
       <div className={hasPoster ? "cat-grid-poster" : "cat-grid-standard"}>
         {hasPoster ? (
           <>
             <CardLead article={latestArticle} />
-            {secondArticle ? (
-              <CardStandard article={secondArticle} />
-            ) : (
-              <div />
-            )}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+              {secondArticle && <CardStandard article={secondArticle} />}
+              {thirdArticle && <CardStandard article={thirdArticle} />}
+            </div>
           </>
         ) : (
           <>
