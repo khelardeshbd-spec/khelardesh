@@ -82,14 +82,13 @@ export default function ScoreCard({
     <motion.div
       whileHover={{ y: -2 }}
       transition={{ type: 'spring', stiffness: 400, damping: 30 }}
-      className="clay-card"
+      className={`clay-card ${isLive ? 'live-match-card' : ''}`}
       style={{
         position: 'relative',
         padding: '10px 12px',
         minWidth: 180,
         maxWidth: 240,
         flexShrink: 0,
-        border: isLive ? '1.5px solid rgba(220,38,38,0.4)' : undefined,
       }}
     >
       {/* Status badge (Absolute Top Right) */}
