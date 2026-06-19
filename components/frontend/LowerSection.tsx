@@ -119,11 +119,49 @@ function CardLead({ article }: { article: Article }) {
   );
 }
 
+function CardStandard({ article }: { article: Article }) {
+  const headline = article.headlineBn || article.headline;
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', width: '100%', marginBottom: 12 }}>
+      <Kicker sport={article.sport} />
+      <Link href={`/article/${article.slug}`} style={{ textDecoration: 'none', display: 'block', marginBottom: 8 }}>
+        {article.mediaUrl && (
+          <div style={{ width: '100%', aspectRatio: '16/9', overflow: 'hidden', border: '1px solid var(--ink-border)', marginBottom: 8, position: 'relative' }}>
+            <Image
+              src={article.mediaUrl}
+              alt={headline || 'Image'}
+              fill
+              sizes="(max-width: 768px) 100vw, 400px"
+              style={{ objectFit: 'cover' }}
+            />
+          </div>
+        )}
+        <h3 style={{
+          fontFamily: 'var(--font-headline)',
+          fontSize: '1.05rem',
+          fontWeight: 700,
+          lineHeight: 1.25,
+          color: 'var(--ink)',
+          margin: 0
+        }}>
+          {headline}
+        </h3>
+      </Link>
+      <div style={{ marginTop: 'auto' }}>
+        <span style={{ fontFamily: 'var(--font-body)', fontSize: 10, color: 'var(--ink-muted)', fontStyle: 'italic' }}>
+          {article.byline || 'স্টাফ রিপোর্টার'}
+        </span>
+      </div>
+    </div>
+  );
+}
+
 function CategorySection({ title, slug, articles }: { title: string, slug: string, articles: Article[] }) {
   if (!articles || articles.length === 0) return null;
 
   const twoDaysAgo = Date.now() - 2 * 24 * 60 * 60 * 1000;
   const latestArticle = articles[0];
+  const secondArticle = articles[1];
   const hasPoster = latestArticle && latestArticle.publishedAt 
     ? new Date(latestArticle.publishedAt).getTime() >= twoDaysAgo 
     : false;
@@ -150,23 +188,28 @@ function CategorySection({ title, slug, articles }: { title: string, slug: strin
         </h2>
       </div>
 
-      {/* Big Poster layout if within 2 days */}
-      {hasPoster ? (
-        <CardLead article={latestArticle} />
-      ) : (
-        <p style={{
-          fontFamily: 'var(--font-body)',
-          fontSize: 12,
-          color: 'var(--ink-muted)',
-          fontStyle: 'italic',
-          textAlign: 'center',
-          padding: '16px 0',
-          border: '1px dashed var(--ink-border)',
-          borderRadius: '4px'
-        }}>
-          গত দুই দিনের কোনো খবর নেই।
-        </p>
-      )}
+      {/* Grid Container for 2 newses */}
+      <div className={hasPoster ? "cat-grid-poster" : "cat-grid-standard"}>
+        {hasPoster ? (
+          <>
+            <CardLead article={latestArticle} />
+            {secondArticle ? (
+              <CardStandard article={secondArticle} />
+            ) : (
+              <div />
+            )}
+          </>
+        ) : (
+          <>
+            <CardStandard article={latestArticle} />
+            {secondArticle ? (
+              <CardStandard article={secondArticle} />
+            ) : (
+              <div />
+            )}
+          </>
+        )}
+      </div>
 
       {/* Red Link at Bottom Right to View All */}
       <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 12 }}>
@@ -263,6 +306,18 @@ export default function LowerSection({
           border-left: 1px solid var(--ink-border);
           padding-left: 24px;
         }
+        .cat-grid-poster {
+          display: grid;
+          grid-template-columns: 2fr 1fr;
+          gap: 24px;
+          align-items: start;
+        }
+        .cat-grid-standard {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 24px;
+          align-items: start;
+        }
         @media (max-width: 1023px) {
           .hp-main-grid {
             grid-template-columns: 1fr;
@@ -273,6 +328,16 @@ export default function LowerSection({
             padding-left: 0;
             border-top: 1px solid var(--ink-border);
             padding-top: 24px;
+          }
+        }
+        @media (max-width: 767px) {
+          .cat-grid-poster {
+            grid-template-columns: 1fr;
+            gap: 20px;
+          }
+          .cat-grid-standard {
+            grid-template-columns: 1fr;
+            gap: 20px;
           }
         }
       `}</style>
