@@ -45,7 +45,7 @@ export async function POST(request: Request) {
     const {
       headline, headlineBn, deck, body: articleBody,
       kicker, sport, mediaType, mediaUrl, mediaCaption,
-      byline = 'Staff Reporter', isLead = false,
+      byline = 'Staff Reporter', isLead = false, status = 'published',
     } = body
 
     if (!headline || !deck || !articleBody || !kicker || !sport || !mediaType || !mediaUrl) {
@@ -83,7 +83,9 @@ export async function POST(request: Request) {
         mediaCaption: mediaCaption || null,
         byline,
         isLead,
+        status,
         publishedAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
       })
       .select()
       .single()
