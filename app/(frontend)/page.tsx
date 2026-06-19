@@ -200,7 +200,7 @@ export default async function HomePage() {
           </div>
 
           {/* Tier 2: Controls & Info Bar */}
-          <div className="grid grid-cols-3 items-center border-b border-gray-200 py-1 sm:py-3 mb-1.5 sm:mb-2 text-xs font-semibold uppercase w-full">
+          <div className="grid grid-cols-3 items-center border-b border-gray-200 py-0.5 sm:py-1 mb-1 sm:mb-1.5 text-xs font-semibold uppercase w-full">
             {/* Left: Icons */}
             <div className="flex items-center justify-start">
               {/* Search */}
