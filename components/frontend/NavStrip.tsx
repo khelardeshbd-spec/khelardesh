@@ -10,7 +10,6 @@ export const NAV_ITEMS = [
     label: 'ফুটবল',
     slug: 'football',
     subItems: [
-      { label: 'সব', slug: 'football' },
       { label: 'দেশের ফুটবল', slug: 'bd-football' },
       { label: 'বিদেশের ফুটবল', slug: 'international-football' },
       { label: 'পাড়া মহল্লার ফুটবল', slug: 'club-football' },
@@ -21,7 +20,6 @@ export const NAV_ITEMS = [
     label: 'ক্রিকেট',
     slug: 'cricket',
     subItems: [
-      { label: 'সব', slug: 'cricket' },
       { label: 'দেশের ক্রিকেট', slug: 'bd-cricket' },
       { label: 'বিদেশের ক্রিকেট', slug: 'international-cricket' },
       { label: 'পাড়া মহল্লার ক্রিকেট', slug: 'local-cricket' }
@@ -35,7 +33,6 @@ export const NAV_ITEMS = [
     label: 'অন্যান্য',
     slug: 'other',
     subItems: [
-      { label: 'সব', slug: 'other' },
       { label: 'বাস্কেটবল', slug: 'basketball' },
       { label: 'রাগবি', slug: 'rugby' },
       { label: 'ফর্মুলা ওয়ান', slug: 'f1' },
@@ -118,7 +115,7 @@ export default function NavStrip({ noBorder = false, vertical = false, onNavigat
                   <Link
                     href={href}
                     lang="bn"
-                    className="flex-1 px-4 py-3 flex items-center"
+                    className="flex-1 px-4 py-3 flex items-center relative"
                     style={{
                       fontFamily: "var(--font-body)",
                       fontSize: 17,
@@ -129,6 +126,7 @@ export default function NavStrip({ noBorder = false, vertical = false, onNavigat
                     onClick={() => { closeDropdown(); onNavigate?.(); }}
                   >
                     {item.label}
+                    {active && <span className="absolute bottom-2 left-4 w-6 h-[3px] bg-[var(--live-red)] rounded-full" />}
                   </Link>
                   {hasSubItems && (
                     <button
@@ -207,7 +205,7 @@ export default function NavStrip({ noBorder = false, vertical = false, onNavigat
                   ref={active ? activeItemRef : undefined}
                   href={href}
                   lang="bn"
-                  className="flex items-center px-1.5 py-2.5 whitespace-nowrap transition-colors duration-150"
+                  className="flex items-center px-1.5 py-2.5 whitespace-nowrap transition-colors duration-150 relative"
                   style={{
                     fontFamily: "var(--font-body)",
                     fontSize: 12.5,
@@ -219,19 +217,19 @@ export default function NavStrip({ noBorder = false, vertical = false, onNavigat
                   onClick={closeDropdown}
                 >
                   {item.label}
+                  {active && <span className="absolute bottom-0.5 left-1.5 right-1.5 h-[2.5px] bg-[var(--live-red)] rounded-full" />}
                 </Link>
 
-                {/* Dropdown chevron button (mobile: click; desktop: decorative) */}
+                {/* Dropdown chevron button (mobile/desktop: click to toggle) */}
                 {hasSubItems && (
                   <button
-                    onClick={() => setOpenDropdown(isOpen ? null : item.slug)}
+                    onClick={(e) => { e.preventDefault(); setOpenDropdown(isOpen ? null : item.slug); }}
                     aria-expanded={isOpen}
                     aria-haspopup="true"
                     aria-label={`${item.label} সাব-মেন্যু`}
-                    className="flex items-center px-1 pr-2 lg:hidden"
+                    className="flex items-center justify-center min-w-[36px] min-h-[36px] cursor-pointer"
                     style={{
-                      backgroundColor: active ? 'var(--ink)' : 'transparent',
-                      color: active ? 'var(--bg-page)' : 'var(--ink-muted)',
+                      color: active ? 'var(--live-red)' : 'var(--ink-muted)',
                     }}
                   >
                     <svg
@@ -252,10 +250,11 @@ export default function NavStrip({ noBorder = false, vertical = false, onNavigat
               {/* Desktop hover dropdown */}
               {hasSubItems && (
                 <div
-                  className="hidden lg:block absolute left-0 top-full pt-1 z-[60] min-w-[210px]
-                             opacity-0 invisible pointer-events-none
-                             group-hover:opacity-100 group-hover:visible group-hover:pointer-events-auto
-                             transition-all duration-150"
+                  className={`hidden lg:block absolute left-0 top-full pt-1 z-[60] min-w-[210px] transition-all duration-150 ${
+                    isOpen 
+                      ? 'opacity-100 visible pointer-events-auto' 
+                      : 'opacity-0 invisible pointer-events-none group-hover:opacity-100 group-hover:visible group-hover:pointer-events-auto'
+                  }`}
                 >
                   <ul
                     role="menu"

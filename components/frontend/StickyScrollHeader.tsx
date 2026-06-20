@@ -53,7 +53,6 @@ export default function StickyScrollHeader() {
       label: 'ফুটবল', 
       slug: 'football',
       subItems: [
-        { label: 'সব', slug: 'football' },
         { label: 'দেশের ফুটবল', slug: 'bd-football' },
         { label: 'বিদেশের ফুটবল', slug: 'international-football' },
         { label: 'পাড়া মহল্লার ফুটবল', slug: 'club-football' }
@@ -63,7 +62,6 @@ export default function StickyScrollHeader() {
       label: 'ক্রিকেট', 
       slug: 'cricket',
       subItems: [
-        { label: 'সব', slug: 'cricket' },
         { label: 'দেশের ক্রিকেট', slug: 'bd-cricket' },
         { label: 'বিদেশের ক্রিকেট', slug: 'international-cricket' },
         { label: 'পাড়া মহল্লার ক্রিকেট', slug: 'local-cricket' }
@@ -77,7 +75,6 @@ export default function StickyScrollHeader() {
       label: 'অন্যান্য', 
       slug: 'other',
       subItems: [
-        { label: 'সব', slug: 'other' },
         { label: 'বাস্কেটবল', slug: 'basketball' },
         { label: 'রাগবি', slug: 'rugby' },
         { label: 'ফর্মুলা ওয়ান', slug: 'f1' },
@@ -127,25 +124,30 @@ export default function StickyScrollHeader() {
 
               if (item.subItems) {
                 return (
-                  <div key={idx} className="relative group py-2">
+                  <div key={idx} className="relative group py-2 flex items-center">
                     <Link
                       ref={isActive ? activeItemRef : undefined}
                       href={href}
-                      onClick={(e) => {
-                        if (window.innerWidth < 1024) {
-                          e.preventDefault();
-                          setOpenDropdown(openDropdown === item.slug ? null : item.slug);
-                        }
-                      }}
-                      className="text-[13px] font-bold tracking-wide transition-colors duration-150 hover:underline flex items-center gap-1"
+                      onClick={() => setOpenDropdown(null)}
+                      className="text-[13px] font-bold tracking-wide transition-colors duration-150 hover:underline flex items-center relative"
                       style={{
                         fontFamily: 'var(--font-body)',
                         color: isActive ? 'var(--live-red)' : 'var(--ink)',
                       }}
                     >
                       {item.label}
-                      <span className="text-[9px]">▼</span>
+                      {isActive && <span className="absolute -bottom-1.5 left-0 right-0 h-[2.5px] bg-[var(--live-red)] rounded-full" />}
                     </Link>
+                    <button
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setOpenDropdown(openDropdown === item.slug ? null : item.slug);
+                      }}
+                      className="flex items-center justify-center min-w-[36px] min-h-[36px] cursor-pointer"
+                      aria-label="Toggle submenu"
+                    >
+                      <span className="text-[9px]" style={{ color: isActive ? 'var(--live-red)' : 'var(--ink)' }}>▼</span>
+                    </button>
                     {/* Dropdown menu */}
                     <div className={`absolute right-0 lg:right-auto lg:left-0 top-[100%] ${isOpen ? 'block' : 'hidden lg:group-hover:block'} bg-[var(--bg-surface)] border border-[var(--ink-border)] shadow-md rounded-[3px] py-1 min-w-[150px] z-50 dropdown-bridge`}>
 
@@ -174,18 +176,20 @@ export default function StickyScrollHeader() {
               }
 
               return (
-                <Link
-                  key={idx}
-                  ref={isActive ? activeItemRef : undefined}
-                  href={href}
-                  className="text-[13px] font-bold tracking-wide transition-colors duration-150 hover:underline py-2"
-                  style={{
-                    fontFamily: 'var(--font-body)',
-                    color: isActive ? 'var(--live-red)' : 'var(--ink)',
-                  }}
-                >
-                  {item.label}
-                </Link>
+                <div key={idx} className="py-2 flex items-center">
+                  <Link
+                    ref={isActive ? activeItemRef : undefined}
+                    href={href}
+                    className="text-[13px] font-bold tracking-wide transition-colors duration-150 hover:underline relative"
+                    style={{
+                      fontFamily: 'var(--font-body)',
+                      color: isActive ? 'var(--live-red)' : 'var(--ink)',
+                    }}
+                  >
+                    {item.label}
+                    {isActive && <span className="absolute -bottom-1.5 left-0 right-0 h-[2.5px] bg-[var(--live-red)] rounded-full" />}
+                  </Link>
+                </div>
               );
           })}
         </nav>
