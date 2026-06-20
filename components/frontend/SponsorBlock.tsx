@@ -18,6 +18,14 @@ interface SponsorBlockProps {
   ctaUrl: string;
 }
 
+function formatUrl(url: string) {
+  if (!url) return '';
+  if (/^(https?:)?\/\//i.test(url) || url.startsWith('/') || url.startsWith('#') || url.startsWith('mailto:') || url.startsWith('tel:')) {
+    return url;
+  }
+  return `https://${url}`;
+}
+
 export default function SponsorBlock({
   label = 'Sponsor',
   title,
@@ -25,6 +33,8 @@ export default function SponsorBlock({
   ctaText,
   ctaUrl,
 }: SponsorBlockProps) {
+  const formattedUrl = formatUrl(ctaUrl);
+
   return (
     <aside
       className="clay-card"
@@ -81,9 +91,8 @@ export default function SponsorBlock({
         {subtitle}
       </p>
 
-      {/* CTA */}
       <a
-        href={ctaUrl}
+        href={formattedUrl}
         target="_blank"
         rel="noopener noreferrer"
         className="sponsor-cta-link"
