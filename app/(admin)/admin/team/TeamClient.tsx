@@ -19,12 +19,23 @@ interface NewEmployeeForm {
   username: string;
   password: string;
   displayName: string;
-  permissions: { write_articles: boolean; view_articles: boolean };
+  permissions: { 
+    write_articles: boolean; 
+    view_articles: boolean;
+    edit_published_articles: boolean;
+    edit_drafts: boolean;
+    delete_articles: boolean;
+    delete_drafts: boolean;
+  };
 }
 
 const PERM_LABELS: Record<string, string> = {
   write_articles: 'Write Articles',
   view_articles: 'View Articles',
+  edit_published_articles: 'Edit Published',
+  edit_drafts: 'Edit Drafts',
+  delete_articles: 'Delete Published',
+  delete_drafts: 'Delete Drafts',
 };
 
 // Fixed-position dropdown menu that escapes overflow:hidden containers
@@ -229,7 +240,14 @@ export default function TeamClient() {
     username: '',
     password: '',
     displayName: '',
-    permissions: { write_articles: true, view_articles: true },
+    permissions: { 
+      write_articles: true, 
+      view_articles: true,
+      edit_published_articles: false,
+      edit_drafts: true,
+      delete_articles: false,
+      delete_drafts: true,
+    },
   });
 
   useEffect(() => { fetchEmployees(); }, []);
@@ -265,7 +283,17 @@ export default function TeamClient() {
 
     setEmployees(prev => [data.employee, ...prev]);
     setShowCreate(false);
-    setForm({ username: '', password: '', displayName: '', permissions: { write_articles: true, view_articles: true } });
+    setForm({ 
+      username: '', password: '', displayName: '', 
+      permissions: { 
+        write_articles: true, 
+        view_articles: true,
+        edit_published_articles: false,
+        edit_drafts: true,
+        delete_articles: false,
+        delete_drafts: true,
+      } 
+    });
   }
 
   const handleToggleActive = useCallback(async (emp: Employee) => {

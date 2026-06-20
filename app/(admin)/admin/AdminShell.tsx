@@ -58,13 +58,16 @@ function NavList({ items, pathname, onClose }: { items: typeof ADMIN_NAV; pathna
 export default function AdminShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const [isMobileOpen, setIsMobileOpen] = useState(false);
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const role = (session?.user as any)?.role;
   const isEmployee = role === 'employee';
   const isSuperAdmin = role === 'super_admin';
-  const navItems = isEmployee 
-    ? EMPLOYEE_NAV 
-    : ADMIN_NAV.filter(item => isSuperAdmin || item.href !== '/admin/admins');
+  
+  const navItems = status === 'loading'
+    ? [] // Prevent wrong menu from flashing
+    : isEmployee 
+      ? EMPLOYEE_NAV 
+      : ADMIN_NAV.filter(item => isSuperAdmin || item.href !== '/admin/admins');
 
   return (
     <div className="flex h-screen overflow-hidden" style={{ backgroundColor: 'var(--bg-page)' }}>
