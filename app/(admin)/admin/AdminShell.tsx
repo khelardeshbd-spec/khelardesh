@@ -4,10 +4,9 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import AdminLogout from './AdminLogout';
-import { LayoutDashboard, Pencil, Megaphone, Users, Menu, X, Home } from 'lucide-react';
+import { LayoutDashboard, Pencil, Megaphone, Users, Menu, X } from 'lucide-react';
 
 const NAV = [
-  { href: '/', label: 'মাঠ (মূল সাইট)', icon: <Home size={15} /> },
   { href: '/admin/dashboard', label: 'Dashboard', icon: <LayoutDashboard size={15} /> },
   { href: '/admin/articles', label: 'Articles', icon: <Pencil size={15} /> },
   { href: '/admin/sponsors', label: 'Sponsors', icon: <Megaphone size={15} /> },
@@ -62,7 +61,7 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
         {/* Nav links */}
         <nav className="flex-1 py-3" aria-label="Admin navigation">
           {NAV.map(({ href, label, icon }) => {
-            const active = href === '/' ? pathname === '/' : pathname.startsWith(href);
+            const active = pathname.startsWith(href);
             return (
               <div key={href} className="hover:bg-[var(--ink-ghost)] rounded-[6px] mx-2 mb-1 transition-colors duration-150">
                 <Link

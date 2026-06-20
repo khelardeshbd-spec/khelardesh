@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
 import { useSession, signIn } from 'next-auth/react';
 import ArticleCard from '@/components/frontend/ArticleCard';
 import Masthead from '@/components/frontend/Masthead';
@@ -59,10 +60,36 @@ export default function SavedPage() {
 
   return (
     <div style={{ backgroundColor: 'var(--bg-page)', minHeight: '100vh' }}>
-      <div className="max-w-[800px] mx-auto px-4 lg:px-6 py-8 pb-12">
-        <div className="hidden lg:block mb-8">
-          <Masthead />
+      {/* Back button / Breadcrumbs */}
+      <div className="w-full max-w-[800px] mx-auto px-4 lg:px-6 pt-6 pb-2">
+        <div className="flex items-center gap-3">
+          <Link 
+            href="/" 
+            className="flex items-center gap-1.5 text-xs font-bold text-[var(--ink)] hover:bg-[var(--ink-ghost)] transition-colors bg-[var(--bg-surface)] border border-[var(--ink-border)] px-3 py-1.5 rounded-full"
+            style={{ fontFamily: 'var(--font-body)' }}
+          >
+            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
+            </svg>
+            ফিরে যান
+          </Link>
+          
+          <div 
+            className="flex items-center gap-1.5 text-xs font-semibold tracking-wider uppercase text-[var(--ink-muted)]"
+            style={{ fontFamily: 'var(--font-body)' }}
+          >
+            <Link href="/" className="hover:text-[var(--ink)] transition-colors">
+              মাঠ
+            </Link>
+            <span>/</span>
+            <span className="text-[#1a5c2e]">
+              সংরক্ষিত খবর
+            </span>
+          </div>
         </div>
+      </div>
+
+      <div className="max-w-[800px] mx-auto px-4 lg:px-6 py-4 pb-12">
         <h1
           lang="bn"
           style={{
