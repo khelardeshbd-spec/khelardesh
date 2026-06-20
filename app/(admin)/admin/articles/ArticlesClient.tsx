@@ -361,7 +361,7 @@ export default function ArticlesClient({ initialArticles }: ArticlesClientProps)
                                   className="w-full px-3 py-2 text-xs text-left hover:bg-[var(--ink-ghost)] flex items-center gap-2 text-slate-700 border-none bg-transparent cursor-pointer font-semibold"
                                   style={{ fontFamily: "'Hind Siliguri', sans-serif" }}
                                 >
-                                  {art.status === 'draft' ? 'Publish (প্রকাশ)' : 'Archive (খসড়া)'}
+                                  {art.status === 'draft' ? 'Publish' : 'Archive'}
                                 </button>
                                 <button
                                   onClick={() => {
@@ -371,7 +371,7 @@ export default function ArticlesClient({ initialArticles }: ArticlesClientProps)
                                   className="w-full px-3 py-2 text-xs text-left hover:bg-red-50 flex items-center gap-2 text-red-600 border-none bg-transparent cursor-pointer font-semibold"
                                   style={{ fontFamily: "'Hind Siliguri', sans-serif" }}
                                 >
-                                  Delete (মুছুন)
+                                  Delete
                                 </button>
                               </div>
                             </>
