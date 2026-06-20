@@ -50,7 +50,7 @@ export async function PUT(
     const {
       headline, headlineBn, deck, body: articleBody,
       kicker, sport, mediaType, mediaUrl, mediaCaption,
-      byline, isLead,
+      byline, isLead, status,
     } = body
 
     const { data: article, error } = await supabaseAdmin
@@ -67,6 +67,7 @@ export async function PUT(
         mediaCaption: mediaCaption || null,
         byline,
         isLead: isLead ?? false,
+        status: status || 'published',
         updatedAt: new Date().toISOString(),
       })
       .eq('id', id)

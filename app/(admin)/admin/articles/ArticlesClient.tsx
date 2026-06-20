@@ -1,8 +1,8 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import Link from 'next/link';
-import { Search, ChevronUp, ChevronDown, Plus, ExternalLink, Pencil } from 'lucide-react';
+import { Search, ChevronUp, ChevronDown, Plus, ExternalLink, Pencil, MoreVertical } from 'lucide-react';
 
 interface Article {
   id: number;
@@ -22,14 +22,60 @@ interface ArticlesClientProps {
 }
 
 export default function ArticlesClient({ initialArticles }: ArticlesClientProps) {
+  const [articles, setArticles] = useState<Article[]>(initialArticles);
   const [searchQuery, setSearchQuery] = useState('');
   const [sortField, setSortField] = useState<'publishedAt' | 'headline' | 'sport' | 'views'>('publishedAt');
   const [sortAsc, setSortAsc] = useState(false);
   const [showOnlyDrafts, setShowOnlyDrafts] = useState(false);
+  const [activeMenuId, setActiveMenuId] = useState<number | null>(null);
+
+  useEffect(() => {
+    setArticles(initialArticles);
+  }, [initialArticles]);
+
+  const handleToggleStatus = async (article: Article) => {
+    const newStatus = article.status === 'draft' ? 'published' : 'draft';
+    try {
+      const resGet = await fetch(`/api/admin/articles/${article.id}`);
+      if (!resGet.ok) throw new Error('Failed to fetch article details');
+      const { article: fullArticle } = await resGet.json();
+      
+      const payload = {
+        ...fullArticle,
+        status: newStatus,
+      };
+      
+      const resPut = await fetch(`/api/admin/articles/${article.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      if (!resPut.ok) throw new Error('Failed to update article status');
+      
+      setArticles(prev => prev.map(a => a.id === article.id ? { ...a, status: newStatus } : a));
+    } catch (err) {
+      console.error(err);
+      alert('Error updating status');
+    }
+  };
+
+  const handleDelete = async (id: number) => {
+    if (!confirm('নিবন্ধটি চিরতরে মুছে ফেলতে চান?')) return;
+    try {
+      const res = await fetch(`/api/admin/articles/${id}`, {
+        method: 'DELETE',
+      });
+      if (!res.ok) throw new Error('Failed to delete article');
+      setArticles(prev => prev.filter(a => a.id !== id));
+    } catch (err) {
+      console.error(err);
+      alert('Error deleting article');
+    }
+  };
 
   // Sort and filter logic
   const sortedAndFilteredArticles = useMemo(() => {
-    let result = [...initialArticles];
+    let result = [...articles];
 
     if (showOnlyDrafts) {
       result = result.filter(a => a.status === 'draft');
@@ -69,7 +115,7 @@ export default function ArticlesClient({ initialArticles }: ArticlesClientProps)
     });
 
     return result;
-  }, [initialArticles, searchQuery, sortField, sortAsc, showOnlyDrafts]);
+  }, [articles, searchQuery, sortField, sortAsc, showOnlyDrafts]);
 
   const handleSort = (field: 'publishedAt' | 'headline' | 'sport' | 'views') => {
     if (sortField === field) {
@@ -150,7 +196,7 @@ export default function ArticlesClient({ initialArticles }: ArticlesClientProps)
         </div>
 
         <div className="text-[11px] text-[var(--ink-muted)] font-semibold" style={{ fontFamily: "'Hind Siliguri', sans-serif" }}>
-          Showing {sortedAndFilteredArticles.length} of {initialArticles.length} articles
+          Showing {sortedAndFilteredArticles.length} of {articles.length} articles
         </div>
       </div>
 
@@ -268,7 +314,7 @@ export default function ArticlesClient({ initialArticles }: ArticlesClientProps)
                       {new Date(art.publishedAt).toLocaleDateString('bn-BD', { dateStyle: 'medium' })}
                     </td>
                     <td className="p-4 text-right">
-                      <div className="flex items-center justify-end gap-3">
+                      <div className="flex items-center justify-end gap-3 relative">
                         <Link 
                           href={`/admin/articles/${art.id}`}
                           className="p-1 hover:bg-[var(--ink-ghost)] rounded transition-colors text-[var(--ink-muted)] hover:text-[var(--ink)]"
@@ -284,6 +330,53 @@ export default function ArticlesClient({ initialArticles }: ArticlesClientProps)
                         >
                           <ExternalLink size={14} />
                         </Link>
+                        
+                        <div className="relative">
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setActiveMenuId(activeMenuId === art.id ? null : art.id);
+                            }}
+                            className="p-1 hover:bg-[var(--ink-ghost)] rounded transition-colors text-[var(--ink-muted)] hover:text-[var(--ink)] cursor-pointer"
+                            title="More Actions"
+                          >
+                            <MoreVertical size={14} />
+                          </button>
+                          
+                          {activeMenuId === art.id && (
+                            <>
+                              <div 
+                                className="fixed inset-0 z-40" 
+                                onClick={() => setActiveMenuId(null)}
+                              />
+                              <div 
+                                className="absolute right-0 mt-1 w-36 bg-white border border-[var(--ink-border)] rounded-md shadow-lg py-1 z-50 text-left"
+                                style={{ transform: 'translateY(2px)' }}
+                              >
+                                <button
+                                  onClick={() => {
+                                    handleToggleStatus(art);
+                                    setActiveMenuId(null);
+                                  }}
+                                  className="w-full px-3 py-2 text-xs text-left hover:bg-[var(--ink-ghost)] flex items-center gap-2 text-slate-700 border-none bg-transparent cursor-pointer font-semibold"
+                                  style={{ fontFamily: "'Hind Siliguri', sans-serif" }}
+                                >
+                                  {art.status === 'draft' ? 'Publish (প্রকাশ)' : 'Archive (খসড়া)'}
+                                </button>
+                                <button
+                                  onClick={() => {
+                                    handleDelete(art.id);
+                                    setActiveMenuId(null);
+                                  }}
+                                  className="w-full px-3 py-2 text-xs text-left hover:bg-red-50 flex items-center gap-2 text-red-600 border-none bg-transparent cursor-pointer font-semibold"
+                                  style={{ fontFamily: "'Hind Siliguri', sans-serif" }}
+                                >
+                                  Delete (মুছুন)
+                                </button>
+                              </div>
+                            </>
+                          )}
+                        </div>
                       </div>
                     </td>
                   </tr>

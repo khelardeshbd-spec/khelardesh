@@ -38,7 +38,7 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
           className="px-5 py-4 border-b flex flex-col items-center justify-center"
           style={{ borderColor: 'var(--ink-border)' }}
         >
-          <Link href="/" className="hover:opacity-90 transition-opacity">
+          <Link href="/" target="_blank" className="hover:opacity-90 transition-opacity">
             <img
               src="/images/khelardesh_logo.png"
               alt="খেলারদেশ"
@@ -64,6 +64,7 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
             </p>
             <Link
               href="/"
+              target="_blank"
               className="mt-1.5 text-[10px] font-bold text-emerald-800 hover:text-emerald-950 transition-colors"
               style={{ fontFamily: "'Hind Siliguri', sans-serif" }}
             >
@@ -102,18 +103,6 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
 
         {/* Footer */}
         <div className="border-t px-4 py-4 flex flex-col gap-2" style={{ borderColor: 'var(--ink-border)' }}>
-          <Link
-            href="/"
-            style={{
-              fontFamily: "'Hind Siliguri', sans-serif",
-              fontSize: 11,
-              color: 'var(--ink-muted)',
-              textDecoration: 'underline',
-              textDecorationColor: 'var(--ink-border)',
-            }}
-          >
-            ↗ মাঠ (মূল সাইট)
-          </Link>
           <AdminLogout />
         </div>
       </aside>
@@ -141,7 +130,7 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
       >
         {/* Mobile Header */}
         <div className="px-5 py-4 border-b flex items-center justify-between" style={{ borderColor: 'var(--ink-border)', height: 52 }}>
-          <Link href="/" className="hover:opacity-90 transition-opacity">
+          <Link href="/" target="_blank" className="hover:opacity-90 transition-opacity">
             <img
               src="/images/khelardesh_logo.png"
               alt="খেলারদেশ"
@@ -191,18 +180,6 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
 
         {/* Mobile Footer */}
         <div className="border-t px-4 py-4 flex flex-col gap-2" style={{ borderColor: 'var(--ink-border)' }}>
-          <Link
-            href="/"
-            style={{
-              fontFamily: "'Hind Siliguri', sans-serif",
-              fontSize: 11,
-              color: 'var(--ink-muted)',
-              textDecoration: 'underline',
-              textDecorationColor: 'var(--ink-border)',
-            }}
-          >
-            ↗ মাঠ (মূল সাইট)
-          </Link>
           <AdminLogout />
         </div>
       </aside>
