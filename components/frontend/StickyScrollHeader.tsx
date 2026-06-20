@@ -146,7 +146,18 @@ export default function StickyScrollHeader() {
                       className="flex items-center justify-center h-[36px] w-[28px] cursor-pointer"
                       aria-label="Toggle submenu"
                     >
-                      <span className="text-[9px]" style={{ color: isActive ? 'var(--live-red)' : 'var(--ink)' }}>▼</span>
+                      <svg
+                        width="10" height="10" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" strokeWidth="2.5"
+                        strokeLinecap="round" strokeLinejoin="round"
+                        style={{
+                          color: isActive ? 'var(--live-red)' : 'var(--ink)',
+                          transform: openDropdown === item.slug ? 'rotate(180deg)' : 'rotate(0deg)',
+                          transition: 'transform 0.2s ease',
+                        }}
+                      >
+                        <polyline points="6 9 12 15 18 9" />
+                      </svg>
                     </button>
                     {/* Dropdown menu */}
                     <div className={`absolute right-0 lg:right-auto lg:left-0 top-[100%] ${isOpen ? 'block' : 'hidden lg:group-hover:block'} bg-[var(--bg-surface)] border border-[var(--ink-border)] shadow-md rounded-[3px] py-1 min-w-[150px] z-50 dropdown-bridge`}>

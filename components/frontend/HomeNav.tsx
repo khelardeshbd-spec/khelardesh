@@ -58,7 +58,7 @@ export default function HomeNav() {
 
   return (
     <div className="border-b border-[#e2e2e2] pb-1.5" ref={navRef}>
-      <div className="flex flex-wrap justify-center lg:justify-between items-center w-full gap-x-4 md:gap-x-6 lg:gap-x-0 gap-y-3 text-[13px] font-semibold">
+      <div className="flex flex-wrap justify-center items-center gap-x-6 lg:gap-x-8 gap-y-3 text-[13px] font-semibold">
         {navItems.map((item, idx) => {
           const href = item.slug === '' ? '/' : `/sport/${item.slug}`;
           const isActive = item.slug === '' 
@@ -87,7 +87,18 @@ export default function HomeNav() {
                   aria-label={`${item.label} সাব-মেন্যু`}
                   aria-expanded={isOpen}
                 >
-                  <span className="text-[9px]" style={{ color: isActive ? 'var(--live-red)' : '#121212' }}>▼</span>
+                  <svg
+                    width="10" height="10" viewBox="0 0 24 24"
+                    fill="none" stroke="currentColor" strokeWidth="2.5"
+                    strokeLinecap="round" strokeLinejoin="round"
+                    style={{
+                      color: isActive ? 'var(--live-red)' : '#121212',
+                      transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
+                      transition: 'transform 0.2s ease',
+                    }}
+                  >
+                    <polyline points="6 9 12 15 18 9" />
+                  </svg>
                 </button>
                 <div className={`absolute left-0 top-[100%] ${isOpen ? 'block' : 'hidden group-hover:block'} bg-[#ffffff] border border-[#e2e2e2] shadow-md rounded-[3px] py-1 min-w-[150px] z-50 dropdown-bridge`}>
                   {item.subItems.map((sub, sIdx) => {
