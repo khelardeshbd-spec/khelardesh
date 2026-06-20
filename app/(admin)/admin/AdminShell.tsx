@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import AdminLogout from './AdminLogout';
-import { LayoutDashboard, Pencil, Megaphone, Users, Menu, X, UsersRound, Activity, Shield } from 'lucide-react';
+import { LayoutDashboard, Pencil, Megaphone, Users, Menu, X, UsersRound, Activity, Shield, UserCircle } from 'lucide-react';
 
 const ADMIN_NAV = [
   { href: '/admin/dashboard', label: 'Dashboard', icon: <LayoutDashboard size={15} /> },
@@ -20,6 +20,8 @@ const ADMIN_NAV = [
 const EMPLOYEE_NAV = [
   { href: '/admin/articles', label: 'Articles', icon: <Pencil size={15} /> },
 ];
+
+const PROFILE_NAV = { href: '/admin/profile', label: 'My Profile', icon: <UserCircle size={15} /> };
 
 function NavList({ items, pathname, onClose }: { items: typeof ADMIN_NAV; pathname: string; onClose?: () => void }) {
   return (
@@ -141,6 +143,30 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
 
         {/* Footer */}
         <div className="border-t px-4 py-4 flex flex-col gap-2" style={{ borderColor: 'var(--ink-border)' }}>
+          {/* Profile shortcut */}
+          <Link
+            href="/admin/profile"
+            className="flex items-center gap-2.5 rounded-md px-2 py-2 hover:bg-[var(--ink-ghost)] transition-colors"
+            style={{ textDecoration: 'none' }}
+          >
+            <div
+              style={{
+                width: 28, height: 28, borderRadius: '50%', flexShrink: 0,
+                background: 'var(--ink)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+              }}
+            >
+              <span style={{ color: 'var(--bg-page)', fontSize: 11, fontWeight: 800 }}>
+                {((session?.user as any)?.displayName || (session?.user as any)?.name || '?').charAt(0).toUpperCase()}
+              </span>
+            </div>
+            <div className="min-w-0">
+              <p style={{ fontFamily: "var(--font-body)", fontSize: 12, fontWeight: 700, color: 'var(--ink)', lineHeight: 1.2, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: 130 }}>
+                {(session?.user as any)?.displayName || (session?.user as any)?.name}
+              </p>
+              <p style={{ fontFamily: "'Hind Siliguri', sans-serif", fontSize: 10, color: 'var(--ink-muted)', lineHeight: 1 }}>My Profile</p>
+            </div>
+          </Link>
           <AdminLogout />
         </div>
       </aside>
@@ -195,6 +221,24 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
 
         {/* Mobile Footer */}
         <div className="border-t px-4 py-4 flex flex-col gap-2" style={{ borderColor: 'var(--ink-border)' }}>
+          <Link
+            href="/admin/profile"
+            onClick={() => setIsMobileOpen(false)}
+            className="flex items-center gap-2.5 rounded-md px-2 py-2 hover:bg-[var(--ink-ghost)] transition-colors"
+            style={{ textDecoration: 'none' }}
+          >
+            <div style={{ width: 28, height: 28, borderRadius: '50%', flexShrink: 0, background: 'var(--ink)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <span style={{ color: 'var(--bg-page)', fontSize: 11, fontWeight: 800 }}>
+                {((session?.user as any)?.displayName || (session?.user as any)?.name || '?').charAt(0).toUpperCase()}
+              </span>
+            </div>
+            <div className="min-w-0">
+              <p style={{ fontFamily: "var(--font-body)", fontSize: 12, fontWeight: 700, color: 'var(--ink)', lineHeight: 1.2, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: 150 }}>
+                {(session?.user as any)?.displayName || (session?.user as any)?.name}
+              </p>
+              <p style={{ fontFamily: "'Hind Siliguri', sans-serif", fontSize: 10, color: 'var(--ink-muted)', lineHeight: 1 }}>My Profile</p>
+            </div>
+          </Link>
           <AdminLogout />
         </div>
       </aside>
