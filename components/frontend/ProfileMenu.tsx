@@ -106,28 +106,19 @@ export default function ProfileMenu({ user }: ProfileMenuProps) {
               সংরক্ষিত খবর
             </Link>
 
-            {/* Place Your Ad */}
-            <Link
-              href="/contact"
-              onClick={() => setIsOpen(false)}
-              className="px-4 py-2 text-xs font-bold text-gray-700 hover:bg-gray-50 flex items-center gap-2 transition-colors"
-            >
-              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2.2" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M10.34 15.84c-.688-.06-1.386-.09-2.09-.09H7.5a4.5 4.5 0 110-9h.75c.704 0 1.402-.03 2.09-.09m0 9.18c.253.962.584 1.892.985 2.783.247.55.06 1.21-.463 1.511l-.357.205a.75.75 0 01-1.084-.368l-.3-1.045a9.769 9.769 0 01-.699-2.086m3.588-5c.712-.132 1.442-.2 2.187-.2h.75a.75.75 0 01.75.75v1.5a.75.75 0 01-.75.75h-.75a17.8 17.8 0 01-2.187-.2m0-2.4c-.03.3-.04.6-.04.9m0-.9a18.252 18.252 0 01-1.955 0m1.955 0v3.3m0 0a18.06 18.06 0 01-1.955 0" />
-              </svg>
-              বিজ্ঞাপন দিন
-            </Link>
-
             {/* Contact Us */}
             <a
               href="mailto:khelardeshbd@gmail.com"
               onClick={() => setIsOpen(false)}
-              className="px-4 py-2 text-xs font-bold text-gray-700 hover:bg-gray-50 flex items-center gap-2 transition-colors"
+              className="px-4 py-2 hover:bg-gray-50 flex items-start gap-2.5 transition-colors"
             >
-              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2.2" viewBox="0 0 24 24">
+              <svg className="w-3.5 h-3.5 mt-0.5 text-gray-700 shrink-0" fill="none" stroke="currentColor" strokeWidth="2.2" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
               </svg>
-              যোগাযোগ করুন
+              <div className="flex flex-col">
+                <span className="text-xs font-bold text-gray-800">যোগাযোগ করুন</span>
+                <span className="text-[9px] text-gray-400 mt-0.5 font-medium leading-[1.3]">বিজ্ঞাপন কিংবা ব্যবসায়িক তথ্যের জন্য</span>
+              </div>
             </a>
 
           </div>
