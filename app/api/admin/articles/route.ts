@@ -1,7 +1,9 @@
 export const dynamic = 'force-dynamic'
 
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
+import { getSessionUser, requirePermission } from '@/lib/rbac'
+import { logActivity } from '@/lib/activity'
 
 function slugify(text: string): string {
   return text
@@ -16,29 +18,29 @@ function slugify(text: string): string {
 }
 
 /**
- * GET /api/admin/articles — list all articles for admin
- * POST /api/admin/articles — create new article
+ * GET /api/admin/articles — list all articles for admin/employee
  */
 export async function GET() {
-  const { getServerSession } = require('next-auth')
-  const { authOptions } = require('@/lib/auth')
-  const session = await getServerSession(authOptions)
-  if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  const user = await getSessionUser()
+  const err = requirePermission(user, 'view_articles')
+  if (err) return err
 
   const { data: articles, error } = await supabaseAdmin
     .from('Article')
-    .select('id, slug, headline, headlineBn, sport, isLead, publishedAt, byline, views')
+    .select('id, slug, headline, headlineBn, sport, isLead, publishedAt, byline, views, status')
     .order('publishedAt', { ascending: false })
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
   return NextResponse.json({ articles: articles ?? [] })
 }
 
-export async function POST(request: Request) {
-  const { getServerSession } = require('next-auth')
-  const { authOptions } = require('@/lib/auth')
-  const session = await getServerSession(authOptions)
-  if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+/**
+ * POST /api/admin/articles — create new article
+ */
+export async function POST(request: NextRequest) {
+  const user = await getSessionUser()
+  const err = requirePermission(user, 'write_articles')
+  if (err) return err
 
   try {
     const body = await request.json() as any
@@ -83,6 +85,15 @@ export async function POST(request: Request) {
       .single()
 
     if (error) throw error
+
+    await logActivity({
+      actor: user!,
+      action: status === 'draft' ? 'article.archive' : 'article.create',
+      targetType: 'article',
+      targetId: String(article.id),
+      targetLabel: headline,
+    })
+
     return NextResponse.json({ article }, { status: 201 })
   } catch (error) {
     console.error('[POST /api/admin/articles]', error)

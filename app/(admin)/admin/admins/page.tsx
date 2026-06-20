@@ -1,0 +1,16 @@
+import { getServerSession } from 'next-auth';
+import { redirect } from 'next/navigation';
+import { getAuthOptions } from '@/lib/auth';
+import AdminsClient from './AdminsClient';
+
+export const metadata = { title: 'Admin Accounts — খেলারদেশ Admin' };
+
+export default async function AdminsPage() {
+  const session = await getServerSession(getAuthOptions());
+  if (!session) redirect('/admin');
+
+  const user = (session.user as any);
+  if (user.role === 'employee') redirect('/admin/articles');
+
+  return <AdminsClient />;
+}

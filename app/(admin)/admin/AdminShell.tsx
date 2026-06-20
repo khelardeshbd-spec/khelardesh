@@ -3,19 +3,63 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 import AdminLogout from './AdminLogout';
-import { LayoutDashboard, Pencil, Megaphone, Users, Menu, X } from 'lucide-react';
+import { LayoutDashboard, Pencil, Megaphone, Users, Menu, X, UsersRound, Activity, Shield } from 'lucide-react';
 
-const NAV = [
+const ADMIN_NAV = [
   { href: '/admin/dashboard', label: 'Dashboard', icon: <LayoutDashboard size={15} /> },
   { href: '/admin/articles', label: 'Articles', icon: <Pencil size={15} /> },
   { href: '/admin/sponsors', label: 'Sponsors', icon: <Megaphone size={15} /> },
   { href: '/admin/composers', label: 'Composers', icon: <Users size={15} /> },
+  { href: '/admin/team', label: 'Team', icon: <UsersRound size={15} /> },
+  { href: '/admin/admins', label: 'Admins', icon: <Shield size={15} /> },
+  { href: '/admin/activity', label: 'Activity Log', icon: <Activity size={15} /> },
 ];
+
+const EMPLOYEE_NAV = [
+  { href: '/admin/articles', label: 'Articles', icon: <Pencil size={15} /> },
+];
+
+function NavList({ items, pathname, onClose }: { items: typeof ADMIN_NAV; pathname: string; onClose?: () => void }) {
+  return (
+    <>
+      {items.map(({ href, label, icon }) => {
+        const active = pathname === href || (href !== '/admin/dashboard' && pathname.startsWith(href));
+        return (
+          <div key={href} className="hover:bg-[var(--ink-ghost)] rounded-[6px] mx-2 mb-1 transition-colors duration-150">
+            <Link
+              href={href}
+              onClick={onClose}
+              className="flex items-center gap-3 transition-colors"
+              style={{
+                backgroundColor: active ? 'var(--ink)' : 'transparent',
+                borderRadius: 6,
+                padding: '9px 12px',
+                color: active ? 'var(--bg-page)' : 'var(--ink-muted)',
+                fontFamily: "'Hind Siliguri', sans-serif",
+                fontSize: 13,
+                fontWeight: active ? 600 : 400,
+              }}
+              aria-current={active ? 'page' : undefined}
+            >
+              <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{icon}</span>
+              {label}
+            </Link>
+          </div>
+        );
+      })}
+    </>
+  );
+}
 
 export default function AdminShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const [isMobileOpen, setIsMobileOpen] = useState(false);
+  const { data: session } = useSession();
+  const role = (session?.user as any)?.role;
+  const isEmployee = role === 'employee';
+  const navItems = isEmployee ? EMPLOYEE_NAV : ADMIN_NAV;
 
   return (
     <div className="flex min-h-screen overflow-hidden" style={{ backgroundColor: 'var(--bg-page)' }}>
@@ -73,32 +117,26 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
           </div>
         </div>
 
+        {/* Role pill */}
+        {role && (
+          <div className="px-5 pt-3 pb-1">
+            <span
+              className="text-[9px] font-bold uppercase tracking-widest px-2 py-0.5 rounded"
+              style={{
+                fontFamily: "'Hind Siliguri', sans-serif",
+                background: role === 'super_admin' ? '#E74C3C15' : role === 'admin' ? '#3498DB15' : '#27AE6015',
+                color: role === 'super_admin' ? '#E74C3C' : role === 'admin' ? '#3498DB' : '#27AE60',
+                border: `1px solid ${role === 'super_admin' ? '#E74C3C30' : role === 'admin' ? '#3498DB30' : '#27AE6030'}`,
+              }}
+            >
+              {role === 'super_admin' ? '★ Super Admin' : role === 'admin' ? 'Admin' : 'Employee'}
+            </span>
+          </div>
+        )}
+
         {/* Nav links */}
-        <nav className="flex-1 py-3" aria-label="Admin navigation">
-          {NAV.map(({ href, label, icon }) => {
-            const active = pathname.startsWith(href);
-            return (
-              <div key={href} className="hover:bg-[var(--ink-ghost)] rounded-[6px] mx-2 mb-1 transition-colors duration-150">
-                <Link
-                  href={href}
-                  className="flex items-center gap-3 transition-colors"
-                  style={{
-                    backgroundColor: active ? 'var(--ink)' : 'transparent',
-                    borderRadius: 6,
-                    padding: '9px 12px',
-                    color: active ? 'var(--bg-page)' : 'var(--ink-muted)',
-                    fontFamily: "'Hind Siliguri', sans-serif",
-                    fontSize: 13,
-                    fontWeight: active ? 600 : 400,
-                  }}
-                  aria-current={active ? 'page' : undefined}
-                >
-                  <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{icon}</span>
-                  {label}
-                </Link>
-              </div>
-            );
-          })}
+        <nav className="flex-1 py-3 overflow-y-auto" aria-label="Admin navigation">
+          <NavList items={navItems} pathname={pathname} />
         </nav>
 
         {/* Footer */}
@@ -108,7 +146,7 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
       </aside>
 
       {/* ── MOBILE BACKDROP & DRAWER ── */}
-      <div 
+      <div
         className="lg:hidden fixed inset-0 z-50 transition-opacity duration-300"
         style={{
           backgroundColor: 'rgba(0,0,0,0.5)',
@@ -141,8 +179,8 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
               }}
             />
           </Link>
-          <button 
-            onClick={() => setIsMobileOpen(false)} 
+          <button
+            onClick={() => setIsMobileOpen(false)}
             style={{ color: 'var(--ink-muted)' }}
             aria-label="Close menu"
           >
@@ -151,31 +189,8 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
         </div>
 
         {/* Mobile Nav links */}
-        <nav className="flex-1 py-3" aria-label="Admin mobile navigation">
-          {NAV.map(({ href, label, icon }) => {
-            const active = pathname.startsWith(href);
-            return (
-              <div key={href} className="hover:bg-[var(--ink-ghost)] rounded-[6px] mx-2 mb-1 transition-colors duration-150">
-                <Link
-                  href={href}
-                  onClick={() => setIsMobileOpen(false)}
-                  className="flex items-center gap-3 transition-colors"
-                  style={{
-                    backgroundColor: active ? 'var(--ink)' : 'transparent',
-                    borderRadius: 6,
-                    padding: '9px 12px',
-                    color: active ? 'var(--bg-page)' : 'var(--ink-muted)',
-                    fontFamily: "'Hind Siliguri', sans-serif",
-                    fontSize: 13,
-                    fontWeight: active ? 600 : 400,
-                  }}
-                >
-                  <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{icon}</span>
-                  {label}
-                </Link>
-              </div>
-            );
-          })}
+        <nav className="flex-1 py-3 overflow-y-auto" aria-label="Admin mobile navigation">
+          <NavList items={navItems} pathname={pathname} onClose={() => setIsMobileOpen(false)} />
         </nav>
 
         {/* Mobile Footer */}

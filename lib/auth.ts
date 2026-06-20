@@ -6,7 +6,6 @@ export function getAuthOptions(): AuthOptions {
   if (cachedAuthOptions) return cachedAuthOptions;
 
   const CredentialsProvider = require('next-auth/providers/credentials').default;
-  const GoogleProvider = require('next-auth/providers/google').default;
 
   cachedAuthOptions = {
     providers: [
@@ -18,23 +17,76 @@ export function getAuthOptions(): AuthOptions {
         },
         async authorize(credentials: any) {
           const { username, password } = credentials ?? {};
+          if (!username || !password) return null;
 
+          const bcrypt = require('bcryptjs');
+          const { supabaseAdmin } = require('@/lib/supabase');
+
+          // ── 1. Check AdminUser table ──────────────────────────────────
+          const { data: adminRow } = await supabaseAdmin
+            .from('AdminUser')
+            .select('id, username, password_hash, display_name, role, is_blocked')
+            .eq('username', username)
+            .single();
+
+          if (adminRow) {
+            if (adminRow.is_blocked) return null; // blocked account
+            const valid = await bcrypt.compare(password, adminRow.password_hash);
+            if (!valid) return null;
+
+            return {
+              id: adminRow.id,
+              name: adminRow.display_name,
+              email: adminRow.username + '@admin.khelardesh',
+              // custom fields stored in JWT
+              username: adminRow.username,
+              displayName: adminRow.display_name,
+              role: adminRow.role,
+              permissions: null,
+            };
+          }
+
+          // ── 2. Check EmployeeUser table ───────────────────────────────
+          const { data: empRow } = await supabaseAdmin
+            .from('EmployeeUser')
+            .select('id, username, password_hash, display_name, is_active, permissions')
+            .eq('username', username)
+            .single();
+
+          if (empRow) {
+            if (!empRow.is_active) return null; // deactivated account
+            const valid = await bcrypt.compare(password, empRow.password_hash);
+            if (!valid) return null;
+
+            return {
+              id: empRow.id,
+              name: empRow.display_name,
+              email: empRow.username + '@employee.khelardesh',
+              username: empRow.username,
+              displayName: empRow.display_name,
+              role: 'employee',
+              permissions: empRow.permissions,
+            };
+          }
+
+          // ── 3. Legacy env-var fallback (emergency access) ────────────
           if (
             username === process.env.ADMIN_USERNAME &&
             password === process.env.ADMIN_PASSWORD
           ) {
             return {
-              id: '1',
+              id: 'legacy-admin',
               name: 'Admin',
               email: 'admin@field.news',
+              username: 'admin',
+              displayName: 'Admin',
+              role: 'super_admin',
+              permissions: null,
             };
           }
+
           return null;
         },
-      }),
-      GoogleProvider({
-        clientId: process.env.GOOGLE_CLIENT_ID || 'placeholder-id',
-        clientSecret: process.env.GOOGLE_CLIENT_SECRET || 'placeholder-secret',
       }),
     ],
     pages: {
@@ -45,44 +97,26 @@ export function getAuthOptions(): AuthOptions {
       maxAge: 60 * 60 * 24, // 24 hours
     },
     callbacks: {
-      async signIn({ user, account }) {
-        if (account?.provider === 'google') {
-          const { supabaseAdmin } = require('@/lib/supabase');
-          try {
-            const { error } = await supabaseAdmin
-              .from('SiteUser')
-              .upsert({
-                email: user.email,
-                name: user.name,
-                image: user.image,
-                lastLoginAt: new Date().toISOString()
-              }, { onConflict: 'email' });
-            if (error) {
-              console.error('Error saving user in Supabase SiteUser table:', error);
-            }
-          } catch (e) {
-            console.error('Database save user failed:', e);
-          }
-        }
-        return true;
-      },
-      async jwt({ token, user, account }) {
+      async jwt({ token, user }) {
+        // On initial sign-in, attach custom fields to token
         if (user) {
-          if (account?.provider === 'credentials') {
-            token.role = 'admin';
-          } else {
-            token.role = 'user';
-          }
-          token.image = user.image;
+          const u = user as any;
+          token.id = u.id;
+          token.username = u.username;
+          token.displayName = u.displayName;
+          token.role = u.role;
+          token.permissions = u.permissions ?? null;
         }
         return token;
       },
       async session({ session, token }) {
         if (session.user) {
-          (session.user as any).role = token.role as string;
-          if (token.image) {
-            session.user.image = token.image as string;
-          }
+          const u = session.user as any;
+          u.id = token.id as string;
+          u.username = token.username as string;
+          u.displayName = token.displayName as string;
+          u.role = token.role as string;
+          u.permissions = token.permissions ?? null;
         }
         return session;
       },
@@ -104,4 +138,3 @@ export const authOptions = new Proxy({} as AuthOptions, {
     return Reflect.getOwnPropertyDescriptor(getAuthOptions(), prop);
   }
 });
-
