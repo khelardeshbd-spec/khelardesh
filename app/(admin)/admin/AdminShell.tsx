@@ -24,6 +24,9 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
         className="hidden lg:flex flex-col flex-shrink-0"
         style={{
           width: 220,
+          height: '100vh',
+          position: 'sticky',
+          top: 0,
           backgroundColor: 'var(--bg-page)',
           borderRight: '1px solid var(--ink-border)',
           borderTopRightRadius: 16,
@@ -35,27 +38,38 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
           className="px-5 py-4 border-b flex flex-col items-center justify-center"
           style={{ borderColor: 'var(--ink-border)' }}
         >
-          <img
-            src="/images/khelardesh_logo.png"
-            alt="খেলারদেশ"
-            style={{
-              height: '38px',
-              objectFit: 'contain',
-              display: 'block',
-              marginBottom: '4px',
-            }}
-          />
-          <p
-            style={{
-              fontFamily: "'Hind Siliguri', sans-serif",
-              fontSize: 9,
-              letterSpacing: '0.12em',
-              textTransform: 'uppercase',
-              color: 'var(--ink-muted)',
-            }}
-          >
-            Admin Panel
-          </p>
+          <Link href="/" className="hover:opacity-90 transition-opacity">
+            <img
+              src="/images/khelardesh_logo.png"
+              alt="খেলারদেশ"
+              style={{
+                height: '38px',
+                objectFit: 'contain',
+                display: 'block',
+                marginBottom: '4px',
+              }}
+            />
+          </Link>
+          <div className="flex flex-col items-center">
+            <p
+              style={{
+                fontFamily: "'Hind Siliguri', sans-serif",
+                fontSize: 9,
+                letterSpacing: '0.12em',
+                textTransform: 'uppercase',
+                color: 'var(--ink-muted)',
+              }}
+            >
+              Admin Panel
+            </p>
+            <Link
+              href="/"
+              className="mt-1.5 text-[10px] font-bold text-emerald-800 hover:text-emerald-950 transition-colors"
+              style={{ fontFamily: "'Hind Siliguri', sans-serif" }}
+            >
+              মাঠে যান ↗
+            </Link>
+          </div>
         </div>
 
         {/* Nav links */}
@@ -127,15 +141,17 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
       >
         {/* Mobile Header */}
         <div className="px-5 py-4 border-b flex items-center justify-between" style={{ borderColor: 'var(--ink-border)', height: 52 }}>
-          <img
-            src="/images/khelardesh_logo.png"
-            alt="খেলারদেশ"
-            style={{
-              height: '32px',
-              objectFit: 'contain',
-              display: 'block',
-            }}
-          />
+          <Link href="/" className="hover:opacity-90 transition-opacity">
+            <img
+              src="/images/khelardesh_logo.png"
+              alt="খেলারদেশ"
+              style={{
+                height: '32px',
+                objectFit: 'contain',
+                display: 'block',
+              }}
+            />
+          </Link>
           <button 
             onClick={() => setIsMobileOpen(false)} 
             style={{ color: 'var(--ink-muted)' }}
