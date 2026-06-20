@@ -12,6 +12,7 @@
     "@aws-sdk/client-s3": "latest",
     "@aws-sdk/s3-request-presigner": "latest",
     "@max-xoo/fotmob": "^2.5.1",
+    "@subhesadek/avro-phonetic": "^2.1.4",
     "@supabase/supabase-js": "latest",
     "@types/bcryptjs": "^2.4.6",
     "bcryptjs": "^3.0.3",

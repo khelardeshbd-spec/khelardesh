@@ -52,3 +52,18 @@ CREATE TABLE "Sponsor" (
 -- CreateIndex
 CREATE UNIQUE INDEX "Article_slug_key" ON "Article"("slug");
 
+
+
+-- CreateTable
+CREATE TABLE "Comment" (
+    "id" SERIAL NOT NULL PRIMARY KEY,
+    "articleSlug" TEXT NOT NULL,
+    "userEmail" TEXT NOT NULL,
+    "userName" TEXT,
+    "userImage" TEXT,
+    "body" TEXT NOT NULL,
+    "parentId" INTEGER,
+    "isReporter" BOOLEAN NOT NULL DEFAULT false,
+    "isRead" BOOLEAN NOT NULL DEFAULT false,
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+);

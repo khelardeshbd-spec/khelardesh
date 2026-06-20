@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useSession, signIn } from 'next-auth/react';
 import { timeAgo } from '@/lib/timeAgo';
+import { ThumbsUp, ThumbsDown } from 'lucide-react';
 
 interface Comment {
   id: number;
@@ -14,6 +15,9 @@ interface Comment {
   parentId: number | null;
   isReporter: boolean;
   createdAt: string;
+  likes?: number;
+  dislikes?: number;
+  userReaction?: 'LIKE' | 'DISLIKE' | null;
 }
 
 export default function CommentSection({ articleSlug }: { articleSlug: string }) {
@@ -77,6 +81,47 @@ export default function CommentSection({ articleSlug }: { articleSlug: string })
       setError(err.message);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleReact = async (commentId: number, type: 'LIKE' | 'DISLIKE') => {
+    if (!session) {
+      signIn('google');
+      return;
+    }
+
+    try {
+      // Optimistic update
+      setComments(prev => prev.map(c => {
+        if (c.id === commentId) {
+          let newLikes = c.likes || 0;
+          let newDislikes = c.dislikes || 0;
+          let newReaction = type;
+
+          if (c.userReaction === type) {
+            // Remove reaction
+            if (type === 'LIKE') newLikes = Math.max(0, newLikes - 1);
+            if (type === 'DISLIKE') newDislikes = Math.max(0, newDislikes - 1);
+            newReaction = null as any;
+          } else {
+            // Switch or Add
+            if (c.userReaction === 'LIKE') newLikes = Math.max(0, newLikes - 1);
+            if (c.userReaction === 'DISLIKE') newDislikes = Math.max(0, newDislikes - 1);
+            if (type === 'LIKE') newLikes++;
+            if (type === 'DISLIKE') newDislikes++;
+          }
+          return { ...c, likes: newLikes, dislikes: newDislikes, userReaction: newReaction };
+        }
+        return c;
+      }));
+
+      await fetch(`/api/articles/${articleSlug}/comments/${commentId}/react`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ type })
+      });
+    } catch (err) {
+      console.error('Reaction failed', err);
     }
   };
 
@@ -189,6 +234,20 @@ export default function CommentSection({ articleSlug }: { articleSlug: string })
                     {/* Actions */}
                     <div className="flex items-center gap-4 mt-2">
                       <button
+                        onClick={() => handleReact(comment.id, 'LIKE')}
+                        className={`flex items-center gap-1.5 text-xs font-semibold transition-colors ${comment.userReaction === 'LIKE' ? 'text-[#d33f3f]' : 'text-[var(--ink-muted)] hover:text-[#d33f3f]'}`}
+                      >
+                        <ThumbsUp size={14} className={comment.userReaction === 'LIKE' ? 'fill-current' : ''} />
+                        {comment.likes || 0}
+                      </button>
+                      <button
+                        onClick={() => handleReact(comment.id, 'DISLIKE')}
+                        className={`flex items-center gap-1.5 text-xs font-semibold transition-colors ${comment.userReaction === 'DISLIKE' ? 'text-[var(--ink)]' : 'text-[var(--ink-muted)] hover:text-[var(--ink)]'}`}
+                      >
+                        <ThumbsDown size={14} className={comment.userReaction === 'DISLIKE' ? 'fill-current' : ''} />
+                        {comment.dislikes || 0}
+                      </button>
+                      <button
                         onClick={() => {
                           if (!session) {
                             signIn('google');
@@ -263,6 +322,22 @@ export default function CommentSection({ articleSlug }: { articleSlug: string })
                               <p className="text-xs text-[var(--ink)] mt-1 leading-relaxed" style={{ fontFamily: 'var(--font-body)' }}>
                                 {reply.body}
                               </p>
+                              <div className="flex items-center gap-4 mt-1.5">
+                                <button
+                                  onClick={() => handleReact(reply.id, 'LIKE')}
+                                  className={`flex items-center gap-1.5 text-[10px] font-semibold transition-colors ${reply.userReaction === 'LIKE' ? 'text-[#d33f3f]' : 'text-[var(--ink-muted)] hover:text-[#d33f3f]'}`}
+                                >
+                                  <ThumbsUp size={12} className={reply.userReaction === 'LIKE' ? 'fill-current' : ''} />
+                                  {reply.likes || 0}
+                                </button>
+                                <button
+                                  onClick={() => handleReact(reply.id, 'DISLIKE')}
+                                  className={`flex items-center gap-1.5 text-[10px] font-semibold transition-colors ${reply.userReaction === 'DISLIKE' ? 'text-[var(--ink)]' : 'text-[var(--ink-muted)] hover:text-[var(--ink)]'}`}
+                                >
+                                  <ThumbsDown size={12} className={reply.userReaction === 'DISLIKE' ? 'fill-current' : ''} />
+                                  {reply.dislikes || 0}
+                                </button>
+                              </div>
                             </div>
                           </div>
                         ))}

@@ -25,7 +25,24 @@ export async function GET(
       return NextResponse.json({ error: 'Failed to fetch comments' }, { status: 500 });
     }
 
-    return NextResponse.json({ comments });
+    const session = await getServerSession(authOptions);
+    let userReactions: any[] = [];
+    
+    if (session?.user?.email && comments && comments.length > 0) {
+      const { data } = await supabaseAdmin
+        .from('CommentReaction')
+        .select('commentId, type')
+        .eq('userEmail', session.user.email)
+        .in('commentId', comments.map((c: any) => c.id));
+      if (data) userReactions = data;
+    }
+
+    const enrichedComments = comments?.map((c: any) => {
+      const reaction = userReactions.find(r => r.commentId === c.id);
+      return { ...c, userReaction: reaction ? reaction.type : null };
+    });
+
+    return NextResponse.json({ comments: enrichedComments });
   } catch (error) {
     console.error('[GET /api/articles/[slug]/comments]', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });

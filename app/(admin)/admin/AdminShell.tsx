@@ -5,11 +5,12 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import AdminLogout from './AdminLogout';
-import { LayoutDashboard, Pencil, Megaphone, Users, Menu, X, UsersRound, Activity, Shield, UserCircle } from 'lucide-react';
+import { LayoutDashboard, Pencil, Megaphone, Users, Menu, X, UsersRound, Activity, Shield, UserCircle, Bell } from 'lucide-react';
 
 const ADMIN_NAV = [
   { href: '/admin/dashboard', label: 'Dashboard', icon: <LayoutDashboard size={15} /> },
   { href: '/admin/articles', label: 'Articles', icon: <Pencil size={15} /> },
+  { href: '/admin/notifications', label: 'Notifications', icon: <Bell size={15} /> },
   { href: '/admin/sponsors', label: 'Sponsors', icon: <Megaphone size={15} /> },
   { href: '/admin/composers', label: 'Composers', icon: <Users size={15} /> },
   { href: '/admin/team', label: 'Team', icon: <UsersRound size={15} /> },

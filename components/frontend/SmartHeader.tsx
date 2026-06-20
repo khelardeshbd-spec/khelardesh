@@ -8,6 +8,7 @@ import NavStrip, { NAV_ITEMS } from './NavStrip';
 import ThemeToggle from './ThemeToggle';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
+import UserNotificationPanel from './UserNotificationPanel';
 
 interface SearchResult {
   id: number;
@@ -99,7 +100,7 @@ export default function SmartHeader() {
         const { data } = await supabase
           .from('Article')
           .select('id, slug, headline, headlineBn, deck')
-          .or(`headline.ilike.%${searchQuery}%,headlineBn.ilike.%${searchQuery}%,deck.ilike.%${searchQuery}%`)
+          .or(`headline.ilike.%${searchQuery}%,headlineBn.ilike.%${searchQuery}%,deck.ilike.%${searchQuery}%,slug.ilike.%${searchQuery}%`)
           .order('publishedAt', { ascending: false })
           .limit(6);
         if (data) setResults(data);
@@ -228,6 +229,7 @@ export default function SmartHeader() {
 
           {/* Right: ThemeToggle + Saved + Search button */}
           <div className="flex items-center justify-end h-full gap-3 border-b border-[var(--ink-border)] pb-2">
+            <UserNotificationPanel />
             <ThemeToggle />
 
             {/* Desktop Saved Folder Button */}
@@ -276,6 +278,7 @@ export default function SmartHeader() {
 
           {/* Right controls */}
           <div className="flex items-center gap-2">
+            <UserNotificationPanel />
             <ThemeToggle />
             <button
               onClick={() => setIsSearchOpen(!isSearchOpen)}

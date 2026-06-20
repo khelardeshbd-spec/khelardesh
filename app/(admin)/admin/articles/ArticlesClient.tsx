@@ -289,7 +289,8 @@ export default function ArticlesClient({ initialArticles }: ArticlesClientProps)
         a.headline.toLowerCase().includes(q) ||
         (a.headlineBn || '').toLowerCase().includes(q) ||
         a.sport.toLowerCase().includes(q) ||
-        (a.byline || '').toLowerCase().includes(q)
+        (a.byline || '').toLowerCase().includes(q) ||
+        (a.slug || '').toLowerCase().includes(q)
       );
     }
 
