@@ -15,5 +15,13 @@ export async function GET() {
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 
-  return NextResponse.json({ admins: data });
+  const isSuperAdmin = user?.role === 'super_admin';
+  const sanitizedAdmins = data.map(admin => {
+    if (!isSuperAdmin && admin.role === 'super_admin') {
+      return { ...admin, role: 'admin' };
+    }
+    return admin;
+  });
+
+  return NextResponse.json({ admins: sanitizedAdmins });
 }

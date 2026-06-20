@@ -64,7 +64,7 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
   const navItems = isEmployee ? EMPLOYEE_NAV : ADMIN_NAV;
 
   return (
-    <div className="flex min-h-screen overflow-hidden" style={{ backgroundColor: 'var(--bg-page)' }}>
+    <div className="flex h-screen overflow-hidden" style={{ backgroundColor: 'var(--bg-page)' }}>
       {/* ── DESKTOP SIDEBAR ── */}
       <aside
         className="hidden lg:flex flex-col flex-shrink-0"

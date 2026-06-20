@@ -52,7 +52,9 @@ export default function AdminsClient() {
           Admin Accounts
         </h1>
         <p style={{ fontFamily: "'Hind Siliguri', sans-serif", fontSize: 12, color: 'var(--ink-muted)' }}>
-          The 3 admin accounts of খেলারদেশ. Super admin can block/unblock regular admins.
+          {isSuperAdmin 
+            ? 'The 3 admin accounts of খেলারদেশ. Super admin can block/unblock regular admins.' 
+            : 'The admin accounts of খেলারদেশ.'}
         </p>
       </div>
 
@@ -165,14 +167,7 @@ export default function AdminsClient() {
         )}
       </div>
 
-      {!isSuperAdmin && (
-        <p
-          className="mt-4 text-center text-xs"
-          style={{ fontFamily: "'Hind Siliguri', sans-serif", color: 'var(--ink-muted)' }}
-        >
-          Only the Super Admin can block or unblock admin accounts.
-        </p>
-      )}
+
     </div>
   );
 }

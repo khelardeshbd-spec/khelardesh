@@ -21,6 +21,10 @@ export async function GET(req: NextRequest) {
     .order('created_at', { ascending: false })
     .range(from, from + limit - 1);
 
+  if (!user || user.role !== 'super_admin') {
+    query = query.not('action', 'in', '(admin.block,admin.unblock)');
+  }
+
   if (actorFilter) {
     query = query.eq('actor_id', actorFilter);
   }
@@ -32,8 +36,16 @@ export async function GET(req: NextRequest) {
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 
+  const isSuperAdmin = user?.role === 'super_admin';
+  const sanitizedLogs = (data ?? []).map(log => {
+    if (!isSuperAdmin && log.actor_role === 'super_admin') {
+      return { ...log, actor_role: 'admin' };
+    }
+    return log;
+  });
+
   return NextResponse.json({
-    logs: data,
+    logs: sanitizedLogs,
     total: count ?? 0,
     page,
     limit,
