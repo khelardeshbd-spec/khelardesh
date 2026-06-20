@@ -16,6 +16,7 @@ import { staggerContainer, fadeUp } from '@/lib/animations';
 import CategoryColumnFeed from '@/components/frontend/CategoryColumnFeed';
 import LowerSection from '@/components/frontend/LowerSection';
 import ProfileMenu from '@/components/frontend/ProfileMenu';
+import HomeNav from '@/components/frontend/HomeNav';
 
 export const dynamic = 'force-dynamic';
 
@@ -248,88 +249,7 @@ export default async function HomePage() {
           </div>
 
           {/* Tier 3: Category Navigation Strip */}
-          <div className="border-b border-[#e2e2e2] pb-1.5">
-            <div className="flex flex-wrap justify-center items-center gap-x-6 gap-y-2 text-xs font-semibold">
-              {[
-                { label: 'মাঠ', slug: '' },
-                {
-                  label: 'ফুটবল',
-                  slug: 'football',
-                  subItems: [
-                    { label: 'সব', slug: 'football' },
-                    { label: 'দেশের ফুটবল', slug: 'bd-football' },
-                    { label: 'বিদেশের ফুটবল', slug: 'international-football' },
-                    { label: 'পাড়া মহল্লার ফুটবল', slug: 'club-football' }
-                  ]
-                },
-                {
-                  label: 'ক্রিকেট',
-                  slug: 'cricket',
-                  subItems: [
-                    { label: 'সব', slug: 'cricket' },
-                    { label: 'দেশের ক্রিকেট', slug: 'bd-cricket' },
-                    { label: 'বিদেশের ক্রিকেট', slug: 'international-cricket' },
-                    { label: 'পাড়া মহল্লার ক্রিকেট', slug: 'local-cricket' }
-                  ]
-                },
-                { label: 'ইন্টারভিউ', slug: 'interview' },
-                { label: 'ফিচার', slug: 'feature' },
-                { label: 'খেলার দেশ বিশেষ', slug: 'special' },
-                { label: 'অতিথি কলাম', slug: 'guest-column' },
-                { 
-                  label: 'অন্যান্য', 
-                  slug: 'other',
-                  subItems: [
-                    { label: 'সব', slug: 'other' },
-                    { label: 'বাস্কেটবল', slug: 'basketball' },
-                    { label: 'রাগবি', slug: 'rugby' },
-                    { label: 'ফর্মুলা ওয়ান', slug: 'f1' },
-                    { label: 'টেবিল টেনিস', slug: 'table-tennis' },
-                    { label: 'গল্ফ', slug: 'golf' },
-                  ]
-                }
-              ].map((item, idx) => {
-                const isActive = item.slug === '';
-                const href = item.slug === '' ? '/' : `/sport/${item.slug}`;
-                if (item.subItems) {
-                  return (
-                    <div key={idx} className="relative group h-full flex items-center">
-                      <Link
-                        href={href}
-                        className="cursor-pointer hover:underline flex items-center gap-1"
-                        style={{ color: isActive ? 'var(--live-red)' : '#121212' }}
-                      >
-                        {item.label}
-                        <span className="text-[9px]">▼</span>
-                      </Link>
-                      <div className="absolute left-0 top-[100%] hidden group-hover:block bg-[#ffffff] border border-[#e2e2e2] shadow-md rounded-[3px] py-1 min-w-[150px] z-50 dropdown-bridge">
-
-                        {item.subItems.map((sub, sIdx) => (
-                          <Link
-                            key={sIdx}
-                            href={`/sport/${sub.slug}`}
-                            className="block px-4 py-2 text-xs font-bold text-[#121212] hover:bg-gray-100 transition-colors"
-                          >
-                            {sub.label}
-                          </Link>
-                        ))}
-                      </div>
-                    </div>
-                  );
-                }
-                return (
-                  <Link
-                    key={idx}
-                    href={href}
-                    className="cursor-pointer hover:underline"
-                    style={{ color: isActive ? 'var(--live-red)' : '#121212' }}
-                  >
-                    {item.label}
-                  </Link>
-                );
-              })}
-            </div>
-          </div>
+          <HomeNav />
         </div>
 
         <HeroSlideshow articles={leads.slice(0, 3)} />
