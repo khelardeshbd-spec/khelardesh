@@ -81,25 +81,30 @@ function ArticleRow({
   art,
   canEditDrafts,
   canEditPublished,
+  canEditArchives,
   canDeleteDrafts,
   canDeletePublished,
-  onToggleStatus,
+  canDeleteArchives,
+  onUpdateStatus,
   onDelete
 }: {
   art: Article;
   canEditDrafts: boolean;
   canEditPublished: boolean;
+  canEditArchives: boolean;
   canDeleteDrafts: boolean;
   canDeletePublished: boolean;
-  onToggleStatus: (art: Article) => void;
+  canDeleteArchives: boolean;
+  onUpdateStatus: (art: Article, status: string) => void;
   onDelete: (id: number) => void;
 }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const btn = useRef<HTMLButtonElement>(null);
 
   const isDraft = art.status === 'draft';
-  const canEdit = isDraft ? canEditDrafts : canEditPublished;
-  const canDelete = isDraft ? canDeleteDrafts : canDeletePublished;
+  const isArchived = art.status === 'archived';
+  const canEdit = isDraft ? canEditDrafts : isArchived ? canEditArchives : canEditPublished;
+  const canDelete = isDraft ? canDeleteDrafts : isArchived ? canDeleteArchives : canDeletePublished;
 
   return (
     <tr style={{ borderBottom: '0.5px solid var(--ink-border)' }} className="hover:bg-[var(--ink-ghost)] transition-colors">
@@ -112,6 +117,10 @@ function ArticleRow({
             {art.status === 'draft' ? (
               <span className="px-1.5 py-0.5 rounded text-[8px] font-bold bg-[#7F8C8D] text-white uppercase tracking-wider" style={{ fontFamily: "'Hind Siliguri', sans-serif" }}>
                 Draft
+              </span>
+            ) : art.status === 'archived' ? (
+              <span className="px-1.5 py-0.5 rounded text-[8px] font-bold bg-[#9B59B6] text-white uppercase tracking-wider" style={{ fontFamily: "'Hind Siliguri', sans-serif" }}>
+                Archived
               </span>
             ) : (
               <span className="px-1.5 py-0.5 rounded text-[8px] font-bold bg-[#27AE60] text-white uppercase tracking-wider" style={{ fontFamily: "'Hind Siliguri', sans-serif" }}>
@@ -163,13 +172,26 @@ function ArticleRow({
               {menuOpen && (
                 <FixedDropdown anchorRef={btn} onClose={() => setMenuOpen(false)}>
                   {canEdit && (
-                    <button
-                      onClick={() => { onToggleStatus(art); setMenuOpen(false); }}
-                      className="w-full px-3 py-2 text-xs text-left hover:bg-[var(--ink-ghost)] flex items-center gap-2 text-slate-700 border-none bg-transparent cursor-pointer font-semibold"
-                      style={{ fontFamily: "'Hind Siliguri', sans-serif" }}
-                    >
-                      {art.status === 'draft' ? 'Publish' : 'Archive'}
-                    </button>
+                    <>
+                      {art.status === 'draft' && (
+                        <>
+                          <button onClick={() => { onUpdateStatus(art, 'published'); setMenuOpen(false); }} className="w-full px-3 py-2 text-xs text-left hover:bg-[var(--ink-ghost)] flex items-center gap-2 text-slate-700 border-none bg-transparent cursor-pointer font-semibold" style={{ fontFamily: "'Hind Siliguri', sans-serif" }}>Publish</button>
+                          <button onClick={() => { onUpdateStatus(art, 'archived'); setMenuOpen(false); }} className="w-full px-3 py-2 text-xs text-left hover:bg-[var(--ink-ghost)] flex items-center gap-2 text-slate-700 border-none bg-transparent cursor-pointer font-semibold" style={{ fontFamily: "'Hind Siliguri', sans-serif" }}>Archive</button>
+                        </>
+                      )}
+                      {(art.status === 'published' || !art.status) && (
+                        <>
+                          <button onClick={() => { onUpdateStatus(art, 'draft'); setMenuOpen(false); }} className="w-full px-3 py-2 text-xs text-left hover:bg-[var(--ink-ghost)] flex items-center gap-2 text-slate-700 border-none bg-transparent cursor-pointer font-semibold" style={{ fontFamily: "'Hind Siliguri', sans-serif" }}>Revert to Draft</button>
+                          <button onClick={() => { onUpdateStatus(art, 'archived'); setMenuOpen(false); }} className="w-full px-3 py-2 text-xs text-left hover:bg-[var(--ink-ghost)] flex items-center gap-2 text-slate-700 border-none bg-transparent cursor-pointer font-semibold" style={{ fontFamily: "'Hind Siliguri', sans-serif" }}>Archive</button>
+                        </>
+                      )}
+                      {art.status === 'archived' && (
+                        <>
+                          <button onClick={() => { onUpdateStatus(art, 'published'); setMenuOpen(false); }} className="w-full px-3 py-2 text-xs text-left hover:bg-[var(--ink-ghost)] flex items-center gap-2 text-slate-700 border-none bg-transparent cursor-pointer font-semibold" style={{ fontFamily: "'Hind Siliguri', sans-serif" }}>Publish</button>
+                          <button onClick={() => { onUpdateStatus(art, 'draft'); setMenuOpen(false); }} className="w-full px-3 py-2 text-xs text-left hover:bg-[var(--ink-ghost)] flex items-center gap-2 text-slate-700 border-none bg-transparent cursor-pointer font-semibold" style={{ fontFamily: "'Hind Siliguri', sans-serif" }}>Restore to Draft</button>
+                        </>
+                      )}
+                    </>
                   )}
                   {canDelete && (
                     <button
@@ -195,27 +217,26 @@ export default function ArticlesClient({ initialArticles }: ArticlesClientProps)
   const [searchQuery, setSearchQuery] = useState('');
   const [sortField, setSortField] = useState<'publishedAt' | 'headline' | 'sport' | 'views'>('publishedAt');
   const [sortAsc, setSortAsc] = useState(false);
-  const [showOnlyDrafts, setShowOnlyDrafts] = useState(false);
+  const [statusFilter, setStatusFilter] = useState<'all' | 'published' | 'draft' | 'archived'>('all');
 
   const { data: session } = useSession();
   const user = session?.user as any;
   const isSuperAdmin = user?.role === 'super_admin' || user?.role === 'admin';
   const perms = user?.permissions || {};
 
-  const canWrite = isSuperAdmin || perms.write_articles !== false; // Default true if missing but role implies it? Actually role is employee, so default to what's in perms. Wait, new users have true by default.
-  // Wait, let's just strictly use perms for employee.
   const canWriteArticles = isSuperAdmin || !!perms.write_articles;
   const canEditPublished = isSuperAdmin || !!perms.edit_published_articles;
   const canEditDrafts = isSuperAdmin || !!perms.edit_drafts;
+  const canEditArchives = isSuperAdmin || !!perms.edit_archives;
   const canDeletePublished = isSuperAdmin || !!perms.delete_articles;
   const canDeleteDrafts = isSuperAdmin || !!perms.delete_drafts;
+  const canDeleteArchives = isSuperAdmin || !!perms.delete_archives;
 
   useEffect(() => {
     setArticles(initialArticles);
   }, [initialArticles]);
 
-  const handleToggleStatus = async (article: Article) => {
-    const newStatus = article.status === 'draft' ? 'published' : 'draft';
+  const handleUpdateStatus = async (article: Article, newStatus: string) => {
     try {
       const resGet = await fetch(`/api/admin/articles/${article.id}`);
       if (!resGet.ok) throw new Error('Failed to fetch article details');
@@ -258,8 +279,8 @@ export default function ArticlesClient({ initialArticles }: ArticlesClientProps)
   const sortedAndFilteredArticles = useMemo(() => {
     let result = [...articles];
 
-    if (showOnlyDrafts) {
-      result = result.filter(a => a.status === 'draft');
+    if (statusFilter !== 'all') {
+      result = result.filter(a => (a.status || 'published') === statusFilter);
     }
 
     if (searchQuery.trim()) {
@@ -296,7 +317,7 @@ export default function ArticlesClient({ initialArticles }: ArticlesClientProps)
     });
 
     return result;
-  }, [articles, searchQuery, sortField, sortAsc, showOnlyDrafts]);
+  }, [articles, searchQuery, sortField, sortAsc, statusFilter]);
 
   const handleSort = (field: 'publishedAt' | 'headline' | 'sport' | 'views') => {
     if (sortField === field) {
@@ -321,13 +342,24 @@ export default function ArticlesClient({ initialArticles }: ArticlesClientProps)
         </div>
 
         <div className="flex items-center gap-2">
-          <button
-            onClick={() => setShowOnlyDrafts(!showOnlyDrafts)}
-            className={showOnlyDrafts ? "admin-btn-primary" : "admin-btn-secondary"}
-            style={{ height: 42, fontSize: 13, fontWeight: 600, padding: '0 16px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-          >
-            {showOnlyDrafts ? 'Show All' : 'Drafts'}
-          </button>
+          <div className="flex bg-[var(--ink-ghost)] p-1 rounded-md" style={{ height: 42 }}>
+            <button
+              onClick={() => setStatusFilter('all')}
+              className={`px-3 py-1 rounded text-xs font-semibold transition-colors ${statusFilter === 'all' ? 'bg-white shadow-sm text-[var(--ink)]' : 'text-[var(--ink-muted)] hover:text-[var(--ink)]'}`}
+            >All</button>
+            <button
+              onClick={() => setStatusFilter('published')}
+              className={`px-3 py-1 rounded text-xs font-semibold transition-colors ${statusFilter === 'published' ? 'bg-white shadow-sm text-[var(--ink)]' : 'text-[var(--ink-muted)] hover:text-[var(--ink)]'}`}
+            >Live</button>
+            <button
+              onClick={() => setStatusFilter('draft')}
+              className={`px-3 py-1 rounded text-xs font-semibold transition-colors ${statusFilter === 'draft' ? 'bg-white shadow-sm text-[var(--ink)]' : 'text-[var(--ink-muted)] hover:text-[var(--ink)]'}`}
+            >Drafts</button>
+            <button
+              onClick={() => setStatusFilter('archived')}
+              className={`px-3 py-1 rounded text-xs font-semibold transition-colors ${statusFilter === 'archived' ? 'bg-white shadow-sm text-[var(--ink)]' : 'text-[var(--ink-muted)] hover:text-[var(--ink)]'}`}
+            >Archives</button>
+          </div>
           {canWriteArticles && (
             <Link href="/admin/articles/new" className="admin-btn-primary flex items-center gap-2" style={{ height: 42 }}>
               <Plus size={16} />
@@ -428,9 +460,11 @@ export default function ArticlesClient({ initialArticles }: ArticlesClientProps)
                     art={art} 
                     canEditDrafts={canEditDrafts}
                     canEditPublished={canEditPublished}
+                    canEditArchives={canEditArchives}
                     canDeleteDrafts={canDeleteDrafts}
                     canDeletePublished={canDeletePublished}
-                    onToggleStatus={handleToggleStatus}
+                    canDeleteArchives={canDeleteArchives}
+                    onUpdateStatus={handleUpdateStatus}
                     onDelete={handleDelete}
                   />
                 ))

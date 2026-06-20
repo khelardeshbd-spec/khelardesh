@@ -70,6 +70,9 @@ export async function PUT(
     if (prev.status === 'draft' && !hasPermission(user, 'edit_drafts')) {
       return new Response('Forbidden — You do not have permission to edit drafts', { status: 403 })
     }
+    if (prev.status === 'archived' && !hasPermission(user, 'edit_archives')) {
+      return new Response('Forbidden — You do not have permission to edit archives', { status: 403 })
+    }
 
     const { data: article, error } = await supabaseAdmin
       .from('Article')
@@ -98,7 +101,7 @@ export async function PUT(
     let action: 'article.update' | 'article.publish' | 'article.archive' = 'article.update'
     if (prev?.status !== status) {
       if (status === 'published') action = 'article.publish'
-      else if (status === 'draft') action = 'article.archive'
+      else if (status === 'archived') action = 'article.archive'
     }
 
     await logActivity({
@@ -143,6 +146,9 @@ export async function DELETE(
     }
     if (article.status === 'draft' && !hasPermission(user, 'delete_drafts')) {
       return new Response('Forbidden — You do not have permission to delete drafts', { status: 403 })
+    }
+    if (article.status === 'archived' && !hasPermission(user, 'delete_archives')) {
+      return new Response('Forbidden — You do not have permission to delete archives', { status: 403 })
     }
 
     const { error } = await supabaseAdmin.from('Article').delete().eq('id', id)

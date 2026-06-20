@@ -23,8 +23,10 @@ interface NewEmployeeForm {
     write_articles: boolean; 
     edit_published_articles: boolean;
     edit_drafts: boolean;
+    edit_archives: boolean;
     delete_articles: boolean;
     delete_drafts: boolean;
+    delete_archives: boolean;
   };
 }
 
@@ -32,8 +34,10 @@ const PERM_LABELS: Record<string, string> = {
   write_articles: 'Write Articles',
   edit_published_articles: 'Edit Published',
   edit_drafts: 'Edit Drafts',
+  edit_archives: 'Edit Archives',
   delete_articles: 'Delete Published',
   delete_drafts: 'Delete Drafts',
+  delete_archives: 'Delete Archives',
 };
 
 // Fixed-position dropdown menu that escapes overflow:hidden containers
@@ -270,8 +274,10 @@ export default function TeamClient() {
       write_articles: true, 
       edit_published_articles: false,
       edit_drafts: true,
+      edit_archives: false,
       delete_articles: false,
       delete_drafts: true,
+      delete_archives: false,
     },
   });
 
@@ -314,8 +320,10 @@ export default function TeamClient() {
         write_articles: true, 
         edit_published_articles: false,
         edit_drafts: true,
+        edit_archives: false,
         delete_articles: false,
         delete_drafts: true,
+        delete_archives: false,
       } 
     });
   }
