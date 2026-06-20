@@ -124,8 +124,27 @@ export function getAuthOptions(): AuthOptions {
           u.username = token.username as string;
           u.displayName = token.displayName as string;
           u.role = token.role as string;
-          u.permissions = token.permissions ?? null;
           u.avatarUrl = token.avatarUrl ?? null;
+          
+          // Always fetch fresh permissions for employees so UI updates instantly without re-login
+          if (u.role === 'employee') {
+            const { supabaseAdmin } = require('@/lib/supabase');
+            const { data: empRow } = await supabaseAdmin
+              .from('EmployeeUser')
+              .select('permissions, is_active')
+              .eq('username', u.username)
+              .single();
+              
+            if (empRow && empRow.is_active) {
+              u.permissions = empRow.permissions;
+            } else {
+              u.permissions = {};
+              // NextAuth doesn't easily let us destroy session here, 
+              // but permissions={} prevents doing any harm.
+            }
+          } else {
+            u.permissions = token.permissions ?? null;
+          }
         }
         return session;
       },

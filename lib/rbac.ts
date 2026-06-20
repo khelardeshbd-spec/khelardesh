@@ -22,6 +22,7 @@ export async function getSessionUser(): Promise<SessionUser | null> {
   const session = await getServerSession(getAuthOptions());
   if (!session?.user) return null;
   const u = session.user as any;
+  
   return {
     id: u.id ?? '',
     username: u.username ?? u.email ?? '',
