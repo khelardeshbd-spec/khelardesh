@@ -1,14 +1,15 @@
 import { AuthOptions } from 'next-auth';
 
-let cachedAuthOptions: AuthOptions | null = null;
-
 export function getAuthOptions(): AuthOptions {
-  if (cachedAuthOptions) return cachedAuthOptions;
-
   const CredentialsProvider = require('next-auth/providers/credentials').default;
+  const GoogleProvider = require('next-auth/providers/google').default;
 
-  cachedAuthOptions = {
+  return {
     providers: [
+      GoogleProvider({
+        clientId: process.env.GOOGLE_CLIENT_ID!,
+        clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+      }),
       CredentialsProvider({
         name: 'Credentials',
         credentials: {
@@ -93,7 +94,7 @@ export function getAuthOptions(): AuthOptions {
       }),
     ],
     pages: {
-      signIn: '/admin',
+      signIn: '/login',
     },
     session: {
       strategy: 'jwt',
@@ -105,11 +106,22 @@ export function getAuthOptions(): AuthOptions {
         if (user) {
           const u = user as any;
           token.id = u.id;
-          token.username = u.username;
-          token.displayName = u.displayName;
-          token.role = u.role;
-          token.permissions = u.permissions ?? null;
-          token.avatarUrl = u.avatarUrl ?? null;
+          
+          if (u.role) {
+            // Credentials login (admin/employee)
+            token.username = u.username;
+            token.displayName = u.displayName;
+            token.role = u.role;
+            token.permissions = u.permissions ?? null;
+            token.avatarUrl = u.avatarUrl ?? null;
+          } else {
+            // Google login
+            token.username = u.email;
+            token.displayName = u.name;
+            token.role = 'user';
+            token.permissions = null;
+            token.avatarUrl = u.image ?? null;
+          }
         }
         if (trigger === 'update' && session?.user) {
           if (session.user.displayName !== undefined) token.displayName = session.user.displayName;
@@ -151,8 +163,6 @@ export function getAuthOptions(): AuthOptions {
     },
     secret: process.env.NEXTAUTH_SECRET,
   };
-
-  return cachedAuthOptions;
 }
 
 export const authOptions = new Proxy({} as AuthOptions, {
