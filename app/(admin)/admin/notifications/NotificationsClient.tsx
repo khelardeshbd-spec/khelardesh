@@ -83,7 +83,7 @@ export default function NotificationsClient({ initialNotifs }: { initialNotifs: 
                       {timeAgo(notif.createdAt, 'en')}
                     </p>
                     <div className="mt-2 p-3 bg-[var(--bg-page)] rounded-md border border-[var(--ink-border)] text-sm text-[var(--ink)]" style={{ fontFamily: "'Hind Siliguri', sans-serif" }}>
-                      "{notif.body}"
+                      &quot;{notif.body}&quot;
                     </div>
                     <div className="mt-3 flex items-center gap-3">
                       <Link 
