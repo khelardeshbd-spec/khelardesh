@@ -68,15 +68,24 @@ export default function NavStrip({ noBorder = false, vertical = false, onNavigat
     }
   }, [pathname]);
 
-  // Close on click outside
+  // Close on click outside or scroll
   useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
+    function handleClickOutside(event: MouseEvent | TouchEvent) {
       if (navRef.current && !navRef.current.contains(event.target as Node)) {
         closeDropdown();
       }
     }
+    function handleScroll() {
+      closeDropdown();
+    }
     document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    document.addEventListener('touchstart', handleClickOutside);
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('touchstart', handleClickOutside);
+      window.removeEventListener('scroll', handleScroll);
+    };
   }, [closeDropdown]);
 
   // Close on Escape key
@@ -199,7 +208,20 @@ export default function NavStrip({ noBorder = false, vertical = false, onNavigat
           const isOpen = openDropdown === item.slug;
 
           return (
-            <li key={item.slug} className="relative flex-shrink-0 group">
+            <li
+              key={item.slug}
+              className="relative flex-shrink-0"
+              onMouseEnter={() => {
+                if (window.innerWidth >= 1024) {
+                  setOpenDropdown(item.slug);
+                }
+              }}
+              onMouseLeave={() => {
+                if (window.innerWidth >= 1024) {
+                  setOpenDropdown(null);
+                }
+              }}
+            >
               <div className="flex items-stretch">
                 <Link
                   ref={active ? activeItemRef : undefined}
@@ -253,7 +275,7 @@ export default function NavStrip({ noBorder = false, vertical = false, onNavigat
                   className={`hidden lg:block absolute left-0 top-full pt-1 z-[60] min-w-[210px] transition-all duration-150 ${
                     isOpen 
                       ? 'opacity-100 visible pointer-events-auto' 
-                      : 'opacity-0 invisible pointer-events-none group-hover:opacity-100 group-hover:visible group-hover:pointer-events-auto'
+                      : 'opacity-0 invisible pointer-events-none'
                   }`}
                 >
                   <ul

@@ -10,13 +10,22 @@ export default function HomeNav() {
   const navRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
+    function handleClickOutside(event: MouseEvent | TouchEvent) {
       if (navRef.current && !navRef.current.contains(event.target as Node)) {
         setOpenDropdown(null);
       }
     }
+    function handleScroll() {
+      setOpenDropdown(null);
+    }
     document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    document.addEventListener('touchstart', handleClickOutside);
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('touchstart', handleClickOutside);
+      window.removeEventListener('scroll', handleScroll);
+    };
   }, []);
 
   const navItems = [
@@ -68,7 +77,20 @@ export default function HomeNav() {
 
           if (item.subItems) {
             return (
-              <div key={idx} className="relative group h-full flex items-center">
+              <div
+                key={idx}
+                className="relative h-full flex items-center"
+                onMouseEnter={() => {
+                  if (window.innerWidth >= 1024) {
+                    setOpenDropdown(item.slug);
+                  }
+                }}
+                onMouseLeave={() => {
+                  if (window.innerWidth >= 1024) {
+                    setOpenDropdown(null);
+                  }
+                }}
+              >
                 <Link
                   href={href}
                   onClick={() => setOpenDropdown(null)}
@@ -100,7 +122,7 @@ export default function HomeNav() {
                     <polyline points="6 9 12 15 18 9" />
                   </svg>
                 </button>
-                <div className={`absolute left-0 top-[100%] ${isOpen ? 'block' : 'hidden group-hover:block'} bg-[#ffffff] border border-[#e2e2e2] shadow-md rounded-[3px] py-1 min-w-[150px] z-50 dropdown-bridge`}>
+                <div className={`absolute left-0 top-[100%] ${isOpen ? 'block' : 'hidden'} bg-[#ffffff] border border-[#e2e2e2] shadow-md rounded-[3px] py-1 min-w-[150px] z-50 dropdown-bridge`}>
                   {item.subItems.map((sub, sIdx) => {
                     const isSubActive = pathname === `/sport/${sub.slug}`;
                     return (

@@ -53,21 +53,29 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
  * Sport-filtered feed page — Section 4
  * Same layout as homepage but filtered to one sport
  */
+const SPORT_MAPPING: Record<string, string[]> = {
+  football: ['football', 'bd-football', 'international-football', 'club-football', 'world-cup-2026'],
+  cricket: ['cricket', 'bd-cricket', 'international-cricket', 'local-cricket'],
+  other: ['other', 'basketball', 'rugby', 'f1', 'table-tennis', 'golf'],
+};
+
 export default async function SportPage({ params }: PageProps) {
   if (!VALID_SPORTS.includes(params.sport)) notFound();
+
+  const sportsToQuery = SPORT_MAPPING[params.sport] || [params.sport];
 
   const [{ data: leadArr }, { data: articles }, { data: scores }, { data: sponsors }] = await Promise.all([
     supabaseAdmin
       .from('Article')
       .select('*')
-      .eq('sport', params.sport)
+      .in('sport', sportsToQuery)
       .eq('isLead', true)
       .order('publishedAt', { ascending: false })
       .limit(1),
     supabaseAdmin
       .from('Article')
       .select('id, slug, headline, headlineBn, deck, sport, mediaType, mediaUrl, byline, publishedAt')
-      .eq('sport', params.sport)
+      .in('sport', sportsToQuery)
       .eq('isLead', false)
       .order('publishedAt', { ascending: false })
       .limit(20),

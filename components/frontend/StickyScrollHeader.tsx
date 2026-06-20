@@ -17,8 +17,8 @@ export default function StickyScrollHeader() {
         setIsVisible(true);
       } else {
         setIsVisible(false);
-        setOpenDropdown(null);
       }
+      setOpenDropdown(null);
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
@@ -27,13 +27,17 @@ export default function StickyScrollHeader() {
 
   // Close dropdown on click outside
   useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
+    function handleClickOutside(event: MouseEvent | TouchEvent) {
       if (navRef.current && !navRef.current.contains(event.target as Node)) {
         setOpenDropdown(null);
       }
     }
     document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    document.addEventListener('touchstart', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('touchstart', handleClickOutside);
+    };
   }, []);
 
   // Scroll active category into view
@@ -124,7 +128,20 @@ export default function StickyScrollHeader() {
 
               if (item.subItems) {
                 return (
-                  <div key={idx} className="relative group py-2 flex items-center">
+                  <div
+                    key={idx}
+                    className="relative py-2 flex items-center"
+                    onMouseEnter={() => {
+                      if (window.innerWidth >= 1024) {
+                        setOpenDropdown(item.slug);
+                      }
+                    }}
+                    onMouseLeave={() => {
+                      if (window.innerWidth >= 1024) {
+                        setOpenDropdown(null);
+                      }
+                    }}
+                  >
                     <Link
                       ref={isActive ? activeItemRef : undefined}
                       href={href}
@@ -160,7 +177,7 @@ export default function StickyScrollHeader() {
                       </svg>
                     </button>
                     {/* Dropdown menu */}
-                    <div className={`absolute right-0 lg:right-auto lg:left-0 top-[100%] ${isOpen ? 'block' : 'hidden lg:group-hover:block'} bg-[var(--bg-surface)] border border-[var(--ink-border)] shadow-md rounded-[3px] py-1 min-w-[150px] z-50 dropdown-bridge`}>
+                    <div className={`absolute right-0 lg:right-auto lg:left-0 top-[100%] ${isOpen ? 'block' : 'hidden'} bg-[var(--bg-surface)] border border-[var(--ink-border)] shadow-md rounded-[3px] py-1 min-w-[150px] z-50 dropdown-bridge`}>
 
                       {item.subItems.map((sub, sIdx) => {
                         const isSubActive = pathname === `/sport/${sub.slug}`;
