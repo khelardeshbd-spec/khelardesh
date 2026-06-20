@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect, useRef } from 'react';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { Search, ChevronUp, ChevronDown, Plus, ExternalLink, Pencil, MoreVertical } from 'lucide-react';
@@ -22,13 +22,180 @@ interface ArticlesClientProps {
   initialArticles: Article[];
 }
 
+// Fixed-position dropdown menu that escapes overflow:hidden containers
+function FixedDropdown({
+  anchorRef,
+  onClose,
+  children,
+}: {
+  anchorRef: React.RefObject<HTMLButtonElement>;
+  onClose: () => void;
+  children: React.ReactNode;
+}) {
+  const [pos, setPos] = useState({ top: 0, right: 0 });
+
+  useEffect(() => {
+    if (anchorRef.current) {
+      const rect = anchorRef.current.getBoundingClientRect();
+      setPos({
+        top: rect.bottom + 4,
+        right: window.innerWidth - rect.right,
+      });
+    }
+  }, [anchorRef]);
+
+  return (
+    <>
+      <div className="fixed inset-0 z-40" onClick={onClose} />
+      <div
+        className="fixed z-50 w-36 bg-white border border-[var(--ink-border)] rounded-md shadow-xl py-1 text-left"
+        style={{ top: pos.top, right: pos.right }}
+      >
+        {children}
+      </div>
+    </>
+  );
+}
+
+function getSportLabel(sport: string) {
+  const maps: Record<string, string> = {
+    football: 'ফুটবল',
+    'bd-football': 'দেশের ফুটবল',
+    'club-football': 'ক্লাব ফুটবল',
+    'international-football': 'আন্তর্জাতিক ফুটবল',
+    cricket: 'ক্রিকেট',
+    'bd-cricket': 'বাংলাদেশের ক্রিকেট',
+    basketball: 'বাস্কেটবল',
+    tennis: 'টেনিস',
+    f1: 'ফর্মুলা ওয়ান',
+    interview: 'ইন্টারভিউ',
+    feature: 'ফিচার',
+    special: 'বিশেষ',
+    'guest-column': 'অতিথি কলাম',
+    other: 'অন্যান্য'
+  };
+  return maps[sport] || sport.toUpperCase();
+}
+
+function ArticleRow({
+  art,
+  canEditDrafts,
+  canEditPublished,
+  canDeleteDrafts,
+  canDeletePublished,
+  onToggleStatus,
+  onDelete
+}: {
+  art: Article;
+  canEditDrafts: boolean;
+  canEditPublished: boolean;
+  canDeleteDrafts: boolean;
+  canDeletePublished: boolean;
+  onToggleStatus: (art: Article) => void;
+  onDelete: (id: number) => void;
+}) {
+  const [menuOpen, setMenuOpen] = useState(false);
+  const btn = useRef<HTMLButtonElement>(null);
+
+  const isDraft = art.status === 'draft';
+  const canEdit = isDraft ? canEditDrafts : canEditPublished;
+  const canDelete = isDraft ? canDeleteDrafts : canDeletePublished;
+
+  return (
+    <tr style={{ borderBottom: '0.5px solid var(--ink-border)' }} className="hover:bg-[var(--ink-ghost)] transition-colors">
+      <td className="p-4 max-w-sm">
+        <div className="flex flex-col">
+          <Link href={`/admin/articles/${art.id}`} className="font-bold text-[var(--ink)] hover:underline leading-snug text-sm" lang="bn">
+            {art.headlineBn || art.headline}
+          </Link>
+          <div className="flex items-center gap-1.5 mt-1.5 flex-wrap">
+            {art.status === 'draft' ? (
+              <span className="px-1.5 py-0.5 rounded text-[8px] font-bold bg-[#7F8C8D] text-white uppercase tracking-wider" style={{ fontFamily: "'Hind Siliguri', sans-serif" }}>
+                Draft
+              </span>
+            ) : (
+              <span className="px-1.5 py-0.5 rounded text-[8px] font-bold bg-[#27AE60] text-white uppercase tracking-wider" style={{ fontFamily: "'Hind Siliguri', sans-serif" }}>
+                Live
+              </span>
+            )}
+            {art.isLead && (
+              <span className="px-1.5 py-0.5 rounded text-[8px] font-bold bg-[#E74C3C] text-white uppercase tracking-wider" style={{ fontFamily: "'Hind Siliguri', sans-serif" }}>
+                Lead Story
+              </span>
+            )}
+          </div>
+        </div>
+      </td>
+      <td className="p-4 text-xs font-semibold text-[var(--ink-muted)]">
+        {getSportLabel(art.sport)}
+      </td>
+      <td className="p-4 text-xs text-[var(--ink-muted)]">
+        {art.byline}
+      </td>
+      <td className="p-4 text-right text-xs font-bold text-[var(--ink)]">
+        {(art.views ?? 0).toLocaleString()}
+      </td>
+      <td className="p-4 text-right text-xs text-[var(--ink-muted)] whitespace-nowrap">
+        {new Date(art.publishedAt).toLocaleDateString('bn-BD', { dateStyle: 'medium' })}
+      </td>
+      <td className="p-4 text-right">
+        <div className="flex items-center justify-end gap-3 relative">
+          {canEdit && (
+            <Link href={`/admin/articles/${art.id}`} className="p-1 hover:bg-[var(--ink-ghost)] rounded transition-colors text-[var(--ink-muted)] hover:text-[var(--ink)]" title="Edit">
+              <Pencil size={14} />
+            </Link>
+          )}
+          <Link href={`/article/${art.slug}`} target="_blank" className="p-1 hover:bg-[var(--ink-ghost)] rounded transition-colors text-[var(--ink-muted)] hover:text-[var(--ink)]" title="View Live">
+            <ExternalLink size={14} />
+          </Link>
+          
+          {(canEdit || canDelete) && (
+            <div className="relative">
+              <button
+                ref={btn}
+                onClick={(e) => { e.stopPropagation(); setMenuOpen(!menuOpen); }}
+                className="p-1 hover:bg-[var(--ink-ghost)] rounded transition-colors text-[var(--ink-muted)] hover:text-[var(--ink)] cursor-pointer"
+                title="More Actions"
+              >
+                <MoreVertical size={14} />
+              </button>
+              
+              {menuOpen && (
+                <FixedDropdown anchorRef={btn} onClose={() => setMenuOpen(false)}>
+                  {canEdit && (
+                    <button
+                      onClick={() => { onToggleStatus(art); setMenuOpen(false); }}
+                      className="w-full px-3 py-2 text-xs text-left hover:bg-[var(--ink-ghost)] flex items-center gap-2 text-slate-700 border-none bg-transparent cursor-pointer font-semibold"
+                      style={{ fontFamily: "'Hind Siliguri', sans-serif" }}
+                    >
+                      {art.status === 'draft' ? 'Publish' : 'Archive'}
+                    </button>
+                  )}
+                  {canDelete && (
+                    <button
+                      onClick={() => { onDelete(art.id); setMenuOpen(false); }}
+                      className="w-full px-3 py-2 text-xs text-left hover:bg-red-50 flex items-center gap-2 text-red-600 border-none bg-transparent cursor-pointer font-semibold"
+                      style={{ fontFamily: "'Hind Siliguri', sans-serif" }}
+                    >
+                      Delete
+                    </button>
+                  )}
+                </FixedDropdown>
+              )}
+            </div>
+          )}
+        </div>
+      </td>
+    </tr>
+  );
+}
+
 export default function ArticlesClient({ initialArticles }: ArticlesClientProps) {
   const [articles, setArticles] = useState<Article[]>(initialArticles);
   const [searchQuery, setSearchQuery] = useState('');
   const [sortField, setSortField] = useState<'publishedAt' | 'headline' | 'sport' | 'views'>('publishedAt');
   const [sortAsc, setSortAsc] = useState(false);
   const [showOnlyDrafts, setShowOnlyDrafts] = useState(false);
-  const [activeMenuId, setActiveMenuId] = useState<number | null>(null);
 
   const { data: session } = useSession();
   const user = session?.user as any;
@@ -138,26 +305,6 @@ export default function ArticlesClient({ initialArticles }: ArticlesClientProps)
       setSortField(field);
       setSortAsc(false);
     }
-  };
-
-  const getSportLabel = (sport: string) => {
-    const maps: Record<string, string> = {
-      football: 'ফুটবল',
-      'bd-football': 'দেশের ফুটবল',
-      'club-football': 'ক্লাব ফুটবল',
-      'international-football': 'আন্তর্জাতিক ফুটবল',
-      cricket: 'ক্রিকেট',
-      'bd-cricket': 'বাংলাদেশের ক্রিকেট',
-      basketball: 'বাস্কেটবল',
-      tennis: 'টেনিস',
-      f1: 'ফর্মুলা ওয়ান',
-      interview: 'ইন্টারভিউ',
-      feature: 'ফিচার',
-      special: 'বিশেষ',
-      'guest-column': 'অতিথি কলাম',
-      other: 'অন্যান্য'
-    };
-    return maps[sport] || sport.toUpperCase();
   };
 
   return (
@@ -276,144 +423,16 @@ export default function ArticlesClient({ initialArticles }: ArticlesClientProps)
                 </tr>
               ) : (
                 sortedAndFilteredArticles.map((art) => (
-                  <tr 
+                  <ArticleRow 
                     key={art.id} 
-                    style={{ borderBottom: '0.5px solid var(--ink-border)' }} 
-                    className="hover:bg-[var(--ink-ghost)] transition-colors"
-                  >
-                    <td className="p-4 max-w-sm">
-                      <div className="flex flex-col">
-                        <Link 
-                          href={`/admin/articles/${art.id}`}
-                          className="font-bold text-[var(--ink)] hover:underline leading-snug text-sm"
-                          lang="bn"
-                        >
-                          {art.headlineBn || art.headline}
-                        </Link>
-                        <div className="flex items-center gap-1.5 mt-1.5 flex-wrap">
-                          {art.status === 'draft' ? (
-                            <span 
-                              className="px-1.5 py-0.5 rounded text-[8px] font-bold bg-[#7F8C8D] text-white uppercase tracking-wider"
-                              style={{ fontFamily: "'Hind Siliguri', sans-serif" }}
-                            >
-                              Draft
-                            </span>
-                          ) : (
-                            <span 
-                              className="px-1.5 py-0.5 rounded text-[8px] font-bold bg-[#27AE60] text-white uppercase tracking-wider"
-                              style={{ fontFamily: "'Hind Siliguri', sans-serif" }}
-                            >
-                              Live
-                            </span>
-                          )}
-                          {art.isLead && (
-                            <span 
-                              className="px-1.5 py-0.5 rounded text-[8px] font-bold bg-[#E74C3C] text-white uppercase tracking-wider"
-                              style={{ fontFamily: "'Hind Siliguri', sans-serif" }}
-                            >
-                              Lead Story
-                            </span>
-                          )}
-                        </div>
-                      </div>
-                    </td>
-                    <td className="p-4 text-xs font-semibold text-[var(--ink-muted)]">
-                      {getSportLabel(art.sport)}
-                    </td>
-                    <td className="p-4 text-xs text-[var(--ink-muted)]">
-                      {art.byline}
-                    </td>
-                    <td className="p-4 text-right text-xs font-bold text-[var(--ink)]">
-                      {(art.views ?? 0).toLocaleString()}
-                    </td>
-                    <td className="p-4 text-right text-xs text-[var(--ink-muted)] whitespace-nowrap">
-                      {new Date(art.publishedAt).toLocaleDateString('bn-BD', { dateStyle: 'medium' })}
-                    </td>
-                    <td className="p-4 text-right">
-                      <div className="flex items-center justify-end gap-3 relative">
-                        {(() => {
-                          const isDraft = art.status === 'draft';
-                          const canEdit = isDraft ? canEditDrafts : canEditPublished;
-                          const canDelete = isDraft ? canDeleteDrafts : canDeletePublished;
-
-                          return (
-                            <>
-                              {canEdit && (
-                                <Link 
-                                  href={`/admin/articles/${art.id}`}
-                                  className="p-1 hover:bg-[var(--ink-ghost)] rounded transition-colors text-[var(--ink-muted)] hover:text-[var(--ink)]"
-                                  title="Edit"
-                                >
-                                  <Pencil size={14} />
-                                </Link>
-                              )}
-                              <Link 
-                                href={`/article/${art.slug}`}
-                                target="_blank"
-                                className="p-1 hover:bg-[var(--ink-ghost)] rounded transition-colors text-[var(--ink-muted)] hover:text-[var(--ink)]"
-                                title="View Live"
-                              >
-                                <ExternalLink size={14} />
-                              </Link>
-                              
-                              {(canEdit || canDelete) && (
-                                <div className="relative">
-                                  <button
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      setActiveMenuId(activeMenuId === art.id ? null : art.id);
-                                    }}
-                                    className="p-1 hover:bg-[var(--ink-ghost)] rounded transition-colors text-[var(--ink-muted)] hover:text-[var(--ink)] cursor-pointer"
-                                    title="More Actions"
-                                  >
-                                    <MoreVertical size={14} />
-                                  </button>
-                                  
-                                  {activeMenuId === art.id && (
-                                    <>
-                                      <div 
-                                        className="fixed inset-0 z-40" 
-                                        onClick={() => setActiveMenuId(null)}
-                                      />
-                                      <div 
-                                        className="absolute right-0 mt-1 w-36 bg-white border border-[var(--ink-border)] rounded-md shadow-lg py-1 z-50 text-left"
-                                        style={{ transform: 'translateY(2px)' }}
-                                      >
-                                        {canEdit && (
-                                          <button
-                                            onClick={() => {
-                                              handleToggleStatus(art);
-                                              setActiveMenuId(null);
-                                            }}
-                                            className="w-full px-3 py-2 text-xs text-left hover:bg-[var(--ink-ghost)] flex items-center gap-2 text-slate-700 border-none bg-transparent cursor-pointer font-semibold"
-                                            style={{ fontFamily: "'Hind Siliguri', sans-serif" }}
-                                          >
-                                            {art.status === 'draft' ? 'Publish' : 'Archive'}
-                                          </button>
-                                        )}
-                                        {canDelete && (
-                                          <button
-                                            onClick={() => {
-                                              handleDelete(art.id);
-                                              setActiveMenuId(null);
-                                            }}
-                                            className="w-full px-3 py-2 text-xs text-left hover:bg-red-50 flex items-center gap-2 text-red-600 border-none bg-transparent cursor-pointer font-semibold"
-                                            style={{ fontFamily: "'Hind Siliguri', sans-serif" }}
-                                          >
-                                            Delete
-                                          </button>
-                                        )}
-                                      </div>
-                                    </>
-                                  )}
-                                </div>
-                              )}
-                            </>
-                          );
-                        })()}
-                      </div>
-                    </td>
-                  </tr>
+                    art={art} 
+                    canEditDrafts={canEditDrafts}
+                    canEditPublished={canEditPublished}
+                    canDeleteDrafts={canDeleteDrafts}
+                    canDeletePublished={canDeletePublished}
+                    onToggleStatus={handleToggleStatus}
+                    onDelete={handleDelete}
+                  />
                 ))
               )}
             </tbody>
