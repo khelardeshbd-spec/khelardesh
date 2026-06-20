@@ -21,7 +21,6 @@ interface NewEmployeeForm {
   displayName: string;
   permissions: { 
     write_articles: boolean; 
-    view_articles: boolean;
     edit_published_articles: boolean;
     edit_drafts: boolean;
     delete_articles: boolean;
@@ -31,7 +30,6 @@ interface NewEmployeeForm {
 
 const PERM_LABELS: Record<string, string> = {
   write_articles: 'Write Articles',
-  view_articles: 'View Articles',
   edit_published_articles: 'Edit Published',
   edit_drafts: 'Edit Drafts',
   delete_articles: 'Delete Published',
@@ -92,6 +90,16 @@ function EmployeeRow({
 }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const btnRef = useRef<HTMLButtonElement>(null);
+  
+  // Local state for editing permissions
+  const [localPerms, setLocalPerms] = useState<Record<string, boolean>>(emp.permissions);
+
+  // Sync local perms when entering edit mode
+  useEffect(() => {
+    if (editingPermsId === emp.id) {
+      setLocalPerms(emp.permissions);
+    }
+  }, [editingPermsId, emp.permissions, emp.id]);
 
   return (
     <div style={{ borderBottom: !isLast ? '0.5px solid var(--ink-border)' : undefined }}>
@@ -200,17 +208,16 @@ function EmployeeRow({
           <p style={{ fontFamily: "'Hind Siliguri', sans-serif", fontSize: 11, color: 'var(--ink-muted)', marginBottom: 8, marginTop: 10, fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase' }}>
             Permissions
           </p>
-          <div className="flex flex-wrap gap-4">
+          <div className="flex flex-wrap gap-4 mb-4">
             {Object.entries(PERM_LABELS).map(([key, label]) => {
-              const current = emp.permissions[key] ?? false;
+              const current = localPerms[key] ?? false;
               return (
                 <label key={key} className="flex items-center gap-2 cursor-pointer select-none">
                   <input
                     type="checkbox"
                     checked={current}
-                    onChange={async (e) => {
-                      const newPerms = { ...emp.permissions, [key]: e.target.checked };
-                      await onUpdatePerms(emp, newPerms);
+                    onChange={(e) => {
+                      setLocalPerms(prev => ({ ...prev, [key]: e.target.checked }));
                     }}
                     className="admin-checkbox"
                   />
@@ -220,6 +227,25 @@ function EmployeeRow({
                 </label>
               );
             })}
+          </div>
+          <div className="flex gap-2">
+            <button 
+              onClick={() => {
+                onTogglePerms(emp.id); // Closes the editor
+              }} 
+              className="admin-btn-secondary"
+            >
+              Cancel
+            </button>
+            <button 
+              onClick={async () => {
+                await onUpdatePerms(emp, localPerms);
+                onTogglePerms(emp.id); // Closes the editor after save
+              }} 
+              className="admin-btn-primary"
+            >
+              Save Permissions
+            </button>
           </div>
         </div>
       )}
@@ -242,7 +268,6 @@ export default function TeamClient() {
     displayName: '',
     permissions: { 
       write_articles: true, 
-      view_articles: true,
       edit_published_articles: false,
       edit_drafts: true,
       delete_articles: false,
@@ -287,7 +312,6 @@ export default function TeamClient() {
       username: '', password: '', displayName: '', 
       permissions: { 
         write_articles: true, 
-        view_articles: true,
         edit_published_articles: false,
         edit_drafts: true,
         delete_articles: false,

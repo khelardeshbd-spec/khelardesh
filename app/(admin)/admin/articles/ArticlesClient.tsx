@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useMemo, useEffect } from 'react';
+import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { Search, ChevronUp, ChevronDown, Plus, ExternalLink, Pencil, MoreVertical } from 'lucide-react';
 
@@ -28,6 +29,19 @@ export default function ArticlesClient({ initialArticles }: ArticlesClientProps)
   const [sortAsc, setSortAsc] = useState(false);
   const [showOnlyDrafts, setShowOnlyDrafts] = useState(false);
   const [activeMenuId, setActiveMenuId] = useState<number | null>(null);
+
+  const { data: session } = useSession();
+  const user = session?.user as any;
+  const isSuperAdmin = user?.role === 'super_admin' || user?.role === 'admin';
+  const perms = user?.permissions || {};
+
+  const canWrite = isSuperAdmin || perms.write_articles !== false; // Default true if missing but role implies it? Actually role is employee, so default to what's in perms. Wait, new users have true by default.
+  // Wait, let's just strictly use perms for employee.
+  const canWriteArticles = isSuperAdmin || !!perms.write_articles;
+  const canEditPublished = isSuperAdmin || !!perms.edit_published_articles;
+  const canEditDrafts = isSuperAdmin || !!perms.edit_drafts;
+  const canDeletePublished = isSuperAdmin || !!perms.delete_articles;
+  const canDeleteDrafts = isSuperAdmin || !!perms.delete_drafts;
 
   useEffect(() => {
     setArticles(initialArticles);
@@ -167,10 +181,12 @@ export default function ArticlesClient({ initialArticles }: ArticlesClientProps)
           >
             {showOnlyDrafts ? 'Show All' : 'Drafts'}
           </button>
-          <Link href="/admin/articles/new" className="admin-btn-primary flex items-center gap-2" style={{ height: 42 }}>
-            <Plus size={16} />
-            <span>New Article</span>
-          </Link>
+          {canWriteArticles && (
+            <Link href="/admin/articles/new" className="admin-btn-primary flex items-center gap-2" style={{ height: 42 }}>
+              <Plus size={16} />
+              <span>New Article</span>
+            </Link>
+          )}
         </div>
       </div>
 
@@ -315,68 +331,86 @@ export default function ArticlesClient({ initialArticles }: ArticlesClientProps)
                     </td>
                     <td className="p-4 text-right">
                       <div className="flex items-center justify-end gap-3 relative">
-                        <Link 
-                          href={`/admin/articles/${art.id}`}
-                          className="p-1 hover:bg-[var(--ink-ghost)] rounded transition-colors text-[var(--ink-muted)] hover:text-[var(--ink)]"
-                          title="Edit"
-                        >
-                          <Pencil size={14} />
-                        </Link>
-                        <Link 
-                          href={`/article/${art.slug}`}
-                          target="_blank"
-                          className="p-1 hover:bg-[var(--ink-ghost)] rounded transition-colors text-[var(--ink-muted)] hover:text-[var(--ink)]"
-                          title="View Live"
-                        >
-                          <ExternalLink size={14} />
-                        </Link>
-                        
-                        <div className="relative">
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              setActiveMenuId(activeMenuId === art.id ? null : art.id);
-                            }}
-                            className="p-1 hover:bg-[var(--ink-ghost)] rounded transition-colors text-[var(--ink-muted)] hover:text-[var(--ink)] cursor-pointer"
-                            title="More Actions"
-                          >
-                            <MoreVertical size={14} />
-                          </button>
-                          
-                          {activeMenuId === art.id && (
+                        {(() => {
+                          const isDraft = art.status === 'draft';
+                          const canEdit = isDraft ? canEditDrafts : canEditPublished;
+                          const canDelete = isDraft ? canDeleteDrafts : canDeletePublished;
+
+                          return (
                             <>
-                              <div 
-                                className="fixed inset-0 z-40" 
-                                onClick={() => setActiveMenuId(null)}
-                              />
-                              <div 
-                                className="absolute right-0 mt-1 w-36 bg-white border border-[var(--ink-border)] rounded-md shadow-lg py-1 z-50 text-left"
-                                style={{ transform: 'translateY(2px)' }}
+                              {canEdit && (
+                                <Link 
+                                  href={`/admin/articles/${art.id}`}
+                                  className="p-1 hover:bg-[var(--ink-ghost)] rounded transition-colors text-[var(--ink-muted)] hover:text-[var(--ink)]"
+                                  title="Edit"
+                                >
+                                  <Pencil size={14} />
+                                </Link>
+                              )}
+                              <Link 
+                                href={`/article/${art.slug}`}
+                                target="_blank"
+                                className="p-1 hover:bg-[var(--ink-ghost)] rounded transition-colors text-[var(--ink-muted)] hover:text-[var(--ink)]"
+                                title="View Live"
                               >
-                                <button
-                                  onClick={() => {
-                                    handleToggleStatus(art);
-                                    setActiveMenuId(null);
-                                  }}
-                                  className="w-full px-3 py-2 text-xs text-left hover:bg-[var(--ink-ghost)] flex items-center gap-2 text-slate-700 border-none bg-transparent cursor-pointer font-semibold"
-                                  style={{ fontFamily: "'Hind Siliguri', sans-serif" }}
-                                >
-                                  {art.status === 'draft' ? 'Publish' : 'Archive'}
-                                </button>
-                                <button
-                                  onClick={() => {
-                                    handleDelete(art.id);
-                                    setActiveMenuId(null);
-                                  }}
-                                  className="w-full px-3 py-2 text-xs text-left hover:bg-red-50 flex items-center gap-2 text-red-600 border-none bg-transparent cursor-pointer font-semibold"
-                                  style={{ fontFamily: "'Hind Siliguri', sans-serif" }}
-                                >
-                                  Delete
-                                </button>
-                              </div>
+                                <ExternalLink size={14} />
+                              </Link>
+                              
+                              {(canEdit || canDelete) && (
+                                <div className="relative">
+                                  <button
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      setActiveMenuId(activeMenuId === art.id ? null : art.id);
+                                    }}
+                                    className="p-1 hover:bg-[var(--ink-ghost)] rounded transition-colors text-[var(--ink-muted)] hover:text-[var(--ink)] cursor-pointer"
+                                    title="More Actions"
+                                  >
+                                    <MoreVertical size={14} />
+                                  </button>
+                                  
+                                  {activeMenuId === art.id && (
+                                    <>
+                                      <div 
+                                        className="fixed inset-0 z-40" 
+                                        onClick={() => setActiveMenuId(null)}
+                                      />
+                                      <div 
+                                        className="absolute right-0 mt-1 w-36 bg-white border border-[var(--ink-border)] rounded-md shadow-lg py-1 z-50 text-left"
+                                        style={{ transform: 'translateY(2px)' }}
+                                      >
+                                        {canEdit && (
+                                          <button
+                                            onClick={() => {
+                                              handleToggleStatus(art);
+                                              setActiveMenuId(null);
+                                            }}
+                                            className="w-full px-3 py-2 text-xs text-left hover:bg-[var(--ink-ghost)] flex items-center gap-2 text-slate-700 border-none bg-transparent cursor-pointer font-semibold"
+                                            style={{ fontFamily: "'Hind Siliguri', sans-serif" }}
+                                          >
+                                            {art.status === 'draft' ? 'Publish' : 'Archive'}
+                                          </button>
+                                        )}
+                                        {canDelete && (
+                                          <button
+                                            onClick={() => {
+                                              handleDelete(art.id);
+                                              setActiveMenuId(null);
+                                            }}
+                                            className="w-full px-3 py-2 text-xs text-left hover:bg-red-50 flex items-center gap-2 text-red-600 border-none bg-transparent cursor-pointer font-semibold"
+                                            style={{ fontFamily: "'Hind Siliguri', sans-serif" }}
+                                          >
+                                            Delete
+                                          </button>
+                                        )}
+                                      </div>
+                                    </>
+                                  )}
+                                </div>
+                              )}
                             </>
-                          )}
-                        </div>
+                          );
+                        })()}
                       </div>
                     </td>
                   </tr>
