@@ -36,10 +36,14 @@ export default function Footer() {
 
         {/* Links */}
         <div className="flex items-center gap-6">
-          {['সম্পর্কে', 'যোগাযোগ', 'গোপনীয়তা'].map((link) => (
+          {[
+            { label: 'সম্পর্কে', href: '/about' },
+            { label: 'যোগাযোগ', href: 'mailto:khelardeshbd@gmail.com' },
+            { label: 'গোপনীয়তা', href: '/privacy' },
+          ].map((link) => (
             <Link 
-              key={link}
-              href={`/${link === 'সম্পর্কে' ? 'about' : link === 'যোগাযোগ' ? 'contact' : 'privacy'}`}
+              key={link.label}
+              href={link.href}
               lang="bn"
               style={{
                 fontFamily: "var(--font-body)",
@@ -49,7 +53,7 @@ export default function Footer() {
               }}
               className="hover:text-[var(--ink-muted)] transition-colors"
             >
-              {link}
+              {link.label}
             </Link>
           ))}
         </div>

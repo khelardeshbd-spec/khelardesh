@@ -220,6 +220,24 @@ export default function ActivityClient() {
                       {new Date(log.created_at).toLocaleString('en-GB', { dateStyle: 'medium', timeStyle: 'short' })}
                     </span>
                   </div>
+                  
+                  {log.metadata && Object.keys(log.metadata).length > 0 && (
+                    <div 
+                      className="mt-2.5 text-[10px] p-2.5 rounded bg-[#F8F9FA] border"
+                      style={{ 
+                        borderColor: 'var(--ink-border)', 
+                        fontFamily: "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace",
+                        color: '#475569',
+                        overflowX: 'auto',
+                        maxHeight: 160,
+                        overflowY: 'auto'
+                      }}
+                    >
+                      <pre style={{ margin: 0, whiteSpace: 'pre-wrap', wordBreak: 'break-all' }}>
+                        {JSON.stringify(log.metadata, null, 2)}
+                      </pre>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
