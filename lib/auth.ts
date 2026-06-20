@@ -25,7 +25,7 @@ export function getAuthOptions(): AuthOptions {
           // ── 1. Check AdminUser table ──────────────────────────────────
           const { data: adminRow } = await supabaseAdmin
             .from('AdminUser')
-            .select('id, username, password_hash, display_name, role, is_blocked')
+            .select('id, username, password_hash, display_name, role, is_blocked, avatar_url')
             .eq('username', username)
             .single();
 
@@ -43,13 +43,14 @@ export function getAuthOptions(): AuthOptions {
               displayName: adminRow.display_name,
               role: adminRow.role,
               permissions: null,
+              avatarUrl: adminRow.avatar_url,
             };
           }
 
           // ── 2. Check EmployeeUser table ───────────────────────────────
           const { data: empRow } = await supabaseAdmin
             .from('EmployeeUser')
-            .select('id, username, password_hash, display_name, is_active, permissions')
+            .select('id, username, password_hash, display_name, is_active, permissions, avatar_url')
             .eq('username', username)
             .single();
 
@@ -66,6 +67,7 @@ export function getAuthOptions(): AuthOptions {
               displayName: empRow.display_name,
               role: 'employee',
               permissions: empRow.permissions,
+              avatarUrl: empRow.avatar_url,
             };
           }
 
@@ -82,6 +84,7 @@ export function getAuthOptions(): AuthOptions {
               displayName: 'Admin',
               role: 'super_admin',
               permissions: null,
+              avatarUrl: null,
             };
           }
 
@@ -97,7 +100,7 @@ export function getAuthOptions(): AuthOptions {
       maxAge: 60 * 60 * 24, // 24 hours
     },
     callbacks: {
-      async jwt({ token, user }) {
+      async jwt({ token, user, trigger, session }) {
         // On initial sign-in, attach custom fields to token
         if (user) {
           const u = user as any;
@@ -106,6 +109,11 @@ export function getAuthOptions(): AuthOptions {
           token.displayName = u.displayName;
           token.role = u.role;
           token.permissions = u.permissions ?? null;
+          token.avatarUrl = u.avatarUrl ?? null;
+        }
+        if (trigger === 'update' && session?.user) {
+          if (session.user.displayName !== undefined) token.displayName = session.user.displayName;
+          if (session.user.avatarUrl !== undefined) token.avatarUrl = session.user.avatarUrl;
         }
         return token;
       },
@@ -117,6 +125,7 @@ export function getAuthOptions(): AuthOptions {
           u.displayName = token.displayName as string;
           u.role = token.role as string;
           u.permissions = token.permissions ?? null;
+          u.avatarUrl = token.avatarUrl ?? null;
         }
         return session;
       },

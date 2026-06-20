@@ -1,8 +1,8 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useSession, signOut } from 'next-auth/react';
-import { User, KeyRound, CheckCircle2, AlertCircle, Crown, Shield, Briefcase, Eye, EyeOff, Save } from 'lucide-react';
+import { User, KeyRound, CheckCircle2, AlertCircle, Crown, Shield, Briefcase, Eye, EyeOff, Save, Camera, Loader2 } from 'lucide-react';
 
 const ROLE_CONFIG = {
   super_admin: { label: '★ Super Admin', color: '#E74C3C', bg: '#E74C3C15', border: '#E74C3C30', icon: <Crown size={14} /> },
@@ -38,6 +38,9 @@ export default function ProfileClient() {
   const { data: session, update: updateSession } = useSession();
   const currentUser = session?.user as any;
 
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [uploading, setUploading] = useState(false);
+
   // Display name
   const [displayName, setDisplayName] = useState('');
   const [savingName, setSavingName] = useState(false);
@@ -59,6 +62,48 @@ export default function ProfileClient() {
 
   function showToast(type: 'success' | 'error', message: string) {
     setToast({ type, message });
+  }
+
+  async function handleAvatarChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (file.size > 3 * 1024 * 1024) {
+      showToast('error', 'File size must be less than 3MB');
+      return;
+    }
+
+    setUploading(true);
+    const formData = new FormData();
+    formData.append('file', file);
+
+    try {
+      const res = await fetch('/api/admin/profile/avatar', {
+        method: 'POST',
+        body: formData,
+      });
+
+      const data = await res.json();
+
+      if (res.ok && data?.url) {
+        await updateSession({
+          ...session,
+          user: {
+            ...session?.user,
+            avatarUrl: data.url,
+          },
+        });
+        showToast('success', 'Profile picture updated successfully');
+      } else {
+        showToast('error', data.error || 'Failed to upload photo');
+      }
+    } catch (err) {
+      console.error(err);
+      showToast('error', 'An error occurred during upload');
+    } finally {
+      setUploading(false);
+      if (fileInputRef.current) fileInputRef.current.value = '';
+    }
   }
 
   async function handleSaveName(e: React.FormEvent) {
@@ -141,17 +186,53 @@ export default function ProfileClient() {
       >
         {/* Avatar circle */}
         <div
+          onClick={() => !uploading && fileInputRef.current?.click()}
+          className="relative group overflow-hidden"
           style={{
             width: 72, height: 72, borderRadius: '50%', flexShrink: 0,
-            background: `linear-gradient(135deg, var(--ink) 0%, ${roleConfig.color} 100%)`,
+            background: currentUser?.avatarUrl 
+              ? 'var(--bg-page)' 
+              : `linear-gradient(135deg, var(--ink) 0%, ${roleConfig.color} 100%)`,
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             fontSize: 28, fontWeight: 800, color: 'white',
             fontFamily: "var(--font-body)",
             boxShadow: `0 4px 20px ${roleConfig.color}40`,
+            cursor: uploading ? 'not-allowed' : 'pointer',
+            border: '2px solid var(--ink-border)',
           }}
         >
-          {(currentUser?.displayName || currentUser?.name || '?').charAt(0).toUpperCase()}
+          {uploading ? (
+            <Loader2 className="animate-spin" size={24} style={{ color: 'var(--ink)' }} />
+          ) : currentUser?.avatarUrl ? (
+            <img 
+              src={currentUser.avatarUrl} 
+              alt="Avatar" 
+              style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%' }} 
+            />
+          ) : (
+            (currentUser?.displayName || currentUser?.name || '?').charAt(0).toUpperCase()
+          )}
+          
+          {/* Hover overlay */}
+          {!uploading && (
+            <div 
+              className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 flex flex-col items-center justify-center transition-opacity duration-200"
+              style={{ borderRadius: '50%' }}
+            >
+              <Camera size={18} className="text-white mb-0.5" />
+              <span style={{ fontSize: 9, color: 'white', fontWeight: 600, fontFamily: "'Hind Siliguri', sans-serif" }}>CHANGE</span>
+            </div>
+          )}
         </div>
+
+        {/* Hidden file input */}
+        <input
+          type="file"
+          ref={fileInputRef}
+          onChange={handleAvatarChange}
+          accept="image/jpeg,image/png,image/webp"
+          style={{ display: 'none' }}
+        />
 
         {/* Info */}
         <div>

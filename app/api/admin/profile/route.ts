@@ -12,13 +12,13 @@ export async function GET() {
   const table = user.role === 'employee' ? 'EmployeeUser' : 'AdminUser';
   const { data, error } = await supabaseAdmin
     .from(table)
-    .select('id, username, display_name, created_at')
+    .select('id, username, display_name, created_at, avatar_url')
     .eq('id', user.id)
     .single();
 
   if (error || !data) return NextResponse.json({ error: 'Profile not found' }, { status: 404 });
 
-  return NextResponse.json({ profile: { ...data, role: user.role } });
+  return NextResponse.json({ profile: { ...data, avatarUrl: data.avatar_url, role: user.role } });
 }
 
 // PUT /api/admin/profile — update display name

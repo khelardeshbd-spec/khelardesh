@@ -154,11 +154,20 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
                 width: 28, height: 28, borderRadius: '50%', flexShrink: 0,
                 background: 'var(--ink)',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
+                overflow: 'hidden',
               }}
             >
-              <span style={{ color: 'var(--bg-page)', fontSize: 11, fontWeight: 800 }}>
-                {((session?.user as any)?.displayName || (session?.user as any)?.name || '?').charAt(0).toUpperCase()}
-              </span>
+              {(session?.user as any)?.avatarUrl ? (
+                <img 
+                  src={(session?.user as any)?.avatarUrl} 
+                  alt="Avatar" 
+                  style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
+                />
+              ) : (
+                <span style={{ color: 'var(--bg-page)', fontSize: 11, fontWeight: 800 }}>
+                  {((session?.user as any)?.displayName || (session?.user as any)?.name || '?').charAt(0).toUpperCase()}
+                </span>
+              )}
             </div>
             <div className="min-w-0">
               <p style={{ fontFamily: "var(--font-body)", fontSize: 12, fontWeight: 700, color: 'var(--ink)', lineHeight: 1.2, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: 130 }}>
@@ -227,10 +236,30 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
             className="flex items-center gap-2.5 rounded-md px-2 py-2 hover:bg-[var(--ink-ghost)] transition-colors"
             style={{ textDecoration: 'none' }}
           >
-            <div style={{ width: 28, height: 28, borderRadius: '50%', flexShrink: 0, background: 'var(--ink)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <span style={{ color: 'var(--bg-page)', fontSize: 11, fontWeight: 800 }}>
-                {((session?.user as any)?.displayName || (session?.user as any)?.name || '?').charAt(0).toUpperCase()}
-              </span>
+            <div 
+              style={{ 
+                width: 28, 
+                height: 28, 
+                borderRadius: '50%', 
+                flexShrink: 0, 
+                background: 'var(--ink)', 
+                display: 'flex', 
+                alignItems: 'center', 
+                justifyContent: 'center',
+                overflow: 'hidden',
+              }}
+            >
+              {(session?.user as any)?.avatarUrl ? (
+                <img 
+                  src={(session?.user as any)?.avatarUrl} 
+                  alt="Avatar" 
+                  style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
+                />
+              ) : (
+                <span style={{ color: 'var(--bg-page)', fontSize: 11, fontWeight: 800 }}>
+                  {((session?.user as any)?.displayName || (session?.user as any)?.name || '?').charAt(0).toUpperCase()}
+                </span>
+              )}
             </div>
             <div className="min-w-0">
               <p style={{ fontFamily: "var(--font-body)", fontSize: 12, fontWeight: 700, color: 'var(--ink)', lineHeight: 1.2, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: 150 }}>
