@@ -6,48 +6,46 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 
 /**
- * GET /api/user/notifications
- * Fetch notifications for the logged-in user
+ * GET /api/admin/notifications
+ * Fetch unread and recent admin notifications
  */
 export async function GET() {
   try {
     const session = await getServerSession(authOptions);
-    if (!session || !session.user) {
+    if (!session || (session.user as any).role !== 'admin') {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     const { data: notifications, error } = await supabaseAdmin
-      .from('UserNotification')
+      .from('AdminNotification')
       .select(`
         *,
         Comment (
           body,
           createdAt,
-          userImage,
-          articleSlug
+          userImage
         )
       `)
-      .eq('userEmail', session.user.email)
       .order('createdAt', { ascending: false })
-      .limit(30);
+      .limit(50);
 
     if (error) throw error;
 
     return NextResponse.json({ notifications: notifications || [] });
   } catch (error) {
-    console.error('[GET /api/user/notifications]', error);
+    console.error('[GET /api/admin/notifications]', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
 
 /**
- * PATCH /api/user/notifications
- * Mark user notifications as read
+ * PATCH /api/admin/notifications
+ * Mark notifications as read
  */
 export async function PATCH(request: Request) {
   try {
     const session = await getServerSession(authOptions);
-    if (!session || !session.user) {
+    if (!session || (session.user as any).role !== 'admin') {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -58,16 +56,15 @@ export async function PATCH(request: Request) {
     }
 
     const { error } = await supabaseAdmin
-      .from('UserNotification')
+      .from('AdminNotification')
       .update({ read: true })
-      .in('id', ids)
-      .eq('userEmail', session.user.email); // Security constraint
+      .in('id', ids);
 
     if (error) throw error;
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error('[PATCH /api/user/notifications]', error);
+    console.error('[PATCH /api/admin/notifications]', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

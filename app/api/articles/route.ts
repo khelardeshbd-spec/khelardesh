@@ -3,6 +3,8 @@ export const dynamic = 'force-dynamic'
 import { NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
 
+import { parse as avroParse } from '@subhesadek/avro-phonetic'
+
 /**
  * GET /api/articles
  * Paginated article feed (published only)
@@ -29,8 +31,9 @@ export async function GET(request: Request) {
     if (sport) query = query.eq('sport', sport)
 
     if (q) {
+      const avroQuery = avroParse(q)
       query = query.or(
-        `headline.ilike.%${q}%,headlineBn.ilike.%${q}%,deck.ilike.%${q}%`
+        `headline.ilike.%${q}%,headlineBn.ilike.%${q}%,deck.ilike.%${q}%,headline.ilike.%${avroQuery}%,headlineBn.ilike.%${avroQuery}%,deck.ilike.%${avroQuery}%`
       )
     }
 

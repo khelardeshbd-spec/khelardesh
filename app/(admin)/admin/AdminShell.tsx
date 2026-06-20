@@ -1,11 +1,12 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import AdminLogout from './AdminLogout';
 import { LayoutDashboard, Pencil, Megaphone, Users, Menu, X, UsersRound, Activity, Shield, UserCircle, Bell } from 'lucide-react';
+import { supabase } from '@/lib/supabase';
 
 const ADMIN_NAV = [
   { href: '/admin/dashboard', label: 'Dashboard', icon: <LayoutDashboard size={15} /> },
@@ -24,7 +25,7 @@ const EMPLOYEE_NAV = [
 
 const PROFILE_NAV = { href: '/admin/profile', label: 'My Profile', icon: <UserCircle size={15} /> };
 
-function NavList({ items, pathname, onClose }: { items: typeof ADMIN_NAV; pathname: string; onClose?: () => void }) {
+function NavList({ items, pathname, onClose, unreadNotifs }: { items: typeof ADMIN_NAV; pathname: string; onClose?: () => void, unreadNotifs?: number }) {
   return (
     <>
       {items.map(({ href, label, icon }) => {
@@ -47,7 +48,14 @@ function NavList({ items, pathname, onClose }: { items: typeof ADMIN_NAV; pathna
               aria-current={active ? 'page' : undefined}
             >
               <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{icon}</span>
-              {label}
+              <div className="flex-1 flex justify-between items-center">
+                <span>{label}</span>
+                {href === '/admin/notifications' && unreadNotifs && unreadNotifs > 0 ? (
+                  <span className="bg-[#d33f3f] text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">
+                    {unreadNotifs > 99 ? '99+' : unreadNotifs}
+                  </span>
+                ) : null}
+              </div>
             </Link>
           </div>
         );
@@ -59,10 +67,41 @@ function NavList({ items, pathname, onClose }: { items: typeof ADMIN_NAV; pathna
 export default function AdminShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const [isMobileOpen, setIsMobileOpen] = useState(false);
+  const [unreadNotifs, setUnreadNotifs] = useState(0);
   const { data: session, status } = useSession();
   const role = (session?.user as any)?.role;
   const isEmployee = role === 'employee';
   const isSuperAdmin = role === 'super_admin';
+
+  useEffect(() => {
+    if (status === 'loading' || !session || isEmployee) return;
+
+    const fetchCount = async () => {
+      try {
+        const res = await fetch('/api/admin/notifications');
+        if (res.ok) {
+          const data = await res.json();
+          const count = data.notifications?.filter((n: any) => !n.read).length || 0;
+          setUnreadNotifs(count);
+        }
+      } catch (err) {
+        console.error('Failed to fetch notifs count', err);
+      }
+    };
+
+    fetchCount();
+
+    const channel = supabase
+      .channel('admin-shell-notifs')
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'AdminNotification' }, () => {
+        setUnreadNotifs(prev => prev + 1);
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [session, status, isEmployee]);
   
   const navItems = status === 'loading'
     ? [] // Prevent wrong menu from flashing
@@ -145,7 +184,7 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
 
         {/* Nav links */}
         <nav className="flex-1 py-3 overflow-y-auto" aria-label="Admin navigation">
-          <NavList items={navItems} pathname={pathname} />
+          <NavList items={navItems} pathname={pathname} unreadNotifs={unreadNotifs} />
         </nav>
 
         {/* Footer */}
@@ -232,7 +271,7 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
 
         {/* Mobile Nav links */}
         <nav className="flex-1 py-3 overflow-y-auto" aria-label="Admin mobile navigation">
-          <NavList items={navItems} pathname={pathname} onClose={() => setIsMobileOpen(false)} />
+          <NavList items={navItems} pathname={pathname} unreadNotifs={unreadNotifs} onClose={() => setIsMobileOpen(false)} />
         </nav>
 
         {/* Mobile Footer */}

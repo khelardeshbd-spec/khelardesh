@@ -94,6 +94,34 @@ export async function POST(
       return NextResponse.json({ error: 'Failed to post comment' }, { status: 500 });
     }
 
+    // --- Notifications Logic ---
+    // 1. Admin Notification: notify admins of the new comment
+    await supabaseAdmin.from('AdminNotification').insert({
+      type: 'NEW_COMMENT',
+      articleSlug: params.slug,
+      commentId: newComment.id,
+      actorName: userName || 'Someone',
+      actorEmail: userEmail
+    });
+
+    // 2. User Notification: if it's a reply, notify the parent comment's author
+    if (parentId) {
+      const { data: parentComment } = await supabaseAdmin
+        .from('Comment')
+        .select('userEmail')
+        .eq('id', parentId)
+        .single();
+        
+      if (parentComment && parentComment.userEmail !== userEmail) {
+        await supabaseAdmin.from('UserNotification').insert({
+          userEmail: parentComment.userEmail,
+          type: 'REPLY',
+          commentId: newComment.id,
+          actorName: userName || 'Someone'
+        });
+      }
+    }
+
     return NextResponse.json({ comment: newComment });
   } catch (error) {
     console.error('[POST /api/articles/[slug]/comments]', error);

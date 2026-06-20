@@ -205,7 +205,7 @@ export default function CommentSection({ articleSlug }: { articleSlug: string })
             const showReplyForm = activeReplyId === comment.id;
 
             return (
-              <div key={comment.id} className="group border-b border-[var(--ink-border)] pb-5 last:border-0">
+              <div id={`comment-${comment.id}`} key={comment.id} className="group border-b border-[var(--ink-border)] pb-5 last:border-0">
                 {/* Main Comment */}
                 <div className="flex gap-3 items-start">
                   <div className="w-8 h-8 rounded-full overflow-hidden border border-[var(--ink-border)] flex-shrink-0">
@@ -299,7 +299,7 @@ export default function CommentSection({ articleSlug }: { articleSlug: string })
                     {replies.length > 0 && (
                       <div className="mt-4 space-y-4 pl-4 border-l border-[var(--ink-border)]">
                         {replies.map((reply) => (
-                          <div key={reply.id} className="flex gap-2.5 items-start">
+                          <div id={`comment-${reply.id}`} key={reply.id} className="flex gap-2.5 items-start">
                             <div className="w-6 h-6 rounded-full overflow-hidden border border-[var(--ink-border)] flex-shrink-0">
                               {reply.userImage ? (
                                 <img src={reply.userImage} alt={reply.userName || 'User'} className="w-full h-full object-cover" />
