@@ -228,14 +228,31 @@ export default function ArticlesClient({ initialArticles }: ArticlesClientProps)
                         >
                           {art.headlineBn || art.headline}
                         </Link>
-                        {art.isLead && (
-                          <span 
-                            className="mt-1 self-start px-1.5 py-0.5 rounded text-[8px] font-bold bg-[#E74C3C] text-white uppercase tracking-wider"
-                            style={{ fontFamily: "'Hind Siliguri', sans-serif" }}
-                          >
-                            Lead Story
-                          </span>
-                        )}
+                        <div className="flex items-center gap-1.5 mt-1.5 flex-wrap">
+                          {art.status === 'draft' ? (
+                            <span 
+                              className="px-1.5 py-0.5 rounded text-[8px] font-bold bg-[#7F8C8D] text-white uppercase tracking-wider"
+                              style={{ fontFamily: "'Hind Siliguri', sans-serif" }}
+                            >
+                              Draft
+                            </span>
+                          ) : (
+                            <span 
+                              className="px-1.5 py-0.5 rounded text-[8px] font-bold bg-[#27AE60] text-white uppercase tracking-wider"
+                              style={{ fontFamily: "'Hind Siliguri', sans-serif" }}
+                            >
+                              Live
+                            </span>
+                          )}
+                          {art.isLead && (
+                            <span 
+                              className="px-1.5 py-0.5 rounded text-[8px] font-bold bg-[#E74C3C] text-white uppercase tracking-wider"
+                              style={{ fontFamily: "'Hind Siliguri', sans-serif" }}
+                            >
+                              Lead Story
+                            </span>
+                          )}
+                        </div>
                       </div>
                     </td>
                     <td className="p-4 text-xs font-semibold text-[var(--ink-muted)]">
