@@ -5,7 +5,7 @@ import { useSession, signOut } from 'next-auth/react';
 import { User, KeyRound, CheckCircle2, AlertCircle, Crown, Shield, Briefcase, Eye, EyeOff, Save, Camera, Loader2 } from 'lucide-react';
 
 const ROLE_CONFIG = {
-  super_admin: { label: '★ Super Admin', color: '#E74C3C', bg: '#E74C3C15', border: '#E74C3C30', icon: <Crown size={14} /> },
+  super_admin: { label: 'Admin', color: '#3498DB', bg: '#3498DB15', border: '#3498DB30', icon: <Shield size={14} /> },
   admin: { label: 'Admin', color: '#3498DB', bg: '#3498DB15', border: '#3498DB30', icon: <Shield size={14} /> },
   employee: { label: 'Employee', color: '#27AE60', bg: '#27AE6015', border: '#27AE6030', icon: <Briefcase size={14} /> },
 };

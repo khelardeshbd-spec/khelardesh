@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft, Check, Trash2, Image as ImageIcon, Plus, Sparkles } from 'lucide-react';
+import AdminShell from '../../AdminShell';
 
 interface EditorBlock {
   id: string;
@@ -234,14 +235,17 @@ export default function EditArticlePage({ params }: { params: { id: string } }) 
 
   if (loading) {
     return (
-      <div style={{ padding: 24, color: 'var(--ink-muted)', fontFamily: "'Hind Siliguri', sans-serif" }}>
-        Loading article composer...
-      </div>
+      <AdminShell>
+        <div style={{ padding: 24, color: 'var(--ink-muted)', fontFamily: "'Hind Siliguri', sans-serif" }}>
+          Loading article composer...
+        </div>
+      </AdminShell>
     );
   }
 
   return (
-    <div style={{ minHeight: '100vh', backgroundColor: 'var(--bg-page)', paddingBottom: '160px' }}>
+    <AdminShell>
+      <div style={{ minHeight: '100vh', backgroundColor: 'var(--bg-page)', paddingBottom: '160px' }}>
       
       {/* Top Floating Control Bar */}
       <div 
@@ -796,5 +800,6 @@ export default function EditArticlePage({ params }: { params: { id: string } }) 
 
       </div>
     </div>
+  </AdminShell>
   );
 }

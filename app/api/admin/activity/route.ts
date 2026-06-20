@@ -39,7 +39,12 @@ export async function GET(req: NextRequest) {
   const isSuperAdmin = user?.role === 'super_admin';
   const sanitizedLogs = (data ?? []).map(log => {
     if (!isSuperAdmin && log.actor_role === 'super_admin') {
-      return { ...log, actor_role: 'admin' };
+      return { 
+        ...log, 
+        actor_role: 'admin',
+        actor_id: 'admin',
+        actor_display_name: log.actor_display_name === 'Super Admin' ? 'Admin' : log.actor_display_name
+      };
     }
     return log;
   });

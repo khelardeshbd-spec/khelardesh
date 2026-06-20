@@ -2,6 +2,7 @@ import { getServerSession } from 'next-auth';
 import { redirect } from 'next/navigation';
 import { getAuthOptions } from '@/lib/auth';
 import ActivityClient from './ActivityClient';
+import AdminShell from '../AdminShell';
 
 export const metadata = { title: 'Activity Log — খেলারদেশ Admin' };
 
@@ -13,5 +14,9 @@ export default async function ActivityPage() {
   // Only admins can see activity log
   if (user.role === 'employee') redirect('/admin/articles');
 
-  return <ActivityClient />;
+  return (
+    <AdminShell>
+      <ActivityClient />
+    </AdminShell>
+  );
 }

@@ -129,12 +129,12 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
               className="text-[9px] font-bold uppercase tracking-widest px-2 py-0.5 rounded"
               style={{
                 fontFamily: "'Hind Siliguri', sans-serif",
-                background: role === 'super_admin' ? '#E74C3C15' : role === 'admin' ? '#3498DB15' : '#27AE6015',
-                color: role === 'super_admin' ? '#E74C3C' : role === 'admin' ? '#3498DB' : '#27AE60',
-                border: `1px solid ${role === 'super_admin' ? '#E74C3C30' : role === 'admin' ? '#3498DB30' : '#27AE6030'}`,
+                background: (role === 'super_admin' || role === 'admin') ? '#3498DB15' : '#27AE6015',
+                color: (role === 'super_admin' || role === 'admin') ? '#3498DB' : '#27AE60',
+                border: `1px solid ${(role === 'super_admin' || role === 'admin') ? '#3498DB30' : '#27AE6030'}`,
               }}
             >
-              {role === 'super_admin' ? '★ Super Admin' : role === 'admin' ? 'Admin' : 'Employee'}
+              {(role === 'super_admin' || role === 'admin') ? 'Admin' : 'Employee'}
             </span>
           </div>
         )}

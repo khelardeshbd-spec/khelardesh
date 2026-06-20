@@ -34,7 +34,7 @@ const ACTION_COLORS: Record<string, string> = {
 };
 
 const ROLE_LABELS: Record<string, string> = {
-  super_admin: '★ Super Admin',
+  super_admin: 'Admin',
   admin: 'Admin',
   employee: 'Employee',
 };
