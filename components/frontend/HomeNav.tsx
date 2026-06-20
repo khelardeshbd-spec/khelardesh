@@ -58,7 +58,7 @@ export default function HomeNav() {
 
   return (
     <div className="border-b border-[#e2e2e2] pb-1.5" ref={navRef}>
-      <div className="flex flex-wrap justify-center items-center gap-x-6 gap-y-2 text-xs font-semibold">
+      <div className="flex flex-wrap justify-center lg:justify-between items-center w-full gap-x-4 md:gap-x-6 lg:gap-x-0 gap-y-3 text-[13px] font-semibold">
         {navItems.map((item, idx) => {
           const href = item.slug === '' ? '/' : `/sport/${item.slug}`;
           const isActive = item.slug === '' 
@@ -83,7 +83,7 @@ export default function HomeNav() {
                     e.preventDefault();
                     setOpenDropdown(isOpen ? null : item.slug);
                   }}
-                  className="flex items-center justify-center min-w-[36px] min-h-[36px] cursor-pointer"
+                  className="flex items-center justify-center h-[36px] w-[28px] cursor-pointer"
                   aria-label={`${item.label} সাব-মেন্যু`}
                   aria-expanded={isOpen}
                 >

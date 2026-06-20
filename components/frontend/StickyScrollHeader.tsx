@@ -143,7 +143,7 @@ export default function StickyScrollHeader() {
                         e.preventDefault();
                         setOpenDropdown(openDropdown === item.slug ? null : item.slug);
                       }}
-                      className="flex items-center justify-center min-w-[36px] min-h-[36px] cursor-pointer"
+                      className="flex items-center justify-center h-[36px] w-[28px] cursor-pointer"
                       aria-label="Toggle submenu"
                     >
                       <span className="text-[9px]" style={{ color: isActive ? 'var(--live-red)' : 'var(--ink)' }}>▼</span>
