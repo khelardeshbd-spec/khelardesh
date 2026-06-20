@@ -10,7 +10,7 @@ export default async function AdminsPage() {
   if (!session) redirect('/admin');
 
   const user = (session.user as any);
-  if (user.role === 'employee') redirect('/admin/articles');
+  if (user.role !== 'super_admin') redirect('/admin/articles');
 
   return <AdminsClient />;
 }

@@ -2,21 +2,16 @@ export const dynamic = 'force-dynamic'
 
 import { NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
+import { getSessionUser } from '@/lib/rbac'
+import { logActivity } from '@/lib/activity'
 
 /**
  * GET /api/admin/sidebar-content?tab=trivia|history|fixture|tv
  * POST /api/admin/sidebar-content
- *
- * Requires a 'SidebarContent' table in Supabase with columns:
- *   id (int8, pk), tab_type (text), content (jsonb),
- *   display_order (int4), active (bool), event_date (date, nullable),
- *   created_at (timestamptz)
  */
 export async function GET(request: Request) {
-  const { getServerSession } = require('next-auth')
-  const { authOptions } = require('@/lib/auth')
-  const session = await getServerSession(authOptions)
-  if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  const user = await getSessionUser()
+  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   const { searchParams } = new URL(request.url)
   const tab = searchParams.get('tab')
@@ -30,10 +25,9 @@ export async function GET(request: Request) {
     query = query.eq('tab_type', tab) as typeof query
   }
 
-  const { data: items, error } = await query
+  const { items, error } = await query as any
 
   if (error) {
-    // Table might not exist yet — return empty gracefully
     console.warn('[GET /api/admin/sidebar-content]', error.message)
     return NextResponse.json({ items: [] })
   }
@@ -41,10 +35,8 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
-  const { getServerSession } = require('next-auth')
-  const { authOptions } = require('@/lib/auth')
-  const session = await getServerSession(authOptions)
-  if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  const user = await getSessionUser()
+  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   try {
     const body = await request.json() as any
@@ -61,6 +53,15 @@ export async function POST(request: Request) {
       .single()
 
     if (error) throw error
+
+    await logActivity({
+      actor: user,
+      action: 'sidebar.create',
+      targetType: 'sidebar-content',
+      targetId: String(item.id),
+      targetLabel: `${item.tab_type}: ${item.content?.title || 'Sidebar Item'}`,
+    })
+
     return NextResponse.json({ item }, { status: 201 })
   } catch (error) {
     console.error('[POST /api/admin/sidebar-content]', error)

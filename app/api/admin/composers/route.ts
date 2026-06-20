@@ -2,6 +2,8 @@ export const dynamic = 'force-dynamic'
 
 import { NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
+import { getSessionUser } from '@/lib/rbac'
+import { logActivity } from '@/lib/activity'
 
 /**
  * GET /api/admin/composers — list all composers
@@ -19,10 +21,8 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
-  const { getServerSession } = require('next-auth')
-  const { authOptions } = require('@/lib/auth')
-  const session = await getServerSession(authOptions)
-  if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  const user = await getSessionUser()
+  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   try {
     const body = await request.json() as any
@@ -43,6 +43,15 @@ export async function POST(request: Request) {
       .single()
 
     if (error) throw error
+
+    await logActivity({
+      actor: user,
+      action: 'composer.create',
+      targetType: 'composer',
+      targetId: String(composer.id),
+      targetLabel: composer.name,
+    })
+
     return NextResponse.json({ composer }, { status: 201 })
   } catch (error) {
     console.error('[POST /api/admin/composers]', error)

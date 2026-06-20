@@ -23,6 +23,22 @@ export type ActionType =
   // Admin management (super admin only)
   | 'admin.block'
   | 'admin.unblock'
+  // Sponsors
+  | 'sponsor.create'
+  | 'sponsor.update'
+  | 'sponsor.delete'
+  // Composers
+  | 'composer.create'
+  | 'composer.update'
+  | 'composer.delete'
+  // Sidebar Content
+  | 'sidebar.create'
+  | 'sidebar.update'
+  | 'sidebar.delete'
+  // Score Cards
+  | 'score.create'
+  | 'score.update'
+  | 'score.delete'
   // Auth
   | 'auth.login'
   | 'auth.logout';

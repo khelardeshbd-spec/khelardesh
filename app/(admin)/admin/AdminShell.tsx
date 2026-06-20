@@ -61,7 +61,10 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
   const { data: session } = useSession();
   const role = (session?.user as any)?.role;
   const isEmployee = role === 'employee';
-  const navItems = isEmployee ? EMPLOYEE_NAV : ADMIN_NAV;
+  const isSuperAdmin = role === 'super_admin';
+  const navItems = isEmployee 
+    ? EMPLOYEE_NAV 
+    : ADMIN_NAV.filter(item => isSuperAdmin || item.href !== '/admin/admins');
 
   return (
     <div className="flex h-screen overflow-hidden" style={{ backgroundColor: 'var(--bg-page)' }}>
