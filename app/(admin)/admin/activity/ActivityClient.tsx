@@ -221,23 +221,55 @@ export default function ActivityClient() {
                     </span>
                   </div>
                   
-                  {log.metadata && Object.keys(log.metadata).length > 0 && (
-                    <div 
-                      className="mt-2.5 text-[10px] p-2.5 rounded bg-[#F8F9FA] border"
-                      style={{ 
-                        borderColor: 'var(--ink-border)', 
-                        fontFamily: "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace",
-                        color: '#475569',
-                        overflowX: 'auto',
-                        maxHeight: 160,
-                        overflowY: 'auto'
-                      }}
-                    >
-                      <pre style={{ margin: 0, whiteSpace: 'pre-wrap', wordBreak: 'break-all' }}>
-                        {JSON.stringify(log.metadata, null, 2)}
-                      </pre>
-                    </div>
-                  )}
+                  {(() => {
+                    if (!log.metadata?.changes) return null;
+                    const changes = log.metadata.changes as any;
+                    
+                    if (log.action === 'employee.update_permissions' && changes.permissions) {
+                      const granted: string[] = [];
+                      const revoked: string[] = [];
+                      
+                      const labels: Record<string, string> = {
+                        write_articles: 'Write Articles',
+                        edit_published_articles: 'Edit Published',
+                        edit_drafts: 'Edit Drafts',
+                        delete_articles: 'Delete Published',
+                        delete_drafts: 'Delete Drafts',
+                        view_articles: 'View Articles'
+                      };
+                      
+                      Object.entries(changes.permissions).forEach(([key, val]) => {
+                        const label = labels[key] || key;
+                        if (val) granted.push(label);
+                        else revoked.push(label);
+                      });
+
+                      if (granted.length === 0 && revoked.length === 0) return null;
+
+                      return (
+                        <div className="mt-2 text-[12px] p-2.5 rounded bg-[var(--ink-ghost)] border border-[var(--ink-border)]" style={{ fontFamily: "'Hind Siliguri', sans-serif" }}>
+                          <div className="flex flex-col gap-1">
+                            {granted.length > 0 && (
+                              <div><span className="font-bold text-[#27AE60]">Granted:</span> <span className="text-[var(--ink)]">{granted.join(', ')}</span></div>
+                            )}
+                            {revoked.length > 0 && (
+                              <div><span className="font-bold text-[#E74C3C]">Revoked:</span> <span className="text-[var(--ink)]">{revoked.join(', ')}</span></div>
+                            )}
+                          </div>
+                        </div>
+                      );
+                    }
+                    
+                    if (changes.display_name) {
+                       return (
+                        <div className="mt-2 text-[12px] p-2.5 rounded bg-[var(--ink-ghost)] border border-[var(--ink-border)] text-[var(--ink)]" style={{ fontFamily: "'Hind Siliguri', sans-serif" }}>
+                          <span className="font-bold text-[var(--ink-muted)]">Changed display name to:</span> {changes.display_name}
+                        </div>
+                       );
+                    }
+
+                    return null;
+                  })()}
                 </div>
               </div>
             </div>
