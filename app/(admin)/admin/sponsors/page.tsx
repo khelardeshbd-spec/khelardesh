@@ -2,12 +2,13 @@ import { redirect } from 'next/navigation';
 import AdminShell from '../AdminShell';
 import SponsorsClient from './SponsorsClient';
 
+import { getServerSession } from 'next-auth';
+import { getAuthOptions } from '@/lib/auth';
+
 export const dynamic = 'force-dynamic';
 
 export default async function AdminSponsorsPage() {
-  const { getServerSession } = require('next-auth');
-  const { authOptions } = require('@/lib/auth');
-  const session = await getServerSession(authOptions);
+  const session = await getServerSession(getAuthOptions());
   
   // Direct unauthorized users to the admin login page
   if (!session) {
