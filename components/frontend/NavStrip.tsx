@@ -227,7 +227,7 @@ export default function NavStrip({ noBorder = false, vertical = false, onNavigat
                     aria-expanded={isOpen}
                     aria-haspopup="true"
                     aria-label={`${item.label} সাব-মেন্যু`}
-                    className="flex items-center justify-center h-[36px] w-[28px] cursor-pointer"
+                    className="flex items-center justify-center h-[32px] px-1.5 cursor-pointer -mr-1.5"
                     style={{
                       color: active ? 'var(--live-red)' : 'var(--ink-muted)',
                     }}

@@ -143,7 +143,7 @@ export default function StickyScrollHeader() {
                         e.preventDefault();
                         setOpenDropdown(openDropdown === item.slug ? null : item.slug);
                       }}
-                      className="flex items-center justify-center h-[36px] w-[28px] cursor-pointer"
+                      className="flex items-center justify-center h-[32px] px-1.5 cursor-pointer -mr-1.5"
                       aria-label="Toggle submenu"
                     >
                       <svg
