@@ -14,6 +14,11 @@ export default async function AdminSponsorsPage() {
     redirect('/admin');
   }
 
+  const user = session.user as any;
+  if (user?.role === 'employee') {
+    redirect('/admin/articles');
+  }
+
   return (
     <AdminShell>
       <SponsorsClient />

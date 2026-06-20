@@ -16,6 +16,11 @@ export const metadata: Metadata = {
   description:
     'খেলারদেশ বাংলাদেশে ক্রীড়া সাংবাদিকতায় এক স্বাধীন কণ্ঠস্বর — বাংলা ও ইংরেজিতে ফুটবল, ক্রিকেট, বাস্কেটবল, টেনিস, F1 সহ সমস্ত খেলার খবর।',
   keywords: ['sports news Bangladesh', 'Bengali sports', 'BPL football', 'cricket', 'খেলারদেশ', 'khelar desh'],
+  icons: {
+    icon: '/images/khelardesh_logo.png',
+    shortcut: '/images/khelardesh_logo.png',
+    apple: '/images/khelardesh_logo.png',
+  },
   openGraph: {
     siteName: 'খেলারদেশ',
     type: 'website',

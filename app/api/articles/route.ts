@@ -5,13 +5,14 @@ import { supabaseAdmin } from '@/lib/supabase'
 
 /**
  * GET /api/articles
- * Paginated article feed
- * Query params: ?sport=football&page=1
+ * Paginated article feed (published only)
+ * Query params: ?sport=football&page=1&q=search+term
  */
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url)
     const sport = searchParams.get('sport')
+    const q = searchParams.get('q')?.trim() ?? ''
     const page = Math.max(1, parseInt(searchParams.get('page') ?? '1', 10))
     const pageSize = 20
     const from = (page - 1) * pageSize
@@ -20,11 +21,18 @@ export async function GET(request: Request) {
     let query = supabaseAdmin
       .from('Article')
       .select('id, slug, headline, headlineBn, deck, kicker, sport, mediaType, mediaUrl, mediaCaption, byline, isLead, publishedAt', { count: 'exact' })
+      .eq('status', 'published')
       .order('isLead', { ascending: false })
       .order('publishedAt', { ascending: false })
       .range(from, to)
 
     if (sport) query = query.eq('sport', sport)
+
+    if (q) {
+      query = query.or(
+        `headline.ilike.%${q}%,headlineBn.ilike.%${q}%,deck.ilike.%${q}%`
+      )
+    }
 
     const { data: articles, count, error } = await query
     if (error) throw error

@@ -6,6 +6,11 @@ import AdminSessionProvider from './AdminSessionProvider';
 export const metadata: Metadata = {
   title: 'Khelardesh Admin Dashboard',
   description: 'Admin dashboard for Khelardesh sports news platform.',
+  icons: {
+    icon: '/images/khelardesh_logo.png',
+    shortcut: '/images/khelardesh_logo.png',
+    apple: '/images/khelardesh_logo.png',
+  },
 };
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {

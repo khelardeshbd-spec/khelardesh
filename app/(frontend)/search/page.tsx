@@ -2,9 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { supabase } from '@/lib/supabase';
 import ArticleCard from '@/components/frontend/ArticleCard';
-import Masthead from '@/components/frontend/Masthead';
 
 interface SearchResult {
   id: number;
@@ -35,15 +33,13 @@ export default function SearchPage() {
       setLoading(true);
       setHasSearched(true);
       try {
-        const { data } = await supabase
-          .from('Article')
-          .select('id, slug, headline, headlineBn, deck, sport, mediaType, mediaUrl, byline, publishedAt')
-          .or(`headline.ilike.%${searchQuery}%,headlineBn.ilike.%${searchQuery}%,deck.ilike.%${searchQuery}%`)
-          .order('publishedAt', { ascending: false })
-          .limit(20);
-        if (data) setResults(data);
+        const res = await fetch(`/api/articles?q=${encodeURIComponent(searchQuery.trim())}&page=1`);
+        if (!res.ok) throw new Error('Search failed');
+        const json = await res.json();
+        setResults(json.articles ?? []);
       } catch (err) {
         console.error('Search error:', err);
+        setResults([]);
       } finally {
         setLoading(false);
       }

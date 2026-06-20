@@ -52,12 +52,24 @@ export async function PUT(
       byline, isLead, status,
     } = body
 
-    // Fetch previous status for action type determination
+    // Fetch previous status for permission check and action type determination
     const { data: prev } = await supabaseAdmin
       .from('Article')
       .select('headline, status')
       .eq('id', id)
       .single()
+
+    if (!prev) {
+      return NextResponse.json({ error: 'Article not found' }, { status: 404 })
+    }
+
+    const { hasPermission } = require('@/lib/rbac')
+    if (prev.status === 'published' && !hasPermission(user, 'edit_published_articles')) {
+      return new Response('Forbidden — You do not have permission to edit published articles', { status: 403 })
+    }
+    if (prev.status === 'draft' && !hasPermission(user, 'edit_drafts')) {
+      return new Response('Forbidden — You do not have permission to edit drafts', { status: 403 })
+    }
 
     const { data: article, error } = await supabaseAdmin
       .from('Article')
@@ -109,22 +121,29 @@ export async function DELETE(
   { params }: { params: { id: string } }
 ) {
   const user = await getSessionUser()
-  // Only admins can delete, not employees
-  if (!isAdmin(user)) {
-    return user
-      ? new Response('Forbidden — only admins can delete articles', { status: 403 })
-      : new Response('Unauthorized', { status: 401 })
-  }
+  if (!user) return new Response('Unauthorized', { status: 401 })
 
   try {
     const id = parseInt(params.id, 10)
 
-    // Fetch for logging
+    // Fetch for logging and permission check
     const { data: article } = await supabaseAdmin
       .from('Article')
-      .select('headline')
+      .select('headline, status')
       .eq('id', id)
       .single()
+
+    if (!article) {
+      return NextResponse.json({ error: 'Article not found' }, { status: 404 })
+    }
+
+    const { hasPermission } = require('@/lib/rbac')
+    if (article.status === 'published' && !hasPermission(user, 'delete_articles')) {
+      return new Response('Forbidden — You do not have permission to delete published articles', { status: 403 })
+    }
+    if (article.status === 'draft' && !hasPermission(user, 'delete_drafts')) {
+      return new Response('Forbidden — You do not have permission to delete drafts', { status: 403 })
+    }
 
     const { error } = await supabaseAdmin.from('Article').delete().eq('id', id)
     if (error) throw error

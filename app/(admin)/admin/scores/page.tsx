@@ -1,6 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 import AdminShell from '../AdminShell';
 
 interface ScoreCard {
@@ -33,11 +35,25 @@ function toBengaliDigits(str: string | number): string {
 }
 
 export default function AdminScoresPage() {
+  const { data: session, status } = useSession();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (status === 'unauthenticated') {
+      router.push('/admin');
+    } else if (status === 'authenticated' && (session?.user as any)?.role === 'employee') {
+      router.push('/admin/articles');
+    }
+  }, [status, session, router]);
+
   const [scores, setScores] = useState<ScoreCard[]>([]);
   const [loading, setLoading] = useState(true);
   const [syncing, setSyncing] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
+
+  // Skip loading data if they are unauthorized/redirecting
+  const isEmployee = (session?.user as any)?.role === 'employee';
   
   // Manual entry form
   const [form, setForm] = useState({
@@ -120,6 +136,14 @@ export default function AdminScoresPage() {
     const latest = Math.max(...syncedTimes);
     const minsAgo = Math.floor((Date.now() - latest) / 60000);
     lastSyncedText = `${toBengaliDigits(minsAgo)} মিনিট আগে`;
+  }
+
+  if (status === 'loading' || isEmployee) {
+    return (
+      <div style={{ padding: 24, color: 'var(--ink-muted)', fontFamily: "'Hind Siliguri', sans-serif" }}>
+        Loading...
+      </div>
+    );
   }
 
   const labelStyle = { fontFamily: "'Hind Siliguri', sans-serif", fontSize: 10, fontWeight: 500, letterSpacing: '0.1em', textTransform: 'uppercase' as const, color: 'var(--ink-muted)', display: 'block', marginBottom: 4 };

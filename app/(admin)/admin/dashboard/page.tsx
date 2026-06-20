@@ -11,6 +11,11 @@ export default async function AdminDashboardPage() {
   const session = await getServerSession(authOptions);
   if (!session) redirect('/admin');
 
+  const user = session.user as any;
+  if (user?.role === 'employee') {
+    redirect('/admin/articles');
+  }
+
   // Fetch articles and scorecards count
   const [{ data: articles }, { data: scores }] = await Promise.all([
     supabaseAdmin

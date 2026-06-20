@@ -12,6 +12,7 @@ import { logActivity } from '@/lib/activity'
 export async function GET() {
   const user = await getSessionUser()
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  if (user.role === 'employee') return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
 
   const { data: sponsors, error } = await supabaseAdmin
     .from('Sponsor')
@@ -25,6 +26,7 @@ export async function GET() {
 export async function POST(request: Request) {
   const user = await getSessionUser()
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  if (user.role === 'employee') return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
   try {
     const body = await request.json() as any
     const {

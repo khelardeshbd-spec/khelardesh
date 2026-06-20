@@ -15,6 +15,7 @@ export async function PUT(
 ) {
   const user = await getSessionUser()
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  if (user.role === 'employee') return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
 
   try {
     const id = parseInt(params.id, 10)
@@ -51,6 +52,7 @@ export async function DELETE(
 ) {
   const user = await getSessionUser()
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  if (user.role === 'employee') return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
 
   try {
     const id = parseInt(params.id, 10)

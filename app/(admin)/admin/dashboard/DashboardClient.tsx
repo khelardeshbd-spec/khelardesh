@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
+import { useSession } from 'next-auth/react';
 import { 
   TrendingUp, 
   Users, 
@@ -32,6 +33,9 @@ interface DashboardClientProps {
 }
 
 export default function DashboardClient({ initialArticles, totalScoresCount }: DashboardClientProps) {
+  const { data: session } = useSession();
+  const isEmployee = (session?.user as any)?.role === 'employee';
+
   const [searchQuery, setSearchQuery] = useState('');
   const [sortField, setSortField] = useState<'views' | 'live' | 'publishedAt'>('live');
   const [sortAsc, setSortAsc] = useState(false);
@@ -600,7 +604,9 @@ export default function DashboardClient({ initialArticles, totalScoresCount }: D
       {/* Quick Action buttons */}
       <div className="flex gap-3 mb-8 flex-wrap">
         <Link href="/admin/articles/new" className="admin-btn-primary">+ New Article</Link>
-        <Link href="/admin/sponsors" className="admin-btn-secondary">Manage Sponsors</Link>
+        {!isEmployee && (
+          <Link href="/admin/sponsors" className="admin-btn-secondary">Manage Sponsors</Link>
+        )}
       </div>
 
       {/* Articles Readership Performance Console */}
