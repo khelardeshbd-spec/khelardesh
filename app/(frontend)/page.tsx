@@ -17,6 +17,7 @@ import CategoryColumnFeed from '@/components/frontend/CategoryColumnFeed';
 import LowerSection from '@/components/frontend/LowerSection';
 import ProfileMenu from '@/components/frontend/ProfileMenu';
 import HomeNav from '@/components/frontend/HomeNav';
+import LiveDate from '@/components/frontend/LiveDate';
 
 export const dynamic = 'force-dynamic';
 
@@ -218,29 +219,7 @@ export default async function HomePage() {
             </div>
 
             {/* Center: Bengali Date Info */}
-            <div className="flex justify-center items-center">
-              {/* Desktop version */}
-              <div className="flex flex-col items-center text-center text-[10px] sm:text-[11px] text-gray-500 tracking-widest justify-center hidden sm:flex font-medium font-sans">
-                <span>
-                  {new Intl.DateTimeFormat('bn-BD', {
-                    weekday: 'long',
-                    day: 'numeric',
-                    month: 'long',
-                    year: 'numeric'
-                  }).format(new Date())}
-                </span>
-              </div>
-              {/* Show short date on very small screens so it fits */}
-              <div className="flex flex-col items-center text-center text-[9px] text-gray-500 tracking-widest justify-center sm:hidden font-medium font-sans">
-                <span>
-                  {new Intl.DateTimeFormat('bn-BD', {
-                    day: 'numeric',
-                    month: 'short',
-                    year: 'numeric'
-                  }).format(new Date())}
-                </span>
-              </div>
-            </div>
+            <LiveDate />
 
             {/* Right: Actions */}
             <div className="flex items-center justify-end">
