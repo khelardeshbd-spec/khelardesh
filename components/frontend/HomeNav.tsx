@@ -52,6 +52,7 @@ export default function HomeNav() {
     { label: 'ফিচার', slug: 'feature' },
     { label: 'খেলার দেশ বিশেষ', slug: 'special' },
     { label: 'অতিথি কলাম', slug: 'guest-column' },
+    { label: 'এই দিনে', slug: 'on-this-day' },
     { 
       label: 'অন্যান্য', 
       slug: 'other',

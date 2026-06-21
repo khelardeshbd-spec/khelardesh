@@ -410,11 +410,11 @@ export default function LowerSection({
 
         {/* Sidebar Column */}
         <div className="hp-sidebar">
-          {didYouKnowArticles.length > 0 && (
-            <PhotoCardSection title="আপনি জানেন কি?" slug="did-you-know" articles={didYouKnowArticles} />
-          )}
           {onThisDayArticles.length > 0 && (
             <PhotoCardSection title="এই দিনে" slug="on-this-day" articles={onThisDayArticles} />
+          )}
+          {didYouKnowArticles.length > 0 && (
+            <PhotoCardSection title="আপনি জানেন কি?" slug="did-you-know" articles={didYouKnowArticles} />
           )}
           {othersArticles.length > 0 && (
             <SidebarList articles={othersArticles} />
