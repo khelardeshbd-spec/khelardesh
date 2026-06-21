@@ -167,6 +167,7 @@ function CategorySection({ title, slug, articles }: { title: string, slug: strin
   const latestArticle = articles[0];
   const secondArticle = articles[1];
   const thirdArticle = articles[2];
+  const fourthArticle = articles[3];
   const hasPoster = latestArticle && latestArticle.publishedAt 
     ? new Date(latestArticle.publishedAt).getTime() >= twoDaysAgo 
     : false;
@@ -218,9 +219,10 @@ function CategorySection({ title, slug, articles }: { title: string, slug: strin
                 বিজ্ঞাপন
               </div>
             </div>
-            <div style={{ display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'space-between', gap: '20px' }}>
-              {secondArticle && <div><CardStandard article={secondArticle} /></div>}
-              {thirdArticle && <div style={{ marginTop: 'auto' }}><CardStandard article={thirdArticle} /></div>}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+              {secondArticle && <CardStandard article={secondArticle} />}
+              {thirdArticle && <CardStandard article={thirdArticle} />}
+              {fourthArticle && <CardStandard article={fourthArticle} />}
             </div>
           </>
         ) : (
@@ -384,7 +386,7 @@ export default function LowerSection({
           display: grid;
           grid-template-columns: 2fr 1fr;
           gap: 24px;
-          align-items: stretch;
+          align-items: start;
         }
         .cat-grid-standard {
           display: grid;
