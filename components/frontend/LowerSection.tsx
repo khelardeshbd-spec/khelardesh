@@ -218,9 +218,9 @@ function CategorySection({ title, slug, articles }: { title: string, slug: strin
                 বিজ্ঞাপন
               </div>
             </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-              {secondArticle && <CardStandard article={secondArticle} />}
-              {thirdArticle && <CardStandard article={thirdArticle} />}
+            <div style={{ display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'space-between', gap: '20px' }}>
+              {secondArticle && <div><CardStandard article={secondArticle} /></div>}
+              {thirdArticle && <div style={{ marginTop: 'auto' }}><CardStandard article={thirdArticle} /></div>}
             </div>
           </>
         ) : (
@@ -384,7 +384,7 @@ export default function LowerSection({
           display: grid;
           grid-template-columns: 2fr 1fr;
           gap: 24px;
-          align-items: start;
+          align-items: stretch;
         }
         .cat-grid-standard {
           display: grid;
