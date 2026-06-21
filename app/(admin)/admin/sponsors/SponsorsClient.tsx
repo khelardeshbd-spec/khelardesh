@@ -682,6 +682,13 @@ function HomepageBannerManager({ label, placement, initialImageUrl, initialCtaUr
   const [fileSrc, setFileSrc] = useState<string | null>(null);
   const [toggling, setToggling] = useState(false);
 
+  // Cropping states
+  const [imageRatio, setImageRatio] = useState<number | null>(null);
+  const [zoom, setZoom] = useState(1);
+  const [offset, setOffset] = useState({ x: 0, y: 0 });
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
+
   useEffect(() => {
     setImageUrl(initialImageUrl);
     setCtaUrl(initialCtaUrl);
@@ -692,9 +699,36 @@ function HomepageBannerManager({ label, placement, initialImageUrl, initialCtaUr
     const file = e.target.files?.[0];
     if (file) {
       const reader = new FileReader();
-      reader.onload = () => { setFileSrc(reader.result as string); };
+      reader.onload = () => {
+        const img = new Image();
+        img.src = reader.result as string;
+        img.onload = () => {
+          setImageRatio(img.width / img.height);
+          setFileSrc(reader.result as string);
+          setZoom(1);
+          setOffset({ x: 0, y: 0 });
+        };
+      };
       reader.readAsDataURL(file);
     }
+  };
+
+  const handleMouseDown = (e: React.MouseEvent) => {
+    if (!fileSrc) return;
+    setIsDragging(true);
+    setDragStart({ x: e.clientX - offset.x, y: e.clientY - offset.y });
+  };
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!isDragging || !fileSrc) return;
+    setOffset({
+      x: e.clientX - dragStart.x,
+      y: e.clientY - dragStart.y
+    });
+  };
+
+  const handleMouseUpOrLeave = () => {
+    setIsDragging(false);
   };
 
   const handleToggleClick = async () => {
@@ -729,11 +763,26 @@ function HomepageBannerManager({ label, placement, initialImageUrl, initialCtaUr
       if (ctx) {
         ctx.fillStyle = '#ffffff';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
+
         const imgRatio = img.width / img.height;
-        const canvasRatio = canvas.width / canvas.height;
-        let drawW = canvas.width, drawH = canvas.height;
-        if (imgRatio > canvasRatio) { drawW = canvas.height * imgRatio; } else { drawH = canvas.width / imgRatio; }
-        ctx.drawImage(img, (canvas.width - drawW) / 2, (canvas.height - drawH) / 2, drawW, drawH);
+        let drawWidth = 1456;
+        let drawHeight = 180;
+
+        if (imgRatio > (1456 / 180)) {
+          drawWidth = 180 * imgRatio;
+        } else {
+          drawHeight = 1456 / imgRatio;
+        }
+
+        const finalWidth = drawWidth * zoom;
+        const finalHeight = drawHeight * zoom;
+
+        // Visual preview box is 728px wide, 90px tall. Canvas is 2x resolution (1456x180).
+        const x = (1456 - finalWidth) / 2 + (offset.x * 2);
+        const y = (180 - finalHeight) / 2 + (offset.y * 2);
+
+        ctx.drawImage(img, x, y, finalWidth, finalHeight);
+
         canvas.toBlob(async (blob) => {
           if (!blob) return;
           const formData = new FormData();
@@ -751,6 +800,17 @@ function HomepageBannerManager({ label, placement, initialImageUrl, initialCtaUr
   };
 
   const isBusy = saving || toggling;
+
+  // Determine cover dimensions for the preview box (728x90)
+  let previewImgWidth = 728;
+  let previewImgHeight = 90;
+  if (imageRatio) {
+    if (imageRatio > (728 / 90)) {
+      previewImgWidth = 90 * imageRatio;
+    } else {
+      previewImgHeight = 728 / imageRatio;
+    }
+  }
 
   return (
     <section style={{
@@ -792,16 +852,61 @@ function HomepageBannerManager({ label, placement, initialImageUrl, initialCtaUr
         </div>
       </div>
 
-      {/* Preview */}
-      <div style={{ width: '100%', height: 90, backgroundColor: '#f5f5f5', border: '1.5px dashed var(--ink-border)', borderRadius: 3, overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 20 }}>
+      {/* Interactive Cropping Preview Area (matches exact 728px x 90px banner aspect ratio) */}
+      <div
+        onMouseDown={handleMouseDown}
+        onMouseMove={handleMouseMove}
+        onMouseUp={handleMouseUpOrLeave}
+        onMouseLeave={handleMouseUpOrLeave}
+        style={{
+          width: '100%',
+          maxWidth: 728,
+          height: 90,
+          backgroundColor: '#f5f5f5',
+          border: '1.5px dashed var(--ink-border)',
+          borderRadius: 3,
+          overflow: 'hidden',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          position: 'relative',
+          cursor: fileSrc ? (isDragging ? 'grabbing' : 'grab') : 'default',
+          userSelect: 'none',
+          marginBottom: 20
+        }}
+      >
         {fileSrc ? (
-          <img src={fileSrc} alt="Preview" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+          <img
+            src={fileSrc}
+            alt="Cropping in progress"
+            draggable={false}
+            style={{
+              position: 'absolute',
+              width: previewImgWidth,
+              height: previewImgHeight,
+              transform: `translate(${offset.x}px, ${offset.y}px) scale(${zoom})`,
+              maxWidth: 'none',
+              maxHeight: 'none'
+            }}
+          />
         ) : imageUrl ? (
-          <img src={imageUrl} alt="Current Banner" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+          <img
+            src={imageUrl}
+            alt="Current Banner"
+            draggable={false}
+            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+          />
         ) : (
           <span style={{ color: 'var(--ink-ghost)', fontSize: 11, fontFamily: "'Hind Siliguri', sans-serif", fontWeight: 600 }}>
             বিজ্ঞাপন প্রিভিউ (728×90)
           </span>
+        )}
+
+        {/* Overlay indicator */}
+        {fileSrc && (
+          <div style={{ position: 'absolute', bottom: 4, right: 6, backgroundColor: 'rgba(0,0,0,0.6)', color: '#fff', fontSize: 8, padding: '2px 4px', borderRadius: 2, pointerEvents: 'none' }}>
+            DRAG TO ADJUST
+          </div>
         )}
       </div>
 
@@ -811,6 +916,25 @@ function HomepageBannerManager({ label, placement, initialImageUrl, initialCtaUr
         </span>
         <input type="file" accept="image/*" onChange={handleFileChange} style={{ fontFamily: "'Hind Siliguri', sans-serif", fontSize: 12, width: '100%' }} />
       </div>
+
+      {/* Zoom controls */}
+      {fileSrc && (
+        <div style={{ marginBottom: 16 }}>
+          <div className="flex justify-between items-center" style={{ marginBottom: 4 }}>
+            <span style={{ fontFamily: "'Hind Siliguri', sans-serif", fontSize: 11, fontWeight: 600, textTransform: 'uppercase', color: 'var(--ink-muted)' }}>Zoom Scale</span>
+            <span style={{ fontSize: 11, fontWeight: 600 }}>{zoom.toFixed(2)}x</span>
+          </div>
+          <input
+            type="range"
+            min="1"
+            max="3"
+            step="0.02"
+            value={zoom}
+            onChange={(e) => setZoom(parseFloat(e.target.value))}
+            style={{ width: '100%', cursor: 'pointer' }}
+          />
+        </div>
+      )}
 
       <div style={{ marginBottom: 16 }}>
         <span style={{ fontFamily: "'Hind Siliguri', sans-serif", fontSize: 11, fontWeight: 600, textTransform: 'uppercase', color: 'var(--ink-muted)', display: 'block', marginBottom: 6 }}>
