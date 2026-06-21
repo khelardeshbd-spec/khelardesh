@@ -180,6 +180,9 @@ export default async function HomePage() {
   const hpBanner1 = sponsors.find((s) => s.placement === 'homepage-banner-1');
   const hpBanner2 = sponsors.find((s) => s.placement === 'homepage-banner-2');
   const hpBanner3 = sponsors.find((s) => s.placement === 'homepage-banner-3');
+  const hpBanner4 = sponsors.find((s) => s.placement === 'homepage-banner-4');
+  const hpBanner5 = sponsors.find((s) => s.placement === 'homepage-banner-5');
+  const hpBanner6 = sponsors.find((s) => s.placement === 'homepage-banner-6');
 
   const showLeft = !!(leftSponsor && leftSponsor.imageUrl);
   const showRight = !!(rightSponsor && rightSponsor.imageUrl);
@@ -273,6 +276,9 @@ export default async function HomePage() {
           hpBanner1={hpBanner1 ? { imageUrl: hpBanner1.imageUrl, ctaUrl: hpBanner1.ctaUrl } : null}
           hpBanner2={hpBanner2 ? { imageUrl: hpBanner2.imageUrl, ctaUrl: hpBanner2.ctaUrl } : null}
           hpBanner3={hpBanner3 ? { imageUrl: hpBanner3.imageUrl, ctaUrl: hpBanner3.ctaUrl } : null}
+          hpBanner4={hpBanner4 ? { imageUrl: hpBanner4.imageUrl, ctaUrl: hpBanner4.ctaUrl } : null}
+          hpBanner5={hpBanner5 ? { imageUrl: hpBanner5.imageUrl, ctaUrl: hpBanner5.ctaUrl } : null}
+          hpBanner6={hpBanner6 ? { imageUrl: hpBanner6.imageUrl, ctaUrl: hpBanner6.ctaUrl } : null}
         />
 
       </div>

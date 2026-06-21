@@ -39,7 +39,7 @@ export default function SponsorsClient() {
   }
 
   async function handleSaveBanner(
-    placement: 'header-left' | 'header-right' | 'homepage-banner-1' | 'homepage-banner-2' | 'homepage-banner-3',
+    placement: 'header-left' | 'header-right' | 'homepage-banner-1' | 'homepage-banner-2' | 'homepage-banner-3' | 'homepage-banner-4' | 'homepage-banner-5' | 'homepage-banner-6',
     newImageUrl: string,
     newCtaUrl: string
   ) {
@@ -50,6 +50,9 @@ export default function SponsorsClient() {
       'homepage-banner-1': 'Homepage Banner 1',
       'homepage-banner-2': 'Homepage Banner 2',
       'homepage-banner-3': 'Homepage Banner 3',
+      'homepage-banner-4': 'Homepage Banner 4',
+      'homepage-banner-5': 'Homepage Banner 5',
+      'homepage-banner-6': 'Homepage Banner 6',
     };
     const orderMap: Record<string, number> = {
       'header-left': 1,
@@ -57,6 +60,9 @@ export default function SponsorsClient() {
       'homepage-banner-1': 10,
       'homepage-banner-2': 11,
       'homepage-banner-3': 12,
+      'homepage-banner-4': 13,
+      'homepage-banner-5': 14,
+      'homepage-banner-6': 15,
     };
     const label = labelMap[placement];
     const displayOrder = orderMap[placement];
@@ -103,7 +109,7 @@ export default function SponsorsClient() {
   }
 
   async function handleDeleteBanner(
-    placement: 'header-left' | 'header-right' | 'homepage-banner-1' | 'homepage-banner-2' | 'homepage-banner-3'
+    placement: 'header-left' | 'header-right' | 'homepage-banner-1' | 'homepage-banner-2' | 'homepage-banner-3' | 'homepage-banner-4' | 'homepage-banner-5' | 'homepage-banner-6'
   ) {
     const existing = sponsors.find((s) => s.placement === placement);
     const label = {
@@ -112,6 +118,9 @@ export default function SponsorsClient() {
       'homepage-banner-1': 'Homepage Banner 1',
       'homepage-banner-2': 'Homepage Banner 2',
       'homepage-banner-3': 'Homepage Banner 3',
+      'homepage-banner-4': 'Homepage Banner 4',
+      'homepage-banner-5': 'Homepage Banner 5',
+      'homepage-banner-6': 'Homepage Banner 6',
     }[placement] ?? placement;
     if (!existing || !existing.id) {
       alert('Banner is already empty!');
@@ -148,6 +157,9 @@ export default function SponsorsClient() {
   const hpBanner1 = sponsors.find((s) => s.placement === 'homepage-banner-1');
   const hpBanner2 = sponsors.find((s) => s.placement === 'homepage-banner-2');
   const hpBanner3 = sponsors.find((s) => s.placement === 'homepage-banner-3');
+  const hpBanner4 = sponsors.find((s) => s.placement === 'homepage-banner-4');
+  const hpBanner5 = sponsors.find((s) => s.placement === 'homepage-banner-5');
+  const hpBanner6 = sponsors.find((s) => s.placement === 'homepage-banner-6');
 
   return (
     <div style={{ padding: '8px 4px' }}>
@@ -215,7 +227,7 @@ export default function SponsorsClient() {
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
               <HomepageBannerManager
-                label="Homepage Banner 1"
+                label="Homepage Banner 1 (ফুটবল section)"
                 placement="homepage-banner-1"
                 initialImageUrl={hpBanner1?.imageUrl || ''}
                 initialCtaUrl={hpBanner1?.ctaUrl || ''}
@@ -224,7 +236,7 @@ export default function SponsorsClient() {
                 saving={savingId === 'homepage-banner-1'}
               />
               <HomepageBannerManager
-                label="Homepage Banner 2"
+                label="Homepage Banner 2 (ক্রিকেট section)"
                 placement="homepage-banner-2"
                 initialImageUrl={hpBanner2?.imageUrl || ''}
                 initialCtaUrl={hpBanner2?.ctaUrl || ''}
@@ -233,13 +245,40 @@ export default function SponsorsClient() {
                 saving={savingId === 'homepage-banner-2'}
               />
               <HomepageBannerManager
-                label="Homepage Banner 3"
+                label="Homepage Banner 3 (ইন্টারভিউ section)"
                 placement="homepage-banner-3"
                 initialImageUrl={hpBanner3?.imageUrl || ''}
                 initialCtaUrl={hpBanner3?.ctaUrl || ''}
                 onSave={(img, link) => handleSaveBanner('homepage-banner-3', img, link)}
                 onDelete={() => handleDeleteBanner('homepage-banner-3')}
                 saving={savingId === 'homepage-banner-3'}
+              />
+              <HomepageBannerManager
+                label="Homepage Banner 4 (ফিচার section)"
+                placement="homepage-banner-4"
+                initialImageUrl={hpBanner4?.imageUrl || ''}
+                initialCtaUrl={hpBanner4?.ctaUrl || ''}
+                onSave={(img, link) => handleSaveBanner('homepage-banner-4', img, link)}
+                onDelete={() => handleDeleteBanner('homepage-banner-4')}
+                saving={savingId === 'homepage-banner-4'}
+              />
+              <HomepageBannerManager
+                label="Homepage Banner 5 (খেলার দেশ বিশেষ section)"
+                placement="homepage-banner-5"
+                initialImageUrl={hpBanner5?.imageUrl || ''}
+                initialCtaUrl={hpBanner5?.ctaUrl || ''}
+                onSave={(img, link) => handleSaveBanner('homepage-banner-5', img, link)}
+                onDelete={() => handleDeleteBanner('homepage-banner-5')}
+                saving={savingId === 'homepage-banner-5'}
+              />
+              <HomepageBannerManager
+                label="Homepage Banner 6 (অতিথি কলাম section)"
+                placement="homepage-banner-6"
+                initialImageUrl={hpBanner6?.imageUrl || ''}
+                initialCtaUrl={hpBanner6?.ctaUrl || ''}
+                onSave={(img, link) => handleSaveBanner('homepage-banner-6', img, link)}
+                onDelete={() => handleDeleteBanner('homepage-banner-6')}
+                saving={savingId === 'homepage-banner-6'}
               />
             </div>
           </>

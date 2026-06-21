@@ -29,6 +29,9 @@ interface LowerSectionProps {
   hpBanner1?: { imageUrl?: string | null; ctaUrl?: string | null } | null;
   hpBanner2?: { imageUrl?: string | null; ctaUrl?: string | null } | null;
   hpBanner3?: { imageUrl?: string | null; ctaUrl?: string | null } | null;
+  hpBanner4?: { imageUrl?: string | null; ctaUrl?: string | null } | null;
+  hpBanner5?: { imageUrl?: string | null; ctaUrl?: string | null } | null;
+  hpBanner6?: { imageUrl?: string | null; ctaUrl?: string | null } | null;
 }
 
 function sportLabel(sport?: string | null) {
@@ -370,6 +373,9 @@ export default function LowerSection({
   hpBanner1,
   hpBanner2,
   hpBanner3,
+  hpBanner4,
+  hpBanner5,
+  hpBanner6,
 }: LowerSectionProps) {
   return (
     <section aria-label="সংবাদ বিভাগ" style={{ marginBottom: 32, marginTop: 24 }}>
@@ -426,9 +432,9 @@ export default function LowerSection({
           <CategorySection title="ফুটবল" slug="football" articles={footballArticles} banner={hpBanner1} />
           <CategorySection title="ক্রিকেট" slug="cricket" articles={cricketArticles} banner={hpBanner2} />
           <CategorySection title="ইন্টারভিউ" slug="interview" articles={interviewArticles} banner={hpBanner3} />
-          <CategorySection title="ফিচার" slug="feature" articles={featureArticles} />
-          <CategorySection title="খেলার দেশ বিশেষ" slug="special" articles={specialArticles} />
-          <CategorySection title="অতিথি কলাম" slug="guest-column" articles={guestArticles} />
+          <CategorySection title="ফিচার" slug="feature" articles={featureArticles} banner={hpBanner4} />
+          <CategorySection title="খেলার দেশ বিশেষ" slug="special" articles={specialArticles} banner={hpBanner5} />
+          <CategorySection title="অতিথি কলাম" slug="guest-column" articles={guestArticles} banner={hpBanner6} />
         </div>
 
         {/* Sidebar Column */}
