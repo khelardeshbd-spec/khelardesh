@@ -174,6 +174,25 @@ function CategorySection({ title, slug, articles }: { title: string, slug: strin
 
   return (
     <div style={{ marginBottom: 36, paddingBottom: 16, borderBottom: '1px solid var(--ink-border)' }}>
+      {/* Ad Banner */}
+      <div style={{
+        width: '100%',
+        height: '90px',
+        backgroundColor: '#f5f5f5',
+        border: '1px solid #e0e0e0',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginBottom: 16,
+        color: '#aaa',
+        fontSize: '11px',
+        fontFamily: 'var(--font-body)',
+        textTransform: 'uppercase',
+        letterSpacing: '0.08em',
+      }}>
+        বিজ্ঞাপন
+      </div>
+
       {/* Category Header */}
       <div style={{
         display: 'flex',
