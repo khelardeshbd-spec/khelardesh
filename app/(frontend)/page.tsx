@@ -177,6 +177,9 @@ export default async function HomePage() {
   const inlineSponsors = sponsors.filter((s) => s.placement === 'inline');
   const leftSponsor = sponsors.find((s) => s.placement === 'header-left');
   const rightSponsor = sponsors.find((s) => s.placement === 'header-right');
+  const hpBanner1 = sponsors.find((s) => s.placement === 'homepage-banner-1');
+  const hpBanner2 = sponsors.find((s) => s.placement === 'homepage-banner-2');
+  const hpBanner3 = sponsors.find((s) => s.placement === 'homepage-banner-3');
 
   const showLeft = !!(leftSponsor && leftSponsor.imageUrl);
   const showRight = !!(rightSponsor && rightSponsor.imageUrl);
@@ -267,6 +270,9 @@ export default async function HomePage() {
           othersArticles={othersArticles}
           didYouKnowArticles={didYouKnowArticles}
           onThisDayArticles={onThisDayArticles}
+          hpBanner1={hpBanner1 ? { imageUrl: hpBanner1.imageUrl, ctaUrl: hpBanner1.ctaUrl } : null}
+          hpBanner2={hpBanner2 ? { imageUrl: hpBanner2.imageUrl, ctaUrl: hpBanner2.ctaUrl } : null}
+          hpBanner3={hpBanner3 ? { imageUrl: hpBanner3.imageUrl, ctaUrl: hpBanner3.ctaUrl } : null}
         />
 
       </div>

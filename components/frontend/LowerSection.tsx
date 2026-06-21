@@ -26,6 +26,9 @@ interface LowerSectionProps {
   othersArticles: Article[];
   didYouKnowArticles?: Article[];
   onThisDayArticles?: Article[];
+  hpBanner1?: { imageUrl?: string | null; ctaUrl?: string | null } | null;
+  hpBanner2?: { imageUrl?: string | null; ctaUrl?: string | null } | null;
+  hpBanner3?: { imageUrl?: string | null; ctaUrl?: string | null } | null;
 }
 
 function sportLabel(sport?: string | null) {
@@ -160,7 +163,7 @@ function CardStandard({ article }: { article: Article }) {
   );
 }
 
-function CategorySection({ title, slug, articles }: { title: string, slug: string, articles: Article[] }) {
+function CategorySection({ title, slug, articles, banner }: { title: string, slug: string, articles: Article[], banner?: { imageUrl?: string | null; ctaUrl?: string | null } | null }) {
   if (!articles || articles.length === 0) return null;
 
   const twoDaysAgo = Date.now() - 2 * 24 * 60 * 60 * 1000;
@@ -175,23 +178,20 @@ function CategorySection({ title, slug, articles }: { title: string, slug: strin
   return (
     <div style={{ marginBottom: 36, paddingBottom: 16, borderBottom: '1px solid var(--ink-border)' }}>
       {/* Ad Banner */}
-      <div style={{
-        width: '100%',
-        height: '90px',
-        backgroundColor: '#f5f5f5',
-        border: '1px solid #e0e0e0',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        marginBottom: 16,
-        color: '#aaa',
-        fontSize: '11px',
-        fontFamily: 'var(--font-body)',
-        textTransform: 'uppercase',
-        letterSpacing: '0.08em',
-      }}>
-        বিজ্ঞাপন
-      </div>
+      {banner?.imageUrl ? (
+        <a href={banner.ctaUrl || '#'} target="_blank" rel="noopener noreferrer" style={{ display: 'block', width: '100%', marginBottom: 16 }}>
+          <img src={banner.imageUrl} alt="Advertisement" style={{ width: '100%', height: '90px', objectFit: 'cover', display: 'block' }} />
+        </a>
+      ) : (
+        <div style={{
+          width: '100%', height: '90px', backgroundColor: '#f5f5f5', border: '1px solid #e0e0e0',
+          display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 16,
+          color: '#aaa', fontSize: '11px', fontFamily: 'var(--font-body)',
+          textTransform: 'uppercase', letterSpacing: '0.08em',
+        }}>
+          বিজ্ঞাপন
+        </div>
+      )}
 
       {/* Category Header */}
       <div style={{
@@ -367,6 +367,9 @@ export default function LowerSection({
   othersArticles,
   didYouKnowArticles = [],
   onThisDayArticles = [],
+  hpBanner1,
+  hpBanner2,
+  hpBanner3,
 }: LowerSectionProps) {
   return (
     <section aria-label="সংবাদ বিভাগ" style={{ marginBottom: 32, marginTop: 24 }}>
@@ -420,9 +423,9 @@ export default function LowerSection({
         {/* Main Feed Column */}
         <div>
           {/* Order Constraint: Football -> Cricket -> Interview -> Feature -> Special -> Guest Column */}
-          <CategorySection title="ফুটবল" slug="football" articles={footballArticles} />
-          <CategorySection title="ক্রিকেট" slug="cricket" articles={cricketArticles} />
-          <CategorySection title="ইন্টারভিউ" slug="interview" articles={interviewArticles} />
+          <CategorySection title="ফুটবল" slug="football" articles={footballArticles} banner={hpBanner1} />
+          <CategorySection title="ক্রিকেট" slug="cricket" articles={cricketArticles} banner={hpBanner2} />
+          <CategorySection title="ইন্টারভিউ" slug="interview" articles={interviewArticles} banner={hpBanner3} />
           <CategorySection title="ফিচার" slug="feature" articles={featureArticles} />
           <CategorySection title="খেলার দেশ বিশেষ" slug="special" articles={specialArticles} />
           <CategorySection title="অতিথি কলাম" slug="guest-column" articles={guestArticles} />

@@ -38,10 +38,28 @@ export default function SponsorsClient() {
     }
   }
 
-  async function handleSaveBanner(placement: 'header-left' | 'header-right', newImageUrl: string, newCtaUrl: string) {
+  async function handleSaveBanner(
+    placement: 'header-left' | 'header-right' | 'homepage-banner-1' | 'homepage-banner-2' | 'homepage-banner-3',
+    newImageUrl: string,
+    newCtaUrl: string
+  ) {
     const existing = sponsors.find((s) => s.placement === placement);
-    const label = placement === 'header-left' ? 'Desktop Banner 1' : 'Desktop Banner 2';
-    const displayOrder = placement === 'header-left' ? 1 : 2;
+    const labelMap: Record<string, string> = {
+      'header-left': 'Desktop Banner 1',
+      'header-right': 'Desktop Banner 2',
+      'homepage-banner-1': 'Homepage Banner 1',
+      'homepage-banner-2': 'Homepage Banner 2',
+      'homepage-banner-3': 'Homepage Banner 3',
+    };
+    const orderMap: Record<string, number> = {
+      'header-left': 1,
+      'header-right': 2,
+      'homepage-banner-1': 10,
+      'homepage-banner-2': 11,
+      'homepage-banner-3': 12,
+    };
+    const label = labelMap[placement];
+    const displayOrder = orderMap[placement];
 
     if (!newCtaUrl || !newCtaUrl.trim()) {
       setError('Redirection link is required.');
@@ -84,9 +102,17 @@ export default function SponsorsClient() {
     }
   }
 
-  async function handleDeleteBanner(placement: 'header-left' | 'header-right') {
+  async function handleDeleteBanner(
+    placement: 'header-left' | 'header-right' | 'homepage-banner-1' | 'homepage-banner-2' | 'homepage-banner-3'
+  ) {
     const existing = sponsors.find((s) => s.placement === placement);
-    const label = placement === 'header-left' ? 'Desktop Banner 1' : 'Desktop Banner 2';
+    const label = {
+      'header-left': 'Desktop Banner 1',
+      'header-right': 'Desktop Banner 2',
+      'homepage-banner-1': 'Homepage Banner 1',
+      'homepage-banner-2': 'Homepage Banner 2',
+      'homepage-banner-3': 'Homepage Banner 3',
+    }[placement] ?? placement;
     if (!existing || !existing.id) {
       alert('Banner is already empty!');
       return;
@@ -119,6 +145,9 @@ export default function SponsorsClient() {
 
   const leftBanner = sponsors.find((s) => s.placement === 'header-left');
   const rightBanner = sponsors.find((s) => s.placement === 'header-right');
+  const hpBanner1 = sponsors.find((s) => s.placement === 'homepage-banner-1');
+  const hpBanner2 = sponsors.find((s) => s.placement === 'homepage-banner-2');
+  const hpBanner3 = sponsors.find((s) => s.placement === 'homepage-banner-3');
 
   return (
     <div style={{ padding: '8px 4px' }}>
@@ -171,6 +200,49 @@ export default function SponsorsClient() {
             />
 
           </div>
+        )}
+
+        {/* ───── Homepage Ad Banners ───── */}
+        {!loading && (
+          <>
+            <div className="mt-12 mb-6 pb-4 border-b border-[var(--ink-border)]">
+              <h2 style={{ fontFamily: "var(--font-body)", fontWeight: 800, fontSize: 20, color: 'var(--ink)' }}>
+                Homepage Ad Banners
+              </h2>
+              <p style={{ fontFamily: "'Hind Siliguri', sans-serif", fontSize: 12, color: 'var(--ink-muted)', marginTop: 4 }}>
+                These leaderboard banners (728×90) appear above each content section on the homepage.
+              </p>
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
+              <HomepageBannerManager
+                label="Homepage Banner 1"
+                placement="homepage-banner-1"
+                initialImageUrl={hpBanner1?.imageUrl || ''}
+                initialCtaUrl={hpBanner1?.ctaUrl || ''}
+                onSave={(img, link) => handleSaveBanner('homepage-banner-1', img, link)}
+                onDelete={() => handleDeleteBanner('homepage-banner-1')}
+                saving={savingId === 'homepage-banner-1'}
+              />
+              <HomepageBannerManager
+                label="Homepage Banner 2"
+                placement="homepage-banner-2"
+                initialImageUrl={hpBanner2?.imageUrl || ''}
+                initialCtaUrl={hpBanner2?.ctaUrl || ''}
+                onSave={(img, link) => handleSaveBanner('homepage-banner-2', img, link)}
+                onDelete={() => handleDeleteBanner('homepage-banner-2')}
+                saving={savingId === 'homepage-banner-2'}
+              />
+              <HomepageBannerManager
+                label="Homepage Banner 3"
+                placement="homepage-banner-3"
+                initialImageUrl={hpBanner3?.imageUrl || ''}
+                initialCtaUrl={hpBanner3?.ctaUrl || ''}
+                onSave={(img, link) => handleSaveBanner('homepage-banner-3', img, link)}
+                onDelete={() => handleDeleteBanner('homepage-banner-3')}
+                saving={savingId === 'homepage-banner-3'}
+              />
+            </div>
+          </>
         )}
 
       </div>
@@ -494,6 +566,137 @@ function BannerCropper({ label, placement, initialImageUrl, initialCtaUrl, onSav
             </button>
           )}
         </div>
+      </div>
+    </section>
+  );
+}
+
+interface HomepageBannerManagerProps {
+  label: string;
+  placement: string;
+  initialImageUrl: string;
+  initialCtaUrl: string;
+  onSave: (imageUrl: string, ctaUrl: string) => Promise<void>;
+  onDelete: () => Promise<void>;
+  saving: boolean;
+}
+
+function HomepageBannerManager({ label, placement, initialImageUrl, initialCtaUrl, onSave, onDelete, saving }: HomepageBannerManagerProps) {
+  const [imageUrl, setImageUrl] = useState(initialImageUrl);
+  const [ctaUrl, setCtaUrl] = useState(initialCtaUrl);
+  const [fileSrc, setFileSrc] = useState<string | null>(null);
+
+  useEffect(() => {
+    setImageUrl(initialImageUrl);
+    setCtaUrl(initialCtaUrl);
+  }, [initialImageUrl, initialCtaUrl]);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => { setFileSrc(reader.result as string); };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleSave = async () => {
+    if (!ctaUrl || !ctaUrl.trim()) { alert('Redirection link is required.'); return; }
+
+    if (!fileSrc) {
+      await onSave(imageUrl, ctaUrl);
+      return;
+    }
+
+    const img = new Image();
+    img.src = fileSrc;
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      canvas.width = 1456; // 728 x 2 for retina
+      canvas.height = 180; // 90 x 2 for retina
+      const ctx = canvas.getContext('2d');
+      if (ctx) {
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        // Scale to cover
+        const imgRatio = img.width / img.height;
+        const canvasRatio = canvas.width / canvas.height;
+        let drawW = canvas.width, drawH = canvas.height;
+        if (imgRatio > canvasRatio) { drawW = canvas.height * imgRatio; } else { drawH = canvas.width / imgRatio; }
+        ctx.drawImage(img, (canvas.width - drawW) / 2, (canvas.height - drawH) / 2, drawW, drawH);
+        canvas.toBlob(async (blob) => {
+          if (!blob) return;
+          const formData = new FormData();
+          formData.append('file', blob, `${placement}-banner.jpg`);
+          try {
+            const res = await fetch('/api/admin/upload', { method: 'POST', body: formData });
+            const data = await res.json();
+            if (data.error) throw new Error(data.error);
+            await onSave(data.url, ctaUrl);
+            setFileSrc(null);
+          } catch (err) { alert('Upload failed: ' + (err instanceof Error ? err.message : 'Unknown')); }
+        }, 'image/jpeg', 0.92);
+      }
+    };
+  };
+
+  return (
+    <section style={{ backgroundColor: 'var(--bg-surface)', border: '1px solid var(--ink-border)', borderRadius: 6, padding: '24px' }}>
+      <div className="flex items-center justify-between mb-4">
+        <h3 style={{ fontFamily: 'var(--font-body)', fontWeight: 700, fontSize: 15, color: 'var(--ink)' }}>{label}</h3>
+        <span style={{ fontSize: 10, color: 'var(--ink-muted)', fontWeight: 600, textTransform: 'uppercase' }}>{placement}</span>
+      </div>
+
+      {/* Preview — leaderboard 728x90 aspect ratio */}
+      <div style={{ width: '100%', height: 90, backgroundColor: '#f5f5f5', border: '1.5px dashed var(--ink-border)', borderRadius: 3, overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 20 }}>
+        {fileSrc ? (
+          <img src={fileSrc} alt="Preview" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+        ) : imageUrl ? (
+          <img src={imageUrl} alt="Current Banner" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+        ) : (
+          <span style={{ color: 'var(--ink-ghost)', fontSize: 11, fontFamily: "'Hind Siliguri', sans-serif", fontWeight: 600 }}>
+            বিজ্ঞাপন প্রিভিউ (728×90)
+          </span>
+        )}
+      </div>
+
+      <div style={{ marginBottom: 16 }}>
+        <span style={{ fontFamily: "'Hind Siliguri', sans-serif", fontSize: 11, fontWeight: 600, textTransform: 'uppercase', color: 'var(--ink-muted)', display: 'block', marginBottom: 6 }}>
+          Upload Banner Image
+        </span>
+        <input type="file" accept="image/*" onChange={handleFileChange} style={{ fontFamily: "'Hind Siliguri', sans-serif", fontSize: 12, width: '100%' }} />
+      </div>
+
+      <div style={{ marginBottom: 16 }}>
+        <span style={{ fontFamily: "'Hind Siliguri', sans-serif", fontSize: 11, fontWeight: 600, textTransform: 'uppercase', color: 'var(--ink-muted)', display: 'block', marginBottom: 6 }}>
+          Redirection Link
+        </span>
+        <input
+          type="url"
+          value={ctaUrl}
+          onChange={(e) => setCtaUrl(e.target.value)}
+          placeholder="https://target-advertiser.com"
+          style={{ width: '100%', padding: '10px 12px', border: '1px solid var(--ink-border)', background: 'var(--bg-surface)', color: 'var(--ink)', fontFamily: "'Hind Siliguri', sans-serif", fontSize: 13, borderRadius: 4, marginBottom: 0 }}
+        />
+      </div>
+
+      <div style={{ display: 'flex', gap: 8 }}>
+        <button
+          onClick={handleSave}
+          className="admin-btn-primary"
+          disabled={saving || !ctaUrl.trim()}
+          style={{ flex: 1, height: 42, fontSize: 13, fontWeight: 600, opacity: (saving || !ctaUrl.trim()) ? 0.5 : 1, cursor: (saving || !ctaUrl.trim()) ? 'not-allowed' : 'pointer' }}
+        >
+          {saving ? 'Saving...' : fileSrc ? 'Upload & Save' : 'Update Redirect Link'}
+        </button>
+        {fileSrc && (
+          <button onClick={() => setFileSrc(null)} className="admin-btn-secondary" style={{ height: 42 }}>Cancel</button>
+        )}
+        {initialImageUrl && !fileSrc && (
+          <button onClick={onDelete} className="admin-btn-secondary" disabled={saving} style={{ height: 42, color: '#C0392B', borderColor: '#C0392B', opacity: saving ? 0.5 : 1, cursor: saving ? 'not-allowed' : 'pointer' }}>
+            {saving ? '...' : 'Empty'}
+          </button>
+        )}
       </div>
     </section>
   );
