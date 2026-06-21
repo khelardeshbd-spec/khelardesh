@@ -153,6 +153,46 @@ export default function SponsorsClient() {
     }
   }
 
+  async function handleToggleBanner(
+    placement: 'homepage-banner-1' | 'homepage-banner-2' | 'homepage-banner-3' | 'homepage-banner-4' | 'homepage-banner-5' | 'homepage-banner-6',
+    newIsActive: boolean
+  ) {
+    const existing = sponsors.find((s) => s.placement === placement);
+    const labelMap: Record<string, string> = {
+      'homepage-banner-1': 'Homepage Banner 1', 'homepage-banner-2': 'Homepage Banner 2',
+      'homepage-banner-3': 'Homepage Banner 3', 'homepage-banner-4': 'Homepage Banner 4',
+      'homepage-banner-5': 'Homepage Banner 5', 'homepage-banner-6': 'Homepage Banner 6',
+    };
+    const orderMap: Record<string, number> = {
+      'homepage-banner-1': 10, 'homepage-banner-2': 11, 'homepage-banner-3': 12,
+      'homepage-banner-4': 13, 'homepage-banner-5': 14, 'homepage-banner-6': 15,
+    };
+    setSavingId(placement);
+    try {
+      const url = existing?.id ? `/api/admin/sponsors/${existing.id}` : '/api/admin/sponsors';
+      const method = existing?.id ? 'PUT' : 'POST';
+      await fetch(url, {
+        method,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          id: existing?.id,
+          label: labelMap[placement],
+          placement,
+          imageUrl: existing?.imageUrl || '',
+          ctaUrl: existing?.ctaUrl || '',
+          title: '', subtitle: '', ctaText: '',
+          isActive: newIsActive,
+          displayOrder: orderMap[placement]
+        })
+      });
+      await loadSponsors();
+    } catch (err) {
+      console.error('Toggle failed:', err);
+    } finally {
+      setSavingId(null);
+    }
+  }
+
   const leftBanner = sponsors.find((s) => s.placement === 'header-left');
   const rightBanner = sponsors.find((s) => s.placement === 'header-right');
   const hpBanner1 = sponsors.find((s) => s.placement === 'homepage-banner-1');
@@ -234,6 +274,7 @@ export default function SponsorsClient() {
                 initialCtaUrl={hpBanner1?.ctaUrl || ''}
                 initialIsActive={hpBanner1?.isActive ?? true}
                 onSave={(img, link, active) => handleSaveBanner('homepage-banner-1', img, link, active)}
+                onToggle={(active) => handleToggleBanner('homepage-banner-1', active)}
                 onDelete={() => handleDeleteBanner('homepage-banner-1')}
                 saving={savingId === 'homepage-banner-1'}
               />
@@ -244,6 +285,7 @@ export default function SponsorsClient() {
                 initialCtaUrl={hpBanner2?.ctaUrl || ''}
                 initialIsActive={hpBanner2?.isActive ?? true}
                 onSave={(img, link, active) => handleSaveBanner('homepage-banner-2', img, link, active)}
+                onToggle={(active) => handleToggleBanner('homepage-banner-2', active)}
                 onDelete={() => handleDeleteBanner('homepage-banner-2')}
                 saving={savingId === 'homepage-banner-2'}
               />
@@ -254,6 +296,7 @@ export default function SponsorsClient() {
                 initialCtaUrl={hpBanner3?.ctaUrl || ''}
                 initialIsActive={hpBanner3?.isActive ?? true}
                 onSave={(img, link, active) => handleSaveBanner('homepage-banner-3', img, link, active)}
+                onToggle={(active) => handleToggleBanner('homepage-banner-3', active)}
                 onDelete={() => handleDeleteBanner('homepage-banner-3')}
                 saving={savingId === 'homepage-banner-3'}
               />
@@ -264,6 +307,7 @@ export default function SponsorsClient() {
                 initialCtaUrl={hpBanner4?.ctaUrl || ''}
                 initialIsActive={hpBanner4?.isActive ?? true}
                 onSave={(img, link, active) => handleSaveBanner('homepage-banner-4', img, link, active)}
+                onToggle={(active) => handleToggleBanner('homepage-banner-4', active)}
                 onDelete={() => handleDeleteBanner('homepage-banner-4')}
                 saving={savingId === 'homepage-banner-4'}
               />
@@ -274,6 +318,7 @@ export default function SponsorsClient() {
                 initialCtaUrl={hpBanner5?.ctaUrl || ''}
                 initialIsActive={hpBanner5?.isActive ?? true}
                 onSave={(img, link, active) => handleSaveBanner('homepage-banner-5', img, link, active)}
+                onToggle={(active) => handleToggleBanner('homepage-banner-5', active)}
                 onDelete={() => handleDeleteBanner('homepage-banner-5')}
                 saving={savingId === 'homepage-banner-5'}
               />
@@ -284,6 +329,7 @@ export default function SponsorsClient() {
                 initialCtaUrl={hpBanner6?.ctaUrl || ''}
                 initialIsActive={hpBanner6?.isActive ?? true}
                 onSave={(img, link, active) => handleSaveBanner('homepage-banner-6', img, link, active)}
+                onToggle={(active) => handleToggleBanner('homepage-banner-6', active)}
                 onDelete={() => handleDeleteBanner('homepage-banner-6')}
                 saving={savingId === 'homepage-banner-6'}
               />
@@ -624,15 +670,17 @@ interface HomepageBannerManagerProps {
   initialCtaUrl: string;
   initialIsActive: boolean;
   onSave: (imageUrl: string, ctaUrl: string, isActive: boolean) => Promise<void>;
+  onToggle: (isActive: boolean) => Promise<void>;
   onDelete: () => Promise<void>;
   saving: boolean;
 }
 
-function HomepageBannerManager({ label, placement, initialImageUrl, initialCtaUrl, initialIsActive, onSave, onDelete, saving }: HomepageBannerManagerProps) {
+function HomepageBannerManager({ label, placement, initialImageUrl, initialCtaUrl, initialIsActive, onSave, onToggle, onDelete, saving }: HomepageBannerManagerProps) {
   const [imageUrl, setImageUrl] = useState(initialImageUrl);
   const [ctaUrl, setCtaUrl] = useState(initialCtaUrl);
   const [isActive, setIsActive] = useState(initialIsActive);
   const [fileSrc, setFileSrc] = useState<string | null>(null);
+  const [toggling, setToggling] = useState(false);
 
   useEffect(() => {
     setImageUrl(initialImageUrl);
@@ -649,6 +697,20 @@ function HomepageBannerManager({ label, placement, initialImageUrl, initialCtaUr
     }
   };
 
+  const handleToggleClick = async () => {
+    if (toggling || saving) return;
+    const next = !isActive;
+    setIsActive(next); // optimistic update
+    setToggling(true);
+    try {
+      await onToggle(next);
+    } catch {
+      setIsActive(!next); // revert on failure
+    } finally {
+      setToggling(false);
+    }
+  };
+
   const handleSave = async () => {
     if (!ctaUrl || !ctaUrl.trim()) { alert('Redirection link is required.'); return; }
 
@@ -661,13 +723,12 @@ function HomepageBannerManager({ label, placement, initialImageUrl, initialCtaUr
     img.src = fileSrc;
     img.onload = () => {
       const canvas = document.createElement('canvas');
-      canvas.width = 1456; // 728 x 2 for retina
-      canvas.height = 180; // 90 x 2 for retina
+      canvas.width = 1456;
+      canvas.height = 180;
       const ctx = canvas.getContext('2d');
       if (ctx) {
         ctx.fillStyle = '#ffffff';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
-        // Scale to cover
         const imgRatio = img.width / img.height;
         const canvasRatio = canvas.width / canvas.height;
         let drawW = canvas.width, drawH = canvas.height;
@@ -689,38 +750,49 @@ function HomepageBannerManager({ label, placement, initialImageUrl, initialCtaUr
     };
   };
 
+  const isBusy = saving || toggling;
+
   return (
-    <section style={{ backgroundColor: 'var(--bg-surface)', border: `1.5px solid ${isActive ? 'var(--ink-border)' : '#f0a500'}`, borderRadius: 6, padding: '24px' }}>
-      <div className="flex items-center justify-between mb-4">
-        <h3 style={{ fontFamily: 'var(--font-body)', fontWeight: 700, fontSize: 15, color: 'var(--ink)' }}>{label}</h3>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-          {/* Visibility Toggle */}
-          <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer' }}>
-            <span style={{ fontFamily: "'Hind Siliguri', sans-serif", fontSize: 11, fontWeight: 600, color: isActive ? '#27AE60' : '#aaa', textTransform: 'uppercase' }}>
-              {isActive ? 'Visible' : 'Hidden'}
-            </span>
-            <div
-              onClick={() => setIsActive(!isActive)}
-              style={{
-                width: 40, height: 22, borderRadius: 11,
-                backgroundColor: isActive ? '#27AE60' : '#ccc',
-                position: 'relative', cursor: 'pointer', transition: 'background 0.2s'
-              }}
-            >
-              <div style={{
-                width: 18, height: 18, borderRadius: '50%', backgroundColor: '#fff',
-                position: 'absolute', top: 2,
-                left: isActive ? 20 : 2,
-                transition: 'left 0.2s',
-                boxShadow: '0 1px 3px rgba(0,0,0,0.2)'
-              }} />
-            </div>
-          </label>
-          <span style={{ fontSize: 10, color: 'var(--ink-muted)', fontWeight: 600, textTransform: 'uppercase' }}>{placement}</span>
+    <section style={{
+      backgroundColor: 'var(--bg-surface)',
+      border: `1.5px solid ${isActive ? 'var(--ink-border)' : '#e0a800'}`,
+      borderRadius: 6,
+      padding: '24px',
+      opacity: isBusy ? 0.85 : 1,
+      transition: 'border-color 0.2s, opacity 0.2s'
+    }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
+        <h3 style={{ fontFamily: 'var(--font-body)', fontWeight: 700, fontSize: 15, color: 'var(--ink)', margin: 0 }}>{label}</h3>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+          {/* Visibility Toggle — auto-saves on click */}
+          <span style={{ fontFamily: "'Hind Siliguri', sans-serif", fontSize: 11, fontWeight: 600, color: isActive ? '#27AE60' : '#999', textTransform: 'uppercase' }}>
+            {toggling ? '...' : isActive ? 'Visible' : 'Hidden'}
+          </span>
+          <div
+            role="switch"
+            aria-checked={isActive}
+            onClick={handleToggleClick}
+            style={{
+              width: 42, height: 24, borderRadius: 12,
+              backgroundColor: isActive ? '#27AE60' : '#ccc',
+              position: 'relative', cursor: isBusy ? 'not-allowed' : 'pointer',
+              transition: 'background-color 0.2s',
+              flexShrink: 0
+            }}
+          >
+            <div style={{
+              width: 18, height: 18, borderRadius: '50%', backgroundColor: '#fff',
+              position: 'absolute', top: 3,
+              left: isActive ? 21 : 3,
+              transition: 'left 0.2s',
+              boxShadow: '0 1px 3px rgba(0,0,0,0.25)'
+            }} />
+          </div>
+          <span style={{ fontSize: 10, color: 'var(--ink-muted)', fontWeight: 600, textTransform: 'uppercase', marginLeft: 4 }}>{placement}</span>
         </div>
       </div>
 
-      {/* Preview — leaderboard 728x90 aspect ratio */}
+      {/* Preview */}
       <div style={{ width: '100%', height: 90, backgroundColor: '#f5f5f5', border: '1.5px dashed var(--ink-border)', borderRadius: 3, overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 20 }}>
         {fileSrc ? (
           <img src={fileSrc} alt="Preview" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
@@ -749,7 +821,7 @@ function HomepageBannerManager({ label, placement, initialImageUrl, initialCtaUr
           value={ctaUrl}
           onChange={(e) => setCtaUrl(e.target.value)}
           placeholder="https://target-advertiser.com"
-          style={{ width: '100%', padding: '10px 12px', border: '1px solid var(--ink-border)', background: 'var(--bg-surface)', color: 'var(--ink)', fontFamily: "'Hind Siliguri', sans-serif", fontSize: 13, borderRadius: 4, marginBottom: 0 }}
+          style={{ width: '100%', padding: '10px 12px', border: '1px solid var(--ink-border)', background: 'var(--bg-surface)', color: 'var(--ink)', fontFamily: "'Hind Siliguri', sans-serif", fontSize: 13, borderRadius: 4 }}
         />
       </div>
 
@@ -774,3 +846,5 @@ function HomepageBannerManager({ label, placement, initialImageUrl, initialCtaUr
     </section>
   );
 }
+
+
