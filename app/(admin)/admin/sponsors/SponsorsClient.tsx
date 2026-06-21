@@ -556,7 +556,7 @@ function BannerCropper({ label, placement, initialImageUrl, initialCtaUrl, onSav
       {/* Image selector */}
       <div style={{ marginBottom: 16 }}>
         <span style={{ fontFamily: "'Hind Siliguri', sans-serif", fontSize: 11, fontWeight: 600, textTransform: 'uppercase', color: 'var(--ink-muted)', display: 'block', marginBottom: 6 }}>
-          Upload Banner Image
+          Upload Banner Image <span style={{ color: 'var(--ink-ghost)', textTransform: 'none' }}>(Recommended 290×75 px)</span>
         </span>
         <input 
           type="file" 
@@ -912,7 +912,7 @@ function HomepageBannerManager({ label, placement, initialImageUrl, initialCtaUr
 
       <div style={{ marginBottom: 16 }}>
         <span style={{ fontFamily: "'Hind Siliguri', sans-serif", fontSize: 11, fontWeight: 600, textTransform: 'uppercase', color: 'var(--ink-muted)', display: 'block', marginBottom: 6 }}>
-          Upload Banner Image
+          Upload Banner Image <span style={{ color: 'var(--ink-ghost)', textTransform: 'none' }}>(Recommended 728×90 px)</span>
         </span>
         <input type="file" accept="image/*" onChange={handleFileChange} style={{ fontFamily: "'Hind Siliguri', sans-serif", fontSize: 12, width: '100%' }} />
       </div>
