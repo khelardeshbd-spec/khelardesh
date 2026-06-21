@@ -237,11 +237,18 @@ export async function GET() {
 
     // Deduplicate matches by ID
     const seen = new Set<string>();
-    const matches = allMatches.filter(m => {
+    let matches = allMatches.filter(m => {
       if (!m) return false;
       if (seen.has(m.id)) return false;
       seen.add(m.id);
       return true;
+    });
+
+    // Filter to only include Football World Cup
+    matches = matches.filter(m => {
+      if (!m || !m.league) return false;
+      const lower = m.league.toLowerCase();
+      return lower.includes('world cup') || lower.includes('fifa');
     });
 
     // Sort: Live matches first, then chronological by startTime

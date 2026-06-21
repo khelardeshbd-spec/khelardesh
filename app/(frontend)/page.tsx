@@ -51,6 +51,8 @@ export default async function HomePage() {
     specialResult,
     guestResult,
     othersResult,
+    didYouKnowResult,
+    onThisDayResult,
     scoresResult,
     sponsorsResult
   ] = await Promise.allSettled([
@@ -111,6 +113,20 @@ export default async function HomePage() {
       .order('publishedAt', { ascending: false })
       .limit(10),
     supabaseAdmin
+      .from('Article')
+      .select('id, slug, headline, headlineBn, deck, sport, mediaType, mediaUrl, byline, publishedAt')
+      .eq('sport', 'did-you-know')
+      .eq('status', 'published')
+      .order('publishedAt', { ascending: false })
+      .limit(5),
+    supabaseAdmin
+      .from('Article')
+      .select('id, slug, headline, headlineBn, deck, sport, mediaType, mediaUrl, byline, publishedAt')
+      .eq('sport', 'on-this-day')
+      .eq('status', 'published')
+      .order('publishedAt', { ascending: false })
+      .limit(5),
+    supabaseAdmin
       .from('ScoreCard')
       .select('*')
       .eq('is_visible', true)
@@ -153,6 +169,8 @@ export default async function HomePage() {
   const specialArticles = specialResult.status === 'fulfilled' ? (specialResult.value.data ?? []) : [];
   const guestArticles = guestResult.status === 'fulfilled' ? (guestResult.value.data ?? []) : [];
   const othersArticles = othersResult.status === 'fulfilled' ? (othersResult.value.data ?? []) : [];
+  const didYouKnowArticles = didYouKnowResult.status === 'fulfilled' ? (didYouKnowResult.value.data ?? []) : [];
+  const onThisDayArticles = onThisDayResult.status === 'fulfilled' ? (onThisDayResult.value.data ?? []) : [];
   const scores = scoresResult.status === 'fulfilled' ? (scoresResult.value.data ?? []) : [];
   const sponsors = sponsorsResult.status === 'fulfilled' ? (sponsorsResult.value.data ?? []) : [];
 
@@ -247,6 +265,8 @@ export default async function HomePage() {
           specialArticles={specialArticles}
           guestArticles={guestArticles}
           othersArticles={othersArticles}
+          didYouKnowArticles={didYouKnowArticles}
+          onThisDayArticles={onThisDayArticles}
         />
 
       </div>

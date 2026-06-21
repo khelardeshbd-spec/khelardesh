@@ -24,6 +24,8 @@ interface LowerSectionProps {
   specialArticles: Article[];
   guestArticles: Article[];
   othersArticles: Article[];
+  didYouKnowArticles?: Article[];
+  onThisDayArticles?: Article[];
 }
 
 function sportLabel(sport?: string | null) {
@@ -49,6 +51,8 @@ function sportLabel(sport?: string | null) {
     golf: 'গল্ফ',
     other: 'অন্যান্য',
     others: 'অন্যান্য',
+    'did-you-know': 'আপনি জানেন কি?',
+    'on-this-day': 'এই দিনে',
   };
   return map[sport.toLowerCase()] ?? sport;
 }
@@ -89,7 +93,7 @@ function CardLead({ article }: { article: Article }) {
         )}
         <h2 style={{
           fontFamily: 'var(--font-headline)',
-          fontSize: 'clamp(1.3rem, 2.2vw, 1.8rem)',
+          fontSize: 'clamp(1.15rem, 1.9vw, 1.55rem)',
           fontWeight: 700,
           lineHeight: 1.15,
           color: 'var(--ink)',
@@ -138,7 +142,7 @@ function CardStandard({ article }: { article: Article }) {
         )}
         <h3 style={{
           fontFamily: 'var(--font-headline)',
-          fontSize: '1.05rem',
+          fontSize: '0.95rem',
           fontWeight: 700,
           lineHeight: 1.25,
           color: 'var(--ink)',
@@ -285,6 +289,54 @@ function SidebarList({ articles }: { articles: Article[] }) {
   );
 }
 
+function PhotoCardSection({ title, slug, articles }: { title: string, slug: string, articles: Article[] }) {
+  if (!articles || articles.length === 0) return null;
+  const latestArticle = articles[0];
+  const headline = latestArticle.headlineBn || latestArticle.headline;
+  
+  return (
+    <div style={{ marginBottom: 24 }}>
+      <h3 style={{
+        fontFamily: 'var(--font-body)',
+        fontSize: 13,
+        fontWeight: 800,
+        textTransform: 'uppercase',
+        color: '#121212',
+        borderBottom: '2.5px solid #121212',
+        paddingBottom: 6,
+        marginBottom: 12
+      }}>
+        {title}
+      </h3>
+      <Link href={`/article/${latestArticle.slug}`} style={{ textDecoration: 'none', display: 'block' }}>
+        <div style={{ width: '100%', aspectRatio: '4/3', overflow: 'hidden', border: '1px solid var(--ink-border)', marginBottom: 8, position: 'relative' }}>
+          {latestArticle.mediaUrl ? (
+            <Image
+              src={latestArticle.mediaUrl}
+              alt={headline || title}
+              fill
+              sizes="(max-width: 768px) 100vw, 300px"
+              style={{ objectFit: 'cover' }}
+            />
+          ) : (
+            <div style={{ width: '100%', height: '100%', backgroundColor: '#f0f0f0' }} />
+          )}
+        </div>
+        <h4 style={{
+          fontFamily: 'var(--font-headline)',
+          fontSize: '1rem',
+          fontWeight: 700,
+          lineHeight: 1.25,
+          color: 'var(--ink)',
+          margin: 0
+        }}>
+          {headline}
+        </h4>
+      </Link>
+    </div>
+  );
+}
+
 export default function LowerSection({
   footballArticles,
   cricketArticles,
@@ -293,6 +345,8 @@ export default function LowerSection({
   specialArticles,
   guestArticles,
   othersArticles,
+  didYouKnowArticles = [],
+  onThisDayArticles = [],
 }: LowerSectionProps) {
   return (
     <section aria-label="সংবাদ বিভাগ" style={{ marginBottom: 32, marginTop: 24 }}>
@@ -355,11 +409,17 @@ export default function LowerSection({
         </div>
 
         {/* Sidebar Column */}
-        {othersArticles.length > 0 && (
-          <div className="hp-sidebar">
+        <div className="hp-sidebar">
+          {didYouKnowArticles.length > 0 && (
+            <PhotoCardSection title="আপনি জানেন কি?" slug="did-you-know" articles={didYouKnowArticles} />
+          )}
+          {onThisDayArticles.length > 0 && (
+            <PhotoCardSection title="এই দিনে" slug="on-this-day" articles={onThisDayArticles} />
+          )}
+          {othersArticles.length > 0 && (
             <SidebarList articles={othersArticles} />
-          </div>
-        )}
+          )}
+        </div>
       </div>
     </section>
   );
