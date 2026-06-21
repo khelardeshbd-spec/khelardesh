@@ -68,7 +68,7 @@ export default function HomeNav() {
 
   return (
     <div className="border-b border-[#e2e2e2] pb-1.5" ref={navRef}>
-      <div className="flex flex-wrap justify-center items-center gap-x-3.5 md:gap-x-5 lg:gap-x-8 gap-y-2.5 text-xs md:text-[13px] font-semibold">
+      <div className="flex flex-wrap justify-center items-center gap-x-3.5 md:gap-x-5 lg:gap-x-8 gap-y-0.5 text-xs md:text-[13px] font-semibold">
         {navItems.map((item, idx) => {
           const href = item.slug === '' ? '/' : `/sport/${item.slug}`;
           const isActive = item.slug === '' 
