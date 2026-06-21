@@ -62,6 +62,8 @@ const SPORTS = [
   { value: 'feature', label: 'ফিচার' },
   { value: 'special', label: 'খেলার দেশ বিশেষ' },
   { value: 'guest-column', label: 'অতিথি কলাম' },
+  { value: 'did-you-know', label: 'আপনি জানেন কি?' },
+  { value: 'on-this-day', label: 'এই দিনে' },
   { value: 'other', label: 'অন্যান্য' },
 ];
 
