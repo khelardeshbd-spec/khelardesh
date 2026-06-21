@@ -197,7 +197,27 @@ function CategorySection({ title, slug, articles }: { title: string, slug: strin
       <div className={hasPoster ? "cat-grid-poster" : "cat-grid-standard"}>
         {hasPoster ? (
           <>
-            <CardLead article={latestArticle} />
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', height: '100%' }}>
+              <CardLead article={latestArticle} />
+              
+              <div style={{
+                marginTop: 'auto',
+                width: '100%',
+                height: '100px',
+                backgroundColor: '#fafafa',
+                border: '1px solid var(--ink-border)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: 'var(--ink-muted)',
+                fontSize: '11px',
+                fontFamily: 'var(--font-body)',
+                textTransform: 'uppercase',
+                letterSpacing: '0.05em'
+              }}>
+                বিজ্ঞাপন
+              </div>
+            </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
               {secondArticle && <CardStandard article={secondArticle} />}
               {thirdArticle && <CardStandard article={thirdArticle} />}
