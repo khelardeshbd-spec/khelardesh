@@ -32,6 +32,24 @@ export default function Footer() {
           >
             © ২০২৬ খেলারদেশ। সর্বস্বত্ব সংরক্ষিত।
           </p>
+          <p 
+            style={{
+              fontSize: 11,
+              color: 'var(--ink-muted)',
+              marginTop: '4px'
+            }}
+          >
+            Powered by{' '}
+            <a 
+              href="https://www.instagram.com/dullstudio" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="hover:underline font-semibold"
+              style={{ color: 'var(--ink)' }}
+            >
+              DullStudio
+            </a>
+          </p>
         </div>
 
         {/* Links */}
