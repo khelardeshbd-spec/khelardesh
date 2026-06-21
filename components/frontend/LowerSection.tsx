@@ -180,20 +180,11 @@ function CategorySection({ title, slug, articles, banner }: { title: string, slu
 
   return (
     <div style={{ marginBottom: 36, paddingBottom: 16, borderBottom: '1px solid var(--ink-border)' }}>
-      {/* Ad Banner */}
-      {banner?.imageUrl ? (
+      {/* Ad Banner — only shown when banner is active and has an image */}
+      {banner?.imageUrl && (
         <a href={banner.ctaUrl || '#'} target="_blank" rel="noopener noreferrer" style={{ display: 'block', width: '100%', marginBottom: 16 }}>
           <img src={banner.imageUrl} alt="Advertisement" style={{ width: '100%', height: '90px', objectFit: 'cover', display: 'block' }} />
         </a>
-      ) : (
-        <div style={{
-          width: '100%', height: '90px', backgroundColor: '#f5f5f5', border: '1px solid #e0e0e0',
-          display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 16,
-          color: '#aaa', fontSize: '11px', fontFamily: 'var(--font-body)',
-          textTransform: 'uppercase', letterSpacing: '0.08em',
-        }}>
-          বিজ্ঞাপন
-        </div>
       )}
 
       {/* Category Header */}

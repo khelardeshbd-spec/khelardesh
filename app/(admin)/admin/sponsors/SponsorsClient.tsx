@@ -41,7 +41,8 @@ export default function SponsorsClient() {
   async function handleSaveBanner(
     placement: 'header-left' | 'header-right' | 'homepage-banner-1' | 'homepage-banner-2' | 'homepage-banner-3' | 'homepage-banner-4' | 'homepage-banner-5' | 'homepage-banner-6',
     newImageUrl: string,
-    newCtaUrl: string
+    newCtaUrl: string,
+    newIsActive: boolean = true
   ) {
     const existing = sponsors.find((s) => s.placement === placement);
     const labelMap: Record<string, string> = {
@@ -89,7 +90,7 @@ export default function SponsorsClient() {
           title: '',
           subtitle: '',
           ctaText: '',
-          isActive: true,
+          isActive: newIsActive,
           displayOrder
         })
       });
@@ -231,7 +232,8 @@ export default function SponsorsClient() {
                 placement="homepage-banner-1"
                 initialImageUrl={hpBanner1?.imageUrl || ''}
                 initialCtaUrl={hpBanner1?.ctaUrl || ''}
-                onSave={(img, link) => handleSaveBanner('homepage-banner-1', img, link)}
+                initialIsActive={hpBanner1?.isActive ?? true}
+                onSave={(img, link, active) => handleSaveBanner('homepage-banner-1', img, link, active)}
                 onDelete={() => handleDeleteBanner('homepage-banner-1')}
                 saving={savingId === 'homepage-banner-1'}
               />
@@ -240,7 +242,8 @@ export default function SponsorsClient() {
                 placement="homepage-banner-2"
                 initialImageUrl={hpBanner2?.imageUrl || ''}
                 initialCtaUrl={hpBanner2?.ctaUrl || ''}
-                onSave={(img, link) => handleSaveBanner('homepage-banner-2', img, link)}
+                initialIsActive={hpBanner2?.isActive ?? true}
+                onSave={(img, link, active) => handleSaveBanner('homepage-banner-2', img, link, active)}
                 onDelete={() => handleDeleteBanner('homepage-banner-2')}
                 saving={savingId === 'homepage-banner-2'}
               />
@@ -249,7 +252,8 @@ export default function SponsorsClient() {
                 placement="homepage-banner-3"
                 initialImageUrl={hpBanner3?.imageUrl || ''}
                 initialCtaUrl={hpBanner3?.ctaUrl || ''}
-                onSave={(img, link) => handleSaveBanner('homepage-banner-3', img, link)}
+                initialIsActive={hpBanner3?.isActive ?? true}
+                onSave={(img, link, active) => handleSaveBanner('homepage-banner-3', img, link, active)}
                 onDelete={() => handleDeleteBanner('homepage-banner-3')}
                 saving={savingId === 'homepage-banner-3'}
               />
@@ -258,7 +262,8 @@ export default function SponsorsClient() {
                 placement="homepage-banner-4"
                 initialImageUrl={hpBanner4?.imageUrl || ''}
                 initialCtaUrl={hpBanner4?.ctaUrl || ''}
-                onSave={(img, link) => handleSaveBanner('homepage-banner-4', img, link)}
+                initialIsActive={hpBanner4?.isActive ?? true}
+                onSave={(img, link, active) => handleSaveBanner('homepage-banner-4', img, link, active)}
                 onDelete={() => handleDeleteBanner('homepage-banner-4')}
                 saving={savingId === 'homepage-banner-4'}
               />
@@ -267,7 +272,8 @@ export default function SponsorsClient() {
                 placement="homepage-banner-5"
                 initialImageUrl={hpBanner5?.imageUrl || ''}
                 initialCtaUrl={hpBanner5?.ctaUrl || ''}
-                onSave={(img, link) => handleSaveBanner('homepage-banner-5', img, link)}
+                initialIsActive={hpBanner5?.isActive ?? true}
+                onSave={(img, link, active) => handleSaveBanner('homepage-banner-5', img, link, active)}
                 onDelete={() => handleDeleteBanner('homepage-banner-5')}
                 saving={savingId === 'homepage-banner-5'}
               />
@@ -276,7 +282,8 @@ export default function SponsorsClient() {
                 placement="homepage-banner-6"
                 initialImageUrl={hpBanner6?.imageUrl || ''}
                 initialCtaUrl={hpBanner6?.ctaUrl || ''}
-                onSave={(img, link) => handleSaveBanner('homepage-banner-6', img, link)}
+                initialIsActive={hpBanner6?.isActive ?? true}
+                onSave={(img, link, active) => handleSaveBanner('homepage-banner-6', img, link, active)}
                 onDelete={() => handleDeleteBanner('homepage-banner-6')}
                 saving={savingId === 'homepage-banner-6'}
               />
@@ -615,20 +622,23 @@ interface HomepageBannerManagerProps {
   placement: string;
   initialImageUrl: string;
   initialCtaUrl: string;
-  onSave: (imageUrl: string, ctaUrl: string) => Promise<void>;
+  initialIsActive: boolean;
+  onSave: (imageUrl: string, ctaUrl: string, isActive: boolean) => Promise<void>;
   onDelete: () => Promise<void>;
   saving: boolean;
 }
 
-function HomepageBannerManager({ label, placement, initialImageUrl, initialCtaUrl, onSave, onDelete, saving }: HomepageBannerManagerProps) {
+function HomepageBannerManager({ label, placement, initialImageUrl, initialCtaUrl, initialIsActive, onSave, onDelete, saving }: HomepageBannerManagerProps) {
   const [imageUrl, setImageUrl] = useState(initialImageUrl);
   const [ctaUrl, setCtaUrl] = useState(initialCtaUrl);
+  const [isActive, setIsActive] = useState(initialIsActive);
   const [fileSrc, setFileSrc] = useState<string | null>(null);
 
   useEffect(() => {
     setImageUrl(initialImageUrl);
     setCtaUrl(initialCtaUrl);
-  }, [initialImageUrl, initialCtaUrl]);
+    setIsActive(initialIsActive);
+  }, [initialImageUrl, initialCtaUrl, initialIsActive]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -643,7 +653,7 @@ function HomepageBannerManager({ label, placement, initialImageUrl, initialCtaUr
     if (!ctaUrl || !ctaUrl.trim()) { alert('Redirection link is required.'); return; }
 
     if (!fileSrc) {
-      await onSave(imageUrl, ctaUrl);
+      await onSave(imageUrl, ctaUrl, isActive);
       return;
     }
 
@@ -671,7 +681,7 @@ function HomepageBannerManager({ label, placement, initialImageUrl, initialCtaUr
             const res = await fetch('/api/admin/upload', { method: 'POST', body: formData });
             const data = await res.json();
             if (data.error) throw new Error(data.error);
-            await onSave(data.url, ctaUrl);
+            await onSave(data.url, ctaUrl, isActive);
             setFileSrc(null);
           } catch (err) { alert('Upload failed: ' + (err instanceof Error ? err.message : 'Unknown')); }
         }, 'image/jpeg', 0.92);
@@ -680,10 +690,34 @@ function HomepageBannerManager({ label, placement, initialImageUrl, initialCtaUr
   };
 
   return (
-    <section style={{ backgroundColor: 'var(--bg-surface)', border: '1px solid var(--ink-border)', borderRadius: 6, padding: '24px' }}>
+    <section style={{ backgroundColor: 'var(--bg-surface)', border: `1.5px solid ${isActive ? 'var(--ink-border)' : '#f0a500'}`, borderRadius: 6, padding: '24px' }}>
       <div className="flex items-center justify-between mb-4">
         <h3 style={{ fontFamily: 'var(--font-body)', fontWeight: 700, fontSize: 15, color: 'var(--ink)' }}>{label}</h3>
-        <span style={{ fontSize: 10, color: 'var(--ink-muted)', fontWeight: 600, textTransform: 'uppercase' }}>{placement}</span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+          {/* Visibility Toggle */}
+          <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer' }}>
+            <span style={{ fontFamily: "'Hind Siliguri', sans-serif", fontSize: 11, fontWeight: 600, color: isActive ? '#27AE60' : '#aaa', textTransform: 'uppercase' }}>
+              {isActive ? 'Visible' : 'Hidden'}
+            </span>
+            <div
+              onClick={() => setIsActive(!isActive)}
+              style={{
+                width: 40, height: 22, borderRadius: 11,
+                backgroundColor: isActive ? '#27AE60' : '#ccc',
+                position: 'relative', cursor: 'pointer', transition: 'background 0.2s'
+              }}
+            >
+              <div style={{
+                width: 18, height: 18, borderRadius: '50%', backgroundColor: '#fff',
+                position: 'absolute', top: 2,
+                left: isActive ? 20 : 2,
+                transition: 'left 0.2s',
+                boxShadow: '0 1px 3px rgba(0,0,0,0.2)'
+              }} />
+            </div>
+          </label>
+          <span style={{ fontSize: 10, color: 'var(--ink-muted)', fontWeight: 600, textTransform: 'uppercase' }}>{placement}</span>
+        </div>
       </div>
 
       {/* Preview — leaderboard 728x90 aspect ratio */}

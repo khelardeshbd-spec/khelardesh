@@ -273,12 +273,12 @@ export default async function HomePage() {
           othersArticles={othersArticles}
           didYouKnowArticles={didYouKnowArticles}
           onThisDayArticles={onThisDayArticles}
-          hpBanner1={hpBanner1 ? { imageUrl: hpBanner1.imageUrl, ctaUrl: hpBanner1.ctaUrl } : null}
-          hpBanner2={hpBanner2 ? { imageUrl: hpBanner2.imageUrl, ctaUrl: hpBanner2.ctaUrl } : null}
-          hpBanner3={hpBanner3 ? { imageUrl: hpBanner3.imageUrl, ctaUrl: hpBanner3.ctaUrl } : null}
-          hpBanner4={hpBanner4 ? { imageUrl: hpBanner4.imageUrl, ctaUrl: hpBanner4.ctaUrl } : null}
-          hpBanner5={hpBanner5 ? { imageUrl: hpBanner5.imageUrl, ctaUrl: hpBanner5.ctaUrl } : null}
-          hpBanner6={hpBanner6 ? { imageUrl: hpBanner6.imageUrl, ctaUrl: hpBanner6.ctaUrl } : null}
+          hpBanner1={hpBanner1 && hpBanner1.isActive ? { imageUrl: hpBanner1.imageUrl, ctaUrl: hpBanner1.ctaUrl } : null}
+          hpBanner2={hpBanner2 && hpBanner2.isActive ? { imageUrl: hpBanner2.imageUrl, ctaUrl: hpBanner2.ctaUrl } : null}
+          hpBanner3={hpBanner3 && hpBanner3.isActive ? { imageUrl: hpBanner3.imageUrl, ctaUrl: hpBanner3.ctaUrl } : null}
+          hpBanner4={hpBanner4 && hpBanner4.isActive ? { imageUrl: hpBanner4.imageUrl, ctaUrl: hpBanner4.ctaUrl } : null}
+          hpBanner5={hpBanner5 && hpBanner5.isActive ? { imageUrl: hpBanner5.imageUrl, ctaUrl: hpBanner5.ctaUrl } : null}
+          hpBanner6={hpBanner6 && hpBanner6.isActive ? { imageUrl: hpBanner6.imageUrl, ctaUrl: hpBanner6.ctaUrl } : null}
         />
 
       </div>
