@@ -72,6 +72,8 @@ function getSportLabel(sport: string) {
     feature: 'ফিচার',
     special: 'বিশেষ',
     'guest-column': 'অতিথি কলাম',
+    'did-you-know': 'আপনি জানেন কি?',
+    'on-this-day': 'এই দিনে',
     other: 'অন্যান্য'
   };
   return maps[sport] || sport.toUpperCase();

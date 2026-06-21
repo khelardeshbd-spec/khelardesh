@@ -192,6 +192,12 @@ export default function DashboardClient({ initialArticles, totalScoresCount }: D
       basketball: 'বাস্কেটবল',
       tennis: 'টেনিস',
       f1: 'ফর্মুলা ওয়ান',
+      interview: 'ইন্টারভিউ',
+      feature: 'ফিচার',
+      special: 'বিশেষ',
+      'guest-column': 'অতিথি কলাম',
+      'did-you-know': 'আপনি জানেন কি?',
+      'on-this-day': 'এই দিনে',
       other: 'অন্যান্য'
     };
     return maps[sport] || sport.toUpperCase();
