@@ -84,6 +84,35 @@ export default function ProfileMenu({ user }: ProfileMenuProps) {
     setActiveView('notifications');
   };
 
+  const markAsRead = async (id: number) => {
+    setNotifs(prev => prev.map(n => n.id === id ? { ...n, isRead: true } : n));
+    try {
+      await fetch('/api/user/notifications', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ids: [id] })
+      });
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const markAllAsRead = async () => {
+    const unreadIds = notifs.filter(n => !n.isRead).map(n => n.id);
+    if (unreadIds.length === 0) return;
+    
+    setNotifs(prev => prev.map(n => ({ ...n, isRead: true })));
+    try {
+      await fetch('/api/user/notifications', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ids: unreadIds })
+      });
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   const unreadCount = notifs.filter(n => !n.isRead).length;
 
   return (
@@ -237,6 +266,14 @@ export default function ProfileMenu({ user }: ProfileMenuProps) {
                     )}
                   </span>
                 </div>
+                {unreadCount > 0 && (
+                  <button 
+                    onClick={markAllAsRead}
+                    className="text-[10px] text-gray-500 hover:text-red-600 transition-colors font-medium"
+                  >
+                    Mark all read
+                  </button>
+                )}
               </div>
               
               <div className="overflow-y-auto flex-1 pb-2 scrollbar-thin">
@@ -253,19 +290,31 @@ export default function ProfileMenu({ user }: ProfileMenuProps) {
                   </div>
                 ) : (
                   <ul className="divide-y divide-gray-50">
-                    {notifs.map((n) => (
-                      <li key={n.id} className={`px-4 py-2 hover:bg-gray-50 transition-colors ${!n.isRead ? 'bg-red-50/30' : ''}`}>
-                        <p className="text-[11px] text-gray-800 leading-snug">
-                          <span className="font-bold">{n.actorName}</span>{' '}
-                          {n.type === 'LIKE' ? 'আপনার মন্তব্য পছন্দ করেছেন' :
-                           n.type === 'REPLY' ? 'আপনার মন্তব্যের উত্তর দিয়েছেন' :
-                           'একটি মন্তব্য করেছেন'}
-                        </p>
-                        <p className="text-[9px] text-gray-400 mt-1">
-                          {new Date(n.createdAt).toLocaleDateString('bn-BD')}
-                        </p>
-                      </li>
-                    ))}
+                    {notifs.map((n) => {
+                      const articleSlug = n.Comment?.articleSlug || '';
+                      return (
+                        <li key={n.id} className={`hover:bg-gray-50 transition-colors ${!n.isRead ? 'bg-red-50/30' : ''}`}>
+                          <Link
+                            href={`/article/${articleSlug}#comment-${n.commentId}`}
+                            onClick={() => {
+                              if (!n.isRead) markAsRead(n.id);
+                              setIsOpen(false);
+                            }}
+                            className="block px-4 py-3"
+                          >
+                            <p className="text-[11px] text-gray-800 leading-snug">
+                              <span className="font-bold">{n.actorName}</span>{' '}
+                              {n.type === 'LIKE' ? 'আপনার মন্তব্য পছন্দ করেছেন' :
+                               n.type === 'REPLY' ? 'আপনার মন্তব্যের উত্তর দিয়েছেন' :
+                               'একটি মন্তব্য করেছেন'}
+                            </p>
+                            <p className="text-[9px] text-gray-400 mt-1">
+                              {new Date(n.createdAt).toLocaleDateString('bn-BD')}
+                            </p>
+                          </Link>
+                        </li>
+                      );
+                    })}
                   </ul>
                 )}
               </div>
