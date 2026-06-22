@@ -13,10 +13,7 @@ export default function PresenceTracker() {
     
     // Parse article ID if we are on an article page
     let articleId = null;
-    const match = pathname.match(/\/article\/([^\/]+)/);
-    // Actually, we don't know the numeric ID from the slug easily here,
-    // so we can just send the slug, or we can look up the ID if needed.
-    // For now, let's just send the slug as an identifier.
+    const match = pathname ? pathname.match(/\/article\/([^\/]+)/) : null;
     const slug = match ? match[1] : null;
 
     const channel = supabase.channel('global_presence', {

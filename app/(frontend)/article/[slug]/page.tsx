@@ -9,8 +9,17 @@ import ReadingProgressBar from './ReadingProgressBar';
 import CommentSection from '@/components/frontend/CommentSection';
 import ScrollToTopButton from '@/components/frontend/ScrollToTopButton';
 import ViewTracker from '@/components/frontend/ViewTracker';
+import AdsterraAd from '@/components/frontend/AdsterraAd';
 
 export const revalidate = 60; // ISR — revalidate every 60 seconds, much faster TTFB than force-dynamic
+
+function safeB64Decode(str: string): string {
+  try {
+    return decodeURIComponent(escape(atob(str)));
+  } catch {
+    return '';
+  }
+}
 
 interface PageProps {
   params: { slug: string };
@@ -350,6 +359,7 @@ export default async function ArticlePage({ params }: PageProps) {
 
               const imgMatch = para.match(/^\[IMAGE:\s*(.*?)\s*\|\s*(.*?)\s*\]$/i);
               const adMatch = para.match(/^\[AD:\s*(.*?)\s*\|\s*(.*?)\s*\]$/i);
+              const adsterraMatch = para.match(/^\[ADSTERRA:\s*(.*?)\s*\]$/i);
 
               return (
                 <div key={i}>
@@ -366,9 +376,13 @@ export default async function ArticlePage({ params }: PageProps) {
                     </div>
                   ) : adMatch ? (
                     <div className="my-6">
-                      <a href={adMatch[2] || '#'} target="_blank" rel="noopener noreferrer" className="block w-full overflow-hidden rounded-md border border-[var(--ink-border)] bg-[var(--bg-surface)] hover:opacity-95 transition-opacity" style={{ aspectRatio: '21/9' }}>
-                        <img src={adMatch[1]} alt="Advertisement" className="w-full h-full object-cover" />
+                      <a href={adMatch[2] || '#'} target="_blank" rel="noopener noreferrer" className="block w-full overflow-hidden rounded-md border border-[var(--ink-border)] bg-[var(--bg-surface)] hover:opacity-95 transition-opacity">
+                        <img src={adMatch[1]} alt="Advertisement" className="w-full h-auto block" />
                       </a>
+                    </div>
+                  ) : adsterraMatch ? (
+                    <div className="my-6">
+                      <AdsterraAd htmlCode={safeB64Decode(adsterraMatch[1])} />
                     </div>
                   ) : (
                     <p

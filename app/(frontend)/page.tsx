@@ -18,6 +18,7 @@ import LowerSection from '@/components/frontend/LowerSection';
 import ProfileMenu from '@/components/frontend/ProfileMenu';
 import HomeNav from '@/components/frontend/HomeNav';
 import LiveDate from '@/components/frontend/LiveDate';
+import AdsterraAd from '@/components/frontend/AdsterraAd';
 
 export const dynamic = 'force-dynamic';
 
@@ -198,8 +199,8 @@ export default async function HomePage() {
   const hpBanner5 = sponsors.find((s) => s.placement === 'homepage-banner-5');
   const hpBanner6 = sponsors.find((s) => s.placement === 'homepage-banner-6');
 
-  const showLeft = !!(leftSponsor && leftSponsor.imageUrl);
-  const showRight = !!(rightSponsor && rightSponsor.imageUrl);
+  const showLeft = !!(leftSponsor && (leftSponsor.imageUrl || (leftSponsor.useAdsterra && leftSponsor.adsterraCode)));
+  const showRight = !!(rightSponsor && (rightSponsor.imageUrl || (rightSponsor.useAdsterra && rightSponsor.adsterraCode)));
 
   return (
     <div style={{ backgroundColor: '#ffffff', color: '#121212', minHeight: '100vh', padding: '8px 0', fontFamily: 'var(--font-body)' }}>
@@ -212,9 +213,13 @@ export default async function HomePage() {
             {/* Left Sponsor Block */}
             {showLeft && (
               <div className="hidden lg:flex lg:col-span-3 h-[75px] bg-[#fafafa] text-[#121212] flex-col justify-center items-center border border-[#e2e2e2] rounded-[3px] overflow-hidden">
-                <a href={leftSponsor.ctaUrl || '#'} target="_blank" rel="noopener noreferrer" className="w-full h-full block">
-                  <img src={leftSponsor.imageUrl!} alt={leftSponsor.label || "Left Sponsor"} className="w-full h-full object-cover" />
-                </a>
+                {leftSponsor.useAdsterra ? (
+                  <AdsterraAd htmlCode={leftSponsor.adsterraCode!} />
+                ) : (
+                  <a href={leftSponsor.ctaUrl || '#'} target="_blank" rel="noopener noreferrer" className="w-full h-full block">
+                    <img src={leftSponsor.imageUrl!} alt={leftSponsor.label || "Left Sponsor"} className="w-full h-full object-cover" />
+                  </a>
+                )}
               </div>
             )}
 
@@ -233,9 +238,13 @@ export default async function HomePage() {
             {/* Right Sponsor Block */}
             {showRight && (
               <div className="hidden lg:flex lg:col-span-3 h-[75px] bg-[#fafafa] text-[#121212] flex-col justify-center items-center border border-[#e2e2e2] rounded-[3px] overflow-hidden">
-                <a href={rightSponsor.ctaUrl || '#'} target="_blank" rel="noopener noreferrer" className="w-full h-full block">
-                  <img src={rightSponsor.imageUrl!} alt={rightSponsor.label || "Right Sponsor"} className="w-full h-full object-cover" />
-                </a>
+                {rightSponsor.useAdsterra ? (
+                  <AdsterraAd htmlCode={rightSponsor.adsterraCode!} />
+                ) : (
+                  <a href={rightSponsor.ctaUrl || '#'} target="_blank" rel="noopener noreferrer" className="w-full h-full block">
+                    <img src={rightSponsor.imageUrl!} alt={rightSponsor.label || "Right Sponsor"} className="w-full h-full object-cover" />
+                  </a>
+                )}
               </div>
             )}
           </div>
@@ -288,12 +297,12 @@ export default async function HomePage() {
           othersArticles={othersArticles}
           didYouKnowArticles={didYouKnowArticles}
           onThisDayArticles={onThisDayArticles}
-          hpBanner1={hpBanner1 && hpBanner1.isActive ? { imageUrl: hpBanner1.imageUrl, ctaUrl: hpBanner1.ctaUrl } : null}
-          hpBanner2={hpBanner2 && hpBanner2.isActive ? { imageUrl: hpBanner2.imageUrl, ctaUrl: hpBanner2.ctaUrl } : null}
-          hpBanner3={hpBanner3 && hpBanner3.isActive ? { imageUrl: hpBanner3.imageUrl, ctaUrl: hpBanner3.ctaUrl } : null}
-          hpBanner4={hpBanner4 && hpBanner4.isActive ? { imageUrl: hpBanner4.imageUrl, ctaUrl: hpBanner4.ctaUrl } : null}
-          hpBanner5={hpBanner5 && hpBanner5.isActive ? { imageUrl: hpBanner5.imageUrl, ctaUrl: hpBanner5.ctaUrl } : null}
-          hpBanner6={hpBanner6 && hpBanner6.isActive ? { imageUrl: hpBanner6.imageUrl, ctaUrl: hpBanner6.ctaUrl } : null}
+          hpBanner1={hpBanner1 && hpBanner1.isActive ? { imageUrl: hpBanner1.imageUrl, ctaUrl: hpBanner1.ctaUrl, useAdsterra: hpBanner1.useAdsterra, adsterraCode: hpBanner1.adsterraCode } : null}
+          hpBanner2={hpBanner2 && hpBanner2.isActive ? { imageUrl: hpBanner2.imageUrl, ctaUrl: hpBanner2.ctaUrl, useAdsterra: hpBanner2.useAdsterra, adsterraCode: hpBanner2.adsterraCode } : null}
+          hpBanner3={hpBanner3 && hpBanner3.isActive ? { imageUrl: hpBanner3.imageUrl, ctaUrl: hpBanner3.ctaUrl, useAdsterra: hpBanner3.useAdsterra, adsterraCode: hpBanner3.adsterraCode } : null}
+          hpBanner4={hpBanner4 && hpBanner4.isActive ? { imageUrl: hpBanner4.imageUrl, ctaUrl: hpBanner4.ctaUrl, useAdsterra: hpBanner4.useAdsterra, adsterraCode: hpBanner4.adsterraCode } : null}
+          hpBanner5={hpBanner5 && hpBanner5.isActive ? { imageUrl: hpBanner5.imageUrl, ctaUrl: hpBanner5.ctaUrl, useAdsterra: hpBanner5.useAdsterra, adsterraCode: hpBanner5.adsterraCode } : null}
+          hpBanner6={hpBanner6 && hpBanner6.isActive ? { imageUrl: hpBanner6.imageUrl, ctaUrl: hpBanner6.ctaUrl, useAdsterra: hpBanner6.useAdsterra, adsterraCode: hpBanner6.adsterraCode } : null}
         />
 
       </div>

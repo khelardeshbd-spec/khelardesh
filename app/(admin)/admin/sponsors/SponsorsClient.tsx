@@ -13,6 +13,8 @@ interface Sponsor {
   isActive: boolean;
   displayOrder: number;
   imageUrl?: string | null;
+  useAdsterra?: boolean;
+  adsterraCode?: string | null;
 }
 
 export default function SponsorsClient() {
@@ -42,7 +44,9 @@ export default function SponsorsClient() {
     placement: 'header-left' | 'header-right' | 'homepage-banner-1' | 'homepage-banner-2' | 'homepage-banner-3' | 'homepage-banner-4' | 'homepage-banner-5' | 'homepage-banner-6',
     newImageUrl: string,
     newCtaUrl: string,
-    newIsActive: boolean = true
+    newIsActive: boolean = true,
+    useAdsterra: boolean = false,
+    adsterraCode: string = ''
   ) {
     const existing = sponsors.find((s) => s.placement === placement);
     const labelMap: Record<string, string> = {
@@ -68,8 +72,13 @@ export default function SponsorsClient() {
     const label = labelMap[placement];
     const displayOrder = orderMap[placement];
 
-    if (!newCtaUrl || !newCtaUrl.trim()) {
+    if (!useAdsterra && (!newCtaUrl || !newCtaUrl.trim())) {
       setError('Redirection link is required.');
+      return;
+    }
+
+    if (useAdsterra && (!adsterraCode || !adsterraCode.trim())) {
+      setError('Adsterra script code is required when Use Adsterra is active.');
       return;
     }
 
@@ -85,13 +94,15 @@ export default function SponsorsClient() {
           id: existing?.id,
           label,
           placement,
-          imageUrl: newImageUrl,
-          ctaUrl: newCtaUrl,
+          imageUrl: useAdsterra ? '' : newImageUrl,
+          ctaUrl: useAdsterra ? '' : newCtaUrl,
           title: '',
           subtitle: '',
           ctaText: '',
           isActive: newIsActive,
-          displayOrder
+          displayOrder,
+          useAdsterra,
+          adsterraCode
         })
       });
 
@@ -182,7 +193,9 @@ export default function SponsorsClient() {
           ctaUrl: existing?.ctaUrl || '',
           title: '', subtitle: '', ctaText: '',
           isActive: newIsActive,
-          displayOrder: orderMap[placement]
+          displayOrder: orderMap[placement],
+          useAdsterra: existing?.useAdsterra || false,
+          adsterraCode: existing?.adsterraCode || ''
         })
       });
       await loadSponsors();
@@ -213,7 +226,7 @@ export default function SponsorsClient() {
               Sponsor Manager
             </h1>
             <p style={{ fontFamily: "'Hind Siliguri', sans-serif", fontSize: 12, color: 'var(--ink-muted)', marginTop: 4 }}>
-              Upload and crop the 2 desktop header banner ads that sit beside the logo.
+              Upload and crop desktop logo banners or toggle Adsterra script ads.
             </p>
           </div>
           <a href="/admin/dashboard" className="admin-btn-secondary">← Dashboard</a>
@@ -236,7 +249,9 @@ export default function SponsorsClient() {
               placement="header-left"
               initialImageUrl={leftBanner?.imageUrl || ''}
               initialCtaUrl={leftBanner?.ctaUrl || ''}
-              onSave={(img, link) => handleSaveBanner('header-left', img, link)}
+              initialUseAdsterra={leftBanner?.useAdsterra || false}
+              initialAdsterraCode={leftBanner?.adsterraCode || ''}
+              onSave={(img, link, useAdsterra, adsterraCode) => handleSaveBanner('header-left', img, link, true, useAdsterra, adsterraCode)}
               onDelete={() => handleDeleteBanner('header-left')}
               saving={savingId === 'header-left'}
             />
@@ -247,7 +262,9 @@ export default function SponsorsClient() {
               placement="header-right"
               initialImageUrl={rightBanner?.imageUrl || ''}
               initialCtaUrl={rightBanner?.ctaUrl || ''}
-              onSave={(img, link) => handleSaveBanner('header-right', img, link)}
+              initialUseAdsterra={rightBanner?.useAdsterra || false}
+              initialAdsterraCode={rightBanner?.adsterraCode || ''}
+              onSave={(img, link, useAdsterra, adsterraCode) => handleSaveBanner('header-right', img, link, true, useAdsterra, adsterraCode)}
               onDelete={() => handleDeleteBanner('header-right')}
               saving={savingId === 'header-right'}
             />
@@ -273,7 +290,9 @@ export default function SponsorsClient() {
                 initialImageUrl={hpBanner1?.imageUrl || ''}
                 initialCtaUrl={hpBanner1?.ctaUrl || ''}
                 initialIsActive={hpBanner1?.isActive ?? true}
-                onSave={(img, link, active) => handleSaveBanner('homepage-banner-1', img, link, active)}
+                initialUseAdsterra={hpBanner1?.useAdsterra || false}
+                initialAdsterraCode={hpBanner1?.adsterraCode || ''}
+                onSave={(img, link, active, useAdsterra, adsterraCode) => handleSaveBanner('homepage-banner-1', img, link, active, useAdsterra, adsterraCode)}
                 onToggle={(active) => handleToggleBanner('homepage-banner-1', active)}
                 onDelete={() => handleDeleteBanner('homepage-banner-1')}
                 saving={savingId === 'homepage-banner-1'}
@@ -284,7 +303,9 @@ export default function SponsorsClient() {
                 initialImageUrl={hpBanner2?.imageUrl || ''}
                 initialCtaUrl={hpBanner2?.ctaUrl || ''}
                 initialIsActive={hpBanner2?.isActive ?? true}
-                onSave={(img, link, active) => handleSaveBanner('homepage-banner-2', img, link, active)}
+                initialUseAdsterra={hpBanner2?.useAdsterra || false}
+                initialAdsterraCode={hpBanner2?.adsterraCode || ''}
+                onSave={(img, link, active, useAdsterra, adsterraCode) => handleSaveBanner('homepage-banner-2', img, link, active, useAdsterra, adsterraCode)}
                 onToggle={(active) => handleToggleBanner('homepage-banner-2', active)}
                 onDelete={() => handleDeleteBanner('homepage-banner-2')}
                 saving={savingId === 'homepage-banner-2'}
@@ -295,7 +316,9 @@ export default function SponsorsClient() {
                 initialImageUrl={hpBanner3?.imageUrl || ''}
                 initialCtaUrl={hpBanner3?.ctaUrl || ''}
                 initialIsActive={hpBanner3?.isActive ?? true}
-                onSave={(img, link, active) => handleSaveBanner('homepage-banner-3', img, link, active)}
+                initialUseAdsterra={hpBanner3?.useAdsterra || false}
+                initialAdsterraCode={hpBanner3?.adsterraCode || ''}
+                onSave={(img, link, active, useAdsterra, adsterraCode) => handleSaveBanner('homepage-banner-3', img, link, active, useAdsterra, adsterraCode)}
                 onToggle={(active) => handleToggleBanner('homepage-banner-3', active)}
                 onDelete={() => handleDeleteBanner('homepage-banner-3')}
                 saving={savingId === 'homepage-banner-3'}
@@ -306,7 +329,9 @@ export default function SponsorsClient() {
                 initialImageUrl={hpBanner4?.imageUrl || ''}
                 initialCtaUrl={hpBanner4?.ctaUrl || ''}
                 initialIsActive={hpBanner4?.isActive ?? true}
-                onSave={(img, link, active) => handleSaveBanner('homepage-banner-4', img, link, active)}
+                initialUseAdsterra={hpBanner4?.useAdsterra || false}
+                initialAdsterraCode={hpBanner4?.adsterraCode || ''}
+                onSave={(img, link, active, useAdsterra, adsterraCode) => handleSaveBanner('homepage-banner-4', img, link, active, useAdsterra, adsterraCode)}
                 onToggle={(active) => handleToggleBanner('homepage-banner-4', active)}
                 onDelete={() => handleDeleteBanner('homepage-banner-4')}
                 saving={savingId === 'homepage-banner-4'}
@@ -317,7 +342,9 @@ export default function SponsorsClient() {
                 initialImageUrl={hpBanner5?.imageUrl || ''}
                 initialCtaUrl={hpBanner5?.ctaUrl || ''}
                 initialIsActive={hpBanner5?.isActive ?? true}
-                onSave={(img, link, active) => handleSaveBanner('homepage-banner-5', img, link, active)}
+                initialUseAdsterra={hpBanner5?.useAdsterra || false}
+                initialAdsterraCode={hpBanner5?.adsterraCode || ''}
+                onSave={(img, link, active, useAdsterra, adsterraCode) => handleSaveBanner('homepage-banner-5', img, link, active, useAdsterra, adsterraCode)}
                 onToggle={(active) => handleToggleBanner('homepage-banner-5', active)}
                 onDelete={() => handleDeleteBanner('homepage-banner-5')}
                 saving={savingId === 'homepage-banner-5'}
@@ -328,7 +355,9 @@ export default function SponsorsClient() {
                 initialImageUrl={hpBanner6?.imageUrl || ''}
                 initialCtaUrl={hpBanner6?.ctaUrl || ''}
                 initialIsActive={hpBanner6?.isActive ?? true}
-                onSave={(img, link, active) => handleSaveBanner('homepage-banner-6', img, link, active)}
+                initialUseAdsterra={hpBanner6?.useAdsterra || false}
+                initialAdsterraCode={hpBanner6?.adsterraCode || ''}
+                onSave={(img, link, active, useAdsterra, adsterraCode) => handleSaveBanner('homepage-banner-6', img, link, active, useAdsterra, adsterraCode)}
                 onToggle={(active) => handleToggleBanner('homepage-banner-6', active)}
                 onDelete={() => handleDeleteBanner('homepage-banner-6')}
                 saving={savingId === 'homepage-banner-6'}
@@ -347,14 +376,18 @@ interface BannerCropperProps {
   placement: 'header-left' | 'header-right';
   initialImageUrl: string;
   initialCtaUrl: string;
-  onSave: (imageUrl: string, ctaUrl: string) => Promise<void>;
+  initialUseAdsterra: boolean;
+  initialAdsterraCode: string;
+  onSave: (imageUrl: string, ctaUrl: string, useAdsterra: boolean, adsterraCode: string) => Promise<void>;
   onDelete: () => Promise<void>;
   saving: boolean;
 }
 
-function BannerCropper({ label, placement, initialImageUrl, initialCtaUrl, onSave, onDelete, saving }: BannerCropperProps) {
+function BannerCropper({ label, placement, initialImageUrl, initialCtaUrl, initialUseAdsterra, initialAdsterraCode, onSave, onDelete, saving }: BannerCropperProps) {
   const [imageUrl, setImageUrl] = useState(initialImageUrl);
   const [ctaUrl, setCtaUrl] = useState(initialCtaUrl);
+  const [useAdsterra, setUseAdsterra] = useState(initialUseAdsterra);
+  const [adsterraCode, setAdsterraCode] = useState(initialAdsterraCode);
   const [fileSrc, setFileSrc] = useState<string | null>(null);
   const [imageRatio, setImageRatio] = useState<number | null>(null);
   const [zoom, setZoom] = useState(1);
@@ -365,7 +398,9 @@ function BannerCropper({ label, placement, initialImageUrl, initialCtaUrl, onSav
   useEffect(() => {
     setImageUrl(initialImageUrl);
     setCtaUrl(initialCtaUrl);
-  }, [initialImageUrl, initialCtaUrl]);
+    setUseAdsterra(initialUseAdsterra);
+    setAdsterraCode(initialAdsterraCode);
+  }, [initialImageUrl, initialCtaUrl, initialUseAdsterra, initialAdsterraCode]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -404,6 +439,15 @@ function BannerCropper({ label, placement, initialImageUrl, initialCtaUrl, onSav
   };
 
   const handleUploadAndSave = async () => {
+    if (useAdsterra) {
+      if (!adsterraCode || !adsterraCode.trim()) {
+        alert('Adsterra script code is required.');
+        return;
+      }
+      await onSave('', '', true, adsterraCode);
+      return;
+    }
+
     if (!ctaUrl || !ctaUrl.trim()) {
       alert('Redirection link is required.');
       return;
@@ -411,7 +455,7 @@ function BannerCropper({ label, placement, initialImageUrl, initialCtaUrl, onSav
 
     if (!fileSrc) {
       // Just save link/existing URL
-      await onSave(imageUrl, ctaUrl);
+      await onSave(imageUrl, ctaUrl, false, '');
       return;
     }
 
@@ -460,7 +504,7 @@ function BannerCropper({ label, placement, initialImageUrl, initialCtaUrl, onSav
             const uploadData = await uploadRes.json();
             if (uploadData.error) throw new Error(uploadData.error);
 
-            await onSave(uploadData.url, ctaUrl);
+            await onSave(uploadData.url, ctaUrl, false, '');
             setFileSrc(null); // Clear cropper after save
           } catch (err) {
             alert('Upload failed: ' + (err instanceof Error ? err.message : 'Unknown error'));
@@ -481,7 +525,7 @@ function BannerCropper({ label, placement, initialImageUrl, initialCtaUrl, onSav
     }
   }
 
-  const isSaveDisabled = saving || !ctaUrl || !ctaUrl.trim();
+  const isSaveDisabled = saving || (!useAdsterra && (!ctaUrl || !ctaUrl.trim())) || (useAdsterra && (!adsterraCode || !adsterraCode.trim()));
 
   return (
     <section style={{ backgroundColor: 'var(--bg-surface)', border: '1px solid var(--ink-border)', borderRadius: 6, padding: '24px', boxShadow: '0 1px 3px rgba(0,0,0,0.02)' }}>
@@ -494,121 +538,163 @@ function BannerCropper({ label, placement, initialImageUrl, initialCtaUrl, onSav
         </span>
       </div>
 
-      {/* Interactive Cropping Preview Area (matches exact 290px x 75px banner aspect ratio) */}
-      <div 
-        onMouseDown={handleMouseDown}
-        onMouseMove={handleMouseMove}
-        onMouseUp={handleMouseUpOrLeave}
-        onMouseLeave={handleMouseUpOrLeave}
-        style={{ 
-          height: 75, 
-          width: 290, 
-          backgroundColor: '#fafafa', 
-          border: '1.5px dashed var(--ink-border)', 
-          borderRadius: 3, 
-          overflow: 'hidden', 
-          position: 'relative',
-          cursor: fileSrc ? (isDragging ? 'grabbing' : 'grab') : 'default',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          userSelect: 'none',
-          marginBottom: 20,
-          marginLeft: 'auto',
-          marginRight: 'auto'
-        }}
-      >
-        {fileSrc ? (
-          <img 
-            src={fileSrc} 
-            alt="Cropping in progress" 
-            draggable={false}
-            style={{ 
-              position: 'absolute',
-              width: previewImgWidth,
-              height: previewImgHeight,
-              transform: `translate(${offset.x}px, ${offset.y}px) scale(${zoom})`,
-              maxWidth: 'none',
-              maxHeight: 'none'
-            }} 
-          />
-        ) : imageUrl ? (
-          <img 
-            src={imageUrl} 
-            alt="Current Banner" 
-            draggable={false}
-            style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
-          />
-        ) : (
-          <div style={{ color: 'var(--ink-ghost)', fontSize: 10, textAlign: 'center', fontFamily: "'Hind Siliguri', sans-serif", fontWeight: 600 }}>
-            <span>বিজ্ঞাপন দিন (290x75)</span>
-          </div>
-        )}
-
-        {/* Overlay indicator */}
-        {fileSrc && (
-          <div style={{ position: 'absolute', bottom: 4, right: 6, backgroundColor: 'rgba(0,0,0,0.6)', color: '#fff', fontSize: 8, padding: '2px 4px', borderRadius: 2, pointerEvents: 'none' }}>
-            DRAG TO ADJUST
-          </div>
-        )}
-      </div>
-
-      {/* Image selector */}
-      <div style={{ marginBottom: 16 }}>
-        <span style={{ fontFamily: "'Hind Siliguri', sans-serif", fontSize: 11, fontWeight: 600, textTransform: 'uppercase', color: 'var(--ink-muted)', display: 'block', marginBottom: 6 }}>
-          Upload Banner Image <span style={{ color: 'var(--ink-ghost)', textTransform: 'none' }}>(Recommended 290×75 px)</span>
-        </span>
+      {/* Adsterra Toggle */}
+      <div className="mb-6 flex items-center justify-between p-3 bg-amber-50/50 border border-amber-200/50 rounded-md">
+        <div>
+          <span className="block text-xs font-bold text-amber-800">Use Adsterra script</span>
+          <span className="block text-[10px] text-amber-600">Loads third-party banner code instead of local image</span>
+        </div>
         <input 
-          type="file" 
-          accept="image/*" 
-          onChange={handleFileChange} 
-          style={{ fontFamily: "'Hind Siliguri', sans-serif", fontSize: 12, width: '100%' }}
+          type="checkbox" 
+          checked={useAdsterra} 
+          onChange={(e) => setUseAdsterra(e.target.checked)} 
+          className="w-4 h-4 text-amber-600 border-amber-300 rounded focus:ring-amber-500 cursor-pointer"
         />
       </div>
 
-      {/* Zoom controls */}
-      {fileSrc && (
-        <div style={{ marginBottom: 16 }}>
-          <div className="flex justify-between items-center" style={{ marginBottom: 4 }}>
-            <span style={{ fontFamily: "'Hind Siliguri', sans-serif", fontSize: 11, fontWeight: 600, textTransform: 'uppercase', color: 'var(--ink-muted)' }}>Zoom Scale</span>
-            <span style={{ fontSize: 11, fontWeight: 600 }}>{zoom.toFixed(2)}x</span>
-          </div>
-          <input 
-            type="range" 
-            min="1" 
-            max="3" 
-            step="0.02" 
-            value={zoom} 
-            onChange={(e) => setZoom(parseFloat(e.target.value))} 
-            style={{ width: '100%', cursor: 'pointer' }}
+      {useAdsterra ? (
+        <div style={{ marginBottom: 20 }}>
+          <span style={{ fontFamily: "'Hind Siliguri', sans-serif", fontSize: 11, fontWeight: 600, textTransform: 'uppercase', color: 'var(--ink-muted)', display: 'block', marginBottom: 6 }}>
+            Adsterra Script Code
+          </span>
+          <textarea
+            value={adsterraCode}
+            onChange={(e) => setAdsterraCode(e.target.value)}
+            placeholder="Paste your <script>...</script> code from Adsterra here"
+            rows={6}
+            style={{ 
+              width: '100%', 
+              padding: '10px 12px', 
+              border: '1px solid var(--ink-border)', 
+              background: 'var(--bg-surface)', 
+              color: 'var(--ink)', 
+              fontFamily: 'monospace', 
+              fontSize: 12, 
+              borderRadius: 4
+            }}
+            required
           />
         </div>
+      ) : (
+        <>
+          {/* Interactive Cropping Preview Area (matches exact 290px x 75px banner aspect ratio) */}
+          <div 
+            onMouseDown={handleMouseDown}
+            onMouseMove={handleMouseMove}
+            onMouseUp={handleMouseUpOrLeave}
+            onMouseLeave={handleMouseUpOrLeave}
+            style={{ 
+              height: 75, 
+              width: 290, 
+              backgroundColor: '#fafafa', 
+              border: '1.5px dashed var(--ink-border)', 
+              borderRadius: 3, 
+              overflow: 'hidden', 
+              position: 'relative',
+              cursor: fileSrc ? (isDragging ? 'grabbing' : 'grab') : 'default',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              userSelect: 'none',
+              marginBottom: 20,
+              marginLeft: 'auto',
+              marginRight: 'auto'
+            }}
+          >
+            {fileSrc ? (
+              <img 
+                src={fileSrc} 
+                alt="Cropping in progress" 
+                draggable={false}
+                style={{ 
+                  position: 'absolute',
+                  width: previewImgWidth,
+                  height: previewImgHeight,
+                  transform: `translate(${offset.x}px, ${offset.y}px) scale(${zoom})`,
+                  maxWidth: 'none',
+                  maxHeight: 'none'
+                }} 
+              />
+            ) : imageUrl ? (
+              <img 
+                src={imageUrl} 
+                alt="Current Banner" 
+                draggable={false}
+                style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
+              />
+            ) : (
+              <div style={{ color: 'var(--ink-ghost)', fontSize: 10, textAlign: 'center', fontFamily: "'Hind Siliguri', sans-serif", fontWeight: 600 }}>
+                <span>বিজ্ঞাপন দিন (290x75)</span>
+              </div>
+            )}
+
+            {/* Overlay indicator */}
+            {fileSrc && (
+              <div style={{ position: 'absolute', bottom: 4, right: 6, backgroundColor: 'rgba(0,0,0,0.6)', color: '#fff', fontSize: 8, padding: '2px 4px', borderRadius: 2, pointerEvents: 'none' }}>
+                DRAG TO ADJUST
+              </div>
+            )}
+          </div>
+
+          {/* Image selector */}
+          <div style={{ marginBottom: 16 }}>
+            <span style={{ fontFamily: "'Hind Siliguri', sans-serif", fontSize: 11, fontWeight: 600, textTransform: 'uppercase', color: 'var(--ink-muted)', display: 'block', marginBottom: 6 }}>
+              Upload Banner Image <span style={{ color: 'var(--ink-ghost)', textTransform: 'none' }}>(Recommended 290×75 px)</span>
+            </span>
+            <input 
+              type="file" 
+              accept="image/*" 
+              onChange={handleFileChange} 
+              style={{ fontFamily: "'Hind Siliguri', sans-serif", fontSize: 12, width: '100%' }}
+            />
+          </div>
+
+          {/* Zoom controls */}
+          {fileSrc && (
+            <div style={{ marginBottom: 16 }}>
+              <div className="flex justify-between items-center" style={{ marginBottom: 4 }}>
+                <span style={{ fontFamily: "'Hind Siliguri', sans-serif", fontSize: 11, fontWeight: 600, textTransform: 'uppercase', color: 'var(--ink-muted)' }}>Zoom Scale</span>
+                <span style={{ fontSize: 11, fontWeight: 600 }}>{zoom.toFixed(2)}x</span>
+              </div>
+              <input 
+                type="range" 
+                min="1" 
+                max="3" 
+                step="0.02" 
+                value={zoom} 
+                onChange={(e) => setZoom(parseFloat(e.target.value))} 
+                style={{ width: '100%', cursor: 'pointer' }}
+              />
+            </div>
+          )}
+
+          {/* Redirect link */}
+          <div style={{ marginBottom: 20 }}>
+            <span style={{ fontFamily: "'Hind Siliguri', sans-serif", fontSize: 11, fontWeight: 600, textTransform: 'uppercase', color: 'var(--ink-muted)', display: 'block', marginBottom: 6 }}>
+              Redirection Link (Background Link)
+            </span>
+            <input 
+              type="url" 
+              value={ctaUrl} 
+              onChange={(e) => setCtaUrl(e.target.value)} 
+              placeholder="https://target-advertiser.com" 
+              style={{ 
+                width: '100%', 
+                padding: '10px 12px', 
+                border: '1px solid var(--ink-border)', 
+                background: 'var(--bg-surface)', 
+                color: 'var(--ink)', 
+                fontFamily: "'Hind Siliguri', sans-serif", 
+                fontSize: 13, 
+                borderRadius: 4
+              }}
+              required
+            />
+          </div>
+        </>
       )}
 
-      {/* Redirect link */}
       <div>
-        <span style={{ fontFamily: "'Hind Siliguri', sans-serif", fontSize: 11, fontWeight: 600, textTransform: 'uppercase', color: 'var(--ink-muted)', display: 'block', marginBottom: 6 }}>
-          Redirection Link (Background Link)
-        </span>
-        <input 
-          type="url" 
-          value={ctaUrl} 
-          onChange={(e) => setCtaUrl(e.target.value)} 
-          placeholder="https://target-advertiser.com" 
-          style={{ 
-            width: '100%', 
-            padding: '10px 12px', 
-            border: '1px solid var(--ink-border)', 
-            background: 'var(--bg-surface)', 
-            color: 'var(--ink)', 
-            fontFamily: "'Hind Siliguri', sans-serif", 
-            fontSize: 13, 
-            borderRadius: 4,
-            marginBottom: 20
-          }}
-          required
-        />
-
         <div className="flex flex-col gap-2">
           <div className="flex gap-2">
             <button 
@@ -624,7 +710,7 @@ function BannerCropper({ label, placement, initialImageUrl, initialCtaUrl, onSav
               }}
               disabled={isSaveDisabled}
             >
-              {saving ? 'Saving...' : fileSrc ? 'Crop & Save Banner' : 'Update Redirect Link'}
+              {saving ? 'Saving...' : useAdsterra ? 'Save Adsterra script' : fileSrc ? 'Crop & Save Banner' : 'Update Redirect Link'}
             </button>
             {fileSrc && (
               <button 
@@ -637,7 +723,7 @@ function BannerCropper({ label, placement, initialImageUrl, initialCtaUrl, onSav
             )}
           </div>
 
-          {initialImageUrl && !fileSrc && (
+          {(initialImageUrl || (initialUseAdsterra && initialAdsterraCode)) && !fileSrc && (
             <button 
               type="button"
               onClick={onDelete}
@@ -669,16 +755,20 @@ interface HomepageBannerManagerProps {
   initialImageUrl: string;
   initialCtaUrl: string;
   initialIsActive: boolean;
-  onSave: (imageUrl: string, ctaUrl: string, isActive: boolean) => Promise<void>;
+  initialUseAdsterra: boolean;
+  initialAdsterraCode: string;
+  onSave: (imageUrl: string, ctaUrl: string, isActive: boolean, useAdsterra: boolean, adsterraCode: string) => Promise<void>;
   onToggle: (isActive: boolean) => Promise<void>;
   onDelete: () => Promise<void>;
   saving: boolean;
 }
 
-function HomepageBannerManager({ label, placement, initialImageUrl, initialCtaUrl, initialIsActive, onSave, onToggle, onDelete, saving }: HomepageBannerManagerProps) {
+function HomepageBannerManager({ label, placement, initialImageUrl, initialCtaUrl, initialIsActive, initialUseAdsterra, initialAdsterraCode, onSave, onToggle, onDelete, saving }: HomepageBannerManagerProps) {
   const [imageUrl, setImageUrl] = useState(initialImageUrl);
   const [ctaUrl, setCtaUrl] = useState(initialCtaUrl);
   const [isActive, setIsActive] = useState(initialIsActive);
+  const [useAdsterra, setUseAdsterra] = useState(initialUseAdsterra);
+  const [adsterraCode, setAdsterraCode] = useState(initialAdsterraCode);
   const [fileSrc, setFileSrc] = useState<string | null>(null);
   const [toggling, setToggling] = useState(false);
 
@@ -693,7 +783,9 @@ function HomepageBannerManager({ label, placement, initialImageUrl, initialCtaUr
     setImageUrl(initialImageUrl);
     setCtaUrl(initialCtaUrl);
     setIsActive(initialIsActive);
-  }, [initialImageUrl, initialCtaUrl, initialIsActive]);
+    setUseAdsterra(initialUseAdsterra);
+    setAdsterraCode(initialAdsterraCode);
+  }, [initialImageUrl, initialCtaUrl, initialIsActive, initialUseAdsterra, initialAdsterraCode]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -746,10 +838,19 @@ function HomepageBannerManager({ label, placement, initialImageUrl, initialCtaUr
   };
 
   const handleSave = async () => {
+    if (useAdsterra) {
+      if (!adsterraCode || !adsterraCode.trim()) {
+        alert('Adsterra script code is required.');
+        return;
+      }
+      await onSave('', '', isActive, true, adsterraCode);
+      return;
+    }
+
     if (!ctaUrl || !ctaUrl.trim()) { alert('Redirection link is required.'); return; }
 
     if (!fileSrc) {
-      await onSave(imageUrl, ctaUrl, isActive);
+      await onSave(imageUrl, ctaUrl, isActive, false, '');
       return;
     }
 
@@ -791,7 +892,7 @@ function HomepageBannerManager({ label, placement, initialImageUrl, initialCtaUr
             const res = await fetch('/api/admin/upload', { method: 'POST', body: formData });
             const data = await res.json();
             if (data.error) throw new Error(data.error);
-            await onSave(data.url, ctaUrl, isActive);
+            await onSave(data.url, ctaUrl, isActive, false, '');
             setFileSrc(null);
           } catch (err) { alert('Upload failed: ' + (err instanceof Error ? err.message : 'Unknown')); }
         }, 'image/jpeg', 0.92);
@@ -811,6 +912,8 @@ function HomepageBannerManager({ label, placement, initialImageUrl, initialCtaUr
       previewImgHeight = 728 / imageRatio;
     }
   }
+
+  const isSaveDisabled = saving || (!useAdsterra && (!ctaUrl || !ctaUrl.trim())) || (useAdsterra && (!adsterraCode || !adsterraCode.trim()));
 
   return (
     <section style={{
@@ -852,116 +955,157 @@ function HomepageBannerManager({ label, placement, initialImageUrl, initialCtaUr
         </div>
       </div>
 
-      {/* Interactive Cropping Preview Area (matches exact 728px x 90px banner aspect ratio) */}
-      <div
-        onMouseDown={handleMouseDown}
-        onMouseMove={handleMouseMove}
-        onMouseUp={handleMouseUpOrLeave}
-        onMouseLeave={handleMouseUpOrLeave}
-        style={{
-          width: '100%',
-          maxWidth: 728,
-          height: 90,
-          backgroundColor: '#f5f5f5',
-          border: '1.5px dashed var(--ink-border)',
-          borderRadius: 3,
-          overflow: 'hidden',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          position: 'relative',
-          cursor: fileSrc ? (isDragging ? 'grabbing' : 'grab') : 'default',
-          userSelect: 'none',
-          marginBottom: 20
-        }}
-      >
-        {fileSrc ? (
-          <img
-            src={fileSrc}
-            alt="Cropping in progress"
-            draggable={false}
-            style={{
-              position: 'absolute',
-              width: previewImgWidth,
-              height: previewImgHeight,
-              transform: `translate(${offset.x}px, ${offset.y}px) scale(${zoom})`,
-              maxWidth: 'none',
-              maxHeight: 'none'
-            }}
-          />
-        ) : imageUrl ? (
-          <img
-            src={imageUrl}
-            alt="Current Banner"
-            draggable={false}
-            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-          />
-        ) : (
-          <span style={{ color: 'var(--ink-ghost)', fontSize: 11, fontFamily: "'Hind Siliguri', sans-serif", fontWeight: 600 }}>
-            বিজ্ঞাপন প্রিভিউ (728×90)
-          </span>
-        )}
-
-        {/* Overlay indicator */}
-        {fileSrc && (
-          <div style={{ position: 'absolute', bottom: 4, right: 6, backgroundColor: 'rgba(0,0,0,0.6)', color: '#fff', fontSize: 8, padding: '2px 4px', borderRadius: 2, pointerEvents: 'none' }}>
-            DRAG TO ADJUST
-          </div>
-        )}
-      </div>
-
-      <div style={{ marginBottom: 16 }}>
-        <span style={{ fontFamily: "'Hind Siliguri', sans-serif", fontSize: 11, fontWeight: 600, textTransform: 'uppercase', color: 'var(--ink-muted)', display: 'block', marginBottom: 6 }}>
-          Upload Banner Image <span style={{ color: 'var(--ink-ghost)', textTransform: 'none' }}>(Recommended 728×90 px)</span>
-        </span>
-        <input type="file" accept="image/*" onChange={handleFileChange} style={{ fontFamily: "'Hind Siliguri', sans-serif", fontSize: 12, width: '100%' }} />
-      </div>
-
-      {/* Zoom controls */}
-      {fileSrc && (
-        <div style={{ marginBottom: 16 }}>
-          <div className="flex justify-between items-center" style={{ marginBottom: 4 }}>
-            <span style={{ fontFamily: "'Hind Siliguri', sans-serif", fontSize: 11, fontWeight: 600, textTransform: 'uppercase', color: 'var(--ink-muted)' }}>Zoom Scale</span>
-            <span style={{ fontSize: 11, fontWeight: 600 }}>{zoom.toFixed(2)}x</span>
-          </div>
-          <input
-            type="range"
-            min="1"
-            max="3"
-            step="0.02"
-            value={zoom}
-            onChange={(e) => setZoom(parseFloat(e.target.value))}
-            style={{ width: '100%', cursor: 'pointer' }}
-          />
+      {/* Adsterra Toggle */}
+      <div className="mb-6 flex items-center justify-between p-3 bg-amber-50/50 border border-amber-200/50 rounded-md">
+        <div>
+          <span className="block text-xs font-bold text-amber-800">Use Adsterra script</span>
+          <span className="block text-[10px] text-amber-600">Loads third-party banner code instead of local image</span>
         </div>
-      )}
-
-      <div style={{ marginBottom: 16 }}>
-        <span style={{ fontFamily: "'Hind Siliguri', sans-serif", fontSize: 11, fontWeight: 600, textTransform: 'uppercase', color: 'var(--ink-muted)', display: 'block', marginBottom: 6 }}>
-          Redirection Link
-        </span>
-        <input
-          type="url"
-          value={ctaUrl}
-          onChange={(e) => setCtaUrl(e.target.value)}
-          placeholder="https://target-advertiser.com"
-          style={{ width: '100%', padding: '10px 12px', border: '1px solid var(--ink-border)', background: 'var(--bg-surface)', color: 'var(--ink)', fontFamily: "'Hind Siliguri', sans-serif", fontSize: 13, borderRadius: 4 }}
+        <input 
+          type="checkbox" 
+          checked={useAdsterra} 
+          onChange={(e) => setUseAdsterra(e.target.checked)} 
+          className="w-4 h-4 text-amber-600 border-amber-300 rounded focus:ring-amber-500 cursor-pointer"
         />
       </div>
+
+      {useAdsterra ? (
+        <div style={{ marginBottom: 20 }}>
+          <span style={{ fontFamily: "'Hind Siliguri', sans-serif", fontSize: 11, fontWeight: 600, textTransform: 'uppercase', color: 'var(--ink-muted)', display: 'block', marginBottom: 6 }}>
+            Adsterra Script Code
+          </span>
+          <textarea
+            value={adsterraCode}
+            onChange={(e) => setAdsterraCode(e.target.value)}
+            placeholder="Paste your <script>...</script> code from Adsterra here"
+            rows={6}
+            style={{ 
+              width: '100%', 
+              padding: '10px 12px', 
+              border: '1px solid var(--ink-border)', 
+              background: 'var(--bg-surface)', 
+              color: 'var(--ink)', 
+              fontFamily: 'monospace', 
+              fontSize: 12, 
+              borderRadius: 4
+            }}
+            required
+          />
+        </div>
+      ) : (
+        <>
+          {/* Interactive Cropping Preview Area (matches exact 728px x 90px banner aspect ratio) */}
+          <div
+            onMouseDown={handleMouseDown}
+            onMouseMove={handleMouseMove}
+            onMouseUp={handleMouseUpOrLeave}
+            onMouseLeave={handleMouseUpOrLeave}
+            style={{
+              width: '100%',
+              maxWidth: 728,
+              height: 90,
+              backgroundColor: '#f5f5f5',
+              border: '1.5px dashed var(--ink-border)',
+              borderRadius: 3,
+              overflow: 'hidden',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              position: 'relative',
+              cursor: fileSrc ? (isDragging ? 'grabbing' : 'grab') : 'default',
+              userSelect: 'none',
+              marginBottom: 20
+            }}
+          >
+            {fileSrc ? (
+              <img
+                src={fileSrc}
+                alt="Cropping in progress"
+                draggable={false}
+                style={{
+                  position: 'absolute',
+                  width: previewImgWidth,
+                  height: previewImgHeight,
+                  transform: `translate(${offset.x}px, ${offset.y}px) scale(${zoom})`,
+                  maxWidth: 'none',
+                  maxHeight: 'none'
+                }}
+              />
+            ) : imageUrl ? (
+              <img
+                src={imageUrl}
+                alt="Current Banner"
+                draggable={false}
+                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+              />
+            ) : (
+              <span style={{ color: 'var(--ink-ghost)', fontSize: 11, fontFamily: "'Hind Siliguri', sans-serif", fontWeight: 600 }}>
+                বিজ্ঞাপন প্রিভিউ (728×90)
+              </span>
+            )}
+
+            {/* Overlay indicator */}
+            {fileSrc && (
+              <div style={{ position: 'absolute', bottom: 4, right: 6, backgroundColor: 'rgba(0,0,0,0.6)', color: '#fff', fontSize: 8, padding: '2px 4px', borderRadius: 2, pointerEvents: 'none' }}>
+                DRAG TO ADJUST
+              </div>
+            )}
+          </div>
+
+          <div style={{ marginBottom: 16 }}>
+            <span style={{ fontFamily: "'Hind Siliguri', sans-serif", fontSize: 11, fontWeight: 600, textTransform: 'uppercase', color: 'var(--ink-muted)', display: 'block', marginBottom: 6 }}>
+              Upload Banner Image <span style={{ color: 'var(--ink-ghost)', textTransform: 'none' }}>(Recommended 728×90 px)</span>
+            </span>
+            <input type="file" accept="image/*" onChange={handleFileChange} style={{ fontFamily: "'Hind Siliguri', sans-serif", fontSize: 12, width: '100%' }} />
+          </div>
+
+          {/* Zoom controls */}
+          {fileSrc && (
+            <div style={{ marginBottom: 16 }}>
+              <div className="flex justify-between items-center" style={{ marginBottom: 4 }}>
+                <span style={{ fontFamily: "'Hind Siliguri', sans-serif", fontSize: 11, fontWeight: 600, textTransform: 'uppercase', color: 'var(--ink-muted)' }}>Zoom Scale</span>
+                <span style={{ fontSize: 11, fontWeight: 600 }}>{zoom.toFixed(2)}x</span>
+              </div>
+              <input
+                type="range"
+                min="1"
+                max="3"
+                step="0.02"
+                value={zoom}
+                onChange={(e) => setZoom(parseFloat(e.target.value))}
+                style={{ width: '100%', cursor: 'pointer' }}
+              />
+            </div>
+          )}
+
+          <div style={{ marginBottom: 16 }}>
+            <span style={{ fontFamily: "'Hind Siliguri', sans-serif", fontSize: 11, fontWeight: 600, textTransform: 'uppercase', color: 'var(--ink-muted)', display: 'block', marginBottom: 6 }}>
+              Redirection Link
+            </span>
+            <input
+              type="url"
+              value={ctaUrl}
+              onChange={(e) => setCtaUrl(e.target.value)}
+              placeholder="https://target-advertiser.com"
+              style={{ width: '100%', padding: '10px 12px', border: '1px solid var(--ink-border)', background: 'var(--bg-surface)', color: 'var(--ink)', fontFamily: "'Hind Siliguri', sans-serif", fontSize: 13, borderRadius: 4 }}
+            />
+          </div>
+        </>
+      )}
 
       <div style={{ display: 'flex', gap: 8 }}>
         <button
           onClick={handleSave}
           className="admin-btn-primary"
-          disabled={saving || !ctaUrl.trim()}
-          style={{ flex: 1, height: 42, fontSize: 13, fontWeight: 600, opacity: (saving || !ctaUrl.trim()) ? 0.5 : 1, cursor: (saving || !ctaUrl.trim()) ? 'not-allowed' : 'pointer' }}
+          disabled={isSaveDisabled}
+          style={{ flex: 1, height: 42, fontSize: 13, fontWeight: 600, opacity: isSaveDisabled ? 0.5 : 1, cursor: isSaveDisabled ? 'not-allowed' : 'pointer' }}
         >
-          {saving ? 'Saving...' : fileSrc ? 'Upload & Save' : 'Update Redirect Link'}
+          {saving ? 'Saving...' : useAdsterra ? 'Save Adsterra script' : fileSrc ? 'Upload & Save' : 'Update Redirect Link'}
         </button>
         {fileSrc && (
           <button onClick={() => setFileSrc(null)} className="admin-btn-secondary" style={{ height: 42 }}>Cancel</button>
         )}
-        {initialImageUrl && !fileSrc && (
+        {(initialImageUrl || (initialUseAdsterra && initialAdsterraCode)) && !fileSrc && (
           <button onClick={onDelete} className="admin-btn-secondary" disabled={saving} style={{ height: 42, color: '#C0392B', borderColor: '#C0392B', opacity: saving ? 0.5 : 1, cursor: saving ? 'not-allowed' : 'pointer' }}>
             {saving ? '...' : 'Empty'}
           </button>

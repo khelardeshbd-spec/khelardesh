@@ -32,10 +32,10 @@ export async function POST(request: Request) {
     const {
       label = 'Sponsor', title = '', subtitle = '', ctaText = '',
       ctaUrl, placement = 'inline', isActive = true, displayOrder = 0,
-      imageUrl = null
+      imageUrl = null, useAdsterra = false, adsterraCode = null
     } = body
 
-    if (!ctaUrl) {
+    if (!useAdsterra && !ctaUrl) {
       return NextResponse.json({ error: 'Missing CTA URL' }, { status: 400 })
     }
 
@@ -46,11 +46,13 @@ export async function POST(request: Request) {
         title, 
         subtitle, 
         ctaText, 
-        ctaUrl, 
+        ctaUrl: useAdsterra ? '' : (ctaUrl || ''), 
         placement, 
         isActive, 
         displayOrder,
-        imageUrl
+        imageUrl,
+        useAdsterra,
+        adsterraCode
       })
       .select()
       .single()

@@ -14,6 +14,24 @@ interface EditorBlock {
   caption?: string;
   imageUrl?: string;
   ctaUrl?: string;
+  useAdsterra?: boolean;
+  adsterraCode?: string;
+}
+
+function safeB64Encode(str: string): string {
+  try {
+    return btoa(unescape(encodeURIComponent(str)));
+  } catch {
+    return '';
+  }
+}
+
+function safeB64Decode(str: string): string {
+  try {
+    return decodeURIComponent(escape(atob(str)));
+  } catch {
+    return '';
+  }
 }
 
 function parseBodyToBlocks(bodyStr: string): EditorBlock[] {
@@ -25,9 +43,13 @@ function parseBodyToBlocks(bodyStr: string): EditorBlock[] {
     if (imgMatch) {
       return { id, type: 'image', url: imgMatch[1], caption: imgMatch[2] };
     }
+    const adsterraMatch = part.trim().match(/^\[ADSTERRA:\s*(.*?)\s*\]$/i);
+    if (adsterraMatch) {
+      return { id, type: 'ad', useAdsterra: true, adsterraCode: safeB64Decode(adsterraMatch[1]) };
+    }
     const adMatch = part.trim().match(/^\[AD:\s*(.*?)\s*\|\s*(.*?)\s*\]$/i);
     if (adMatch) {
-      return { id, type: 'ad', imageUrl: adMatch[1], ctaUrl: adMatch[2] };
+      return { id, type: 'ad', useAdsterra: false, imageUrl: adMatch[1], ctaUrl: adMatch[2] };
     }
     return { id, type: 'paragraph', value: part };
   });
@@ -40,6 +62,9 @@ function serializeBlocksToBody(blocks: EditorBlock[]): string {
         return `[IMAGE: ${block.url || ''} | ${block.caption || ''}]`;
       }
       if (block.type === 'ad') {
+        if (block.useAdsterra) {
+          return `[ADSTERRA: ${safeB64Encode(block.adsterraCode || '')}]`;
+        }
         return `[AD: ${block.imageUrl || ''} | ${block.ctaUrl || ''}]`;
       }
       return block.value || '';
@@ -654,45 +679,75 @@ export default function NewArticlePage() {
                     <div className="text-xs font-bold text-[var(--ink-muted)] mb-1 flex items-center gap-1">
                       <Sparkles size={14} /> AD CARD (SPONSOR BANNER)
                     </div>
-                    {block.imageUrl ? (
-                      <div className="relative aspect-[21/9] rounded overflow-hidden bg-gray-100 border border-[var(--ink-border)]" style={{ maxHeight: 150 }}>
-                        <img src={block.imageUrl} alt="Ad preview" className="w-full h-full object-cover" />
+                    
+                    {/* Adsterra Toggle */}
+                    <div className="flex items-center gap-2 p-2 bg-amber-50/50 border border-amber-200/50 rounded mb-2">
+                      <input
+                        type="checkbox"
+                        id={`use-adsterra-${block.id}`}
+                        checked={block.useAdsterra || false}
+                        onChange={(e) => updateBlock(block.id, { useAdsterra: e.target.checked })}
+                        className="cursor-pointer"
+                      />
+                      <label htmlFor={`use-adsterra-${block.id}`} className="text-xs font-bold text-amber-800 cursor-pointer">
+                        Use Adsterra script instead of custom banner image
+                      </label>
+                    </div>
+
+                    {block.useAdsterra ? (
+                      <div className="flex flex-col gap-1.5">
+                        <label className="text-xs font-semibold text-[var(--ink-muted)]">Adsterra Script Code</label>
+                        <textarea
+                          placeholder="Paste your <script>...</script> code from Adsterra here"
+                          value={block.adsterraCode || ''}
+                          onChange={(e) => updateBlock(block.id, { adsterraCode: e.target.value })}
+                          rows={4}
+                          className="w-full text-xs p-2 border border-[var(--ink-border)] rounded bg-transparent text-[var(--ink)] font-mono focus:outline-none focus:border-[var(--ink)]"
+                        />
                       </div>
                     ) : (
-                      <div className="border-2 border-dashed border-[var(--ink-border)] rounded p-6 flex flex-col items-center justify-center gap-2">
-                        <input 
-                          type="file" 
-                          accept="image/*"
-                          id={`file-ad-${block.id}`}
-                          className="hidden"
-                          onChange={async (e) => {
-                            const file = e.target.files?.[0];
-                            if (file) {
-                              const url = await handleUpload(file);
-                              updateBlock(block.id, { imageUrl: url });
-                            }
-                          }}
-                        />
-                        <label htmlFor={`file-ad-${block.id}`} className="cursor-pointer bg-[var(--ink)] text-[var(--bg-page)] px-4 py-2 rounded text-xs font-semibold hover:opacity-90 transition-opacity">
-                          Select/Upload Banner Image
-                        </label>
-                        <span className="text-[10px] text-[var(--ink-muted)]">or paste image URL below:</span>
+                      <>
+                        {block.imageUrl ? (
+                          <div className="relative aspect-[21/9] rounded overflow-hidden bg-gray-100 border border-[var(--ink-border)]" style={{ maxHeight: 150 }}>
+                            <img src={block.imageUrl} alt="Ad preview" className="w-full h-full object-cover" />
+                          </div>
+                        ) : (
+                          <div className="border-2 border-dashed border-[var(--ink-border)] rounded p-6 flex flex-col items-center justify-center gap-2">
+                            <input 
+                              type="file" 
+                              accept="image/*"
+                              id={`file-ad-${block.id}`}
+                              className="hidden"
+                              onChange={async (e) => {
+                                const file = e.target.files?.[0];
+                                if (file) {
+                                  const url = await handleUpload(file);
+                                  updateBlock(block.id, { imageUrl: url });
+                                }
+                              }}
+                            />
+                            <label htmlFor={`file-ad-${block.id}`} className="cursor-pointer bg-[var(--ink)] text-[var(--bg-page)] px-4 py-2 rounded text-xs font-semibold hover:opacity-90 transition-opacity">
+                              Select/Upload Banner Image
+                            </label>
+                            <span className="text-[10px] text-[var(--ink-muted)]">or paste image URL below:</span>
+                            <input
+                              type="text"
+                              placeholder="Banner Image URL"
+                              value={block.imageUrl || ''}
+                              onChange={(e) => updateBlock(block.id, { imageUrl: e.target.value })}
+                              className="w-full text-xs p-2 border border-[var(--ink-border)] rounded bg-transparent text-[var(--ink)]"
+                            />
+                          </div>
+                        )}
                         <input
                           type="text"
-                          placeholder="Banner Image URL"
-                          value={block.imageUrl || ''}
-                          onChange={(e) => updateBlock(block.id, { imageUrl: e.target.value })}
-                          className="w-full text-xs p-2 border border-[var(--ink-border)] rounded bg-transparent text-[var(--ink)]"
+                          placeholder="CTA Link URL (বিজ্ঞাপন লিংক)..."
+                          value={block.ctaUrl || ''}
+                          onChange={(e) => updateBlock(block.id, { ctaUrl: e.target.value })}
+                          className="w-full text-sm p-2 border-b border-[var(--ink-border)] rounded bg-transparent text-[var(--ink)] focus:outline-none focus:border-[var(--ink)]"
                         />
-                      </div>
+                      </>
                     )}
-                    <input
-                      type="text"
-                      placeholder="CTA Link URL (বিজ্ঞাপন লিংক)..."
-                      value={block.ctaUrl || ''}
-                      onChange={(e) => updateBlock(block.id, { ctaUrl: e.target.value })}
-                      className="w-full text-sm p-2 border-b border-[var(--ink-border)] rounded bg-transparent text-[var(--ink)] focus:outline-none focus:border-[var(--ink)]"
-                    />
                   </div>
                 )}
 

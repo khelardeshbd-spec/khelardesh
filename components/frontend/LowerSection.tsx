@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
+import AdsterraAd from './AdsterraAd';
 
 interface Article {
   id: number;
@@ -26,12 +27,12 @@ interface LowerSectionProps {
   othersArticles: Article[];
   didYouKnowArticles?: Article[];
   onThisDayArticles?: Article[];
-  hpBanner1?: { imageUrl?: string | null; ctaUrl?: string | null } | null;
-  hpBanner2?: { imageUrl?: string | null; ctaUrl?: string | null } | null;
-  hpBanner3?: { imageUrl?: string | null; ctaUrl?: string | null } | null;
-  hpBanner4?: { imageUrl?: string | null; ctaUrl?: string | null } | null;
-  hpBanner5?: { imageUrl?: string | null; ctaUrl?: string | null } | null;
-  hpBanner6?: { imageUrl?: string | null; ctaUrl?: string | null } | null;
+  hpBanner1?: { imageUrl?: string | null; ctaUrl?: string | null; useAdsterra?: boolean; adsterraCode?: string | null } | null;
+  hpBanner2?: { imageUrl?: string | null; ctaUrl?: string | null; useAdsterra?: boolean; adsterraCode?: string | null } | null;
+  hpBanner3?: { imageUrl?: string | null; ctaUrl?: string | null; useAdsterra?: boolean; adsterraCode?: string | null } | null;
+  hpBanner4?: { imageUrl?: string | null; ctaUrl?: string | null; useAdsterra?: boolean; adsterraCode?: string | null } | null;
+  hpBanner5?: { imageUrl?: string | null; ctaUrl?: string | null; useAdsterra?: boolean; adsterraCode?: string | null } | null;
+  hpBanner6?: { imageUrl?: string | null; ctaUrl?: string | null; useAdsterra?: boolean; adsterraCode?: string | null } | null;
 }
 
 function sportLabel(sport?: string | null) {
@@ -166,7 +167,7 @@ function CardStandard({ article }: { article: Article }) {
   );
 }
 
-function CategorySection({ title, slug, articles, banner }: { title: string, slug: string, articles: Article[], banner?: { imageUrl?: string | null; ctaUrl?: string | null } | null }) {
+function CategorySection({ title, slug, articles, banner }: { title: string, slug: string, articles: Article[], banner?: { imageUrl?: string | null; ctaUrl?: string | null; useAdsterra?: boolean; adsterraCode?: string | null } | null }) {
   if (!articles || articles.length === 0) return null;
 
   const twoDaysAgo = Date.now() - 2 * 24 * 60 * 60 * 1000;
@@ -180,12 +181,14 @@ function CategorySection({ title, slug, articles, banner }: { title: string, slu
 
   return (
     <div style={{ marginBottom: 36, paddingBottom: 16, borderBottom: '1px solid var(--ink-border)' }}>
-      {/* Ad Banner — only shown when banner is active and has an image */}
-      {banner?.imageUrl && (
+      {/* Ad Banner — Adsterra or standard */}
+      {banner && (banner.useAdsterra && banner.adsterraCode ? (
+        <AdsterraAd htmlCode={banner.adsterraCode} />
+      ) : banner.imageUrl ? (
         <a href={banner.ctaUrl || '#'} target="_blank" rel="noopener noreferrer" style={{ display: 'block', width: '100%', marginBottom: 16 }}>
-          <img src={banner.imageUrl} alt="Advertisement" style={{ width: '100%', height: '90px', objectFit: 'cover', display: 'block' }} />
+          <img src={banner.imageUrl} alt="Advertisement" style={{ width: '100%', height: 'auto', display: 'block' }} />
         </a>
-      )}
+      ) : null)}
 
       {/* Category Header */}
       <div style={{
