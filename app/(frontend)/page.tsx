@@ -199,8 +199,8 @@ export default async function HomePage() {
   const hpBanner5 = sponsors.find((s) => s.placement === 'homepage-banner-5');
   const hpBanner6 = sponsors.find((s) => s.placement === 'homepage-banner-6');
 
-  const showLeft = !!(leftSponsor && (leftSponsor.imageUrl || (leftSponsor.useAdsterra && leftSponsor.adsterraCode)));
-  const showRight = !!(rightSponsor && (rightSponsor.imageUrl || (rightSponsor.useAdsterra && rightSponsor.adsterraCode)));
+  const showLeft = !!(leftSponsor && (leftSponsor.imageUrl || leftSponsor.useAdsterra));
+  const showRight = !!(rightSponsor && (rightSponsor.imageUrl || rightSponsor.useAdsterra));
 
   return (
     <div style={{ backgroundColor: '#ffffff', color: '#121212', minHeight: '100vh', padding: '8px 0', fontFamily: 'var(--font-body)' }}>
