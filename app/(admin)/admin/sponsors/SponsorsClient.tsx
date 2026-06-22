@@ -71,8 +71,8 @@ export default function SponsorsClient() {
     const label = labelMap[placement];
     const displayOrder = orderMap[placement];
 
-    if (!useAdsterra && (!newCtaUrl || !newCtaUrl.trim())) {
-      setError('Redirection link is required.');
+    if (!useAdsterra && newImageUrl && (!newCtaUrl || !newCtaUrl.trim())) {
+      setError('Redirection link is required for banner images.');
       return;
     }
 
@@ -505,7 +505,7 @@ function BannerCropper({ label, placement, initialImageUrl, initialCtaUrl, initi
     }
   }
 
-  const isSaveDisabled = saving || (!useAdsterra && (!ctaUrl || !ctaUrl.trim())) ;
+  const isSaveDisabled = saving || (!useAdsterra && (fileSrc || imageUrl) && (!ctaUrl || !ctaUrl.trim())) ? true : false;
 
   return (
     <section style={{ backgroundColor: 'var(--bg-surface)', border: '1px solid var(--ink-border)', borderRadius: 6, padding: '24px', boxShadow: '0 1px 3px rgba(0,0,0,0.02)' }}>
@@ -882,7 +882,7 @@ function HomepageBannerManager({ label, placement, initialImageUrl, initialCtaUr
     }
   }
 
-  const isSaveDisabled = saving || (!useAdsterra && (!ctaUrl || !ctaUrl.trim())) ;
+  const isSaveDisabled = saving || (!useAdsterra && (fileSrc || imageUrl) && (!ctaUrl || !ctaUrl.trim())) ? true : false;
 
   return (
     <section style={{
