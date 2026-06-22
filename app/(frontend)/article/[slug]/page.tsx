@@ -382,7 +382,7 @@ export default async function ArticlePage({ params }: PageProps) {
                     </div>
                   ) : adsterraMatch ? (
                     <div className="my-6">
-                      <AdsterraAd htmlCode={safeB64Decode(adsterraMatch[1])} />
+                      <AdsterraAd htmlCode={adsterraMatch[1] ? safeB64Decode(adsterraMatch[1]) : ''} type="article" />
                     </div>
                   ) : (
                     <p

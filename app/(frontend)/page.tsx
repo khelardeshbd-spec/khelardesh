@@ -214,7 +214,7 @@ export default async function HomePage() {
             {showLeft && (
               <div className="hidden lg:flex lg:col-span-3 h-[75px] bg-[#fafafa] text-[#121212] flex-col justify-center items-center border border-[#e2e2e2] rounded-[3px] overflow-hidden">
                 {leftSponsor.useAdsterra ? (
-                  <AdsterraAd htmlCode={leftSponsor.adsterraCode!} />
+                  <AdsterraAd htmlCode={leftSponsor.adsterraCode} type="header" />
                 ) : (
                   <a href={leftSponsor.ctaUrl || '#'} target="_blank" rel="noopener noreferrer" className="w-full h-full block">
                     <img src={leftSponsor.imageUrl!} alt={leftSponsor.label || "Left Sponsor"} className="w-full h-full object-cover" />
@@ -239,7 +239,7 @@ export default async function HomePage() {
             {showRight && (
               <div className="hidden lg:flex lg:col-span-3 h-[75px] bg-[#fafafa] text-[#121212] flex-col justify-center items-center border border-[#e2e2e2] rounded-[3px] overflow-hidden">
                 {rightSponsor.useAdsterra ? (
-                  <AdsterraAd htmlCode={rightSponsor.adsterraCode!} />
+                  <AdsterraAd htmlCode={rightSponsor.adsterraCode} type="header" />
                 ) : (
                   <a href={rightSponsor.ctaUrl || '#'} target="_blank" rel="noopener noreferrer" className="w-full h-full block">
                     <img src={rightSponsor.imageUrl!} alt={rightSponsor.label || "Right Sponsor"} className="w-full h-full object-cover" />

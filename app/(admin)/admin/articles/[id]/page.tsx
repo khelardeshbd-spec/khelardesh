@@ -45,7 +45,7 @@ function parseBodyToBlocks(bodyStr: string): EditorBlock[] {
     }
     const adsterraMatch = part.trim().match(/^\[ADSTERRA:\s*(.*?)\s*\]$/i);
     if (adsterraMatch) {
-      return { id, type: 'ad', useAdsterra: true, adsterraCode: safeB64Decode(adsterraMatch[1]) };
+      return { id, type: 'ad', useAdsterra: true, adsterraCode: adsterraMatch[1] ? safeB64Decode(adsterraMatch[1]) : '' };
     }
     const adMatch = part.trim().match(/^\[AD:\s*(.*?)\s*\|\s*(.*?)\s*\]$/i);
     if (adMatch) {
@@ -741,7 +741,7 @@ export default function EditArticlePage({ params }: { params: { id: string } }) 
                       className="cursor-pointer"
                     />
                     <label htmlFor={`use-adsterra-${block.id}`} className="text-xs font-bold text-amber-800 cursor-pointer">
-                      Use Adsterra script instead of custom banner image
+                      Use Adsterra ad instead of custom banner image
                     </label>
                   </div>
 

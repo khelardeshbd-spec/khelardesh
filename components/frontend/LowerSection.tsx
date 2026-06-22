@@ -182,8 +182,8 @@ function CategorySection({ title, slug, articles, banner }: { title: string, slu
   return (
     <div style={{ marginBottom: 36, paddingBottom: 16, borderBottom: '1px solid var(--ink-border)' }}>
       {/* Ad Banner — Adsterra or standard */}
-      {banner && (banner.useAdsterra && banner.adsterraCode ? (
-        <AdsterraAd htmlCode={banner.adsterraCode} />
+      {banner && (banner.useAdsterra ? (
+        <AdsterraAd htmlCode={banner.adsterraCode} type="homepage" />
       ) : banner.imageUrl ? (
         <a href={banner.ctaUrl || '#'} target="_blank" rel="noopener noreferrer" style={{ display: 'block', width: '100%', marginBottom: 16 }}>
           <img src={banner.imageUrl} alt="Advertisement" style={{ width: '100%', height: 'auto', display: 'block' }} />
