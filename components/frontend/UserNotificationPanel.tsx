@@ -12,7 +12,7 @@ interface UserNotif {
   type: string;
   commentId: number;
   actorName: string;
-  read: boolean;
+  isRead: boolean;
   createdAt: string;
   Comment: {
     articleSlug: string;
@@ -76,7 +76,7 @@ export default function UserNotificationPanel() {
   }, []);
 
   const markAsRead = async (id: number) => {
-    setNotifs(prev => prev.map(n => n.id === id ? { ...n, read: true } : n));
+    setNotifs(prev => prev.map(n => n.id === id ? { ...n, isRead: true } : n));
     try {
       await fetch('/api/user/notifications', {
         method: 'PATCH',
@@ -89,10 +89,10 @@ export default function UserNotificationPanel() {
   };
 
   const markAllAsRead = async () => {
-    const unreadIds = notifs.filter(n => !n.read).map(n => n.id);
+    const unreadIds = notifs.filter(n => !n.isRead).map(n => n.id);
     if (unreadIds.length === 0) return;
     
-    setNotifs(prev => prev.map(n => ({ ...n, read: true })));
+    setNotifs(prev => prev.map(n => ({ ...n, isRead: true })));
     try {
       await fetch('/api/user/notifications', {
         method: 'PATCH',
@@ -104,7 +104,7 @@ export default function UserNotificationPanel() {
     }
   };
 
-  const unreadCount = notifs.filter(n => !n.read).length;
+  const unreadCount = notifs.filter(n => !n.isRead).length;
 
   if (!session?.user) return null;
 
@@ -189,7 +189,7 @@ export default function UserNotificationPanel() {
                             {timeAgo(n.createdAt, 'bn')}
                           </p>
                         </div>
-                        {!n.read && <div className="w-2 h-2 rounded-full bg-[#d33f3f] flex-shrink-0 mt-1.5" />}
+                        {!n.isRead && <div className="w-2 h-2 rounded-full bg-[#d33f3f] flex-shrink-0 mt-1.5" />}
                       </Link>
                     </li>
                   );
