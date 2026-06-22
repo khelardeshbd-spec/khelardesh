@@ -59,7 +59,7 @@ export async function PATCH(request: Request) {
 
     const { error } = await supabaseAdmin
       .from('UserNotification')
-      .update({ read: true })
+      .update({ isRead: true })
       .in('id', ids)
       .eq('userEmail', session.user.email); // Security constraint
 

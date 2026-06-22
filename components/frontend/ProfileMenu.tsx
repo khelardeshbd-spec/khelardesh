@@ -203,7 +203,7 @@ export default function ProfileMenu({ user }: ProfileMenuProps) {
                 ) : (
                   <ul className="divide-y divide-gray-50">
                     {notifs.map((n) => (
-                      <li key={n.id} className={`px-4 py-2 hover:bg-gray-50 transition-colors ${!n.read ? 'bg-red-50/30' : ''}`}>
+                      <li key={n.id} className={`px-4 py-2 hover:bg-gray-50 transition-colors ${!n.isRead ? 'bg-red-50/30' : ''}`}>
                         <p className="text-[11px] text-gray-800 leading-snug">
                           <span className="font-bold">{n.actorName}</span>{' '}
                           {n.type === 'LIKE' ? 'আপনার মন্তব্য পছন্দ করেছেন' :

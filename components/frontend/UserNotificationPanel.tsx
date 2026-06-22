@@ -169,11 +169,11 @@ export default function UserNotificationPanel() {
                   const articleSlug = n.Comment?.articleSlug || '';
 
                   return (
-                    <li key={n.id} className={`p-4 transition-colors hover:bg-[var(--ink-ghost)] ${!n.read ? 'bg-red-50/20' : ''}`}>
+                    <li key={n.id} className={`p-4 transition-colors hover:bg-[var(--ink-ghost)] ${!n.isRead ? 'bg-red-50/20' : ''}`}>
                       <Link 
                         href={`/article/${articleSlug}#comment-${n.commentId}`}
                         onClick={() => {
-                          if (!n.read) markAsRead(n.id);
+                          if (!n.isRead) markAsRead(n.id);
                           setIsOpen(false);
                         }}
                         className="flex items-start gap-3"
