@@ -1,3 +1,4 @@
+import AdminShell from '../AdminShell';
 import NotificationsClient from './NotificationsClient';
 
 export const metadata = {
@@ -5,5 +6,9 @@ export const metadata = {
 };
 
 export default function AdminNotificationsPage() {
-  return <NotificationsClient />;
+  return (
+    <AdminShell>
+      <NotificationsClient />
+    </AdminShell>
+  );
 }

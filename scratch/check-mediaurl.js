@@ -21,14 +21,14 @@ const supabase = createClient(supabaseUrl, supabaseSecret);
 async function main() {
   const { data, error } = await supabase
     .from('Article')
-    .select('slug, mediaUrl')
-    .eq('slug', 'madrid-unravel-final-ten')
+    .select('*')
+    .eq('id', 72)
     .single();
 
   if (error) {
-    console.error('Error fetching template:', error);
+    console.error('Error fetching article:', error);
   } else {
-    console.log('Template article mediaUrl:', data);
+    console.log('Article details:', JSON.stringify(data, null, 2));
   }
 }
 main();

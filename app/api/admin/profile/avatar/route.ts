@@ -21,16 +21,28 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'File size must be less than 3MB' }, { status: 400 });
     }
 
-    const ext = file.name.split('.').pop() || 'png';
+    const isImage = file.type.startsWith('image/') && !file.type.includes('svg');
+    const ext = isImage ? 'webp' : (file.name.split('.').pop() || 'png');
     const bucket = process.env.SUPABASE_BUCKET_NAME || 'khelardesh';
     const filePath = `avatars/${user.id}.${ext}`;
-    const buffer = Buffer.from(await file.arrayBuffer());
+    let buffer = Buffer.from(await file.arrayBuffer());
+    let contentType = file.type;
+
+    if (isImage) {
+      // @ts-ignore
+      const sharp = (await import('sharp')).default;
+      buffer = await sharp(buffer)
+        .resize(400, 400, { fit: 'cover', withoutEnlargement: true })
+        .webp({ quality: 80 })
+        .toBuffer();
+      contentType = 'image/webp';
+    }
 
     // Upload to Supabase storage
     const { error: uploadError } = await supabaseAdmin.storage
       .from(bucket)
       .upload(filePath, buffer, {
-        contentType: file.type,
+        contentType: contentType,
         upsert: true,
       });
 

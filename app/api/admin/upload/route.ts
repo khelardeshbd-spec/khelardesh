@@ -18,14 +18,27 @@ export async function POST(req: NextRequest) {
   const file = formData.get('file') as File
   if (!file) return NextResponse.json({ error: 'No file' }, { status: 400 })
 
-  const ext = file.name.split('.').pop()
+  const originalExt = file.name.split('.').pop()
+  const isImage = file.type.startsWith('image/') && !file.type.includes('svg')
+  const ext = isImage ? 'webp' : originalExt
   const key = `${crypto.randomUUID()}.${ext}`
-  const buffer = Buffer.from(await file.arrayBuffer())
+  let buffer = Buffer.from(await file.arrayBuffer())
+  let contentType = file.type
+
+  if (isImage) {
+    // @ts-ignore
+    const sharp = (await import('sharp')).default;
+    buffer = await sharp(buffer)
+      .resize({ width: 1920, withoutEnlargement: true })
+      .webp({ quality: 80 })
+      .toBuffer()
+    contentType = 'image/webp'
+  }
 
   const { data, error } = await supabase.storage
     .from(process.env.SUPABASE_BUCKET_NAME!)
     .upload(key, buffer, {
-      contentType: file.type,
+      contentType: contentType,
       upsert: true
     })
 
