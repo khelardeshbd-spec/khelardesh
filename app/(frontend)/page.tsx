@@ -25,20 +25,20 @@ export const dynamic = 'force-dynamic';
 
 
 export const metadata: Metadata = {
-  title: 'খেলারদেশ — স্পোর্টস · স্বতন্ত্র',
-  description: 'স্বাধীন বাংলাদেশি স্পোর্টস নিউজ। ফুটবল, ক্রিকেট, বাস্কেটবল, টেনিস, F1 এবং আরও অনেক কিছু।',
+  title: 'খেলারদেশ | Bangla Sports News | বাংলা স্পোর্টস নিউজ',
+  description: 'বাংলাদেশের নির্ভরযোগ্য স্পোর্টস নিউজ পোর্টাল। ফুটবল, ক্রিকেট, টেনিস সহ দেশ ও বিদেশের সব খেলার সর্বশেষ খবর (Bangla Sports News) এবং লাইভ আপডেট পান খেলারদেশে।',
   alternates: { canonical: 'https://khelardesh.com' },
   openGraph: {
     type: 'website',
     url: 'https://khelardesh.com',
-    title: 'খেলারদেশ — স্পোর্টস · স্বতন্ত্র',
-    description: 'স্বাধীন বাংলাদেশি স্পোর্টস নিউজ — ফুটবল, ক্রিকেট, বাস্কেটবল, টেনিস, F1।',
-    images: [{ url: '/og-default.png', width: 1200, height: 630, alt: 'খেলারদেশ' }],
+    title: 'খেলারদেশ | Bangla Sports News | বাংলা স্পোর্টস নিউজ',
+    description: 'দেশের নির্ভরযোগ্য স্পোর্টস নিউজ পোর্টাল। ফুটবল, ক্রিকেট সহ সব খেলার সর্বশেষ খবর এবং লাইভ আপডেট।',
+    images: [{ url: '/og-default.png', width: 1200, height: 630, alt: 'খেলারদেশ - Bangla Sports News' }],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'খেলারদেশ — স্পোর্টস · স্বতন্ত্র',
-    description: 'বাংলাদেশের সেরা স্বাধীন স্পোর্টস নিউজ পোর্টাল।',
+    title: 'খেলারদেশ | Bangla Sports News',
+    description: 'দেশের সেরা স্পোর্টস নিউজ পোর্টাল। সব খেলার সর্বশেষ খবর (Bangla Sports News)।',
     images: ['/og-default.png'],
   },
 };
@@ -218,7 +218,7 @@ export default async function HomePage() {
               </div>
             )}
 
-            {/* Center Logo */}
+            {/* Center Logo and Hidden H1 for SEO */}
             <div className={`col-span-1 ${
               showLeft && showRight
                 ? 'lg:col-span-6'
@@ -226,7 +226,8 @@ export default async function HomePage() {
                   ? 'lg:col-span-9'
                   : 'lg:col-span-12'
             } text-center flex flex-col items-center`}>
-              <img src="/images/khelardesh_logo.png" alt="খেলারদেশ" className="mx-auto select-none" style={{ maxWidth: '100%', height: 'auto', maxHeight: '75px' }} />
+              <h1 className="sr-only">খেলারদেশ | Bangla Sports News | বাংলা স্পোর্টস নিউজ</h1>
+              <img src="/images/khelardesh_logo.png" alt="খেলারদেশ - Bangla Sports News" className="mx-auto select-none" style={{ maxWidth: '100%', height: 'auto', maxHeight: '75px' }} />
             </div>
 
             {/* Right Sponsor Block */}
