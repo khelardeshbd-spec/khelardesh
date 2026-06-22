@@ -13,6 +13,7 @@ export async function GET() {
       .from('Article')
       .select('*')
       .eq('isLead', true)
+      .eq('status', 'published')
       .order('publishedAt', { ascending: false })
       .limit(1)
       .single()

@@ -52,6 +52,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const { data: articles } = await supabaseAdmin
       .from('Article')
       .select('slug, updatedAt, publishedAt')
+      .eq('status', 'published')
       .order('publishedAt', { ascending: false })
       .limit(5000); // Cover up to 5k articles
 

@@ -93,6 +93,7 @@ export default async function SportPage({ params }: PageProps) {
       .select('*')
       .in('sport', sportsToQuery)
       .eq('isLead', true)
+      .eq('status', 'published')
       .order('publishedAt', { ascending: false })
       .limit(1),
     supabaseAdmin
@@ -100,6 +101,7 @@ export default async function SportPage({ params }: PageProps) {
       .select('id, slug, headline, headlineBn, deck, sport, mediaType, mediaUrl, byline, publishedAt')
       .in('sport', sportsToQuery)
       .eq('isLead', false)
+      .eq('status', 'published')
       .order('publishedAt', { ascending: false })
       .limit(20),
     supabaseAdmin
