@@ -100,6 +100,7 @@ export default function SmartHeader() {
         const { data } = await supabase
           .from('Article')
           .select('id, slug, headline, headlineBn, deck')
+          .eq('status', 'published')
           .or(`headline.ilike.%${searchQuery}%,headlineBn.ilike.%${searchQuery}%,deck.ilike.%${searchQuery}%,slug.ilike.%${searchQuery}%`)
           .order('publishedAt', { ascending: false })
           .limit(6);
