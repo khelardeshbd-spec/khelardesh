@@ -10,21 +10,75 @@ import CommentSection from '@/components/frontend/CommentSection';
 import ScrollToTopButton from '@/components/frontend/ScrollToTopButton';
 import ViewTracker from '@/components/frontend/ViewTracker';
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 60; // ISR — revalidate every 60 seconds, much faster TTFB than force-dynamic
 
 interface PageProps {
   params: { slug: string };
 }
 
+const SPORT_LABELS: Record<string, string> = {
+  football: 'Football', 'bd-football': 'Bangladesh Football',
+  'club-football': 'Club Football', 'international-football': 'International Football',
+  cricket: 'Cricket', 'bd-cricket': 'Bangladesh Cricket',
+  basketball: 'Basketball', tennis: 'Tennis', f1: 'Formula One',
+  interview: 'Interview', feature: 'Feature', special: 'Special',
+  'guest-column': 'Guest Column', rugby: 'Rugby', athletics: 'Athletics',
+};
+
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { data: article } = await supabaseAdmin
     .from('Article')
-    .select('headline, headlineBn, deck')
+    .select('headline, headlineBn, deck, mediaUrl, byline, publishedAt, updatedAt, sport, slug')
     .eq('slug', params.slug)
     .single();
+
   if (!article) return { title: 'Not Found' };
+
   const title = article.headlineBn || article.headline;
-  return { title, description: article.deck };
+  const description = article.deck || `খেলারদেশে পড়ুন: ${title}`;
+  const canonicalUrl = `https://khelardesh.com/article/${article.slug}`;
+  const ogImage = article.mediaUrl || '/og-default.png';
+  const sportLabel = article.sport ? SPORT_LABELS[article.sport] || 'Sports' : 'Sports';
+
+  return {
+    title,
+    description,
+    keywords: [
+      'খেলারদেশ', 'sports news', sportLabel, 'Bangladesh sports',
+      article.byline || 'khelardesh reporter',
+    ],
+    authors: article.byline ? [{ name: article.byline }] : [{ name: 'খেলারদেশ প্রতিনিধি' }],
+    alternates: {
+      canonical: canonicalUrl,
+    },
+    openGraph: {
+      type: 'article',
+      title,
+      description,
+      url: canonicalUrl,
+      siteName: 'খেলারদেশ',
+      locale: 'bn_BD',
+      images: [
+        {
+          url: ogImage,
+          width: 1200,
+          height: 630,
+          alt: title,
+        },
+      ],
+      publishedTime: article.publishedAt,
+      modifiedTime: article.updatedAt || article.publishedAt,
+      authors: [article.byline || 'খেলারদেশ প্রতিনিধি'],
+      section: sportLabel,
+    },
+    twitter: {
+      card: 'summary_large_image',
+      site: '@khelardesh',
+      title,
+      description,
+      images: [ogImage],
+    },
+  };
 }
 
 export default async function ArticlePage({ params }: PageProps) {
@@ -102,6 +156,44 @@ export default async function ArticlePage({ params }: PageProps) {
       {/* Scroll Progress Bar at the top */}
       <ReadingProgressBar />
       <ViewTracker articleId={id} />
+
+      {/* JSON-LD: NewsArticle structured data for Google News rich results */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'NewsArticle',
+            headline: displayHeadline,
+            description: deck || '',
+            image: [mediaUrl || 'https://khelardesh.com/og-default.png'],
+            datePublished: publishedAt,
+            dateModified: publishedAt,
+            author: {
+              '@type': 'Person',
+              name: byline || 'খেলারদেশ প্রতিনিধি',
+            },
+            publisher: {
+              '@type': 'Organization',
+              name: 'খেলারদেশ',
+              logo: {
+                '@type': 'ImageObject',
+                url: 'https://khelardesh.com/images/khelardesh_logo.png',
+                width: 600,
+                height: 60,
+              },
+            },
+            mainEntityOfPage: {
+              '@type': 'WebPage',
+              '@id': `https://khelardesh.com/article/${slug}`,
+            },
+            url: `https://khelardesh.com/article/${slug}`,
+            articleSection: categoryLabel,
+            inLanguage: 'bn-BD',
+            isAccessibleForFree: true,
+          }),
+        }}
+      />
 
       {/* Back button / Breadcrumbs */}
       <div className="w-full max-w-[680px] mx-auto px-4 pt-6 pb-2">

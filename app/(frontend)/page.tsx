@@ -27,6 +27,20 @@ export const dynamic = 'force-dynamic';
 export const metadata: Metadata = {
   title: 'খেলারদেশ — স্পোর্টস · স্বতন্ত্র',
   description: 'স্বাধীন বাংলাদেশি স্পোর্টস নিউজ। ফুটবল, ক্রিকেট, বাস্কেটবল, টেনিস, F1 এবং আরও অনেক কিছু।',
+  alternates: { canonical: 'https://khelardesh.com' },
+  openGraph: {
+    type: 'website',
+    url: 'https://khelardesh.com',
+    title: 'খেলারদেশ — স্পোর্টস · স্বতন্ত্র',
+    description: 'স্বাধীন বাংলাদেশি স্পোর্টস নিউজ — ফুটবল, ক্রিকেট, বাস্কেটবল, টেনিস, F1।',
+    images: [{ url: '/og-default.png', width: 1200, height: 630, alt: 'খেলারদেশ' }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'খেলারদেশ — স্পোর্টস · স্বতন্ত্র',
+    description: 'বাংলাদেশের সেরা স্বাধীন স্পোর্টস নিউজ পোর্টাল।',
+    images: ['/og-default.png'],
+  },
 };
 
 export const revalidate = 30; // ISR every 30 seconds

@@ -43,11 +43,34 @@ const VALID_SPORTS = Object.keys(SPORT_NAMES);
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const sportBn = SPORT_NAMES[params.sport];
   if (!sportBn) return { title: 'Sport Not Found' };
+
+  const canonicalUrl = `https://khelardesh.com/sport/${params.sport}`;
+  const description = `${sportBn} সংক্রান্ত সর্বশেষ খবর, বিশ্লেষণ ও আপডেট — খেলারদেশে পড়ুন।`;
+
   return {
-    title: `${sportBn} — খেলারদেশ`,
-    description: `${sportBn} সংক্রান্ত সর্বশেষ খবর।`,
+    title: `${sportBn} | খেলারদেশ`,
+    description,
+    keywords: [sportBn, 'খেলারদেশ', 'sports news Bangladesh', params.sport],
+    alternates: { canonical: canonicalUrl },
+    openGraph: {
+      type: 'website',
+      url: canonicalUrl,
+      title: `${sportBn} — খেলারদেশ`,
+      description,
+      siteName: 'খেলারদেশ',
+      locale: 'bn_BD',
+      images: [{ url: '/og-default.png', width: 1200, height: 630, alt: `${sportBn} — খেলারদেশ` }],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: `${sportBn} — খেলারদেশ`,
+      description,
+      images: ['/og-default.png'],
+    },
   };
 }
+
+
 
 /**
  * Sport-filtered feed page — Section 4
