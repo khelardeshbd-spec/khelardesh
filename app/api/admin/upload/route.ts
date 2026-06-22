@@ -9,10 +9,10 @@ const supabase = createClient(
 )
 
 export async function POST(req: NextRequest) {
-  const { getServerSession } = require('next-auth');
-  const { authOptions } = require('@/lib/auth');
-  const session = await getServerSession(authOptions)
-  if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  const { getSessionUser, requirePermission } = require('@/lib/rbac');
+  const user = await getSessionUser();
+  const err = requirePermission(user, 'write_articles');
+  if (err) return err;
 
   const formData = await req.formData()
   const file = formData.get('file') as File

@@ -11,11 +11,11 @@ import { authOptions } from '@/lib/auth';
  */
 export async function GET() {
   try {
-    const session = await getServerSession(authOptions);
-    const role = (session?.user as any)?.role;
-    if (!session || (role !== 'admin' && role !== 'super_admin')) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
+    const { getSessionUser, requireAdmin } = require('@/lib/rbac');
+    const user = await getSessionUser();
+    const err = requireAdmin(user);
+    if (err) return err;
+
 
     const { data: notifications, error } = await supabaseAdmin
       .from('AdminNotification')
@@ -45,11 +45,11 @@ export async function GET() {
  */
 export async function PATCH(request: Request) {
   try {
-    const session = await getServerSession(authOptions);
-    const role = (session?.user as any)?.role;
-    if (!session || (role !== 'admin' && role !== 'super_admin')) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
+    const { getSessionUser, requireAdmin } = require('@/lib/rbac');
+    const user = await getSessionUser();
+    const err = requireAdmin(user);
+    if (err) return err;
+
 
     const { ids } = await request.json(); // array of notification IDs to mark as read
 

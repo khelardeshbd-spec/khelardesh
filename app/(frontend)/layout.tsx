@@ -13,10 +13,10 @@ export const metadata: Metadata = {
   metadataBase: new URL('https://khelardesh.com'),
   title: {
     template: '%s | খেলারদেশ',
-    default: 'খেলারদেশ — স্পোর্টস · স্বতন্ত্র',
+    default: 'খেলারদেশ | বাংলাদেশের নির্ভরযোগ্য স্পোর্টস নিউজ পোর্টাল',
   },
   description:
-    'খেলারদেশ বাংলাদেশে ক্রীড়া সাংবাদিকতায় এক স্বাধীন কণ্ঠস্বর — ফুটবল, ক্রিকেট, বাস্কেটবল, টেনিস, F1 সহ সমস্ত খেলার সর্বশেষ খবর।',
+    'বাংলাদেশের অন্যতম নির্ভরযোগ্য ও স্বাধীন স্পোর্টস নিউজ পোর্টাল খেলারদেশ। ফুটবল, ক্রিকেট, টেনিস থেকে শুরু করে ফর্মুলা ওয়ান—সব খেলার সর্বশেষ খবর, বিশ্লেষণ এবং লাইভ আপডেট পান সবার আগে।',
   keywords: [
     'sports news Bangladesh', 'Bengali sports news', 'BPL football', 'cricket Bangladesh',
     'খেলারদেশ', 'খেলাধুলার খবর', 'khelardesh', 'khelar desh',
@@ -25,24 +25,19 @@ export const metadata: Metadata = {
   authors: [{ name: 'খেলারদেশ', url: 'https://khelardesh.com' }],
   creator: 'খেলারদেশ',
   publisher: 'খেলারদেশ',
-  icons: {
-    icon: '/images/khelardesh_logo.png',
-    shortcut: '/images/khelardesh_logo.png',
-    apple: '/images/khelardesh_logo.png',
-  },
   openGraph: {
     siteName: 'খেলারদেশ',
     type: 'website',
     locale: 'bn_BD',
     url: 'https://khelardesh.com',
-    title: 'খেলারদেশ — স্পোর্টস · স্বতন্ত্র',
-    description: 'খেলারদেশ বাংলাদেশে ক্রীড়া সাংবাদিকতায় এক স্বাধীন কণ্ঠস্বর।',
+    title: 'খেলারদেশ | বাংলাদেশের নির্ভরযোগ্য স্পোর্টস নিউজ পোর্টাল',
+    description: 'বাংলাদেশের অন্যতম নির্ভরযোগ্য ও স্বাধীন স্পোর্টস নিউজ পোর্টাল খেলারদেশ। সব খেলার সর্বশেষ খবর, বিশ্লেষণ এবং লাইভ আপডেট।',
     images: [
       {
         url: '/og-default.png',
         width: 1200,
         height: 630,
-        alt: 'খেলারদেশ — স্পোর্টস · স্বতন্ত্র',
+        alt: 'খেলারদেশ | বাংলাদেশের নির্ভরযোগ্য স্পোর্টস নিউজ',
       },
     ],
   },
@@ -50,8 +45,8 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     site: '@khelardesh',
     creator: '@khelardesh',
-    title: 'খেলারদেশ — স্পোর্টস · স্বতন্ত্র',
-    description: 'বাংলাদেশের সেরা স্পোর্টস নিউজ পোর্টাল।',
+    title: 'খেলারদেশ | বাংলাদেশের নির্ভরযোগ্য স্পোর্টস নিউজ',
+    description: 'বাংলাদেশের অন্যতম নির্ভরযোগ্য ও স্বাধীন স্পোর্টস নিউজ পোর্টাল খেলারদেশ। সব খেলার সর্বশেষ খবর এবং বিশ্লেষণ।',
     images: ['/og-default.png'],
   },
   alternates: {

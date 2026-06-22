@@ -8,15 +8,10 @@ export async function POST(
   { params }: { params: { id: string } }
 ) {
   try {
-    const session = await getServerSession(authOptions);
-    if (!session || !session.user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
-
-    const role = (session.user as any).role;
-    if (role !== 'super_admin' && role !== 'admin') {
-      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
-    }
+    const { getSessionUser, requireAdmin } = require('@/lib/rbac');
+    const user = await getSessionUser();
+    const err = requireAdmin(user);
+    if (err) return err;
 
     const { error } = await supabaseAdmin
       .from('Comment')
