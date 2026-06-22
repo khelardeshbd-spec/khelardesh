@@ -28,6 +28,7 @@ export async function POST(req: NextRequest) {
   if (isImage) {
     // @ts-ignore
     const sharp = (await import('sharp')).default;
+    // @ts-ignore
     buffer = await sharp(buffer)
       .resize({ width: 1920, withoutEnlargement: true })
       .webp({ quality: 80 })
