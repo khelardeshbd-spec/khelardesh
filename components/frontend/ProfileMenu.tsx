@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { signIn, signOut } from 'next-auth/react';
 import Link from 'next/link';
+import { supabase } from '@/lib/supabase';
 
 interface ProfileMenuProps {
   user?: {
@@ -31,6 +32,45 @@ export default function ProfileMenu({ user }: ProfileMenuProps) {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+  const fetchNotifs = async () => {
+    if (!user?.email) return;
+    try {
+      const res = await fetch('/api/user/notifications');
+      if (res.ok) {
+        const data = await res.json();
+        setNotifs(data.notifications || []);
+      }
+    } catch (err) {
+      console.error('Error fetching notifs', err);
+    }
+  };
+
+  useEffect(() => {
+    fetchNotifs();
+
+    if (user?.email) {
+      const channel = supabase
+        .channel(`profile-notifs-${user.email.replace(/[^a-zA-Z0-9]/g, '')}`)
+        .on(
+          'postgres_changes',
+          { 
+            event: 'INSERT', 
+            schema: 'public', 
+            table: 'UserNotification',
+            filter: `userEmail=eq.${user.email}` 
+          },
+          () => {
+            fetchNotifs();
+          }
+        )
+        .subscribe();
+
+      return () => {
+        supabase.removeChannel(channel);
+      };
+    }
+  }, [user?.email]);
+
   const toggleMenu = () => {
     if (isOpen) {
       setIsOpen(false);
@@ -42,28 +82,16 @@ export default function ProfileMenu({ user }: ProfileMenuProps) {
 
   const openNotifications = async () => {
     setActiveView('notifications');
-    if (user && notifs.length === 0) {
-      setLoadingNotifs(true);
-      try {
-        const res = await fetch('/api/user/notifications');
-        if (res.ok) {
-          const data = await res.json();
-          setNotifs(data.notifications || []);
-        }
-      } catch (err) {
-        console.error('Error fetching notifs', err);
-      } finally {
-        setLoadingNotifs(false);
-      }
-    }
   };
+
+  const unreadCount = notifs.filter(n => !n.isRead).length;
 
   return (
     <div className="relative inline-block text-left" ref={menuRef}>
       {/* Trigger Button */}
       <button
         onClick={toggleMenu}
-        className="w-8 h-8 rounded-full border border-gray-200 hover:border-gray-400 hover:bg-gray-50 flex items-center justify-center overflow-hidden transition-all duration-200 cursor-pointer shadow-sm focus:outline-none"
+        className="relative w-8 h-8 rounded-full border border-gray-200 hover:border-gray-400 hover:bg-gray-50 flex items-center justify-center overflow-hidden transition-all duration-200 cursor-pointer shadow-sm focus:outline-none"
         aria-label="ইউজার মেনু"
       >
         {user?.image ? (
@@ -78,6 +106,15 @@ export default function ProfileMenu({ user }: ProfileMenuProps) {
           </svg>
         )}
       </button>
+
+      {/* Unread Badge on Avatar */}
+      {unreadCount > 0 && (
+        <div className="absolute top-0 right-0 transform translate-x-1/4 -translate-y-1/4 z-10">
+          <span className="flex h-3.5 w-3.5 items-center justify-center rounded-full bg-red-500 text-[8px] font-bold text-white border border-white">
+            {unreadCount > 9 ? '9+' : unreadCount}
+          </span>
+        </div>
+      )}
 
       {/* Dropdown Menu */}
       {isOpen && (
@@ -147,12 +184,19 @@ export default function ProfileMenu({ user }: ProfileMenuProps) {
                 {user && (
                   <button
                     onClick={openNotifications}
-                    className="w-full text-left px-4 py-2 text-xs font-bold text-gray-700 hover:bg-gray-50 flex items-center gap-2 transition-colors"
+                    className="w-full text-left px-4 py-2 text-xs font-bold text-gray-700 hover:bg-gray-50 flex items-center justify-between transition-colors"
                   >
-                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2.2" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
-                    </svg>
-                    নোটিফিকেশন
+                    <div className="flex items-center gap-2">
+                      <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2.2" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
+                      </svg>
+                      নোটিফিকেশন
+                    </div>
+                    {unreadCount > 0 && (
+                      <span className="flex h-4 min-w-[16px] px-1 items-center justify-center rounded-full bg-red-500 text-[9px] font-bold text-white">
+                        {unreadCount > 99 ? '99+' : unreadCount}
+                      </span>
+                    )}
                   </button>
                 )}
 
@@ -175,17 +219,24 @@ export default function ProfileMenu({ user }: ProfileMenuProps) {
 
             {/* --- NOTIFICATIONS VIEW --- */}
             <div className="w-1/2 flex-shrink-0 flex flex-col max-h-[300px]">
-              <div className="px-4 py-2 border-b border-gray-100 flex items-center gap-2 shrink-0">
-                <button 
-                  onClick={() => setActiveView('main')} 
-                  className="p-1 -ml-1 hover:bg-gray-100 rounded-full transition-colors text-gray-600"
-                  aria-label="Back"
-                >
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7"/>
-                  </svg>
-                </button>
-                <span className="text-xs font-bold text-gray-800">নোটিফিকেশন</span>
+              <div className="px-4 py-2 border-b border-gray-100 flex items-center justify-between shrink-0">
+                <div className="flex items-center gap-2">
+                  <button 
+                    onClick={() => setActiveView('main')} 
+                    className="p-1 -ml-1 hover:bg-gray-100 rounded-full transition-colors text-gray-600"
+                    aria-label="Back"
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7"/>
+                    </svg>
+                  </button>
+                  <span className="text-xs font-bold text-gray-800 flex items-center gap-1.5">
+                    নোটিফিকেশন
+                    {unreadCount > 0 && (
+                      <span className="bg-red-500 text-white text-[9px] px-1.5 py-0.5 rounded-full">{unreadCount}</span>
+                    )}
+                  </span>
+                </div>
               </div>
               
               <div className="overflow-y-auto flex-1 pb-2 scrollbar-thin">
