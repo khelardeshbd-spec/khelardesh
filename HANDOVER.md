@@ -7,12 +7,12 @@
 ### Core Features
 - **Frontend Reader Experience**: Clean, responsive UI with real-time news feeds, trending articles, sticky headers, and interactive elements (reactions, comments, bookmarks).
 - **Live Match Scores**: Integration with third-party APIs (like SofaScore) to display real-time match results directly in the header and dedicated scoreboards.
-- **Admin Dashboard**: A secure, comprehensive backend for administrators to create and edit articles (with a rich text composer), manage users, moderate comments, control banner advertisements, and manage notifications.
+- **Admin Dashboard**: A secure, comprehensive backend for administrators to manage users, moderate comments, control banner advertisements, manage notifications, and write articles.
 - **Automated Advertisement Placement**: Seamless integration with Adsterra for automated injection of ad scripts across header, homepage, and in-article placements via a simple toggle interface.
 
 ### Technology Stack
 - **Next.js (App Router)**: Acts as the core React framework for both frontend rendering (SSR/SSG) and backend API routing.
-- **Supabase**: Serves as the primary PostgreSQL database and authentication provider, ensuring secure data storage and user management.
+- **Supabase**: Serves as the PostgreSQL database and authentication provider, ensuring secure data storage and user management.
 - **Vercel**: The hosting and deployment platform that provides seamless CI/CD, edge networking, and serverless infrastructure (including Cron jobs).
 - **Tailwind CSS**: Utilized for rapid, utility-first styling to ensure a consistent, mobile-responsive, and modern aesthetic across the application.
 
@@ -21,18 +21,32 @@
 ## 2. ARCHITECTURE SUMMARY
 
 ### High-Level Architecture
-1. **Client (Browser)**: Users interact with the React frontend built using Next.js.
-2. **Next.js Server / Edge**: Handles API requests, server-side rendering, and communicates securely with the database using the Supabase Admin SDK.
-3. **Database (Supabase PostgreSQL)**: Stores all application state, structured across various relational tables.
-4. **Vercel Cron Jobs**: Scheduled tasks trigger Next.js API routes periodically to synchronize live match data from third-party APIs into the Supabase database.
+1. **Client (Browser)**: Users interact with the React frontend built using Next.js. The frontend **never** fetches or writes data directly to the Supabase database.
+2. **Next.js Server / Edge API Routes**: All data reads and writes pass through Next.js server-side API routes (`/api/*`) or React Server Components. These routes authenticate the user securely and communicate with the database using the **Supabase Admin SDK** (Service Role Key).
+3. **Database (Supabase PostgreSQL)**: Stores all application state, structured across various relational tables. Because the server uses the Admin SDK, database Row Level Security (RLS) is bypassed by design. All authorization logic is enforced strictly at the Next.js API layer.
+4. **Vercel Cron Jobs**: Scheduled tasks trigger Next.js API routes periodically to synchronize live match data from third-party APIs into the database.
 
 ### Data Storage & Tables
-- **`Article`**: Stores all published and draft news content (title, slug, content blocks, featured images, tags, metadata).
-- **`User`**: Contains user profiles, roles (`ADMIN` vs. regular users), and preferences.
-- **`Comment` & `Reaction`**: Stores user-generated engagement data linked to specific articles.
-- **`Sponsor`**: Manages advertisement configurations (custom banners or Adsterra scripts) and their specific placement locations.
-- **`Match` & `MatchEvent`**: Caches real-time sports scores and event timelines retrieved from external APIs.
-- **`Notification`**: Stores system and user notifications, including admin alerts for new registrations or comments.
+The database consists of the following exact tables:
+- **`Article`**: Stores all published and draft news content (stored as plain text with shortcodes).
+- **`ScoreCard`**: Caches real-time sports scores.
+- **`Sponsor`**: Manages advertisement configurations and placements.
+- **`Comment` & `CommentReaction`**: Stores user-generated comments and their reaction counts (Like, Love, Angry, etc.). Note: Users are identified via session data; there is no explicit `SiteUser` table.
+- **`AdminUser` & `EmployeeUser`**: Dedicated tables for backend staff credentials, roles, and permissions.
+- **`SidebarContent`**: Manages dynamic sidebar widgets.
+- **`AdminNotification` & `UserNotification`**: Stores system and user alerts.
+
+### Content Security & Rendering
+- **Plain-text Composer**: The Article Composer uses a plain-text textarea, **not** a WYSIWYG rich-text editor.
+- **XSS Prevention**: Content is stored as plain text and rendered safely via React text nodes.
+- **Shortcode System**: Rich media (images, embeds, Adsterra ads) are inserted using specific shortcodes (e.g., `[AD: url | link]`), which the frontend parses and replaces with isolated React components.
+
+### Adsterra Base64 Embedding Explained
+In-article Adsterra ads are embedded using the shortcode `[ADSTERRA: base64_encoded_script]`.
+- **What gets stored**: The raw `<script>` tag provided by Adsterra is Base64 encoded before being saved into the `Article` body text.
+- **Why Base64?**: Ad scripts contain raw HTML, quotes, and JavaScript that would break the plain-text parser's logic. Base64 encoding safely encapsulates the script so it doesn't interfere with standard text formatting.
+- **How it's rendered**: The frontend (`article/[slug]/page.tsx`) extracts the Base64 string, decodes it back into the raw `<script>` tag, and passes it to the `<AdsterraAd>` React component, which executes the script using DOM injection.
+- **Security Implications**: Because this mechanism decodes and blindly executes whatever script is inside the shortcode, it **can execute arbitrary malicious code** if tampered with. If a malicious actor with Admin access (or via an API injection flaw) modifies an article to include `[ADSTERRA: base64(malicious_script)]`, it will result in Stored XSS. The security of this system relies entirely on the robust Role-Based Access Control (RBAC) protecting the server-side Article API routes.
 
 ---
 
@@ -40,13 +54,13 @@
 
 ### Content Management (Articles)
 - Navigate to the **Admin Dashboard** (`/admin/dashboard`) and select **Manage Articles**.
-- Use the **Article Composer** to write news, add multimedia blocks, and insert advertisement blocks.
+- Use the **Article Composer** to write news in plain text and insert advertisement blocks.
 - **Note**: Ensure articles are assigned appropriate tags (e.g., `football`, `cricket`) to properly categorize them on the frontend.
 
 ### Advertisement Management
 - Go to **Sponsors** (`/admin/sponsors`) in the admin panel.
 - For any placement (Header, Homepage, or In-Article), you can upload a custom banner image and provide a redirection link.
-- **Adsterra Automation**: Alternatively, simply toggle the **"Use Adsterra ad"** switch. This automatically injects the correct pre-configured script (e.g., 728x90 for homepage, 320x50 for mobile headers) without requiring any manual code pasting.
+- **Adsterra Automation**: Alternatively, simply toggle the **"Use Adsterra ad"** switch. This automatically injects the correct pre-configured script (e.g., 728x90 for homepage, 320x50 for mobile headers) without requiring any manual code pasting. Recent updates removed the ugly border frames around these ads to ensure they float cleanly within the layout.
 
 ### Live Match Scores
 - Scores are synced automatically via Vercel Cron jobs that call `/api/cron/sync-scores`.
@@ -60,7 +74,7 @@ A comprehensive security audit was recently conducted, and the following critica
 
 ### 1. Insecure Direct Object Reference (IDOR) on User Deletion
 - **Issue**: Any authenticated user could previously pass an arbitrary user ID to the deletion endpoint and delete other users' accounts, including administrators.
-- **Fix**: Implemented strict Role-Based Access Control (RBAC). The `/api/admin/admins/[id]/block` route now rigorously verifies the session against the `User` table to ensure the requester possesses `ADMIN` privileges before executing the action.
+- **Fix**: Implemented strict Role-Based Access Control (RBAC). The `/api/admin/admins/[id]/block` route now rigorously verifies the session against the `AdminUser` table to ensure the requester possesses `ADMIN` privileges before executing the action.
 
 ### 2. SQL Injection / Logic Flaw in Password Reset
 - **Issue**: The password reset logic relied on insecure string comparisons that could be bypassed using JSON payload manipulation or PostgreSQL type juggling, allowing account takeover.

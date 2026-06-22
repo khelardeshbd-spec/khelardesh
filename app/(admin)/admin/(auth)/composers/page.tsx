@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation';
 import { supabaseAdmin } from '@/lib/supabase';
-import AdminShell from '../AdminShell';
+import AdminShell from '../../AdminShell';
 import ComposersClient from './ComposersClient';
 
 import { getServerSession } from 'next-auth';

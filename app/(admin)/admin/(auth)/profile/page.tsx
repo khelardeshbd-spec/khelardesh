@@ -2,7 +2,7 @@ import { getServerSession } from 'next-auth';
 import { redirect } from 'next/navigation';
 import { getAuthOptions } from '@/lib/auth';
 import ProfileClient from './ProfileClient';
-import AdminShell from '../AdminShell';
+import AdminShell from '../../AdminShell';
 
 export const metadata = { title: 'My Profile — খেলারদেশ Admin' };
 

@@ -1,4 +1,4 @@
-import AdminShell from '../AdminShell';
+import AdminShell from '../../AdminShell';
 import NotificationsClient from './NotificationsClient';
 
 export const metadata = {

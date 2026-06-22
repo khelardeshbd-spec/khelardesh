@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import AdminShell from '../AdminShell';
+import AdminShell from '../../AdminShell';
 
 interface ScoreCard {
   id: number;

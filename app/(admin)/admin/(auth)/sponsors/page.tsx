@@ -1,5 +1,5 @@
 import { redirect } from 'next/navigation';
-import AdminShell from '../AdminShell';
+import AdminShell from '../../AdminShell';
 import SponsorsClient from './SponsorsClient';
 
 import { getServerSession } from 'next-auth';

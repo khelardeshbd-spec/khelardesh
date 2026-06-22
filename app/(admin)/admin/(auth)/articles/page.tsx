@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation';
 import { supabaseAdmin } from '@/lib/supabase';
-import AdminShell from '../AdminShell';
+import AdminShell from '../../AdminShell';
 import ArticlesClient from './ArticlesClient';
 
 export const dynamic = 'force-dynamic';

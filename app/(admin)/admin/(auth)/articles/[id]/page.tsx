@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft, Check, Trash2, Image as ImageIcon, Plus, Sparkles } from 'lucide-react';
-import AdminShell from '../../AdminShell';
+import AdminShell from '../../../AdminShell';
 
 interface EditorBlock {
   id: string;
