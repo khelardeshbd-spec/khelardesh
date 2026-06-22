@@ -1,12 +1,31 @@
-const { createClient } = require('@supabase/supabase-js');
-require('dotenv').config({ path: '.env.local' });
-const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
+const { Client } = require('pg');
+const fs = require('fs');
+const envFile = fs.readFileSync('.env.local', 'utf8');
+const directUrlLine = envFile.split('\n').find(line => line.startsWith('DIRECT_URL='));
+const directUrl = directUrlLine ? directUrlLine.split('=')[1].trim().replace(/^"|"$/g, '') : "";
+
 async function run() {
-  const { data, error } = await supabase.rpc('get_schema_info');
-  // Or just query the DB directly if there's a way.
-  // Actually, we can just try to update a non-existent article with status = 'archived'
-  // If it's a type error, it will say "invalid input value for enum..."
-  const res = await supabase.from('Article').update({ status: 'archived' }).eq('id', -1);
-  console.log(res);
+  const client = new Client({ connectionString: directUrl, ssl: { rejectUnauthorized: false } });
+  await client.connect();
+  try {
+    const res = await client.query(`
+      SELECT
+        conname AS constraint_name,
+        conrelid::regclass AS table_name,
+        a.attname AS column_name,
+        confrelid::regclass AS foreign_table_name,
+        af.attname AS foreign_column_name
+      FROM pg_constraint c
+      JOIN pg_attribute a ON a.attnum = ANY(c.conkey) AND a.attrelid = c.conrelid
+      JOIN pg_attribute af ON af.attnum = ANY(c.confkey) AND af.attrelid = c.confrelid
+      WHERE confrelid = '"Comment"'::regclass;
+    `);
+    console.log("Foreign keys to Comment:");
+    console.table(res.rows);
+  } catch (err) {
+    console.error(err);
+  } finally {
+    await client.end();
+  }
 }
 run();
