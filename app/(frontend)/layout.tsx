@@ -54,6 +54,11 @@ export const metadata: Metadata = {
     languages: {
       'bn-BD': 'https://khelardesh.com',
     },
+    types: {
+      'application/rss+xml': [
+        { url: 'https://khelardesh.com/feed.xml', title: 'খেলারদেশ — স্পোর্টস নিউজ RSS ফিড' }
+      ]
+    }
   },
   robots: {
     index: true,
