@@ -30,6 +30,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     .from('Article')
     .select('headline, headlineBn, deck, mediaUrl, byline, publishedAt, updatedAt, sport, slug')
     .eq('slug', params.slug)
+    .eq('status', 'published')
     .single();
 
   if (!article) return { title: 'Not Found' };
@@ -87,11 +88,13 @@ export default async function ArticlePage({ params }: PageProps) {
       .from('Article')
       .select('*')
       .eq('slug', params.slug)
+      .eq('status', 'published')
       .single(),
     supabaseAdmin
       .from('Article')
       .select('id, slug, headline, headlineBn, deck, sport, mediaType, mediaUrl, byline, publishedAt')
       .eq('isLead', false)
+      .eq('status', 'published')
       .order('publishedAt', { ascending: false })
       .limit(5)
   ]);

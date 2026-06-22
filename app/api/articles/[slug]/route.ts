@@ -16,6 +16,7 @@ export async function GET(
       .from('Article')
       .select('*')
       .eq('slug', params.slug)
+      .eq('status', 'published')
       .single()
 
     if (error || !article) {
