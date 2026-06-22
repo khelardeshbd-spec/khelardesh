@@ -176,7 +176,7 @@ export default function NotificationsClient() {
 
                   <div className="mt-3 flex gap-3">
                     <Link
-                      href={`/sport/article/${notif.articleSlug}#comment-${notif.commentId}`}
+                      href={`/article/${notif.articleSlug}#comment-${notif.commentId}`}
                       onClick={() => !notif.read && markAsRead(notif.id)}
                       className="text-xs font-bold text-[#d33f3f] hover:underline"
                     >

@@ -171,7 +171,7 @@ export default function UserNotificationPanel() {
                   return (
                     <li key={n.id} className={`p-4 transition-colors hover:bg-[var(--ink-ghost)] ${!n.read ? 'bg-red-50/20' : ''}`}>
                       <Link 
-                        href={`/sport/article/${articleSlug}#comment-${n.commentId}`}
+                        href={`/article/${articleSlug}#comment-${n.commentId}`}
                         onClick={() => {
                           if (!n.read) markAsRead(n.id);
                           setIsOpen(false);
