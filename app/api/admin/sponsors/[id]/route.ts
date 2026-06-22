@@ -22,7 +22,7 @@ export async function PUT(
     const body = await request.json() as any
     const { label, title, subtitle, ctaText, ctaUrl, placement, isActive, displayOrder, imageUrl, useAdsterra, adsterraCode } = body
 
-    if (!useAdsterra && (!ctaUrl || !ctaUrl.trim())) {
+    if (!useAdsterra && imageUrl && (!ctaUrl || !ctaUrl.trim())) {
       return NextResponse.json({ error: 'Redirection link is required when not using Adsterra.' }, { status: 400 });
     }
 

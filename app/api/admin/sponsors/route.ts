@@ -35,7 +35,7 @@ export async function POST(request: Request) {
       imageUrl = null, useAdsterra = false, adsterraCode = null
     } = body
 
-    if (!useAdsterra && !ctaUrl) {
+    if (!useAdsterra && imageUrl && !ctaUrl) {
       return NextResponse.json({ error: 'Missing CTA URL' }, { status: 400 })
     }
 

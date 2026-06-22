@@ -68,25 +68,7 @@ In-article Adsterra ads are embedded using the shortcode `[ADSTERRA: base64_enco
 
 ---
 
-## 4. SECURITY AUDIT & FIXES APPLIED
-
-A comprehensive security audit was recently conducted, and the following critical vulnerabilities were patched to ensure enterprise-grade security:
-
-### 1. Insecure Direct Object Reference (IDOR) on User Deletion
-- **Issue**: Any authenticated user could previously pass an arbitrary user ID to the deletion endpoint and delete other users' accounts, including administrators.
-- **Fix**: Implemented strict Role-Based Access Control (RBAC). The `/api/admin/admins/[id]/block` route now rigorously verifies the session against the `AdminUser` table to ensure the requester possesses `ADMIN` privileges before executing the action.
-
-### 2. SQL Injection / Logic Flaw in Password Reset
-- **Issue**: The password reset logic relied on insecure string comparisons that could be bypassed using JSON payload manipulation or PostgreSQL type juggling, allowing account takeover.
-- **Fix**: The update password route (`/api/admin/profile/password`) now utilizes strict parameter binding and robust data validation, preventing arbitrary payload evaluation.
-
-### 3. Server-Side Request Forgery (SSRF) in Proxy API
-- **Issue**: The `/api/proxy/sofascore` endpoint accepted an arbitrary `url` parameter from the client and fetched it server-side. Attackers could exploit this to scan internal Vercel networks or access internal metadata.
-- **Fix**: Removed the dynamic `url` parameter. The proxy endpoint now strictly hardcodes the target domain and paths, ensuring it can only fetch data from the intended external sports API.
-
----
-
-## 5. FUTURE ROADMAP (What to build next)
+## 4. FUTURE ROADMAP (What to build next)
 
 - **Enhanced SEO & Open Graph Metadata**: Implement dynamic, server-generated Open Graph images and structured schema data (JSON-LD) for better search engine visibility.
 - **User Progression & Gamification**: Introduce user badges, reputation scores, or a loyalty system to incentivize frequent reading and commenting.
