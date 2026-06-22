@@ -212,7 +212,7 @@ export default async function HomePage() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 items-center border-b border-[#e2e2e2] pb-2 mb-1.5">
             {/* Left Sponsor Block */}
             {showLeft && (
-              <div className="hidden lg:flex lg:col-span-3 h-[75px] bg-[#fafafa] text-[#121212] flex-col justify-center items-center border border-[#e2e2e2] rounded-[3px] overflow-hidden">
+              <div className={`hidden lg:flex lg:col-span-3 h-[75px] text-[#121212] flex-col justify-center items-center overflow-hidden ${!leftSponsor.useAdsterra ? 'bg-[#fafafa] border border-[#e2e2e2] rounded-[3px]' : ''}`}>
                 {leftSponsor.useAdsterra ? (
                   <AdsterraAd htmlCode={leftSponsor.adsterraCode} type="header" />
                 ) : (
@@ -237,7 +237,7 @@ export default async function HomePage() {
 
             {/* Right Sponsor Block */}
             {showRight && (
-              <div className="hidden lg:flex lg:col-span-3 h-[75px] bg-[#fafafa] text-[#121212] flex-col justify-center items-center border border-[#e2e2e2] rounded-[3px] overflow-hidden">
+              <div className={`hidden lg:flex lg:col-span-3 h-[75px] text-[#121212] flex-col justify-center items-center overflow-hidden ${!rightSponsor.useAdsterra ? 'bg-[#fafafa] border border-[#e2e2e2] rounded-[3px]' : ''}`}>
                 {rightSponsor.useAdsterra ? (
                   <AdsterraAd htmlCode={rightSponsor.adsterraCode} type="header" />
                 ) : (
