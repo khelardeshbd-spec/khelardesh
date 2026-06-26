@@ -272,13 +272,13 @@ export default function MatchCenterPage({ params }: { params: { matchId: string 
                   </div>
 
                   {/* Player List View */}
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-2 gap-2 sm:gap-4">
                     {/* Home Team Column */}
                     <div>
-                      <div className="flex items-center gap-2 mb-4 p-2 bg-gray-50 rounded-lg border border-gray-100">
-                        {match.home.logo && <img src={match.home.logo} alt="" className="w-6 h-6 object-contain" />}
-                        <span className="text-sm font-black text-gray-800 truncate">{match.home.name}</span>
-                        <span className="ml-auto text-[10px] bg-[#326891] text-white font-bold px-2 py-0.5 rounded-full shadow-sm">{homeRoster?.formation}</span>
+                      <div className="flex items-center gap-1.5 sm:gap-2 mb-4 p-1.5 sm:p-2 bg-gray-50 rounded-lg border border-gray-100 min-w-0">
+                        {match.home.logo && <img src={match.home.logo} alt="" className="w-5 h-5 sm:w-6 sm:h-6 object-contain flex-shrink-0" />}
+                        <span className="text-xs sm:text-sm font-black text-gray-800 truncate leading-tight">{match.home.name}</span>
+                        <span className="ml-auto text-[9px] sm:text-[10px] bg-[#326891] text-white font-bold px-2 py-0.5 rounded-full shadow-sm whitespace-nowrap flex-shrink-0 leading-tight">{homeRoster?.formation}</span>
                       </div>
                       
                       <div className="space-y-1">
@@ -344,10 +344,10 @@ export default function MatchCenterPage({ params }: { params: { matchId: string 
 
                     {/* Away Team Column */}
                     <div>
-                      <div className="flex items-center gap-2 mb-4 p-2 bg-gray-50 rounded-lg border border-gray-100">
-                        {match.away.logo && <img src={match.away.logo} alt="" className="w-6 h-6 object-contain" />}
-                        <span className="text-sm font-black text-gray-800 truncate">{match.away.name}</span>
-                        <span className="ml-auto text-[10px] bg-[#d33f3f] text-white font-bold px-2 py-0.5 rounded-full shadow-sm">{awayRoster?.formation}</span>
+                      <div className="flex items-center gap-1.5 sm:gap-2 mb-4 p-1.5 sm:p-2 bg-gray-50 rounded-lg border border-gray-100 min-w-0">
+                        {match.away.logo && <img src={match.away.logo} alt="" className="w-5 h-5 sm:w-6 sm:h-6 object-contain flex-shrink-0" />}
+                        <span className="text-xs sm:text-sm font-black text-gray-800 truncate leading-tight">{match.away.name}</span>
+                        <span className="ml-auto text-[9px] sm:text-[10px] bg-[#d33f3f] text-white font-bold px-2 py-0.5 rounded-full shadow-sm whitespace-nowrap flex-shrink-0 leading-tight">{awayRoster?.formation}</span>
                       </div>
                       
                       <div className="space-y-1">

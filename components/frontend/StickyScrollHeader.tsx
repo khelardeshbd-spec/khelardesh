@@ -107,7 +107,7 @@ export default function StickyScrollHeader() {
         WebkitBackdropFilter: 'blur(10px)',
       }}
     >
-      <div className="max-w-[1200px] mx-auto px-5 py-1.5 flex items-center justify-between">
+      <div className="max-w-[1200px] mx-auto px-5 py-0.5 flex items-center justify-between">
         {/* Left Brand Identity: text wordmark */}
         <Link href="/" className="flex items-center flex-shrink-0" aria-label="খেলারদেশ হোমপেজ">
           <img src="/images/khelardesh_logo.png" alt="খেলারদেশ" style={{ height: 20, objectFit: 'contain' }} />
@@ -130,7 +130,7 @@ export default function StickyScrollHeader() {
                 return (
                   <div
                     key={idx}
-                    className="relative py-2 flex items-center"
+                    className="relative py-1 flex items-center"
                     onMouseEnter={() => {
                       if (window.innerWidth >= 1024) {
                         setOpenDropdown(item.slug);
@@ -204,7 +204,7 @@ export default function StickyScrollHeader() {
               }
 
               return (
-                <div key={idx} className="py-2 flex items-center">
+                <div key={idx} className="py-1 flex items-center">
                   <Link
                     ref={isActive ? activeItemRef : undefined}
                     href={href}

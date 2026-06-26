@@ -53,6 +53,7 @@ export default function DashboardClient({ initialArticles, totalScoresCount }: D
   });
 
   const [totalLiveUsers, setTotalLiveUsers] = useState(0);
+  const [connectionStatus, setConnectionStatus] = useState<string>('CONNECTING');
 
   useEffect(() => {
     // Prevent singleton race condition if the channel already exists from a previous mount
@@ -95,6 +96,7 @@ export default function DashboardClient({ initialArticles, totalScoresCount }: D
     }
 
     channel.subscribe((status, err) => {
+      setConnectionStatus(status);
       if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT') {
         console.error(`DashboardClient: Channel failed to connect (Status: ${status}).`, err);
         console.error('CRITICAL: Check if NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY are correctly set in the Vercel Production Environment Variables.');
@@ -228,14 +230,26 @@ export default function DashboardClient({ initialArticles, totalScoresCount }: D
 
         {/* Live system status */}
         <div 
-          className="flex items-center gap-2 px-3 py-1.5 rounded bg-[#E8F8F5] border border-[#A3E4D7] text-[#117A65]"
+          className={`flex items-center gap-2 px-3 py-1.5 rounded border ${
+            connectionStatus === 'SUBSCRIBED' ? 'bg-[#E8F8F5] border-[#A3E4D7] text-[#117A65]' :
+            connectionStatus === 'CHANNEL_ERROR' ? 'bg-red-50 border-red-200 text-red-600' :
+            'bg-yellow-50 border-yellow-200 text-yellow-600'
+          }`}
           style={{ fontFamily: "'Hind Siliguri', sans-serif", fontSize: 11, fontWeight: 600 }}
         >
           <span className="flex h-2.5 w-2.5 relative">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#117A65] opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#117A65]"></span>
+            <span className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${
+              connectionStatus === 'SUBSCRIBED' ? 'bg-[#117A65]' :
+              connectionStatus === 'CHANNEL_ERROR' ? 'bg-red-600' :
+              'bg-yellow-600'
+            }`}></span>
+            <span className={`relative inline-flex rounded-full h-2.5 w-2.5 ${
+              connectionStatus === 'SUBSCRIBED' ? 'bg-[#117A65]' :
+              connectionStatus === 'CHANNEL_ERROR' ? 'bg-red-600' :
+              'bg-yellow-600'
+            }`}></span>
           </span>
-          LIVE ACTIVITY MONITOR: ACTIVE
+          LIVE ACTIVITY MONITOR: {connectionStatus}
         </div>
       </div>
 
