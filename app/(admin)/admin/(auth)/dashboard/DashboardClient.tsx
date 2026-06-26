@@ -55,36 +55,51 @@ export default function DashboardClient({ initialArticles, totalScoresCount }: D
   const [totalLiveUsers, setTotalLiveUsers] = useState(0);
 
   useEffect(() => {
+    // Prevent singleton race condition if the channel already exists from a previous mount
+    const existingChannel = supabase.getChannels().find(c => c.topic === 'realtime:global_presence');
+    if (existingChannel) {
+      supabase.removeChannel(existingChannel);
+    }
+
     const channel = supabase.channel('global_presence');
     
-    channel.on('presence', { event: 'sync' }, () => {
-      const state = channel.presenceState();
-      
-      let totalLive = 0;
-      const liveBySlug: Record<string, number> = {};
-      
-      for (const id in state) {
-        totalLive += state[id].length;
+    try {
+      channel.on('presence', { event: 'sync' }, () => {
+        const state = channel.presenceState();
         
-        // Count by slug
-        state[id].forEach((presence: any) => {
-          if (presence.slug) {
-            liveBySlug[presence.slug] = (liveBySlug[presence.slug] || 0) + 1;
-          }
-        });
-      }
-      
-      setTotalLiveUsers(totalLive);
-      
-      setArticlesData((prev) => 
-        prev.map((art) => ({
-          ...art,
-          liveViewers: liveBySlug[art.slug] || 0
-        }))
-      );
-    });
+        let totalLive = 0;
+        const liveBySlug: Record<string, number> = {};
+        
+        for (const id in state) {
+          totalLive += state[id].length;
+          
+          // Count by slug
+          state[id].forEach((presence: any) => {
+            if (presence.slug) {
+              liveBySlug[presence.slug] = (liveBySlug[presence.slug] || 0) + 1;
+            }
+          });
+        }
+        
+        setTotalLiveUsers(totalLive);
+        
+        setArticlesData((prev) => 
+          prev.map((art) => ({
+            ...art,
+            liveViewers: liveBySlug[art.slug] || 0
+          }))
+        );
+      });
+    } catch (error) {
+      console.warn('DashboardClient: Channel already subscribed. Singleton race condition caught.', error);
+    }
 
-    channel.subscribe();
+    channel.subscribe((status, err) => {
+      if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT') {
+        console.error(`DashboardClient: Channel failed to connect (Status: ${status}).`, err);
+        console.error('CRITICAL: Check if NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY are correctly set in the Vercel Production Environment Variables.');
+      }
+    });
 
     return () => {
       supabase.removeChannel(channel);
