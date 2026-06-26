@@ -10,7 +10,7 @@ import PresenceTracker from '@/components/frontend/PresenceTracker';
 
 export const metadata: Metadata = {
   // metadataBase is CRITICAL — without this Next.js can't build absolute OG image URLs
-  metadataBase: new URL('https://khelardesh.com'),
+  metadataBase: new URL('https://www.khelardesh.com'),
   title: {
     template: '%s | খেলারদেশ',
     default: 'খেলারদেশ | বাংলাদেশের নির্ভরযোগ্য স্পোর্টস নিউজ পোর্টাল',
