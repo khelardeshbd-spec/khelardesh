@@ -404,25 +404,7 @@ export default async function ArticlePage({ params }: PageProps) {
                       ))}
                     </ul>
                   ) : quoteMatch ? (
-                    <div lang="bn" style={{ marginBottom: '1.6em', position: 'relative' }}>
-                      {/* Large decorative " symbol */}
-                      <span
-                        aria-hidden="true"
-                        style={{
-                          display: 'block',
-                          fontFamily: 'Georgia, serif',
-                          fontSize: '80px',
-                          lineHeight: 1,
-                          color: '#a16207',
-                          opacity: 0.18,
-                          userSelect: 'none',
-                          pointerEvents: 'none',
-                          textAlign: 'center',
-                          marginBottom: '-0.2em',
-                        }}
-                      >
-                        &ldquo;
-                      </span>
+                    <div lang="bn" style={{ marginBottom: '1.6em' }}>
                       <p
                         style={{
                           fontFamily: 'var(--font-body)',
@@ -434,7 +416,22 @@ export default async function ArticlePage({ params }: PageProps) {
                           textAlign: 'center',
                         }}
                       >
-                        {/* inline span with highlighter effect — box-decoration-break: clone makes each line highlighted independently */}
+                        {/* Decorative " inline before the text */}
+                        <span
+                          aria-hidden="true"
+                          style={{
+                            fontFamily: 'Georgia, serif',
+                            fontSize: '1.6em',
+                            lineHeight: 1,
+                            color: '#a16207',
+                            opacity: 0.4,
+                            userSelect: 'none',
+                            verticalAlign: '-0.15em',
+                            marginRight: '2px',
+                          }}
+                        >
+                          &ldquo;
+                        </span>
                         <span
                           style={{
                             background: '#fef08a',
