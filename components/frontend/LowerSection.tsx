@@ -263,10 +263,29 @@ function CategorySection({ title, slug, articles, banner }: { title: string, slu
         {hasPoster ? (
           <>
             {/* Left: Lead article with big image */}
-            <div>
+            <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
               <CardLead article={latestArticle} />
               {/* Second article as compact below lead on left */}
               {secondArticle && <CardCompact article={secondArticle} />}
+              
+              {/* Larger Red Link filling the empty space at the bottom of left column */}
+              <div style={{ marginTop: 'auto', paddingTop: 16, display: 'flex', justifyContent: 'flex-start' }}>
+                <Link 
+                  href={`/sport/${slug}`} 
+                  style={{ 
+                    fontFamily: 'var(--font-headline)', 
+                    fontSize: '16px', 
+                    fontWeight: 800, 
+                    color: 'var(--live-red)', 
+                    textDecoration: 'none',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '4px'
+                  }}
+                >
+                  সব খবর দেখুন <span style={{ fontSize: '20px', lineHeight: 1 }}>›</span>
+                </Link>
+              </div>
             </div>
             {/* Right: compact list of articles */}
             <div style={{ display: 'flex', flexDirection: 'column' }}>
@@ -288,21 +307,26 @@ function CategorySection({ title, slug, articles, banner }: { title: string, slu
         )}
       </div>
 
-      {/* Red Link at Bottom Right to View All */}
-      <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 12 }}>
-        <Link 
-          href={`/sport/${slug}`} 
-          style={{ 
-            fontFamily: 'var(--font-body)', 
-            fontSize: '12px', 
-            fontWeight: 700, 
-            color: 'var(--live-red)', 
-            textDecoration: 'none' 
-          }}
-        >
-          সব খবর দেখুন ›
-        </Link>
-      </div>
+      {/* Fallback View All for non-poster layout */}
+      {!hasPoster && (
+        <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 16 }}>
+          <Link 
+            href={`/sport/${slug}`} 
+            style={{ 
+              fontFamily: 'var(--font-headline)', 
+              fontSize: '16px', 
+              fontWeight: 800, 
+              color: 'var(--live-red)', 
+              textDecoration: 'none',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '4px'
+            }}
+          >
+            সব খবর দেখুন <span style={{ fontSize: '20px', lineHeight: 1 }}>›</span>
+          </Link>
+        </div>
+      )}
     </div>
   );
 }
