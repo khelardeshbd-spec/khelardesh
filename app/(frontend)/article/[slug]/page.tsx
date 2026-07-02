@@ -404,61 +404,41 @@ export default async function ArticlePage({ params }: PageProps) {
                       ))}
                     </ul>
                   ) : quoteMatch ? (
-                    <div
-                      lang="bn"
-                      style={{
-                        position: 'relative',
-                        margin: '2em 0',
-                        padding: '1.1em 1.4em 1.1em 1.2em',
-                        background: 'linear-gradient(135deg, #fef08a 0%, #fde047 60%, #fef9c3 100%)',
-                        borderRadius: '4px',
-                        boxShadow: '2px 3px 0 #d4a017',
-                      }}
-                    >
-                      {/* Quotation mark decoration */}
-                      <span
-                        aria-hidden="true"
-                        style={{
-                          position: 'absolute',
-                          top: '-10px',
-                          left: '12px',
-                          fontSize: '64px',
-                          lineHeight: 1,
-                          color: '#a16207',
-                          opacity: 0.25,
-                          fontFamily: 'Georgia, serif',
-                          pointerEvents: 'none',
-                          userSelect: 'none',
-                        }}
-                      >
-                        &ldquo;
-                      </span>
+                    <div lang="bn" style={{ marginBottom: '1.6em' }}>
                       <p
                         style={{
                           fontFamily: 'var(--font-body)',
+                          fontWeight: 400,
                           fontSize: '19px',
-                          lineHeight: '1.75',
-                          color: '#1a1a0e',
-                          fontStyle: 'italic',
-                          fontWeight: 500,
+                          lineHeight: '1.9',
+                          color: 'var(--ink)',
                           margin: 0,
-                          paddingBottom: quoteMatch[2].trim() ? '2em' : 0,
                         }}
                       >
-                        {quoteMatch[1].trim()}
+                        {/* inline span with highlighter effect — box-decoration-break: clone makes each line highlighted independently */}
+                        <span
+                          style={{
+                            background: '#fef08a',
+                            WebkitBoxDecorationBreak: 'clone',
+                            boxDecorationBreak: 'clone',
+                            padding: '2px 6px',
+                            lineHeight: '1.9',
+                          } as React.CSSProperties}
+                        >
+                          {quoteMatch[1].trim()}
+                        </span>
                       </p>
                       {quoteMatch[2].trim() && (
                         <p
                           style={{
-                            position: 'absolute',
-                            bottom: '0.7em',
-                            right: '1.2em',
-                            margin: 0,
                             fontFamily: 'var(--font-body)',
                             fontSize: '13px',
                             fontStyle: 'italic',
-                            color: '#78350f',
+                            color: 'var(--ink-muted)',
                             fontWeight: 600,
+                            textAlign: 'right',
+                            marginTop: '0.4em',
+                            marginBottom: 0,
                           }}
                         >
                           — {quoteMatch[2].trim()}
