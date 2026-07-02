@@ -360,6 +360,8 @@ export default async function ArticlePage({ params }: PageProps) {
               const imgMatch = para.match(/^\[IMAGE:\s*(.*?)\s*\|\s*(.*?)\s*\]$/i);
               const adMatch = para.match(/^\[AD:\s*(.*?)\s*\|\s*(.*?)\s*\]$/i);
               const adsterraMatch = para.match(/^\[ADSTERRA:\s*(.*?)\s*\]$/i);
+              const bulletsMatch = para.match(/^\[BULLETS:(.*)\]$/is);
+              const quoteMatch = para.match(/^\[QUOTE:\s*(.*)\s*\|\s*(.*)\s*\]$/is);
 
               return (
                 <div key={i}>
@@ -383,6 +385,85 @@ export default async function ArticlePage({ params }: PageProps) {
                   ) : adsterraMatch ? (
                     <div className="my-6">
                       <AdsterraAd htmlCode={adsterraMatch[1] ? safeB64Decode(adsterraMatch[1]) : ''} type="article" />
+                    </div>
+                  ) : bulletsMatch ? (
+                    <ul
+                      lang="bn"
+                      style={{
+                        fontFamily: 'var(--font-body)',
+                        fontSize: '19px',
+                        lineHeight: '1.75',
+                        color: 'var(--ink)',
+                        marginBottom: '1.6em',
+                        paddingLeft: '1.4em',
+                        listStyleType: 'disc',
+                      }}
+                    >
+                      {bulletsMatch[1].split('|').map((item, idx) => (
+                        item.trim() ? <li key={idx} style={{ marginBottom: '0.4em' }}>{item.trim()}</li> : null
+                      ))}
+                    </ul>
+                  ) : quoteMatch ? (
+                    <div
+                      lang="bn"
+                      style={{
+                        position: 'relative',
+                        margin: '2em 0',
+                        padding: '1.1em 1.4em 1.1em 1.2em',
+                        background: 'linear-gradient(135deg, #fef08a 0%, #fde047 60%, #fef9c3 100%)',
+                        borderRadius: '4px',
+                        boxShadow: '2px 3px 0 #d4a017',
+                      }}
+                    >
+                      {/* Quotation mark decoration */}
+                      <span
+                        aria-hidden="true"
+                        style={{
+                          position: 'absolute',
+                          top: '-10px',
+                          left: '12px',
+                          fontSize: '64px',
+                          lineHeight: 1,
+                          color: '#a16207',
+                          opacity: 0.25,
+                          fontFamily: 'Georgia, serif',
+                          pointerEvents: 'none',
+                          userSelect: 'none',
+                        }}
+                      >
+                        &ldquo;
+                      </span>
+                      <p
+                        style={{
+                          fontFamily: 'var(--font-body)',
+                          fontSize: '19px',
+                          lineHeight: '1.75',
+                          color: '#1a1a0e',
+                          fontStyle: 'italic',
+                          fontWeight: 500,
+                          margin: 0,
+                          paddingBottom: quoteMatch[2].trim() ? '2em' : 0,
+                        }}
+                      >
+                        {quoteMatch[1].trim()}
+                      </p>
+                      {quoteMatch[2].trim() && (
+                        <p
+                          style={{
+                            position: 'absolute',
+                            bottom: '0.7em',
+                            right: '1.2em',
+                            margin: 0,
+                            fontFamily: 'var(--font-body)',
+                            fontSize: '13px',
+                            fontStyle: 'italic',
+                            color: '#78350f',
+                            fontWeight: 600,
+                          }}
+                        >
+                          — {quoteMatch[2].trim()}
+                        </p>
+                      )}
                     </div>
                   ) : (
                     <p

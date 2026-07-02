@@ -3,12 +3,12 @@
 import { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { Layout, ArrowLeft, Check, Sparkles, Image as ImageIcon, Video, Plus, Trash2 } from 'lucide-react';
+import { Layout, ArrowLeft, Check, Sparkles, Image as ImageIcon, Video, Plus, Trash2, List, Quote } from 'lucide-react';
 import AdminShell from '../../../AdminShell';
 
 interface EditorBlock {
   id: string;
-  type: 'paragraph' | 'image' | 'ad';
+  type: 'paragraph' | 'image' | 'ad' | 'bullet' | 'quote';
   value?: string;
   url?: string;
   caption?: string;
@@ -16,6 +16,8 @@ interface EditorBlock {
   ctaUrl?: string;
   useAdsterra?: boolean;
   adsterraCode?: string;
+  // bullet: value is newline-separated items
+  // quote: value is the quote text, caption is the attribution
 }
 
 function safeB64Encode(str: string): string {
@@ -51,6 +53,15 @@ function parseBodyToBlocks(bodyStr: string): EditorBlock[] {
     if (adMatch) {
       return { id, type: 'ad', useAdsterra: false, imageUrl: adMatch[1], ctaUrl: adMatch[2] };
     }
+    const bulletsMatch = part.trim().match(/^\[BULLETS:(.*)\]$/is);
+    if (bulletsMatch) {
+      const items = bulletsMatch[1].split('|').map(s => s.trim()).join('\n');
+      return { id, type: 'bullet', value: items };
+    }
+    const quoteMatch = part.trim().match(/^\[QUOTE:\s*(.*)\s*\|\s*(.*)\s*\]$/is);
+    if (quoteMatch) {
+      return { id, type: 'quote', value: quoteMatch[1].trim(), caption: quoteMatch[2].trim() };
+    }
     return { id, type: 'paragraph', value: part };
   });
 }
@@ -66,6 +77,13 @@ function serializeBlocksToBody(blocks: EditorBlock[]): string {
           return `[ADSTERRA: ${safeB64Encode(block.adsterraCode || '')}]`;
         }
         return `[AD: ${block.imageUrl || ''} | ${block.ctaUrl || ''}]`;
+      }
+      if (block.type === 'bullet') {
+        const items = (block.value || '').split('\n').map(s => s.trim()).filter(Boolean).join(' | ');
+        return `[BULLETS: ${items}]`;
+      }
+      if (block.type === 'quote') {
+        return `[QUOTE: ${block.value || ''} | ${block.caption || ''}]`;
       }
       return block.value || '';
     })
@@ -135,7 +153,7 @@ export default function NewArticlePage() {
   ]);
   const [activeMenuBlockId, setActiveMenuBlockId] = useState<string | null>(null);
 
-  const addBlock = (index: number, type: 'paragraph' | 'image' | 'ad') => {
+  const addBlock = (index: number, type: 'paragraph' | 'image' | 'ad' | 'bullet' | 'quote') => {
     const newBlock: EditorBlock = {
       id: `block-${Date.now()}-${Math.random()}`,
       type,
@@ -751,6 +769,73 @@ export default function NewArticlePage() {
                   </div>
                 )}
 
+              {block.type === 'bullet' && (
+                <div className="relative border border-[var(--ink-border)] rounded-lg p-4 bg-[var(--bg-surface)] my-4 flex flex-col gap-2" style={{ borderLeft: '3px solid var(--ink)' }}>
+                  <button
+                    type="button"
+                    onClick={() => removeBlock(block.id)}
+                    className="absolute top-2 right-2 text-red-500 hover:text-red-700 bg-white/80 p-1.5 rounded-full border border-red-200 z-10"
+                    title="Remove block"
+                  >
+                    <Trash2 size={16} />
+                  </button>
+                  <div className="text-xs font-bold text-[var(--ink-muted)] mb-1 flex items-center gap-1">
+                    <List size={14} /> BULLET LIST (বুলেট পয়েন্ট)
+                  </div>
+                  <div className="text-[10px] text-[var(--ink-muted)] mb-1">প্রতিটি পয়েন্ট আলাদা লাইনে লিখুন</div>
+                  <textarea
+                    value={block.value || ''}
+                    onChange={(e) => {
+                      updateBlock(block.id, { value: e.target.value });
+                      e.target.style.height = 'auto';
+                      e.target.style.height = e.target.scrollHeight + 'px';
+                    }}
+                    ref={(el) => { if (el) { el.style.height = 'auto'; el.style.height = el.scrollHeight + 'px'; } }}
+                    rows={3}
+                    placeholder={`প্রথম পয়েন্ট\nদ্বিতীয় পয়েন্ট\nতৃতীয় পয়েন্ট`}
+                    className="w-full text-sm p-2 border border-[var(--ink-border)] rounded bg-transparent text-[var(--ink)] focus:outline-none focus:border-[var(--ink)] resize-none"
+                    style={{ fontFamily: 'var(--font-body)', fontSize: '15px', lineHeight: '1.7', overflow: 'hidden' }}
+                  />
+                </div>
+              )}
+
+              {block.type === 'quote' && (
+                <div className="relative border border-[var(--ink-border)] rounded-lg p-4 bg-[#fffbea] my-4 flex flex-col gap-3">
+                  <button
+                    type="button"
+                    onClick={() => removeBlock(block.id)}
+                    className="absolute top-2 right-2 text-red-500 hover:text-red-700 bg-white/80 p-1.5 rounded-full border border-red-200 z-10"
+                    title="Remove block"
+                  >
+                    <Trash2 size={16} />
+                  </button>
+                  <div className="text-xs font-bold text-amber-700 mb-1 flex items-center gap-1">
+                    <Quote size={14} /> QUOTE BOX (উদ্ধৃতি)
+                  </div>
+                  <textarea
+                    value={block.value || ''}
+                    onChange={(e) => {
+                      updateBlock(block.id, { value: e.target.value });
+                      e.target.style.height = 'auto';
+                      e.target.style.height = e.target.scrollHeight + 'px';
+                    }}
+                    ref={(el) => { if (el) { el.style.height = 'auto'; el.style.height = el.scrollHeight + 'px'; } }}
+                    rows={3}
+                    placeholder={'উদ্ধৃতির টেক্সট এখানে লিখুন...'}
+                    className="w-full p-3 border border-amber-300 rounded bg-[#fefce8] text-[var(--ink)] focus:outline-none focus:border-amber-500 resize-none"
+                    style={{ fontFamily: 'var(--font-body)', fontSize: '17px', lineHeight: '1.75', overflow: 'hidden', fontStyle: 'italic' }}
+                  />
+                  <input
+                    type="text"
+                    placeholder="— উদ্ধৃতির উৎস / বক্তার নাম"
+                    value={block.caption || ''}
+                    onChange={(e) => updateBlock(block.id, { caption: e.target.value })}
+                    className="w-full text-sm p-2 border-b border-amber-300 bg-transparent text-[var(--ink-muted)] focus:outline-none focus:border-amber-500"
+                    style={{ fontFamily: 'var(--font-body)', fontStyle: 'italic' }}
+                  />
+                </div>
+              )}
+
                 {/* Hovering Plus icon dropdown */}
                 <div className="flex justify-center my-2 opacity-50 hover:opacity-100 transition-opacity relative">
                   <div className="absolute inset-0 flex items-center" aria-hidden="true">
@@ -795,6 +880,26 @@ export default function NewArticlePage() {
                           className="w-full px-3 py-1.5 text-left hover:bg-[var(--ink-ghost)] flex items-center gap-1.5 text-[var(--ink)]"
                         >
                           <Sparkles size={12} /> Ad Card (বিজ্ঞাপন ব্যানার)
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            addBlock(index, 'bullet');
+                            setActiveMenuBlockId(null);
+                          }}
+                          className="w-full px-3 py-1.5 text-left hover:bg-[var(--ink-ghost)] flex items-center gap-1.5 text-[var(--ink)]"
+                        >
+                          <List size={12} /> Bullet List (বুলেট পয়েন্ট)
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            addBlock(index, 'quote');
+                            setActiveMenuBlockId(null);
+                          }}
+                          className="w-full px-3 py-1.5 text-left hover:bg-[var(--ink-ghost)] flex items-center gap-1.5 text-[var(--ink)]"
+                        >
+                          <Quote size={12} /> Quote Box (উদ্ধৃতি)
                         </button>
                       </div>
                     )}
