@@ -167,6 +167,54 @@ function CardStandard({ article }: { article: Article }) {
   );
 }
 
+// Compact card: headline + date on left, small thumbnail on right — like cricket section
+function CardCompact({ article }: { article: Article }) {
+  const headline = article.headlineBn || article.headline;
+  const date = article.publishedAt
+    ? new Date(article.publishedAt).toLocaleDateString('bn-BD', { day: 'numeric', month: 'long', year: 'numeric' })
+    : '';
+  return (
+    <div style={{
+      borderTop: '1px solid var(--ink-border)',
+      paddingTop: 10,
+      marginTop: 10,
+    }}>
+      <Link href={`/article/${article.slug}`} style={{ textDecoration: 'none', display: 'flex', gap: 12, alignItems: 'flex-start' }}>
+        {/* Text side */}
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <h3 style={{
+            fontFamily: 'var(--font-headline)',
+            fontSize: '1rem',
+            fontWeight: 700,
+            lineHeight: 1.25,
+            color: 'var(--ink)',
+            margin: '0 0 6px 0',
+          }}>
+            {headline}
+          </h3>
+          {date && (
+            <span style={{ fontFamily: 'var(--font-body)', fontSize: 10, color: 'var(--ink-muted)' }}>
+              {date}
+            </span>
+          )}
+        </div>
+        {/* Thumbnail */}
+        {article.mediaUrl && (
+          <div style={{ flexShrink: 0, width: 80, height: 56, position: 'relative', overflow: 'hidden', border: '1px solid var(--ink-border)' }}>
+            <Image
+              src={article.mediaUrl}
+              alt={headline || ''}
+              fill
+              sizes="80px"
+              style={{ objectFit: 'cover' }}
+            />
+          </div>
+        )}
+      </Link>
+    </div>
+  );
+}
+
 function CategorySection({ title, slug, articles, banner }: { title: string, slug: string, articles: Article[], banner?: { imageUrl?: string | null; ctaUrl?: string | null; useAdsterra?: boolean; adsterraCode?: string | null } | null }) {
   if (!articles || articles.length === 0) return null;
 
@@ -214,10 +262,18 @@ function CategorySection({ title, slug, articles, banner }: { title: string, slu
       <div className={hasPoster ? "cat-grid-poster" : "cat-grid-standard"}>
         {hasPoster ? (
           <>
-            <CardLead article={latestArticle} />
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-              {secondArticle && <CardStandard article={secondArticle} />}
-              {thirdArticle && <CardStandard article={thirdArticle} />}
+            {/* Left: Lead article with big image */}
+            <div>
+              <CardLead article={latestArticle} />
+              {/* Second article as compact below lead on left */}
+              {secondArticle && <CardCompact article={secondArticle} />}
+            </div>
+            {/* Right: compact list of articles */}
+            <div style={{ display: 'flex', flexDirection: 'column' }}>
+              {thirdArticle && <CardCompact article={thirdArticle} />}
+              {fourthArticle && <CardCompact article={fourthArticle} />}
+              {articles[4] && <CardCompact article={articles[4]} />}
+              {articles[5] && <CardCompact article={articles[5]} />}
             </div>
           </>
         ) : (
