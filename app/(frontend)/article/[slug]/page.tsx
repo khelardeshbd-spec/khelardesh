@@ -404,7 +404,7 @@ export default async function ArticlePage({ params }: PageProps) {
                       ))}
                     </ul>
                   ) : quoteMatch ? (
-                    <div lang="bn" style={{ marginBottom: '1.6em' }}>
+                    <div lang="bn" style={{ marginBottom: '1.6em', maxWidth: '100%', overflow: 'hidden' }}>
                       <p
                         style={{
                           fontFamily: 'var(--font-body)',
@@ -414,6 +414,8 @@ export default async function ArticlePage({ params }: PageProps) {
                           color: 'var(--ink)',
                           margin: 0,
                           textAlign: 'center',
+                          overflowWrap: 'break-word',
+                          wordBreak: 'break-word',
                         }}
                       >
                         {/* Decorative " inline before the text */}
