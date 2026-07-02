@@ -404,7 +404,25 @@ export default async function ArticlePage({ params }: PageProps) {
                       ))}
                     </ul>
                   ) : quoteMatch ? (
-                    <div lang="bn" style={{ marginBottom: '1.6em' }}>
+                    <div lang="bn" style={{ marginBottom: '1.6em', position: 'relative' }}>
+                      {/* Large decorative " symbol */}
+                      <span
+                        aria-hidden="true"
+                        style={{
+                          display: 'block',
+                          fontFamily: 'Georgia, serif',
+                          fontSize: '80px',
+                          lineHeight: 1,
+                          color: '#a16207',
+                          opacity: 0.18,
+                          userSelect: 'none',
+                          pointerEvents: 'none',
+                          textAlign: 'center',
+                          marginBottom: '-0.2em',
+                        }}
+                      >
+                        &ldquo;
+                      </span>
                       <p
                         style={{
                           fontFamily: 'var(--font-body)',
@@ -413,6 +431,7 @@ export default async function ArticlePage({ params }: PageProps) {
                           lineHeight: '1.9',
                           color: 'var(--ink)',
                           margin: 0,
+                          textAlign: 'center',
                         }}
                       >
                         {/* inline span with highlighter effect — box-decoration-break: clone makes each line highlighted independently */}
