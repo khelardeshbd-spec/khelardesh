@@ -100,7 +100,6 @@ export default async function SportPage({ params }: PageProps) {
       .from('Article')
       .select('id, slug, headline, headlineBn, deck, sport, mediaType, mediaUrl, byline, publishedAt')
       .in('sport', sportsToQuery)
-      .eq('isLead', false)
       .eq('status', 'published')
       .order('publishedAt', { ascending: false })
       .limit(20),
