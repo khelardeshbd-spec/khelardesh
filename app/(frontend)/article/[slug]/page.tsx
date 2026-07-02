@@ -360,8 +360,8 @@ export default async function ArticlePage({ params }: PageProps) {
               const imgMatch = para.match(/^\[IMAGE:\s*(.*?)\s*\|\s*(.*?)\s*\]$/i);
               const adMatch = para.match(/^\[AD:\s*(.*?)\s*\|\s*(.*?)\s*\]$/i);
               const adsterraMatch = para.match(/^\[ADSTERRA:\s*(.*?)\s*\]$/i);
-              const bulletsMatch = para.match(/^\[BULLETS:(.*)\]$/is);
-              const quoteMatch = para.match(/^\[QUOTE:\s*(.*)\s*\|\s*(.*)\s*\]$/is);
+              const bulletsMatch = para.match(/^\[BULLETS:([\s\S]*)\]$/i);
+              const quoteMatch = para.match(/^\[QUOTE:\s*([\s\S]*?)\s*\|\s*([\s\S]*?)\s*\]$/i);
 
               return (
                 <div key={i}>

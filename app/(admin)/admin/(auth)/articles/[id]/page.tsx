@@ -53,13 +53,13 @@ function parseBodyToBlocks(bodyStr: string): EditorBlock[] {
     if (adMatch) {
       return { id, type: 'ad', useAdsterra: false, imageUrl: adMatch[1], ctaUrl: adMatch[2] };
     }
-    const bulletsMatch = part.trim().match(/^\[BULLETS:(.*)\]$/is);
+    const bulletsMatch = part.trim().match(/^\[BULLETS:([\s\S]*)\]$/i);
     if (bulletsMatch) {
       // stored as pipe-separated items inside [BULLETS: item1 | item2 | ...]
       const items = bulletsMatch[1].split('|').map(s => s.trim()).join('\n');
       return { id, type: 'bullet', value: items };
     }
-    const quoteMatch = part.trim().match(/^\[QUOTE:\s*(.*)\s*\|\s*(.*)\s*\]$/is);
+    const quoteMatch = part.trim().match(/^\[QUOTE:\s*([\s\S]*?)\s*\|\s*([\s\S]*?)\s*\]$/i);
     if (quoteMatch) {
       return { id, type: 'quote', value: quoteMatch[1].trim(), caption: quoteMatch[2].trim() };
     }
