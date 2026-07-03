@@ -1,5 +1,6 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import AdsterraAd from './AdsterraAd';
@@ -399,9 +400,20 @@ function SidebarList({ articles }: { articles: Article[] }) {
 }
 
 function PhotoCardSection({ title, slug, articles }: { title: string, slug: string, articles: Article[] }) {
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  useEffect(() => {
+    if (!articles || articles.length <= 1) return;
+    const timer = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % Math.min(articles.length, 3));
+    }, 4000);
+    return () => clearInterval(timer);
+  }, [articles]);
+
   if (!articles || articles.length === 0) return null;
-  const latestArticle = articles[0];
-  const headline = latestArticle.headlineBn || latestArticle.headline;
+  const displayArticles = articles.slice(0, 3);
+  const currentArticle = displayArticles[currentIndex];
+  const headline = currentArticle.headlineBn || currentArticle.headline;
   
   return (
     <div style={{ marginBottom: 24 }}>
@@ -419,31 +431,74 @@ function PhotoCardSection({ title, slug, articles }: { title: string, slug: stri
           {title}
         </Link>
       </h3>
-      <Link href={`/article/${latestArticle.slug}`} style={{ textDecoration: 'none', display: 'block' }}>
-        <div style={{ width: '100%', aspectRatio: '4/3', overflow: 'hidden', border: '1px solid var(--ink-border)', marginBottom: 8, position: 'relative' }}>
-          {latestArticle.mediaUrl ? (
-            <Image
-              src={latestArticle.mediaUrl}
-              alt={headline || title}
-              fill
-              sizes="(max-width: 768px) 100vw, 300px"
-              style={{ objectFit: 'cover' }}
-            />
-          ) : (
-            <div style={{ width: '100%', height: '100%', backgroundColor: '#f0f0f0' }} />
-          )}
-        </div>
-        <h4 style={{
-          fontFamily: 'var(--font-headline)',
-          fontSize: '1rem',
-          fontWeight: 700,
-          lineHeight: 1.25,
-          color: 'var(--ink)',
-          margin: 0
-        }}>
-          {headline}
-        </h4>
-      </Link>
+      <div style={{ position: 'relative' }}>
+        <Link href={`/article/${currentArticle.slug}`} style={{ textDecoration: 'none', display: 'block' }}>
+          <div style={{ width: '100%', aspectRatio: '4/3', overflow: 'hidden', border: '1px solid var(--ink-border)', marginBottom: 8, position: 'relative' }}>
+            {currentArticle.mediaUrl ? (
+              <Image
+                key={currentArticle.id}
+                src={currentArticle.mediaUrl}
+                alt={headline || title}
+                fill
+                sizes="(max-width: 768px) 100vw, 300px"
+                style={{ objectFit: 'cover', animation: 'fadeIn 0.5s ease-in-out' }}
+              />
+            ) : (
+              <div style={{ width: '100%', height: '100%', backgroundColor: '#f0f0f0', animation: 'fadeIn 0.5s ease-in-out' }} />
+            )}
+          </div>
+          <h4 key={`title-${currentArticle.id}`} style={{
+            fontFamily: 'var(--font-headline)',
+            fontSize: '1rem',
+            fontWeight: 700,
+            lineHeight: 1.25,
+            color: 'var(--ink)',
+            margin: 0,
+            animation: 'fadeIn 0.5s ease-in-out'
+          }}>
+            {headline}
+          </h4>
+        </Link>
+        
+        {/* Slideshow indicators */}
+        {displayArticles.length > 1 && (
+          <div style={{ display: 'flex', gap: '6px', marginTop: '12px', justifyContent: 'center' }}>
+            {displayArticles.map((_, idx) => (
+              <div
+                key={idx}
+                onClick={() => setCurrentIndex(idx)}
+                style={{
+                  width: '6px',
+                  height: '6px',
+                  borderRadius: '50%',
+                  backgroundColor: idx === currentIndex ? 'var(--live-red)' : '#d1d5db',
+                  cursor: 'pointer',
+                  transition: 'background-color 0.3s'
+                }}
+              />
+            ))}
+          </div>
+        )}
+      </div>
+      
+      {/* আরও জানুন Link */}
+      <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 16 }}>
+        <Link 
+          href={`/sport/${slug}`} 
+          style={{ 
+            fontFamily: 'var(--font-headline)', 
+            fontSize: '13px', 
+            fontWeight: 800, 
+            color: 'var(--live-red)', 
+            textDecoration: 'none',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '2px'
+          }}
+        >
+          আরও জানুন <span style={{ fontSize: '18px', lineHeight: 1 }}>›</span>
+        </Link>
+      </div>
     </div>
   );
 }
@@ -488,6 +543,10 @@ export default function LowerSection({
           grid-template-columns: 1fr 1fr;
           gap: 24px;
           align-items: start;
+        }
+        @keyframes fadeIn {
+          from { opacity: 0; }
+          to { opacity: 1; }
         }
         @media (max-width: 1023px) {
           .hp-main-grid {
