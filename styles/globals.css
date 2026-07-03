@@ -177,7 +177,7 @@ body {
   /* Prevent layout shift from scrollbar appearance */
   overflow-x: hidden;
   /* Custom Football Cursor */
-  cursor: url("/images/cursor-football.png") 16 16, auto;
+  cursor: url("/images/cursor-football.svg") 15 15, auto;
 }
 
 a {
@@ -200,7 +200,7 @@ button {
 
 /* Custom Cricket Bat Cursor for all clickable elements */
 a, button, [role="button"], input[type="submit"], input[type="button"], label, .cursor-pointer {
-  cursor: url("/images/cursor-bat.png") 16 16, pointer !important;
+  cursor: url("/images/cursor-bat.svg") 15 15, pointer !important;
 }
 
 ul, ol {
