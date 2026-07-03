@@ -249,10 +249,11 @@ function CategorySection({ title, slug, articles, banner }: { title: string, slu
       <div style={{
         display: 'flex',
         justifyContent: 'space-between',
-        alignItems: 'center',
-        borderBottom: '1.5px solid #121212',
+        alignItems: 'flex-end',
+        borderBottom: '2px solid #121212',
         paddingBottom: 6,
-        marginBottom: 16
+        marginBottom: 16,
+        height: '40px'
       }}>
         <h2 style={{
           fontFamily: 'var(--font-headline)',
@@ -345,20 +346,27 @@ function CategorySection({ title, slug, articles, banner }: { title: string, slu
 function SidebarList({ articles }: { articles: Article[] }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-      <h3 style={{
-        fontFamily: 'var(--font-body)',
-        fontSize: 13,
-        fontWeight: 800,
-        textTransform: 'uppercase',
-        color: '#121212',
-        borderBottom: '2.5px solid #121212',
+      <div style={{
+        display: 'flex',
+        alignItems: 'flex-end',
+        borderBottom: '2px solid #121212',
         paddingBottom: 6,
-        marginBottom: 8
+        marginBottom: 16,
+        height: '40px'
       }}>
-        <Link href={`/sport/others`} style={{ color: 'inherit', textDecoration: 'none' }} className="hover:text-[#d33f3f] transition-colors">
-          অন্যান্য খবর
-        </Link>
-      </h3>
+        <h3 style={{
+          fontFamily: 'var(--font-body)',
+          fontSize: 13,
+          fontWeight: 800,
+          textTransform: 'uppercase',
+          color: '#121212',
+          margin: 0
+        }}>
+          <Link href={`/sport/others`} style={{ color: 'inherit', textDecoration: 'none' }} className="hover:text-[#d33f3f] transition-colors">
+            অন্যান্য খবর
+          </Link>
+        </h3>
+      </div>
       {articles.map((article, i) => {
         const headline = article.headlineBn || article.headline;
         return (
@@ -417,20 +425,27 @@ function PhotoCardSection({ title, slug, articles }: { title: string, slug: stri
   
   return (
     <div style={{ marginBottom: 24 }}>
-      <h3 style={{
-        fontFamily: 'var(--font-body)',
-        fontSize: 13,
-        fontWeight: 800,
-        textTransform: 'uppercase',
-        color: '#121212',
-        borderBottom: '2.5px solid #121212',
+      <div style={{
+        display: 'flex',
+        alignItems: 'flex-end',
+        borderBottom: '2px solid #121212',
         paddingBottom: 6,
-        marginBottom: 12
+        marginBottom: 16,
+        height: '40px'
       }}>
-        <Link href={`/sport/${slug}`} style={{ color: 'inherit', textDecoration: 'none' }} className="hover:text-[#d33f3f] transition-colors">
-          {title}
-        </Link>
-      </h3>
+        <h3 style={{
+          fontFamily: 'var(--font-body)',
+          fontSize: 13,
+          fontWeight: 800,
+          textTransform: 'uppercase',
+          color: '#121212',
+          margin: 0
+        }}>
+          <Link href={`/sport/${slug}`} style={{ color: 'inherit', textDecoration: 'none' }} className="hover:text-[#d33f3f] transition-colors">
+            {title}
+          </Link>
+        </h3>
+      </div>
       <div style={{ position: 'relative' }}>
         <Link href={`/article/${currentArticle.slug}`} style={{ textDecoration: 'none', display: 'block' }}>
           <div style={{ width: '100%', aspectRatio: '4/3', overflow: 'hidden', border: '1px solid var(--ink-border)', marginBottom: 8, position: 'relative' }}>
