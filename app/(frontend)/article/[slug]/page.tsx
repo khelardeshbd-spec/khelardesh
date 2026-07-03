@@ -409,7 +409,7 @@ export default async function ArticlePage({ params }: PageProps) {
                       lang="bn"
                       style={{
                         fontFamily: 'var(--font-body)',
-                        fontWeight: 700,
+                        fontWeight: 800,
                         fontSize: `${boldMatch[1]}px`,
                         lineHeight: '1.75',
                         color: 'var(--ink)',

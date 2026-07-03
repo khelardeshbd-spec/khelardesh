@@ -879,7 +879,7 @@ export default function NewArticlePage() {
                     rows={2}
                     placeholder={'বোল্ড অনুচ্ছেদ লিখুন...'}
                     className="w-full text-sm p-2 border border-[var(--ink-border)] rounded bg-transparent text-[var(--ink)] focus:outline-none focus:border-[var(--ink)] resize-none"
-                    style={{ fontFamily: 'var(--font-body)', fontSize: `${block.fontSize || '19'}px`, lineHeight: '1.75', overflow: 'hidden', fontWeight: 'bold' }}
+                    style={{ fontFamily: 'var(--font-body)', fontSize: `${block.fontSize || '19'}px`, lineHeight: '1.75', overflow: 'hidden', fontWeight: 800 }}
                   />
                 </div>
               )}
