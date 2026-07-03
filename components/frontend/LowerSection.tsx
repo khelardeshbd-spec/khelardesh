@@ -85,7 +85,6 @@ function CardLead({ article }: { article: Article }) {
   const headline = article.headlineBn || article.headline;
   return (
     <div style={{ display: 'flex', flexDirection: 'column', width: '100%', marginBottom: 12 }}>
-      <Kicker sport={article.sport} />
       <Link href={`/article/${article.slug}`} style={{ textDecoration: 'none', display: 'block', marginBottom: 12 }}>
         {article.mediaUrl && (
           <div style={{ width: '100%', aspectRatio: '16/9', overflow: 'hidden', border: '1px solid var(--ink-border)', marginBottom: 12, position: 'relative' }}>
@@ -142,7 +141,6 @@ function CardStandard({ article }: { article: Article }) {
   const headline = article.headlineBn || article.headline;
   return (
     <div style={{ display: 'flex', flexDirection: 'column', width: '100%', marginBottom: 12 }}>
-      <Kicker sport={article.sport} />
       <Link href={`/article/${article.slug}`} style={{ textDecoration: 'none', display: 'block', marginBottom: 8 }}>
         {article.mediaUrl && (
           <div style={{ width: '100%', aspectRatio: '16/9', overflow: 'hidden', border: '1px solid var(--ink-border)', marginBottom: 8, position: 'relative' }}>
@@ -262,7 +260,9 @@ function CategorySection({ title, slug, articles, banner }: { title: string, slu
           color: '#121212',
           margin: 0
         }}>
-          {title}
+          <Link href={`/sport/${slug}`} style={{ color: 'inherit', textDecoration: 'none' }} className="hover:text-[#d33f3f] transition-colors">
+            {title}
+          </Link>
         </h2>
       </div>
 
@@ -354,7 +354,9 @@ function SidebarList({ articles }: { articles: Article[] }) {
         paddingBottom: 6,
         marginBottom: 8
       }}>
-        অন্যান্য খবর
+        <Link href={`/sport/others`} style={{ color: 'inherit', textDecoration: 'none' }} className="hover:text-[#d33f3f] transition-colors">
+          অন্যান্য খবর
+        </Link>
       </h3>
       {articles.map((article, i) => {
         const headline = article.headlineBn || article.headline;
@@ -413,7 +415,9 @@ function PhotoCardSection({ title, slug, articles }: { title: string, slug: stri
         paddingBottom: 6,
         marginBottom: 12
       }}>
-        {title}
+        <Link href={`/sport/${slug}`} style={{ color: 'inherit', textDecoration: 'none' }} className="hover:text-[#d33f3f] transition-colors">
+          {title}
+        </Link>
       </h3>
       <Link href={`/article/${latestArticle.slug}`} style={{ textDecoration: 'none', display: 'block' }}>
         <div style={{ width: '100%', aspectRatio: '4/3', overflow: 'hidden', border: '1px solid var(--ink-border)', marginBottom: 8, position: 'relative' }}>
