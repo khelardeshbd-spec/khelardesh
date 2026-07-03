@@ -267,14 +267,21 @@ function CategorySection({ title, slug, articles, banner }: { title: string, slu
               <CardLead article={latestArticle} />
               {/* Second article as compact below lead on left */}
               {secondArticle && <CardCompact article={secondArticle} />}
+            </div>
+            {/* Right: compact list of articles */}
+            <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+              {thirdArticle && <CardCompact article={thirdArticle} />}
+              {fourthArticle && <CardCompact article={fourthArticle} />}
+              {articles[4] && <CardCompact article={articles[4]} />}
+              {articles[5] && <CardCompact article={articles[5]} />}
               
-              {/* Larger Red Link filling the empty space at the bottom of left column */}
-              <div style={{ marginTop: 'auto', paddingTop: 16, display: 'flex', justifyContent: 'flex-start' }}>
+              {/* Larger Red Link on the right side */}
+              <div style={{ marginTop: 'auto', paddingTop: 16, display: 'flex', justifyContent: 'flex-end' }}>
                 <Link 
                   href={`/sport/${slug}`} 
                   style={{ 
                     fontFamily: 'var(--font-headline)', 
-                    fontSize: '16px', 
+                    fontSize: '18px', 
                     fontWeight: 800, 
                     color: 'var(--live-red)', 
                     textDecoration: 'none',
@@ -283,16 +290,9 @@ function CategorySection({ title, slug, articles, banner }: { title: string, slu
                     gap: '4px'
                   }}
                 >
-                  সব খবর দেখুন <span style={{ fontSize: '20px', lineHeight: 1 }}>›</span>
+                  সব খবর দেখুন <span style={{ fontSize: '24px', lineHeight: 1 }}>›</span>
                 </Link>
               </div>
-            </div>
-            {/* Right: compact list of articles */}
-            <div style={{ display: 'flex', flexDirection: 'column' }}>
-              {thirdArticle && <CardCompact article={thirdArticle} />}
-              {fourthArticle && <CardCompact article={fourthArticle} />}
-              {articles[4] && <CardCompact article={articles[4]} />}
-              {articles[5] && <CardCompact article={articles[5]} />}
             </div>
           </>
         ) : (
