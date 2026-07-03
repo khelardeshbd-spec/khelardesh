@@ -274,6 +274,7 @@ function CategorySection({ title, slug, articles, banner }: { title: string, slu
               {fourthArticle && <CardCompact article={fourthArticle} />}
               {articles[4] && <CardCompact article={articles[4]} />}
               {articles[5] && <CardCompact article={articles[5]} />}
+              {articles[6] && <CardCompact article={articles[6]} />}
               
               {/* Larger Red Link on the right side */}
               <div style={{ marginTop: 'auto', paddingTop: 16, display: 'flex', justifyContent: 'flex-end' }}>
