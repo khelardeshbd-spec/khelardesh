@@ -77,7 +77,7 @@ export default async function HomePage() {
       .eq('isLead', true)
       .eq('status', 'published')
       .order('publishedAt', { ascending: false })
-      .limit(4),
+      .limit(5),
     supabaseAdmin
       .from('Article')
       .select('id, slug, headline, headlineBn, deck, sport, mediaType, mediaUrl, byline, publishedAt')
@@ -155,28 +155,6 @@ export default async function HomePage() {
   ]);
 
   const leads = leadResult.status === 'fulfilled' ? (leadResult.value.data ?? []) : [];
-
-  // TODO: Remove this mock data after testing the slideshow
-  if (leads.length > 0 && leads.length < 3) {
-    leads.push({
-      ...leads[0],
-      id: 998,
-      slug: 'test-cricket-match',
-      headlineBn: 'বাংলাদেশ বনাম ভারত: মিরপুরে রোমাঞ্চকর জয়',
-      deck: 'মিরপুর শেরেবাংলা স্টেডিয়ামে ভারতের বিপক্ষে দুর্দান্ত জয় পেয়েছে বাংলাদেশ। শেষ ওভারে দরকার ছিল ১২ রান, এবং চমৎকার ব্যাটিংয়ে সেই লক্ষ্য পূরণ করে টাইগাররা।',
-      sport: 'cricket',
-      mediaUrl: 'https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?q=80&w=2862&auto=format&fit=crop'
-    });
-    leads.push({
-      ...leads[0],
-      id: 999,
-      slug: 'test-football-messi',
-      headlineBn: 'মেসির নতুন ম্যাজিক, ইন্টার মায়ামির জয়',
-      deck: 'মেজর লিগ সকারে আবারও লিওনেল মেসির পায়ের জাদু। তার দুর্দান্ত ফ্রি-কিক গোলে নিশ্চিত পরাজয় থেকে রক্ষা পেল ইন্টার মায়ামি।',
-      sport: 'football',
-      mediaUrl: 'https://images.unsplash.com/photo-1518605368461-1e1296cb3b5e?q=80&w=2940&auto=format&fit=crop'
-    });
-  }
   const footballArticles = footballResult.status === 'fulfilled' ? (footballResult.value.data ?? []) : [];
   const cricketArticles = cricketResult.status === 'fulfilled' ? (cricketResult.value.data ?? []) : [];
   const interviewArticles = interviewResult.status === 'fulfilled' ? (interviewResult.value.data ?? []) : [];
@@ -279,7 +257,7 @@ export default async function HomePage() {
           <HomeNav />
         </div>
 
-        <HeroSlideshow articles={leads.slice(0, 3)} />
+        <HeroSlideshow articles={leads.slice(0, 5)} />
 
         {/* SCORES STRIP */}
         <div className="mb-4">
