@@ -124,6 +124,14 @@ function CardLead({ article }: { article: Article }) {
       <div style={{ marginTop: 'auto' }}>
         <span style={{ fontFamily: 'var(--font-body)', fontSize: 11, color: 'var(--ink-muted)', fontStyle: 'italic' }}>
           {article.byline || 'স্টাফ রিপোর্টার'}
+          {article.publishedAt && (
+            <>
+              {' • '}
+              <span style={{ fontStyle: 'normal' }}>
+                {new Date(article.publishedAt).toLocaleDateString('bn-BD', { day: 'numeric', month: 'long', year: 'numeric' })}
+              </span>
+            </>
+          )}
         </span>
       </div>
     </div>
@@ -265,19 +273,9 @@ function CategorySection({ title, slug, articles, banner }: { title: string, slu
             {/* Left: Lead article with big image */}
             <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
               <CardLead article={latestArticle} />
-              {/* Second article as compact below lead on left */}
-              {secondArticle && <CardCompact article={secondArticle} />}
-            </div>
-            {/* Right: compact list of articles */}
-            <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-              {thirdArticle && <CardCompact article={thirdArticle} />}
-              {fourthArticle && <CardCompact article={fourthArticle} />}
-              {articles[4] && <CardCompact article={articles[4]} />}
-              {articles[5] && <CardCompact article={articles[5]} />}
-              {articles[6] && <CardCompact article={articles[6]} />}
               
-              {/* Larger Red Link on the right side */}
-              <div style={{ marginTop: 'auto', paddingTop: 16, display: 'flex', justifyContent: 'flex-end' }}>
+              {/* Larger Red Link filling the empty space at the bottom of left column */}
+              <div style={{ marginTop: 'auto', paddingTop: 16, display: 'flex', justifyContent: 'flex-start' }}>
                 <Link 
                   href={`/sport/${slug}`} 
                   style={{ 
@@ -294,6 +292,14 @@ function CategorySection({ title, slug, articles, banner }: { title: string, slu
                   সব খবর দেখুন <span style={{ fontSize: '24px', lineHeight: 1 }}>›</span>
                 </Link>
               </div>
+            </div>
+            {/* Right: compact list of articles starting from second article */}
+            <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+              {secondArticle && <CardCompact article={secondArticle} />}
+              {thirdArticle && <CardCompact article={thirdArticle} />}
+              {fourthArticle && <CardCompact article={fourthArticle} />}
+              {articles[4] && <CardCompact article={articles[4]} />}
+              {articles[5] && <CardCompact article={articles[5]} />}
             </div>
           </>
         ) : (
