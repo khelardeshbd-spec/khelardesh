@@ -299,7 +299,7 @@ export default function NewArticlePage() {
                 onChange={(e) => setIsLead(e.target.checked)}
                 style={{ width: '15px', height: '15px', cursor: 'pointer' }}
               />
-              <span>Hero News</span>
+              <span>Top News</span>
             </label>
           </div>
 
