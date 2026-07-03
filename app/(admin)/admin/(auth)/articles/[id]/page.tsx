@@ -906,7 +906,7 @@ export default function EditArticlePage({ params }: { params: { id: string } }) 
                   >
                     <Trash2 size={16} />
                   </button>
-                  <div className="text-xs font-bold text-[var(--ink-muted)] mb-1 flex items-center justify-between gap-1">
+                  <div className="text-xs font-bold text-[var(--ink-muted)] mb-1 flex items-center justify-between gap-1 mr-8">
                     <div className="flex items-center gap-1">
                       <span className="font-bold font-serif text-sm">B</span> BOLD PARAGRAPH (বোল্ড অনুচ্ছেদ)
                     </div>
