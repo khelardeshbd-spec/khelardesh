@@ -8,7 +8,7 @@ import AdminShell from '../../../AdminShell';
 
 interface EditorBlock {
   id: string;
-  type: 'paragraph' | 'image' | 'ad' | 'bullet' | 'quote';
+  type: 'paragraph' | 'image' | 'ad' | 'bullet' | 'quote' | 'bold_paragraph';
   value?: string;
   url?: string;
   caption?: string;
@@ -16,6 +16,7 @@ interface EditorBlock {
   ctaUrl?: string;
   useAdsterra?: boolean;
   adsterraCode?: string;
+  fontSize?: string;
   // bullet: value is newline-separated items
   // quote: value is the quote text, caption is the attribution
 }
@@ -63,6 +64,10 @@ function parseBodyToBlocks(bodyStr: string): EditorBlock[] {
     if (quoteMatch) {
       return { id, type: 'quote', value: quoteMatch[1].trim(), caption: quoteMatch[2].trim() };
     }
+    const boldMatch = part.trim().match(/^\[BOLD:\s*(\d+)\s*\|\s*([\s\S]*?)\]$/i);
+    if (boldMatch) {
+      return { id, type: 'bold_paragraph', fontSize: boldMatch[1], value: boldMatch[2].trim() };
+    }
     return { id, type: 'paragraph', value: part };
   });
 }
@@ -85,6 +90,9 @@ function serializeBlocksToBody(blocks: EditorBlock[]): string {
       }
       if (block.type === 'quote') {
         return `[QUOTE: ${block.value || ''} | ${block.caption || ''}]`;
+      }
+      if (block.type === 'bold_paragraph') {
+        return `[BOLD: ${block.fontSize || '19'} | ${block.value || ''}]`;
       }
       return block.value || '';
     })
@@ -175,7 +183,7 @@ export default function EditArticlePage({ params }: { params: { id: string } }) 
       });
   }, [params.id]);
 
-  const addBlock = (index: number, type: 'paragraph' | 'image' | 'ad' | 'bullet' | 'quote') => {
+  const addBlock = (index: number, type: 'paragraph' | 'image' | 'ad' | 'bullet' | 'quote' | 'bold_paragraph') => {
     const newBlock: EditorBlock = {
       id: `block-${Date.now()}-${Math.random()}`,
       type,
@@ -884,6 +892,46 @@ export default function EditArticlePage({ params }: { params: { id: string } }) 
                     onChange={(e) => updateBlock(block.id, { caption: e.target.value })}
                     className="w-full text-sm p-2 border-b border-amber-300 bg-transparent text-[var(--ink-muted)] focus:outline-none focus:border-amber-500"
                     style={{ fontFamily: 'var(--font-body)', fontStyle: 'italic' }}
+                  />
+                </div>
+              )}
+
+              {block.type === 'bold_paragraph' && (
+                <div className="relative border border-[var(--ink-border)] rounded-lg p-4 bg-[var(--bg-surface)] my-4 flex flex-col gap-2">
+                  <button
+                    type="button"
+                    onClick={() => removeBlock(block.id)}
+                    className="absolute top-2 right-2 text-red-500 hover:text-red-700 bg-white/80 p-1.5 rounded-full border border-red-200 z-10"
+                    title="Remove block"
+                  >
+                    <Trash2 size={16} />
+                  </button>
+                  <div className="text-xs font-bold text-[var(--ink-muted)] mb-1 flex items-center justify-between gap-1">
+                    <div className="flex items-center gap-1">
+                      <span className="font-bold font-serif text-sm">B</span> BOLD PARAGRAPH (বোল্ড অনুচ্ছেদ)
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <label className="text-[10px] text-[var(--ink-muted)] uppercase tracking-wider font-semibold">Font Size:</label>
+                      <input
+                        type="number"
+                        value={block.fontSize || '19'}
+                        onChange={(e) => updateBlock(block.id, { fontSize: e.target.value })}
+                        className="w-16 px-2 py-1 text-xs border border-[var(--ink-border)] rounded bg-transparent focus:outline-none"
+                      />
+                    </div>
+                  </div>
+                  <textarea
+                    value={block.value || ''}
+                    onChange={(e) => {
+                      updateBlock(block.id, { value: e.target.value });
+                      e.target.style.height = 'auto';
+                      e.target.style.height = e.target.scrollHeight + 'px';
+                    }}
+                    ref={(el) => { if (el) { el.style.height = 'auto'; el.style.height = el.scrollHeight + 'px'; } }}
+                    rows={2}
+                    placeholder={'বোল্ড অনুচ্ছেদ লিখুন...'}
+                    className="w-full text-sm p-2 border border-[var(--ink-border)] rounded bg-transparent text-[var(--ink)] focus:outline-none focus:border-[var(--ink)] resize-none"
+                    style={{ fontFamily: 'var(--font-body)', fontSize: `${block.fontSize || '19'}px`, lineHeight: '1.75', overflow: 'hidden', fontWeight: 'bold' }}
                   />
                 </div>
               )}
