@@ -180,6 +180,10 @@ body {
   cursor: url("/images/cursor-football.svg") 15 15, auto;
 }
 
+body.admin-layout {
+  cursor: auto !important;
+}
+
 a {
   color: inherit;
   text-decoration: none;
@@ -201,6 +205,16 @@ button {
 /* Custom Cricket Bat Cursor for all clickable elements */
 a, button, [role="button"], input[type="submit"], input[type="button"], label, .cursor-pointer {
   cursor: url("/images/cursor-bat.svg") 15 15, pointer !important;
+}
+
+body.admin-layout a, 
+body.admin-layout button, 
+body.admin-layout [role="button"], 
+body.admin-layout input[type="submit"], 
+body.admin-layout input[type="button"], 
+body.admin-layout label, 
+body.admin-layout .cursor-pointer {
+  cursor: pointer !important;
 }
 
 ul, ol {

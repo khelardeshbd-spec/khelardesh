@@ -362,6 +362,7 @@ export default async function ArticlePage({ params }: PageProps) {
               const adsterraMatch = para.match(/^\[ADSTERRA:\s*(.*?)\s*\]$/i);
               const bulletsMatch = para.match(/^\[BULLETS:([\s\S]*)\]$/i);
               const quoteMatch = para.match(/^\[QUOTE:\s*([\s\S]*?)\s*\|\s*([\s\S]*?)\s*\]$/i);
+              const boldMatch = para.match(/^\[BOLD:\s*(\d+)\s*\|\s*([\s\S]*?)\]$/i);
 
               return (
                 <div key={i}>
@@ -403,6 +404,22 @@ export default async function ArticlePage({ params }: PageProps) {
                         item.trim() ? <li key={idx} style={{ marginBottom: '0.4em' }}>{item.trim()}</li> : null
                       ))}
                     </ul>
+                  ) : boldMatch ? (
+                    <p
+                      lang="bn"
+                      style={{
+                        fontFamily: 'var(--font-body)',
+                        fontWeight: 700,
+                        fontSize: `${boldMatch[1]}px`,
+                        lineHeight: '1.75',
+                        color: 'var(--ink)',
+                        marginBottom: '1.6em',
+                        overflowWrap: 'break-word',
+                        wordBreak: 'break-word',
+                      }}
+                    >
+                      {boldMatch[2].trim()}
+                    </p>
                   ) : quoteMatch ? (
                     <div lang="bn" style={{ marginBottom: '1.6em', maxWidth: '100%', overflow: 'hidden' }}>
                       <p

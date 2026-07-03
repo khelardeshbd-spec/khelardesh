@@ -15,7 +15,7 @@ export const metadata: Metadata = {
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body style={{ backgroundColor: '#F9FAFB' }}>
+      <body className="admin-layout" style={{ backgroundColor: '#F9FAFB' }}>
         <AdminSessionProvider>
           {children}
         </AdminSessionProvider>
