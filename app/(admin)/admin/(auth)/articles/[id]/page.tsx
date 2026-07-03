@@ -1001,6 +1001,16 @@ export default function EditArticlePage({ params }: { params: { id: string } }) 
                       >
                         <Quote size={12} /> Quote Box (উদ্ধৃতি)
                       </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          addBlock(index, 'bold_paragraph');
+                          setActiveMenuBlockId(null);
+                        }}
+                        className="w-full px-3 py-1.5 text-left hover:bg-[var(--ink-ghost)] flex items-center gap-1.5 text-[var(--ink)]"
+                      >
+                        <span className="font-bold font-serif text-sm flex items-center justify-center w-3 h-3 mr-0.5">B</span> Bold Paragraph (বোল্ড অনুচ্ছেদ)
+                      </button>
                     </div>
                   )}
                 </div>
