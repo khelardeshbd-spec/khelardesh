@@ -9,6 +9,7 @@ import ThemeToggle from './ThemeToggle';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import UserNotificationPanel from './UserNotificationPanel';
+import { timeAgo } from '@/lib/timeAgo';
 
 interface SearchResult {
   id: number;
@@ -16,6 +17,9 @@ interface SearchResult {
   headline: string;
   headlineBn?: string | null;
   deck: string;
+  mediaUrl?: string;
+  publishedAt?: string;
+  byline?: string;
 }
 
 /** SVG Search icon */
@@ -97,20 +101,16 @@ export default function SmartHeader() {
     const delayDebounce = setTimeout(async () => {
       setLoading(true);
       try {
-        const { data } = await supabase
-          .from('Article')
-          .select('id, slug, headline, headlineBn, deck')
-          .eq('status', 'published')
-          .or(`headline.ilike.%${searchQuery}%,headlineBn.ilike.%${searchQuery}%,deck.ilike.%${searchQuery}%,slug.ilike.%${searchQuery}%`)
-          .order('publishedAt', { ascending: false })
-          .limit(6);
-        if (data) setResults(data);
+        const res = await fetch(`/api/articles?q=${encodeURIComponent(searchQuery.trim())}&page=1`);
+        if (!res.ok) throw new Error('Search failed');
+        const json = await res.json();
+        setResults((json.articles ?? []).slice(0, 6)); // limit to 6 for dropdown
       } catch (err) {
         console.error('Search error:', err);
       } finally {
         setLoading(false);
       }
-    }, 250);
+    }, 400);
     return () => clearTimeout(delayDebounce);
   }, [searchQuery]);
 
@@ -203,15 +203,22 @@ export default function SmartHeader() {
                             key={article.id}
                             href={`/article/${article.slug}`}
                             onClick={closeSearch}
-                            className="p-3 hover:bg-[var(--ink-ghost)] transition-colors flex flex-col text-left"
+                            className="p-3 hover:bg-[var(--ink-ghost)] transition-colors flex gap-3 text-left"
                             style={{ color: 'var(--ink)' }}
                           >
-                            <span lang="bn" style={{ fontFamily: "var(--font-body)", fontWeight: 600, fontSize: 14 }} className="line-clamp-1">
-                              {headline}
-                            </span>
-                            <span lang="bn" style={{ fontFamily: "var(--font-body)", fontSize: 11, color: 'var(--ink-muted)' }} className="line-clamp-1 mt-0.5">
-                              {article.deck}
-                            </span>
+                            {article.mediaUrl && (
+                              <div className="flex-shrink-0" style={{ width: 60, height: 45, backgroundColor: 'var(--ink-ghost)', borderRadius: 4, overflow: 'hidden' }}>
+                                <img src={article.mediaUrl} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                              </div>
+                            )}
+                            <div className="flex flex-col min-w-0 flex-1">
+                              <span lang="bn" style={{ fontFamily: "var(--font-body)", fontWeight: 600, fontSize: 14 }} className="line-clamp-1">
+                                {headline}
+                              </span>
+                              <span lang="bn" style={{ fontFamily: "var(--font-body)", fontSize: 11, color: 'var(--ink-muted)' }} className="line-clamp-1 mt-0.5">
+                                {article.publishedAt ? timeAgo(article.publishedAt, 'bn') : ''} {article.byline ? `· ${article.byline}` : ''}
+                              </span>
+                            </div>
                           </Link>
                         );
                       })
@@ -341,12 +348,22 @@ export default function SmartHeader() {
                       key={article.id}
                       href={`/article/${article.slug}`}
                       onClick={closeSearch}
-                      className="p-3 hover:bg-[var(--ink-ghost)] transition-colors"
+                      className="p-3 hover:bg-[var(--ink-ghost)] transition-colors flex gap-3 text-left"
                       style={{ color: 'var(--ink)' }}
                     >
-                      <span lang="bn" style={{ fontFamily: "var(--font-body)", fontWeight: 600, fontSize: 14 }} className="line-clamp-2 block">
-                        {headline}
-                      </span>
+                      {article.mediaUrl && (
+                        <div className="flex-shrink-0" style={{ width: 60, height: 45, backgroundColor: 'var(--ink-ghost)', borderRadius: 4, overflow: 'hidden' }}>
+                          <img src={article.mediaUrl} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                        </div>
+                      )}
+                      <div className="flex flex-col min-w-0 flex-1">
+                        <span lang="bn" style={{ fontFamily: "var(--font-body)", fontWeight: 600, fontSize: 14 }} className="line-clamp-2">
+                          {headline}
+                        </span>
+                        <span lang="bn" style={{ fontFamily: "var(--font-body)", fontSize: 11, color: 'var(--ink-muted)' }} className="line-clamp-1 mt-0.5">
+                          {article.publishedAt ? timeAgo(article.publishedAt, 'bn') : ''} {article.byline ? `· ${article.byline}` : ''}
+                        </span>
+                      </div>
                     </Link>
                   );
                 }) : !loading && (

@@ -31,7 +31,8 @@ export async function GET(request: Request) {
     if (sport) query = query.eq('sport', sport)
 
     if (q) {
-      const avroQuery = avroParse(q)
+      const avroObj = avroParse(q)
+      const avroQuery = avroObj?.bangla || q
       query = query.or(
         `headline.ilike.%${q}%,headlineBn.ilike.%${q}%,deck.ilike.%${q}%,headline.ilike.%${avroQuery}%,headlineBn.ilike.%${avroQuery}%,deck.ilike.%${avroQuery}%`
       )
