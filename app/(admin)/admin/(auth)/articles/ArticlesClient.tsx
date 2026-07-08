@@ -147,7 +147,7 @@ function ArticleRow({
         {(art.views ?? 0).toLocaleString()}
       </td>
       <td className="p-4 text-right text-xs text-[var(--ink-muted)] whitespace-nowrap">
-        {new Date(art.publishedAt).toLocaleDateString('bn-BD', { dateStyle: 'medium' })}
+        {new Date(art.publishedAt).toLocaleString('bn-BD', { dateStyle: 'medium', timeStyle: 'short' })}
       </td>
       <td className="p-4 text-right">
         <div className="flex items-center justify-end gap-3 relative">
@@ -411,40 +411,40 @@ export default function ArticlesClient({ initialArticles }: ArticlesClientProps)
           <table style={{ width: '100%', borderCollapse: 'collapse' }}>
             <thead>
               <tr style={{ borderBottom: '1px solid var(--ink-border)' }}>
-                {/* Sortable headers */}
-                <th className="p-4 text-left cursor-pointer hover:text-[var(--ink)]" onClick={() => handleSort('headline')}>
+                {/* Sortable headers with explicit widths for proper row alignment */}
+                <th className="p-4 text-left cursor-pointer hover:text-[var(--ink)]" style={{ width: '45%' }} onClick={() => handleSort('headline')}>
                   <div className="flex items-center gap-1.5" style={{ fontFamily: "'Hind Siliguri', sans-serif", fontSize: 10, fontWeight: 600, color: sortField === 'headline' ? 'var(--ink)' : 'var(--ink-muted)' }}>
                     Headline
                     {sortField === 'headline' ? (sortAsc ? <ChevronUp size={12} /> : <ChevronDown size={12} />) : null}
                   </div>
                 </th>
 
-                <th className="p-4 text-left cursor-pointer hover:text-[var(--ink)]" onClick={() => handleSort('sport')}>
+                <th className="p-4 text-left cursor-pointer hover:text-[var(--ink)]" style={{ width: '15%' }} onClick={() => handleSort('sport')}>
                   <div className="flex items-center gap-1.5" style={{ fontFamily: "'Hind Siliguri', sans-serif", fontSize: 10, fontWeight: 600, color: sortField === 'sport' ? 'var(--ink)' : 'var(--ink-muted)' }}>
                     Sport Category
                     {sortField === 'sport' ? (sortAsc ? <ChevronUp size={12} /> : <ChevronDown size={12} />) : null}
                   </div>
                 </th>
 
-                <th className="p-4 text-left" style={{ fontFamily: "'Hind Siliguri', sans-serif", fontSize: 10, fontWeight: 600, color: 'var(--ink-muted)' }}>
+                <th className="p-4 text-left" style={{ width: '15%', fontFamily: "'Hind Siliguri', sans-serif", fontSize: 10, fontWeight: 600, color: 'var(--ink-muted)' }}>
                   Byline
                 </th>
 
-                <th className="p-4 text-right cursor-pointer hover:text-[var(--ink)]" onClick={() => handleSort('views')}>
+                <th className="p-4 text-right cursor-pointer hover:text-[var(--ink)]" style={{ width: '8%' }} onClick={() => handleSort('views')}>
                   <div className="flex items-center justify-end gap-1.5" style={{ fontFamily: "'Hind Siliguri', sans-serif", fontSize: 10, fontWeight: 600, color: sortField === 'views' ? 'var(--ink)' : 'var(--ink-muted)' }}>
                     Views
                     {sortField === 'views' ? (sortAsc ? <ChevronUp size={12} /> : <ChevronDown size={12} />) : null}
                   </div>
                 </th>
 
-                <th className="p-4 text-right cursor-pointer hover:text-[var(--ink)]" onClick={() => handleSort('publishedAt')}>
+                <th className="p-4 text-right cursor-pointer hover:text-[var(--ink)]" style={{ width: '12%' }} onClick={() => handleSort('publishedAt')}>
                   <div className="flex items-center justify-end gap-1.5" style={{ fontFamily: "'Hind Siliguri', sans-serif", fontSize: 10, fontWeight: 600, color: sortField === 'publishedAt' ? 'var(--ink)' : 'var(--ink-muted)' }}>
                     Published Date
                     {sortField === 'publishedAt' ? (sortAsc ? <ChevronUp size={12} /> : <ChevronDown size={12} />) : null}
                   </div>
                 </th>
 
-                <th className="p-4 text-right" style={{ fontFamily: "'Hind Siliguri', sans-serif", fontSize: 10, fontWeight: 600, color: 'var(--ink-muted)' }}>
+                <th className="p-4 text-right" style={{ width: '5%', fontFamily: "'Hind Siliguri', sans-serif", fontSize: 10, fontWeight: 600, color: 'var(--ink-muted)' }}>
                   Actions
                 </th>
               </tr>
