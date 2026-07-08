@@ -124,6 +124,10 @@ function ArticleRow({
               <span className="px-1.5 py-0.5 rounded text-[8px] font-bold bg-[#9B59B6] text-white uppercase tracking-wider" style={{ fontFamily: "'Hind Siliguri', sans-serif" }}>
                 Archived
               </span>
+            ) : art.status === 'deleted' ? (
+              <span className="px-1.5 py-0.5 rounded text-[8px] font-bold bg-red-600 text-white uppercase tracking-wider" style={{ fontFamily: "'Hind Siliguri', sans-serif" }}>
+                Deleted
+              </span>
             ) : (
               <span className="px-1.5 py-0.5 rounded text-[8px] font-bold bg-[#27AE60] text-white uppercase tracking-wider" style={{ fontFamily: "'Hind Siliguri', sans-serif" }}>
                 Live
@@ -193,6 +197,12 @@ function ArticleRow({
                           <button onClick={() => { onUpdateStatus(art, 'draft'); setMenuOpen(false); }} className="w-full px-3 py-2 text-xs text-left hover:bg-[var(--ink-ghost)] flex items-center gap-2 text-slate-700 border-none bg-transparent cursor-pointer font-semibold" style={{ fontFamily: "'Hind Siliguri', sans-serif" }}>Restore to Draft</button>
                         </>
                       )}
+                      {art.status === 'deleted' && (
+                        <>
+                          <button onClick={() => { onUpdateStatus(art, 'draft'); setMenuOpen(false); }} className="w-full px-3 py-2 text-xs text-left hover:bg-[var(--ink-ghost)] flex items-center gap-2 text-green-700 border-none bg-transparent cursor-pointer font-semibold" style={{ fontFamily: "'Hind Siliguri', sans-serif" }}>Restore to Draft</button>
+                          <button onClick={() => { onUpdateStatus(art, 'published'); setMenuOpen(false); }} className="w-full px-3 py-2 text-xs text-left hover:bg-[var(--ink-ghost)] flex items-center gap-2 text-green-700 border-none bg-transparent cursor-pointer font-semibold" style={{ fontFamily: "'Hind Siliguri', sans-serif" }}>Restore & Publish</button>
+                        </>
+                      )}
                     </>
                   )}
                   {canDelete && (
@@ -201,7 +211,7 @@ function ArticleRow({
                       className="w-full px-3 py-2 text-xs text-left hover:bg-red-50 flex items-center gap-2 text-red-600 border-none bg-transparent cursor-pointer font-semibold"
                       style={{ fontFamily: "'Hind Siliguri', sans-serif" }}
                     >
-                      Delete
+                      {art.status === 'deleted' ? 'Delete Permanently' : 'Delete'}
                     </button>
                   )}
                 </FixedDropdown>
@@ -219,7 +229,7 @@ export default function ArticlesClient({ initialArticles }: ArticlesClientProps)
   const [searchQuery, setSearchQuery] = useState('');
   const [sortField, setSortField] = useState<'publishedAt' | 'headline' | 'sport' | 'views'>('publishedAt');
   const [sortAsc, setSortAsc] = useState(false);
-  const [statusFilter, setStatusFilter] = useState<'all' | 'published' | 'draft' | 'archived'>('all');
+  const [statusFilter, setStatusFilter] = useState<'all' | 'published' | 'draft' | 'archived' | 'deleted'>('all');
 
   const { data: session } = useSession();
   const user = session?.user as any;
@@ -264,13 +274,25 @@ export default function ArticlesClient({ initialArticles }: ArticlesClientProps)
   };
 
   const handleDelete = async (id: number) => {
-    if (!confirm('নিবন্ধটি চিরতরে মুছে ফেলতে চান?')) return;
+    const article = articles.find(a => a.id === id);
+    const isAlreadyDeleted = article?.status === 'deleted';
+    const confirmMessage = isAlreadyDeleted
+      ? 'নিবন্ধটি চিরতরে মুছে ফেলতে চান? এটি আর পুনরুদ্ধার করা যাবে না।'
+      : 'নিবন্ধটি মুছে ফেলতে চান? এটি সাময়িকভাবে "Recently Deleted" ট্যাবে জমা থাকবে।';
+
+    if (!confirm(confirmMessage)) return;
+
     try {
       const res = await fetch(`/api/admin/articles/${id}`, {
         method: 'DELETE',
       });
       if (!res.ok) throw new Error('Failed to delete article');
-      setArticles(prev => prev.filter(a => a.id !== id));
+      
+      if (isAlreadyDeleted) {
+        setArticles(prev => prev.filter(a => a.id !== id));
+      } else {
+        setArticles(prev => prev.map(a => a.id === id ? { ...a, status: 'deleted' } : a));
+      }
     } catch (err) {
       console.error(err);
       alert('Error deleting article');
@@ -283,6 +305,8 @@ export default function ArticlesClient({ initialArticles }: ArticlesClientProps)
 
     if (statusFilter !== 'all') {
       result = result.filter(a => (a.status || 'published') === statusFilter);
+    } else {
+      result = result.filter(a => (a.status || 'published') !== 'deleted');
     }
 
     if (searchQuery.trim()) {
@@ -362,6 +386,10 @@ export default function ArticlesClient({ initialArticles }: ArticlesClientProps)
               onClick={() => setStatusFilter('archived')}
               className={`px-3 py-1 rounded text-xs font-semibold transition-colors ${statusFilter === 'archived' ? 'bg-white shadow-sm text-[var(--ink)]' : 'text-[var(--ink-muted)] hover:text-[var(--ink)]'}`}
             >Archives</button>
+            <button
+              onClick={() => setStatusFilter('deleted')}
+              className={`px-3 py-1 rounded text-xs font-semibold transition-colors ${statusFilter === 'deleted' ? 'bg-white shadow-sm text-red-600' : 'text-[var(--ink-muted)] hover:text-red-500'}`}
+            >Recently Deleted</button>
           </div>
           {canWriteArticles && (
             <Link href="/admin/articles/new" className="admin-btn-primary flex items-center gap-2" style={{ height: 42 }}>

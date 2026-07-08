@@ -73,6 +73,9 @@ export async function PUT(
     if (prev.status === 'archived' && !hasPermission(user, 'edit_archives')) {
       return new Response('Forbidden — You do not have permission to edit archives', { status: 403 })
     }
+    if (prev.status === 'deleted' && !hasPermission(user, 'edit_drafts')) {
+      return new Response('Forbidden — You do not have permission to restore deleted articles', { status: 403 })
+    }
 
     const updatePayload: any = {
       headline,
@@ -153,19 +156,30 @@ export async function DELETE(
     if (article.status === 'draft' && !hasPermission(user, 'delete_drafts')) {
       return new Response('Forbidden — You do not have permission to delete drafts', { status: 403 })
     }
-    if (article.status === 'archived' && !hasPermission(user, 'delete_archives')) {
-      return new Response('Forbidden — You do not have permission to delete archives', { status: 403 })
+    if (article.status === 'deleted' && !hasPermission(user, 'delete_drafts')) {
+      return new Response('Forbidden — You do not have permission to permanently delete articles', { status: 403 })
     }
 
-    const { error } = await supabaseAdmin.from('Article').delete().eq('id', id)
-    if (error) throw error
+    const shouldHardDelete = article.status === 'deleted'
+
+    if (shouldHardDelete) {
+      const { error } = await supabaseAdmin.from('Article').delete().eq('id', id)
+      if (error) throw error
+    } else {
+      const { error } = await supabaseAdmin
+        .from('Article')
+        .update({ status: 'deleted', updatedAt: new Date().toISOString() })
+        .eq('id', id)
+      if (error) throw error
+    }
 
     await logActivity({
       actor: user!,
-      action: 'article.delete',
+      action: shouldHardDelete ? 'article.delete' : 'article.update', // Log as update or delete
       targetType: 'article',
       targetId: String(id),
       targetLabel: article?.headline ?? String(id),
+      metadata: shouldHardDelete ? { permanent: true } : { softDelete: true }
     })
 
     return NextResponse.json({ success: true })
