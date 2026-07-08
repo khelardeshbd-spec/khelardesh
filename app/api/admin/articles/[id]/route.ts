@@ -74,23 +74,29 @@ export async function PUT(
       return new Response('Forbidden — You do not have permission to edit archives', { status: 403 })
     }
 
+    const updatePayload: any = {
+      headline,
+      headlineBn: headlineBn || null,
+      deck,
+      body: articleBody,
+      kicker,
+      sport,
+      mediaType,
+      mediaUrl,
+      mediaCaption: mediaCaption || null,
+      byline,
+      isLead: isLead ?? false,
+      status: status || 'published',
+      updatedAt: new Date().toISOString(),
+    }
+
+    if (prev?.status !== 'published' && status === 'published') {
+      updatePayload.publishedAt = new Date().toISOString()
+    }
+
     const { data: article, error } = await supabaseAdmin
       .from('Article')
-      .update({
-        headline,
-        headlineBn: headlineBn || null,
-        deck,
-        body: articleBody,
-        kicker,
-        sport,
-        mediaType,
-        mediaUrl,
-        mediaCaption: mediaCaption || null,
-        byline,
-        isLead: isLead ?? false,
-        status: status || 'published',
-        updatedAt: new Date().toISOString(),
-      })
+      .update(updatePayload)
       .eq('id', id)
       .select()
       .single()
