@@ -358,6 +358,31 @@ export default function NewArticlePage() {
             </div>
           </div>
 
+          {/* Hanger (Kicker) Input */}
+          <div className="mb-4">
+            <input
+              type="text"
+              placeholder="হ্যাঙ্গার (যেমন: চ্যাম্পিয়নস লিগ · সেমিফাইনাল)..."
+              style={{
+                width: '100%',
+                fontFamily: "'Abu JM Akkas', 'Hind Siliguri', sans-serif",
+                fontSize: '14px',
+                fontWeight: 700,
+                letterSpacing: '0.05em',
+                textTransform: 'uppercase',
+                color: '#d33f3f',
+                border: 'none',
+                borderBottom: '1px dashed var(--ink-border)',
+                background: 'transparent',
+                padding: '6px 0',
+                outline: 'none',
+              }}
+              className="focus:border-[var(--ink)] placeholder:text-[var(--ink-muted)] placeholder:font-normal"
+              value={kicker}
+              onChange={(e) => setKicker(e.target.value)}
+            />
+          </div>
+
           {/* Article Headline Input (Bengali / Primary) */}
           <div className="mb-4">
             <textarea
@@ -514,31 +539,6 @@ export default function NewArticlePage() {
               className="focus:border-[var(--ink)] placeholder:text-[var(--ink-muted)]"
               value={deck}
               onChange={(e) => setDeck(e.target.value)}
-            />
-          </div>
-
-          {/* Kicker Category Line */}
-          <div className="mb-6">
-            <input
-              type="text"
-              placeholder="কিকার বা উপশ্রেণী (যেমন: চ্যাম্পিয়নস লিগ · সেমিফাইনাল)..."
-              style={{
-                width: '100%',
-                fontFamily: "'Abu JM Akkas', 'Hind Siliguri', sans-serif",
-                fontSize: '12px',
-                fontWeight: 500,
-                letterSpacing: '0.14em',
-                textTransform: 'uppercase',
-                color: 'var(--ink-muted)',
-                border: 'none',
-                borderBottom: '1px dashed var(--ink-border)',
-                background: 'transparent',
-                padding: '4px 0',
-                outline: 'none',
-              }}
-              className="focus:border-[var(--ink)] placeholder:text-[var(--ink-muted)] placeholder:font-normal"
-              value={kicker}
-              onChange={(e) => setKicker(e.target.value)}
             />
           </div>
 
