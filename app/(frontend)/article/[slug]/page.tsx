@@ -257,8 +257,25 @@ export default async function ArticlePage({ params }: PageProps) {
           >
             {displayHeadline}
           </h1>
-
-          {/* Hero Image / Video */}
++
++          {/* Deck / Subheadline (Shoulder) */}
++          {deck && (
++            <p
++              lang="bn"
++              style={{
++                fontFamily: "var(--font-body)",
++                fontSize: 'clamp(16px, 2.5vw, 20px)',
++                lineHeight: 1.5,
++                color: 'var(--ink-muted)',
++                marginBottom: '24px',
++                fontWeight: 500,
++              }}
++            >
++              {deck}
++            </p>
++          )}
++
++          {/* Hero Image / Video */}
           <div className="w-[calc(100%+2rem)] -mx-4 sm:w-full sm:mx-0 mb-6">
             <div
               className="w-full relative overflow-hidden sm:rounded-md border-b sm:border"
