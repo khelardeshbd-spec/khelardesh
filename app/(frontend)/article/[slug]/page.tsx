@@ -241,6 +241,17 @@ export default async function ArticlePage({ params }: PageProps) {
         {/* Main Editorial Article Column */}
         <article className="min-w-0">
           
+          {/* Kicker / Hanger Section */}
+          {kicker && (
+            <p
+              lang="bn"
+              className="text-[#d33f3f] font-bold text-sm sm:text-base tracking-wider uppercase mb-1"
+              style={{ fontFamily: "var(--font-body)", marginTop: '20px' }}
+            >
+              {kicker}
+            </p>
+          )}
+
           {/* Headline */}
           <h1
             lang="bn"
@@ -252,7 +263,7 @@ export default async function ArticlePage({ params }: PageProps) {
               letterSpacing: '-0.02em',
               color: 'var(--ink)',
               marginBottom: '16px',
-              marginTop: '20px',
+              marginTop: kicker ? '4px' : '20px',
             }}
           >
             {displayHeadline}
