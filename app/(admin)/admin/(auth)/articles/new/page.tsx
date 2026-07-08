@@ -362,7 +362,7 @@ export default function NewArticlePage() {
           <div className="mb-4">
             <input
               type="text"
-              placeholder="হ্যাঙ্গার (যেমন: চ্যাম্পিয়নস লিগ · সেমিফাইনাল)..."
+              placeholder="write your hanger here..."
               style={{
                 width: '100%',
                 fontFamily: "'Abu JM Akkas', 'Hind Siliguri', sans-serif",
