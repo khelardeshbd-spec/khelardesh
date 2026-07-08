@@ -252,7 +252,7 @@ export default function EditArticlePage({ params }: { params: { id: string } }) 
         headlineBn: headlineBn || null,
         deck: deck || '',
         body: body.trim(),
-        kicker: kicker || sportLabel,
+        kicker: kicker || '',
         byline: byline || 'খেলারদেশ প্রতিনিধি',
         sport,
         mediaType,

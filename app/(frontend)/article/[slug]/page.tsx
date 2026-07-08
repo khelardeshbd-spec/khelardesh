@@ -242,32 +242,39 @@ export default async function ArticlePage({ params }: PageProps) {
         <article className="min-w-0">
           
           {/* Kicker / Hanger Section */}
-          {kicker && (
-            <p
-              lang="bn"
-              className="text-[#d33f3f] font-bold text-sm sm:text-base tracking-wider uppercase mb-1"
-              style={{ fontFamily: "var(--font-body)", marginTop: '20px' }}
-            >
-              {kicker}
-            </p>
-          )}
+          {(() => {
+            const showKicker = !!(kicker && !['ফুটবল', 'দেশের ফুটবল', 'বিদেশের ফুটবল', 'পাড়া মহল্লার ফুটবল', 'ক্রিকেট', 'দেশের ক্রিকেট', 'বিদেশের ক্রিকেট', 'পাড়া মহল্লার ক্রিকেট', 'ইন্টারভিউ', 'ফিচার', 'খেলার দেশ বিশেষ', 'অতিথি কলাম', 'এই দিনে', 'অন্যান্য', 'খেলাধুলা'].includes(kicker.trim()));
+            return (
+              <>
+                {showKicker && (
+                  <p
+                    lang="bn"
+                    className="text-[#d33f3f] font-bold text-sm sm:text-base tracking-wider uppercase mb-1"
+                    style={{ fontFamily: "var(--font-body)", marginTop: '20px' }}
+                  >
+                    {kicker}
+                  </p>
+                )}
 
-          {/* Headline */}
-          <h1
-            lang="bn"
-            style={{
-              fontFamily: "var(--font-headline)",
-              fontWeight: 800,
-              fontSize: 'clamp(28px, 4.5vw, 42px)',
-              lineHeight: 1.15,
-              letterSpacing: '-0.02em',
-              color: 'var(--ink)',
-              marginBottom: '16px',
-              marginTop: kicker ? '4px' : '20px',
-            }}
-          >
-            {displayHeadline}
-          </h1>
+                {/* Headline */}
+                <h1
+                  lang="bn"
+                  style={{
+                    fontFamily: "var(--font-headline)",
+                    fontWeight: 800,
+                    fontSize: 'clamp(28px, 4.5vw, 42px)',
+                    lineHeight: 1.15,
+                    letterSpacing: '-0.02em',
+                    color: 'var(--ink)',
+                    marginBottom: '16px',
+                    marginTop: showKicker ? '4px' : '20px',
+                  }}
+                >
+                  {displayHeadline}
+                </h1>
+              </>
+            );
+          })()}
           {/* Deck / Subheadline (Shoulder) */}
           {deck && (
             <p

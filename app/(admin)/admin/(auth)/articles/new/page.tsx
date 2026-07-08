@@ -229,7 +229,7 @@ export default function NewArticlePage() {
         headlineBn: headlineBn || null,
         deck: deck || '',
         body: body.trim(),
-        kicker: kicker || sportLabel,
+        kicker: kicker || '',
         byline: byline || 'খেলারদেশ প্রতিনিধি',
         sport,
         mediaType,
