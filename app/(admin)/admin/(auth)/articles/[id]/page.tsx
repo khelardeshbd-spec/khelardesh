@@ -406,6 +406,8 @@ export default function EditArticlePage({ params }: { params: { id: string } }) 
             <span>/</span>
             <span className="text-[#1a5c2e]">
               {sportLabel}
+            </span>
+          </div>
         </div>
 
         {/* Hanger (Kicker) Input */}
