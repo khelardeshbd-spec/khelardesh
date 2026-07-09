@@ -80,9 +80,9 @@ export async function PUT(
     const updatePayload: any = {
       headline,
       headlineBn: headlineBn || null,
-      deck,
+      deck: deck || '',
       body: articleBody,
-      kicker,
+      kicker: kicker || '',
       sport,
       mediaType,
       mediaUrl,

@@ -50,7 +50,7 @@ export async function POST(request: NextRequest) {
       byline = 'Staff Reporter', isLead = false, status = 'published',
     } = body
 
-    if (!headline || !deck || !articleBody || !kicker || !sport || !mediaType || !mediaUrl) {
+    if (!headline || !articleBody || !sport || !mediaType || !mediaUrl) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
     }
 
@@ -68,9 +68,9 @@ export async function POST(request: NextRequest) {
         slug,
         headline,
         headlineBn: headlineBn || null,
-        deck,
+        deck: deck || '',
         body: articleBody,
-        kicker,
+        kicker: kicker || '',
         sport,
         mediaType,
         mediaUrl,
