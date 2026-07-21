@@ -186,9 +186,13 @@ export async function GET() {
         const isFinished = event.status?.type?.state === 'post';
         const statusText = isLive ? (event.status?.displayClock || event.status?.type?.shortDetail) : (isFinished ? 'FT' : formatStartTime(new Date(event.date).getTime() / 1000));
 
+        let leagueName = event.season?.slug || 'Soccer';
+        // Clean up the ESPN league slug (e.g. "2026-argentine-supercopa" -> "Argentine Supercopa")
+        leagueName = leagueName.replace(/^\d{4}-/, '').split('-').map((w: string) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+
         apiMatches.push({
           id: String(event.id),
-          league: event.season?.slug || 'Soccer',
+          league: leagueName,
           startTime: event.date,
           home: {
             name: home.team?.name || '',
