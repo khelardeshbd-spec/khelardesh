@@ -199,19 +199,31 @@ export default function ScoresStrip() {
       }
     };
   }, [data]);
-
-  if (isLoading || isError || !data || data.length === 0) {
-    return null;
-  }
-
   // Sort matches: live first, then chronological by startTime
-  const sorted = [...data].sort((a, b) => {
+  const sorted = data ? [...data].sort((a, b) => {
     if (a.isLive && !b.isLive) return -1;
     if (!a.isLive && b.isLive) return 1;
     return new Date(a.startTime).getTime() - new Date(b.startTime).getTime();
-  });
+  }) : [];
 
-  if (sorted.length === 0) return null;
+  if (isLoading || isError || !data || data.length === 0 || sorted.length === 0) {
+    return (
+      <section 
+        aria-label="খেলাসমূহ" 
+        className="-mx-6 py-4 overflow-hidden"
+        style={{ fontFamily: 'var(--font-body)' }}
+      >
+        <div className="px-6">
+          <h2 className="text-[17px] font-bold text-[#121212] mb-4">
+            লাইভ ও রিসেন্ট স্কোর
+          </h2>
+          <div className="text-[13px] text-[#555] py-4 bg-[#fafafa] border border-[#eee] rounded-md text-center">
+            বর্তমানে কোন লাইভ বা গুরুত্বপূর্ণ ম্যাচ নেই (No live or hot matches right now).
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section 
