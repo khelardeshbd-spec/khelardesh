@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { timeAgo } from '@/lib/timeAgo';
+import ClientFormattedDate from '@/components/frontend/ClientFormattedDate';
 import { supabase } from '@/lib/supabase';
 import { CheckCheck, Bell, MessageSquare } from 'lucide-react';
 
@@ -158,7 +158,7 @@ export default function NotificationsClient() {
                         <span className="font-bold">{notif.actorName || 'Someone'}</span> commented on an article.
                       </p>
                       <p className="text-xs text-[var(--ink-muted)] mt-0.5">
-                        {timeAgo(notif.createdAt, 'bn')}
+                        <ClientFormattedDate date={notif.createdAt} mode="relative" lang="bn" />
                       </p>
                     </div>
                     {!notif.read && (

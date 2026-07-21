@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { Shield, ShieldOff, Crown, User2 } from 'lucide-react';
 import { useSession } from 'next-auth/react';
+import ClientFormattedDate from '@/components/frontend/ClientFormattedDate';
 
 interface AdminAccount {
   id: string;
@@ -137,7 +138,7 @@ export default function AdminsClient() {
                     )}
                   </div>
                   <p style={{ fontFamily: "'Hind Siliguri', sans-serif", fontSize: 11, color: 'var(--ink-muted)', marginTop: 2 }}>
-                    Joined {new Date(admin.created_at).toLocaleDateString('en-GB', { dateStyle: 'medium' })}
+                    Joined <ClientFormattedDate date={admin.created_at} mode="date-only" lang="en" options={{ dateStyle: 'medium' }} />
                   </p>
                 </div>
               </div>

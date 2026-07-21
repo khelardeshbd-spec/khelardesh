@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useSession } from 'next-auth/react';
 import { Bell, MessageSquare, Heart, HeartOff, CheckCheck } from 'lucide-react';
 import Link from 'next/link';
-import { timeAgo } from '@/lib/timeAgo';
+import ClientFormattedDate from './ClientFormattedDate';
 import { supabase } from '@/lib/supabase';
 
 interface UserNotif {
@@ -186,7 +186,7 @@ export default function UserNotificationPanel() {
                             <span className="font-bold">{n.actorName}</span> {text}
                           </p>
                           <p className="text-[10px] text-[var(--ink-muted)] mt-1 font-sans">
-                            {timeAgo(n.createdAt, 'bn')}
+                            <ClientFormattedDate date={n.createdAt} mode="relative" lang="bn" />
                           </p>
                         </div>
                         {!n.isRead && <div className="w-2 h-2 rounded-full bg-[#d33f3f] flex-shrink-0 mt-1.5" />}

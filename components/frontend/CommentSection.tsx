@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useSession, signIn } from 'next-auth/react';
-import { timeAgo } from '@/lib/timeAgo';
+import ClientFormattedDate from './ClientFormattedDate';
 import { ThumbsUp, ThumbsDown } from 'lucide-react';
 
 interface Comment {
@@ -225,7 +225,7 @@ export default function CommentSection({ articleSlug }: { articleSlug: string })
                           রিপোর্টার
                         </span>
                       )}
-                      <span className="text-[10px] text-[var(--ink-muted)]">· {timeAgo(comment.createdAt, 'bn')}</span>
+                      <span className="text-[10px] text-[var(--ink-muted)]">· <ClientFormattedDate date={comment.createdAt} mode="relative" lang="bn" /></span>
                     </div>
                     <p className="text-sm text-[var(--ink)] mt-1.5 leading-relaxed" style={{ fontFamily: 'var(--font-body)' }}>
                       {comment.body}
@@ -317,7 +317,7 @@ export default function CommentSection({ articleSlug }: { articleSlug: string })
                                     রিপোর্টার
                                   </span>
                                 )}
-                                <span className="text-[9px] text-[var(--ink-muted)]">· {timeAgo(reply.createdAt, 'bn')}</span>
+                                <span className="text-[9px] text-[var(--ink-muted)]">· <ClientFormattedDate date={reply.createdAt} mode="relative" lang="bn" /></span>
                               </div>
                               <p className="text-xs text-[var(--ink)] mt-1 leading-relaxed" style={{ fontFamily: 'var(--font-body)' }}>
                                 {reply.body}

@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import { signIn, signOut } from 'next-auth/react';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
+import ClientFormattedDate from './ClientFormattedDate';
 
 interface ProfileMenuProps {
   user?: {
@@ -309,7 +310,7 @@ export default function ProfileMenu({ user }: ProfileMenuProps) {
                                'একটি মন্তব্য করেছেন'}
                             </p>
                             <p className="text-[9px] text-gray-400 mt-1">
-                              {new Date(n.createdAt).toLocaleDateString('bn-BD')}
+                              <ClientFormattedDate date={n.createdAt} mode="date-only" lang="bn" />
                             </p>
                           </Link>
                         </li>

@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { RefreshCw, Filter, ChevronLeft, ChevronRight } from 'lucide-react';
+import ClientFormattedDate from '@/components/frontend/ClientFormattedDate';
 
 interface LogEntry {
   id: string;
@@ -213,11 +214,10 @@ export default function ActivityClient() {
                     <span
                       className="text-[11px]"
                       style={{ fontFamily: "'Hind Siliguri', sans-serif", color: 'var(--ink-muted)' }}
-                      title={new Date(log.created_at).toLocaleString('en-GB')}
                     >
-                      {formatRelativeTime(log.created_at)}
+                      <ClientFormattedDate date={log.created_at} mode="relative" lang="en" />
                       {' · '}
-                      {new Date(log.created_at).toLocaleString('en-GB', { dateStyle: 'medium', timeStyle: 'short' })}
+                      <ClientFormattedDate date={log.created_at} mode="both" lang="en" options={{ dateStyle: 'medium', timeStyle: 'short' }} />
                     </span>
                   </div>
                   

@@ -16,6 +16,7 @@ import {
   Activity
 } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
+import ClientFormattedDate from '@/components/frontend/ClientFormattedDate';
 
 interface Article {
   id: number;
@@ -523,7 +524,7 @@ export default function DashboardClient({ initialArticles, totalScoresCount }: D
                       )}
                     </td>
                     <td className="py-3.5 text-right text-xs text-[var(--ink-muted)] whitespace-nowrap">
-                      {new Date(art.publishedAt).toLocaleDateString('en-GB')}
+                      <ClientFormattedDate date={art.publishedAt} mode="date-only" lang="en" />
                     </td>
                     <td className="py-3.5 text-right">
                       <div className="flex items-center justify-end gap-3">

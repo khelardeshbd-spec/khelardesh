@@ -3,6 +3,7 @@
 import { useRef, useEffect } from 'react';
 import Link from 'next/link';
 import ScoreCard from './ScoreCard';
+import ClientFormattedDate from './ClientFormattedDate';
 import { useLiveScores } from '@/hooks/useLiveScores';
 import { translateTeamName } from '@/lib/teamTranslations';
 
@@ -302,7 +303,7 @@ export default function ScoresStrip() {
             View All Scores ›
           </Link>
           <span className="text-[10px] text-[#888888]">
-            আপডেট করা হয়েছে: {new Date().toLocaleTimeString('bn-BD', { hour: '2-digit', minute: '2-digit' })}
+            আপডেট করা হয়েছে: <ClientFormattedDate date={new Date()} mode="time-only" lang="bn" />
           </span>
         </div>
       </div>

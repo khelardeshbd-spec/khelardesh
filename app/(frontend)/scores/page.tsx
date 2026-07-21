@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
+import ClientFormattedDate from '@/components/frontend/ClientFormattedDate';
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 interface ESPNMatch {
@@ -62,7 +63,88 @@ function getLeaguePriority(leagueName: string): number {
   if (name.includes('premier league') || name.includes('laliga') || name.includes('la liga') || name.includes('serie a') || name.includes('bundesliga') || name.includes('ligue 1')) return 3;
   return 4; // Default other leagues
 }
-
+// Client component to render match kickoff times and relative day statuses without hydration mismatch
+function ClientMatchTime({ startTime, isFinished }: { startTime: string; isFinished: boolean }) {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+  
+  if (!startTime) return null;
+  const md = new Date(startTime);
+  if (isNaN(md.getTime())) return null;
+  
+  const useLocal = mounted;
+  const locale = 'en-US';
+  const timeZoneOpt = useLocal ? {} : { timeZone: 'UTC' };
+  
+  const timeStr = md.toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit', ...timeZoneOpt });
+  
+  const getRelativeLabel = () => {
+    const td = new Date();
+    if (!useLocal) {
+      // Use UTC dates for server rendering consistency
+      const utd = new Date(Date.UTC(td.getUTCFullYear(), td.getUTCMonth(), td.getUTCDate()));
+      const ud = new Date(Date.UTC(md.getUTCFullYear(), md.getUTCMonth(), md.getUTCDate()));
+      const diff = (utd.getTime() - ud.getTime()) / (1000 * 3600 * 24);
+      const upcomingDiff = (ud.getTime() - utd.getTime()) / (1000 * 3600 * 24);
+      
+      if (isFinished) {
+        const rounded = Math.round(diff);
+        if (rounded === 0) return 'Today';
+        if (rounded === 1) return 'Yesterday';
+        if (rounded === 2) return '2 Days Ago';
+        return timeStr || 'FT';
+      } else {
+        const rounded = Math.round(upcomingDiff);
+        if (rounded === 0) return 'Today';
+        if (rounded === 1) return 'Tomorrow';
+        if (rounded === 2) return 'In 2 Days';
+        return 'Upcoming';
+      }
+    } else {
+      td.setHours(0,0,0,0);
+      const d = new Date(md);
+      d.setHours(0,0,0,0);
+      const diff = (td.getTime() - d.getTime()) / (1000 * 3600 * 24);
+      const upcomingDiff = (d.getTime() - td.getTime()) / (1000 * 3600 * 24);
+      
+      if (isFinished) {
+        const rounded = Math.round(diff);
+        if (rounded === 0) return 'Today';
+        if (rounded === 1) return 'Yesterday';
+        if (rounded === 2) return '2 Days Ago';
+        return timeStr || 'FT';
+      } else {
+        const rounded = Math.round(upcomingDiff);
+        if (rounded === 0) return 'Today';
+        if (rounded === 1) return 'Tomorrow';
+        if (rounded === 2) return 'In 2 Days';
+        return 'Upcoming';
+      }
+    }
+  };
+  
+  if (isFinished) {
+    return (
+      <>
+        <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">FT</span>
+        <span className="text-[9px] font-semibold text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded-md" suppressHydrationWarning>
+          {getRelativeLabel()}
+        </span>
+      </>
+    );
+  } else {
+    return (
+      <>
+        <span className="text-[11px] font-bold text-slate-800" suppressHydrationWarning>{timeStr}</span>
+        <span className="text-[8px] font-bold text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded-md uppercase tracking-wider" suppressHydrationWarning>
+          {getRelativeLabel()}
+        </span>
+      </>
+    );
+  }
+}
 // ─── Match Row ────────────────────────────────────────────────────────────────
 function MatchRow({ match }: { match: ESPNMatch }) {
   const isEnglish = (str: string) => /[a-zA-Z]/.test(str);
@@ -89,42 +171,8 @@ function MatchRow({ match }: { match: ESPNMatch }) {
             </span>
             <span className="w-1.5 h-1.5 rounded-full bg-[#d93025] animate-ping" />
           </>
-        ) : match.isFinished ? (
-          <>
-            <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">{status}</span>
-            <span className="text-[9px] font-semibold text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded-md">
-              {(() => {
-                const md = new Date(match.startTime);
-                const td = new Date();
-                td.setHours(0,0,0,0);
-                const d = new Date(md);
-                d.setHours(0,0,0,0);
-                const diff = (td.getTime() - d.getTime()) / (1000 * 3600 * 24);
-                if (diff === 0) return 'Today';
-                if (diff === 1) return 'Yesterday';
-                if (diff === 2) return '2 Days Ago';
-                return kickoff || 'FT';
-              })()}
-            </span>
-          </>
         ) : (
-          <>
-            <span className="text-[11px] font-bold text-slate-800">{kickoff}</span>
-            <span className="text-[8px] font-bold text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded-md uppercase tracking-wider">
-              {(() => {
-                const md = new Date(match.startTime);
-                const td = new Date();
-                td.setHours(0,0,0,0);
-                const d = new Date(md);
-                d.setHours(0,0,0,0);
-                const diff = (d.getTime() - td.getTime()) / (1000 * 3600 * 24);
-                if (diff === 0) return 'Today';
-                if (diff === 1) return 'Tomorrow';
-                if (diff === 2) return 'In 2 Days';
-                return 'Upcoming';
-              })()}
-            </span>
-          </>
+          <ClientMatchTime startTime={match.startTime} isFinished={match.isFinished} />
         )}
       </div>
 
@@ -368,7 +416,7 @@ export default function ScoresPage() {
               className="text-[10px] font-bold text-slate-400 bg-slate-100 px-2.5 py-1 rounded-full border border-slate-200/50"
               style={{ fontFamily: 'var(--font-body)' }}
             >
-              আপডেট: {lastUpdated.toLocaleTimeString('bn-BD', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
+              আপডেট: <ClientFormattedDate date={lastUpdated} mode="time-seconds" lang="bn" />
             </span>
           )}
         </div>

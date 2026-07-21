@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { timeAgo, formatDatetime } from '@/lib/timeAgo';
+import ClientFormattedDate from '@/components/frontend/ClientFormattedDate';
 
 interface Article {
   slug: string;
@@ -29,8 +29,6 @@ export default function LeadStory({ article }: LeadStoryProps) {
   const { slug, headline, headlineBn, deck, kicker, mediaType, mediaUrl, mediaCaption, byline, publishedAt } = article;
   const displayHeadline = headlineBn || headline;
   const isVideo = mediaType === 'video';
-  const time = timeAgo(publishedAt, 'bn');
-  const exactTime = formatDatetime(publishedAt);
 
   return (
     <article className="clay-card mb-4 p-4 overflow-hidden">
@@ -173,18 +171,16 @@ export default function LeadStory({ article }: LeadStoryProps) {
               {byline}
             </span>
             <span style={{ color: 'var(--ink-ghost)', fontSize: 10 }}>·</span>
-            <time
-              dateTime={new Date(publishedAt).toISOString()}
-              title={exactTime}
+            <ClientFormattedDate
+              date={publishedAt}
+              mode="relative"
+              lang="bn"
               style={{
                 fontFamily: "var(--font-body)",
                 fontSize: 10,
                 color: 'var(--ink-ghost)',
               }}
-              lang="bn"
-            >
-              {time}
-            </time>
+            />
           </div>
         </div>
       </Link>

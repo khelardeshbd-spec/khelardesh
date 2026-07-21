@@ -4,6 +4,7 @@ import { useState, useMemo, useEffect, useRef } from 'react';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { Search, ChevronUp, ChevronDown, Plus, ExternalLink, Pencil, MoreVertical } from 'lucide-react';
+import ClientFormattedDate from '@/components/frontend/ClientFormattedDate';
 
 interface Article {
   id: number;
@@ -151,7 +152,7 @@ function ArticleRow({
         {(art.views ?? 0).toLocaleString()}
       </td>
       <td className="p-4 text-right text-xs text-[var(--ink-muted)] whitespace-nowrap">
-        {new Date(art.publishedAt).toLocaleString('bn-BD', { dateStyle: 'medium', timeStyle: 'short' })}
+        <ClientFormattedDate date={art.publishedAt} mode="both" lang="bn" options={{ dateStyle: 'medium', timeStyle: 'short' }} />
       </td>
       <td className="p-4 text-right">
         <div className="flex items-center justify-end gap-3 relative">

@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { timeAgo, formatDatetime } from '@/lib/timeAgo';
+import ClientFormattedDate from './ClientFormattedDate';
 import BookmarkButton from './BookmarkButton';
 import { motion } from 'framer-motion';
 import { fadeUp } from '@/lib/animations';
@@ -54,8 +54,7 @@ export default function ArticleCard({ article }: ArticleCardProps) {
   const { slug, headline, headlineBn, deck, sport, mediaType, mediaUrl, publishedAt } = article;
   const displayHeadline = headlineBn || headline;
   const sportLabel = SPORT_LABELS[sport] ?? sport;
-  const time = timeAgo(publishedAt, 'bn');
-  const exactTime = formatDatetime(publishedAt);
+
   const isVideo = mediaType === 'video';
 
   return (
@@ -167,7 +166,7 @@ export default function ArticleCard({ article }: ArticleCardProps) {
               fontSize: 10,
               color: '#888888',
             }}>
-              {time} · {article.byline}
+              <ClientFormattedDate date={publishedAt} mode="relative" lang="bn" /> · {article.byline}
             </span>
             <div className="flex items-center gap-3">
               <span className="text-[11px] font-bold text-[#d33f3f]">আরো পড়ুন</span>

@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react';
 import Link from 'next/link';
-import { timeAgo, formatDatetime } from '@/lib/timeAgo';
+import ClientFormattedDate from './ClientFormattedDate';
 
 interface Article {
   id: number;
@@ -49,8 +49,7 @@ interface Props {
 function ArticleRow({ article }: { article: Article }) {
   const displayHeadline = article.headlineBn || article.headline;
   const sportLabel = SPORT_LABELS[article.sport] ?? article.sport;
-  const time = timeAgo(article.publishedAt, 'bn');
-  const exactTime = formatDatetime(article.publishedAt);
+
 
   return (
     <article
@@ -167,9 +166,8 @@ function ArticleRow({ article }: { article: Article }) {
               fontWeight: 400,
               color: '#888888',
             }}
-            title={exactTime}
           >
-            {article.byline} · {time}
+            {article.byline} · <ClientFormattedDate date={article.publishedAt} mode="relative" lang="bn" />
           </span>
           <span
             style={{

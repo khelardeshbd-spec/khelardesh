@@ -2,7 +2,7 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import type { Metadata } from 'next';
 import { supabaseAdmin } from '@/lib/supabase';
-import { formatDatetime, timeAgo } from '@/lib/timeAgo';
+import ClientFormattedDate from '@/components/frontend/ClientFormattedDate';
 import BookmarkButton from '@/components/frontend/BookmarkButton';
 import ShareButton from '@/components/frontend/ShareButton';
 import ReadingProgressBar from './ReadingProgressBar';
@@ -131,8 +131,7 @@ export default async function ArticlePage({ params }: PageProps) {
 
   const displayHeadline = headlineBn || headline;
   const isVideo = mediaType === 'video';
-  const time = timeAgo(publishedAt, 'bn');
-  const exactTime = formatDatetime(publishedAt);
+
 
   const articleForBookmark = {
     id, slug, headline, headlineBn, deck, sport, mediaType, mediaUrl, byline, publishedAt
@@ -361,7 +360,7 @@ export default async function ArticlePage({ params }: PageProps) {
                   className="text-[10px] text-[var(--ink-muted)] mt-0.5 leading-none" 
                   style={{ fontFamily: 'var(--font-body)' }}
                 >
-                  {exactTime} ({time})
+                  <ClientFormattedDate date={publishedAt} mode="both" lang="bn" />
                 </span>
               </div>
             </div>

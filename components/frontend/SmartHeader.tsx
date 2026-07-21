@@ -9,7 +9,7 @@ import ThemeToggle from './ThemeToggle';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import UserNotificationPanel from './UserNotificationPanel';
-import { timeAgo } from '@/lib/timeAgo';
+import ClientFormattedDate from './ClientFormattedDate';
 
 interface SearchResult {
   id: number;
@@ -216,7 +216,7 @@ export default function SmartHeader() {
                                 {headline}
                               </span>
                               <span lang="bn" style={{ fontFamily: "var(--font-body)", fontSize: 11, color: 'var(--ink-muted)' }} className="line-clamp-1 mt-0.5">
-                                {article.publishedAt ? timeAgo(article.publishedAt, 'bn') : ''} {article.byline ? `· ${article.byline}` : ''}
+                                {article.publishedAt ? <ClientFormattedDate date={article.publishedAt} mode="relative" lang="bn" /> : ''} {article.byline ? `· ${article.byline}` : ''}
                               </span>
                             </div>
                           </Link>
@@ -361,7 +361,7 @@ export default function SmartHeader() {
                           {headline}
                         </span>
                         <span lang="bn" style={{ fontFamily: "var(--font-body)", fontSize: 11, color: 'var(--ink-muted)' }} className="line-clamp-1 mt-0.5">
-                          {article.publishedAt ? timeAgo(article.publishedAt, 'bn') : ''} {article.byline ? `· ${article.byline}` : ''}
+                          {article.publishedAt ? <ClientFormattedDate date={article.publishedAt} mode="relative" lang="bn" /> : ''} {article.byline ? `· ${article.byline}` : ''}
                         </span>
                       </div>
                     </Link>

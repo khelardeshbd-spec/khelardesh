@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import AdsterraAd from './AdsterraAd';
+import ClientFormattedDate from './ClientFormattedDate';
 
 interface Article {
   id: number;
@@ -128,7 +129,7 @@ function CardLead({ article }: { article: Article }) {
             <>
               {' • '}
               <span style={{ fontStyle: 'normal' }}>
-                {new Date(article.publishedAt).toLocaleDateString('bn-BD', { day: 'numeric', month: 'long', year: 'numeric' })}
+                <ClientFormattedDate date={article.publishedAt} mode="date-only" lang="bn" />
               </span>
             </>
           )}
@@ -177,9 +178,7 @@ function CardStandard({ article }: { article: Article }) {
 // Compact card: headline + date on left, small thumbnail on right — like cricket section
 function CardCompact({ article }: { article: Article }) {
   const headline = article.headlineBn || article.headline;
-  const date = article.publishedAt
-    ? new Date(article.publishedAt).toLocaleDateString('bn-BD', { day: 'numeric', month: 'long', year: 'numeric' })
-    : '';
+
   return (
     <div style={{
       borderTop: '1px solid var(--ink-border)',
@@ -199,9 +198,9 @@ function CardCompact({ article }: { article: Article }) {
           }}>
             {headline}
           </h3>
-          {date && (
+          {article.publishedAt && (
             <span style={{ fontFamily: 'var(--font-body)', fontSize: 10, color: 'var(--ink-muted)' }}>
-              {date}
+              <ClientFormattedDate date={article.publishedAt} mode="date-only" lang="bn" />
             </span>
           )}
         </div>
