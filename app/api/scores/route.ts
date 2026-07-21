@@ -218,10 +218,8 @@ export async function GET() {
           return;
         }
         
-        // Filter out stale manual test records (created or updated more than 24 hours ago and not live)
-        const isStale = !card.isLive && (
-          Date.now() - new Date(card.updatedAt || card.createdAt).getTime() > 24 * 60 * 60 * 1000
-        );
+        // Filter out stale manual test records (created or updated more than 24 hours ago)
+        const isStale = Date.now() - new Date(card.updatedAt || card.createdAt).getTime() > 24 * 60 * 60 * 1000;
         if (isStale) return;
 
         const isFinished = !card.isLive && (
