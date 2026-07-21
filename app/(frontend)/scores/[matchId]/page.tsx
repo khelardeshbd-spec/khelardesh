@@ -19,19 +19,240 @@ interface MatchDetails {
     id: string;
     name: string;
     abbreviation: string;
-    score: number | null;
+    score: number | string | null;
     logo: string;
   };
   away: {
     id: string;
     name: string;
     abbreviation: string;
-    score: number | null;
+    score: number | string | null;
     logo: string;
   };
   scorers: { teamId: string; athlete: string; time: string }[];
   rosters: any[];
   stats: { name: string; home: string; away: string }[];
+  sport_type?: string;
+}
+
+function renderSportDetails(match: MatchDetails) {
+  if (match.sport_type === 'cricket' || match.sport_type === 'bd-cricket') {
+    return (
+      <div className="space-y-6">
+        {/* Cricket Pitch Illustration */}
+        <div className="relative rounded-2xl bg-gradient-to-b from-emerald-600 to-emerald-800 p-6 shadow-md overflow-hidden text-white flex flex-col items-center">
+          {/* Turf lines */}
+          <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 h-16 bg-amber-100/90 border-y-4 border-dashed border-white/20 flex items-center justify-between px-12">
+            {/* Wickets left */}
+            <div className="flex gap-1 h-12 items-end border-b-2 border-white/40 pb-1">
+              <div className="w-1 h-10 bg-amber-700/80 rounded-full" />
+              <div className="w-1 h-10 bg-amber-700/80 rounded-full" />
+              <div className="w-1 h-10 bg-amber-700/80 rounded-full" />
+            </div>
+            {/* Cricket Ball */}
+            <div className="w-4 h-4 bg-red-600 rounded-full shadow-lg border border-red-700 flex items-center justify-center text-[10px]">🏏</div>
+            {/* Wickets right */}
+            <div className="flex gap-1 h-12 items-end border-b-2 border-white/40 pb-1">
+              <div className="w-1 h-10 bg-amber-700/80 rounded-full" />
+              <div className="w-1 h-10 bg-amber-700/80 rounded-full" />
+              <div className="w-1 h-10 bg-amber-700/80 rounded-full" />
+            </div>
+          </div>
+          
+          <div className="relative z-10 w-full flex justify-between items-center mt-20 mb-4 px-4 sm:px-8">
+            <div className="flex flex-col items-center gap-1.5 flex-1 text-center">
+              <span className="text-xl sm:text-2xl font-black text-amber-300 drop-shadow-md">{match.home.score || '০'}</span>
+              <span className="text-xs text-emerald-100 font-semibold">{match.home.name}</span>
+            </div>
+            <div className="flex flex-col items-center text-center">
+              <span className="text-[10px] uppercase font-extrabold tracking-widest bg-black/30 px-3 py-1 rounded-full text-emerald-300 border border-emerald-500/20">{match.status.detail}</span>
+            </div>
+            <div className="flex flex-col items-center gap-1.5 flex-1 text-center">
+              <span className="text-xl sm:text-2xl font-black text-amber-300 drop-shadow-md">{match.away.score || '০'}</span>
+              <span className="text-xs text-emerald-100 font-semibold">{match.away.name}</span>
+            </div>
+          </div>
+        </div>
+        
+        {/* Match Info Card */}
+        <div className="bg-white rounded-2xl border border-gray-100 p-5 shadow-sm space-y-4">
+          <h3 className="text-base font-black text-slate-800 border-b border-slate-100 pb-3 flex items-center gap-2">
+            <span>🏏</span> ক্রিকেট ম্যাচ তথ্য
+          </h3>
+          <div className="grid grid-cols-2 gap-4 text-sm">
+            <div className="bg-slate-50 p-3 rounded-xl">
+              <div className="text-xs text-slate-400 font-bold uppercase mb-1">টুর্নামেন্ট / লিগ</div>
+              <div className="font-extrabold text-slate-700">{match.league}</div>
+            </div>
+            <div className="bg-slate-50 p-3 rounded-xl">
+              <div className="text-xs text-slate-400 font-bold uppercase mb-1">খেলার ধরন</div>
+              <div className="font-extrabold text-slate-700">ক্রিকেট ম্যাচ</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (match.sport_type === 'tennis') {
+    return (
+      <div className="space-y-6">
+        <div className="relative rounded-2xl bg-gradient-to-b from-blue-600 to-indigo-750 p-6 shadow-md overflow-hidden text-white flex flex-col items-center">
+          <div className="absolute inset-y-0 left-1/2 -translate-x-1/2 w-0.5 bg-white/40" />
+          <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 h-0.5 bg-white/40 flex items-center justify-center">
+            <div className="w-16 h-4 bg-white/20 border border-white/40 rounded flex items-center justify-center text-[8px] font-bold tracking-widest text-white/90">NET</div>
+          </div>
+          
+          <div className="relative z-10 w-full flex justify-between items-center my-12 px-4 sm:px-8">
+            <div className="flex flex-col items-center gap-1 flex-1 text-center">
+              <span className="text-xl sm:text-2xl font-black text-yellow-300 drop-shadow-md">{match.home.score || '০'}</span>
+              <span className="text-xs text-blue-100 font-semibold">{match.home.name}</span>
+            </div>
+            <div className="flex flex-col items-center text-center">
+              <span className="text-[10px] uppercase font-extrabold tracking-widest bg-black/30 px-3 py-1 rounded-full text-yellow-300 border border-white/10">{match.status.detail}</span>
+            </div>
+            <div className="flex flex-col items-center gap-1 flex-1 text-center">
+              <span className="text-xl sm:text-2xl font-black text-yellow-300 drop-shadow-md">{match.away.score || '০'}</span>
+              <span className="text-xs text-blue-100 font-semibold">{match.away.name}</span>
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-white rounded-2xl border border-gray-100 p-5 shadow-sm space-y-4">
+          <h3 className="text-base font-black text-slate-800 border-b border-slate-100 pb-3 flex items-center gap-2">
+            <span>🎾</span> টেনিস ম্যাচ তথ্য
+          </h3>
+          <div className="grid grid-cols-2 gap-4 text-sm">
+            <div className="bg-slate-50 p-3 rounded-xl">
+              <div className="text-xs text-slate-400 font-bold uppercase mb-1">টুর্নামেন্ট</div>
+              <div className="font-extrabold text-slate-700">{match.league}</div>
+            </div>
+            <div className="bg-slate-50 p-3 rounded-xl">
+              <div className="text-xs text-slate-400 font-bold uppercase mb-1">খেলার ধরন</div>
+              <div className="font-extrabold text-slate-700">টেনিস টুর্নামেন্ট</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (match.sport_type === 'basketball') {
+    return (
+      <div className="space-y-6">
+        <div className="relative rounded-2xl bg-gradient-to-b from-amber-700 to-amber-900 p-6 shadow-md overflow-hidden text-white flex flex-col items-center">
+          <div className="absolute top-4 left-1/2 -translate-x-1/2 w-12 h-12 rounded-full border-2 border-white/20" />
+          
+          <div className="relative z-10 w-full flex justify-between items-center my-12 px-4 sm:px-8">
+            <div className="flex flex-col items-center gap-1 flex-1 text-center">
+              <span className="text-xl sm:text-2xl font-black text-orange-300 drop-shadow-md">{match.home.score || '০'}</span>
+              <span className="text-xs text-amber-100 font-semibold">{match.home.name}</span>
+            </div>
+            <div className="flex flex-col items-center text-center">
+              <span className="text-[10px] uppercase font-extrabold tracking-widest bg-black/30 px-3 py-1 rounded-full text-orange-300 border border-white/10">{match.status.detail}</span>
+            </div>
+            <div className="flex flex-col items-center gap-1 flex-1 text-center">
+              <span className="text-xl sm:text-2xl font-black text-orange-300 drop-shadow-md">{match.away.score || '০'}</span>
+              <span className="text-xs text-amber-100 font-semibold">{match.away.name}</span>
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-white rounded-2xl border border-gray-100 p-5 shadow-sm space-y-4">
+          <h3 className="text-base font-black text-slate-800 border-b border-slate-100 pb-3 flex items-center gap-2">
+            <span>🏀</span> বাস্কেটবল ম্যাচ তথ্য
+          </h3>
+          <div className="grid grid-cols-2 gap-4 text-sm">
+            <div className="bg-slate-50 p-3 rounded-xl">
+              <div className="text-xs text-slate-400 font-bold uppercase mb-1">টুর্নামেন্ট / লিগ</div>
+              <div className="font-extrabold text-slate-700">{match.league}</div>
+            </div>
+            <div className="bg-slate-50 p-3 rounded-xl">
+              <div className="text-xs text-slate-400 font-bold uppercase mb-1">খেলার ধরন</div>
+              <div className="font-extrabold text-slate-700">বাস্কেটবল টুর্নামেন্ট</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (match.sport_type === 'f1') {
+    return (
+      <div className="space-y-6">
+        <div className="relative rounded-2xl bg-gradient-to-b from-zinc-700 to-zinc-900 p-6 shadow-md overflow-hidden text-white flex flex-col items-center">
+          <div className="absolute inset-y-0 inset-x-8 border-x-4 border-dashed border-white/20 pointer-events-none" />
+          
+          <div className="relative z-10 w-full flex justify-between items-center my-12 px-4 sm:px-8">
+            <div className="flex flex-col items-center gap-1 flex-1 text-center">
+              <span className="text-xl sm:text-2xl font-black text-red-400 drop-shadow-md">{match.home.score || '—'}</span>
+              <span className="text-xs text-zinc-300 font-semibold">{match.home.name}</span>
+            </div>
+            <div className="flex flex-col items-center text-center">
+              <span className="text-[10px] uppercase font-extrabold tracking-widest bg-black/30 px-3 py-1 rounded-full text-red-400 border border-white/10">{match.status.detail}</span>
+            </div>
+            <div className="flex flex-col items-center gap-1 flex-1 text-center">
+              <span className="text-xl sm:text-2xl font-black text-red-400 drop-shadow-md">{match.away.score || '—'}</span>
+              <span className="text-xs text-zinc-300 font-semibold">{match.away.name}</span>
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-white rounded-2xl border border-gray-100 p-5 shadow-sm space-y-4">
+          <h3 className="text-base font-black text-slate-800 border-b border-slate-100 pb-3 flex items-center gap-2">
+            <span>🏎️</span> ফর্মুলা ওয়ান তথ্য
+          </h3>
+          <div className="grid grid-cols-2 gap-4 text-sm">
+            <div className="bg-slate-50 p-3 rounded-xl">
+              <div className="text-xs text-slate-400 font-bold uppercase mb-1">গ্র্যান্ড প্রিক্স / ইভেন্ট</div>
+              <div className="font-extrabold text-slate-700">{match.league}</div>
+            </div>
+            <div className="bg-slate-50 p-3 rounded-xl">
+              <div className="text-xs text-slate-400 font-bold uppercase mb-1">খেলার ধরন</div>
+              <div className="font-extrabold text-slate-700">মোটরস্পোর্ট রেস</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Generic fallback
+  return (
+    <div className="space-y-6">
+      <div className="relative rounded-2xl bg-gradient-to-b from-slate-700 to-slate-900 p-6 shadow-md overflow-hidden text-white flex flex-col items-center">
+        <div className="relative z-10 w-full flex justify-between items-center my-12 px-4 sm:px-8">
+          <div className="flex flex-col items-center gap-1 flex-1 text-center">
+            <span className="text-xl sm:text-2xl font-black text-slate-300 drop-shadow-md">{match.home.score || '০'}</span>
+            <span className="text-xs text-slate-200 font-semibold">{match.home.name}</span>
+          </div>
+          <div className="flex flex-col items-center text-center">
+            <span className="text-[10px] uppercase font-extrabold tracking-widest bg-black/30 px-3 py-1 rounded-full text-slate-300 border border-white/10">{match.status.detail}</span>
+          </div>
+          <div className="flex flex-col items-center gap-1 flex-1 text-center">
+            <span className="text-xl sm:text-2xl font-black text-slate-300 drop-shadow-md">{match.away.score || '০'}</span>
+            <span className="text-xs text-slate-200 font-semibold">{match.away.name}</span>
+          </div>
+        </div>
+      </div>
+
+      <div className="bg-white rounded-2xl border border-gray-100 p-5 shadow-sm space-y-4">
+        <h3 className="text-base font-black text-slate-800 border-b border-slate-100 pb-3 flex items-center gap-2">
+          <span>🏆</span> ম্যাচ তথ্য
+        </h3>
+        <div className="grid grid-cols-2 gap-4 text-sm">
+          <div className="bg-slate-50 p-3 rounded-xl">
+            <div className="text-xs text-slate-400 font-bold uppercase mb-1">টুর্নামেন্ট / লিগ</div>
+            <div className="font-extrabold text-slate-700">{match.league}</div>
+          </div>
+          <div className="bg-slate-50 p-3 rounded-xl">
+            <div className="text-xs text-slate-400 font-bold uppercase mb-1">খেলার ধরন</div>
+            <div className="font-extrabold text-slate-700">{match.category || 'স্পোর্টস'}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 }
 
 export default function MatchCenterPage({ params }: { params: { matchId: string } }) {
@@ -47,13 +268,19 @@ export default function MatchCenterPage({ params }: { params: { matchId: string 
         const data = await res.json();
         setMatch(data);
 
-        // Switch default tab to stats if lineups are empty but statistics are available
-        const homeR = data.rosters?.find((r: any) => r.teamId === data.home.id) || data.rosters?.[0];
-        const awayR = data.rosters?.find((r: any) => r.teamId === data.away.id) || data.rosters?.[1];
-        const hasLine = homeR?.starters?.length > 0 && awayR?.starters?.length > 0;
-        
-        if (!hasLine && data.stats && data.stats.length > 0) {
-          setActiveTab('stats');
+        const isFoot = data.sport_type === 'football' || data.sport_type === 'bd-football' || !data.sport_type;
+        if (!isFoot) {
+          setActiveTab('info');
+        } else {
+          const homeR = data.rosters?.find((r: any) => r.teamId === data.home.id) || data.rosters?.[0];
+          const awayR = data.rosters?.find((r: any) => r.teamId === data.away.id) || data.rosters?.[1];
+          const hasLine = homeR?.starters?.length > 0 && awayR?.starters?.length > 0;
+          
+          if (!hasLine && data.stats && data.stats.length > 0) {
+            setActiveTab('stats');
+          } else {
+            setActiveTab('lineup');
+          }
         }
       } catch (err) {
         console.error(err);
@@ -94,6 +321,7 @@ export default function MatchCenterPage({ params }: { params: { matchId: string 
 
   const hasLineup = homeRoster?.starters?.length > 0 && awayRoster?.starters?.length > 0;
   const isScheduled = !match.status.isLive && !match.status.isFinished;
+  const isFootball = match.sport_type === 'football' || match.sport_type === 'bd-football' || !match.sport_type;
 
   return (
     <div className="max-w-[700px] mx-auto pb-12 bg-[#f8fafc]" style={{ color: '#121212', fontFamily: 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif', minHeight: '100vh' }}>
@@ -218,47 +446,50 @@ export default function MatchCenterPage({ params }: { params: { matchId: string 
       <div className="max-w-[700px] mx-auto px-4 -mt-4 relative z-20">
         
         {/* NAV TABS (Modern Premium Segmented Control) */}
-        <div className="bg-slate-100 p-1.5 rounded-2xl flex gap-1.5 mb-6 border border-slate-200/50 shadow-inner">
-          <button
-            onClick={() => setActiveTab('lineup')}
-            className={`flex-1 py-3 text-xs sm:text-sm font-bold rounded-xl transition-all duration-200 border-none cursor-pointer ${
-              activeTab === 'lineup' 
-                ? 'bg-white text-slate-800 shadow-sm scale-102' 
-                : 'text-slate-500 hover:text-slate-850 hover:bg-white/40'
-            }`}
-            style={{ fontFamily: 'system-ui, sans-serif' }}
-          >
-            লাইনআপ (ফরমেশন)
-          </button>
-          <button
-            onClick={() => setActiveTab('stats')}
-            className={`flex-1 py-3 text-xs sm:text-sm font-bold rounded-xl transition-all duration-200 border-none cursor-pointer ${
-              activeTab === 'stats' 
-                ? 'bg-white text-slate-800 shadow-sm scale-102' 
-                : 'text-slate-500 hover:text-slate-850 hover:bg-white/40'
-            }`}
-            style={{ fontFamily: 'system-ui, sans-serif' }}
-          >
-            পরিসংখ্যান
-          </button>
-          <button
-            onClick={() => setActiveTab('info')}
-            className={`flex-1 py-3 text-xs sm:text-sm font-bold rounded-xl transition-all duration-200 border-none cursor-pointer ${
-              activeTab === 'info' 
-                ? 'bg-white text-slate-800 shadow-sm scale-102' 
-                : 'text-slate-500 hover:text-slate-850 hover:bg-white/40'
-            }`}
-            style={{ fontFamily: 'system-ui, sans-serif' }}
-          >
-            দল ও স্কোয়াড
-          </button>
-        </div>
+        {isFootball && (
+          <div className="bg-slate-100 p-1.5 rounded-2xl flex gap-1.5 mb-6 border border-slate-200/50 shadow-inner">
+            <button
+              onClick={() => setActiveTab('lineup')}
+              className={`flex-1 py-3 text-xs sm:text-sm font-bold rounded-xl transition-all duration-200 border-none cursor-pointer ${
+                activeTab === 'lineup' 
+                  ? 'bg-white text-slate-800 shadow-sm scale-102' 
+                  : 'text-slate-500 hover:text-slate-850 hover:bg-white/40'
+              }`}
+              style={{ fontFamily: 'system-ui, sans-serif' }}
+            >
+              লাইনআপ (ফরমেশন)
+            </button>
+            <button
+              onClick={() => setActiveTab('stats')}
+              className={`flex-1 py-3 text-xs sm:text-sm font-bold rounded-xl transition-all duration-200 border-none cursor-pointer ${
+                activeTab === 'stats' 
+                  ? 'bg-white text-slate-800 shadow-sm scale-102' 
+                  : 'text-slate-500 hover:text-slate-850 hover:bg-white/40'
+              }`}
+              style={{ fontFamily: 'system-ui, sans-serif' }}
+            >
+              পরিসংখ্যান
+            </button>
+            <button
+              onClick={() => setActiveTab('info')}
+              className={`flex-1 py-3 text-xs sm:text-sm font-bold rounded-xl transition-all duration-200 border-none cursor-pointer ${
+                activeTab === 'info' 
+                  ? 'bg-white text-slate-800 shadow-sm scale-102' 
+                  : 'text-slate-500 hover:text-slate-850 hover:bg-white/40'
+              }`}
+              style={{ fontFamily: 'system-ui, sans-serif' }}
+            >
+              দল ও স্কোয়াড
+            </button>
+          </div>
+        )}
 
         {/* TAB CONTENT */}
         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 sm:p-6 mb-8">
-          
-          {/* LINEUP TAB */}
-          {activeTab === 'lineup' && (
+          {isFootball ? (
+            <>
+              {/* LINEUP TAB */}
+              {activeTab === 'lineup' && (
             <div>
               {hasLineup ? (
                 <div className="animate-in fade-in slide-in-from-bottom-2 duration-500">
@@ -626,6 +857,10 @@ export default function MatchCenterPage({ params }: { params: { matchId: string 
               </div>
 
             </div>
+          )}
+            </>
+          ) : (
+            renderSportDetails(match)
           )}
         </div>
 

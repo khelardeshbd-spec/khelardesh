@@ -1,6 +1,7 @@
 export const dynamic = 'force-dynamic'
 
 import { NextResponse } from 'next/server'
+import { supabaseAdmin } from '@/lib/supabase'
 
 // In-memory cache for player avatars
 const playerAvatarCache = new Map<string, string | null>();
@@ -232,6 +233,66 @@ export async function GET(
   }
 
   try {
+    // 1. Try to find the match in the local ScoreCard database table first
+    const { data: dbCard } = await supabaseAdmin
+      .from('ScoreCard')
+      .select('*')
+      .eq('id', isNaN(Number(matchId)) ? -1 : Number(matchId))
+      .maybeSingle();
+
+    let card = dbCard;
+    if (!card) {
+      const { data: dbCardBySource } = await supabaseAdmin
+        .from('ScoreCard')
+        .select('*')
+        .eq('source_match_id', matchId)
+        .maybeSingle();
+      card = dbCardBySource;
+    }
+
+    if (card) {
+      const isFinished = !card.isLive && (
+        card.status === 'পূর্ণ সময়' || 
+        card.status === 'FT' || 
+        (card.winnerTeam !== null && card.winnerTeam !== '')
+      );
+
+      const details = {
+        matchId: String(card.id),
+        league: card.league,
+        category: card.sport_type || 'Sports',
+        leagueLogo: '',
+        status: {
+          detail: card.status,
+          displayClock: card.isLive ? 'LIVE' : '',
+          isLive: card.isLive,
+          isFinished
+        },
+        home: {
+          id: 'home',
+          name: card.teamA,
+          abbreviation: card.teamA.slice(0, 3).toUpperCase(),
+          score: card.scoreA,
+          logo: card.home_team_logo || ''
+        },
+        away: {
+          id: 'away',
+          name: card.teamB,
+          abbreviation: card.teamB.slice(0, 3).toUpperCase(),
+          score: card.scoreB,
+          logo: card.away_team_logo || ''
+        },
+        scorers: [],
+        rosters: [],
+        stats: [],
+        sport_type: card.sport_type || 'other'
+      };
+
+      const response = NextResponse.json(details);
+      response.headers.set('Cache-Control', 's-maxage=5, stale-while-revalidate=15');
+      return response;
+    }
+
     const url = `http://site.api.espn.com/apis/site/v2/sports/soccer/all/summary?event=${matchId}`;
     const res = await fetch(url, {
       next: { revalidate: 15 } // Match summary details revalidate faster
