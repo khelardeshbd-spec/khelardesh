@@ -135,6 +135,19 @@ async function fetchSofascore(endpoint: string) {
   }
 }
 
+async function fetchESPN() {
+  try {
+    const res = await fetch(`https://site.api.espn.com/apis/site/v2/sports/soccer/all/scoreboard`, {
+      next: { revalidate: 15 }
+    });
+    if (!res.ok) throw new Error(`ESPN error ${res.status}`);
+    return await res.json();
+  } catch (error) {
+    console.error(`[ESPN Fetch Error]:`, error);
+    return null;
+  }
+}
+
 export async function GET() {
   try {
     // 1. Fetch real-time live and scheduled scores from Sofascore
@@ -145,13 +158,59 @@ export async function GET() {
       { sport: 'cricket', type: 'today', url: '/sport/cricket/events/scheduled/today' }
     ];
 
-    const results = await Promise.allSettled(
-      endpoints.map(ep => fetchSofascore(ep.url).then(data => ({ ...ep, data })))
-    );
+    const [results, espnData] = await Promise.all([
+      Promise.allSettled(
+        endpoints.map(ep => fetchSofascore(ep.url).then(data => ({ ...ep, data })))
+      ),
+      fetchESPN()
+    ]);
 
     const apiMatches: any[] = [];
     const seenMatchIds = new Set<string>();
 
+    // Process ESPN Data (reliable fallback for soccer)
+    if (espnData && espnData.events) {
+      espnData.events.forEach((event: any) => {
+        if (!event || seenMatchIds.has(String(event.id))) return;
+        
+        const comp = event.competitions?.[0];
+        if (!comp) return;
+
+        const home = comp.competitors?.find((c: any) => c.homeAway === 'home');
+        const away = comp.competitors?.find((c: any) => c.homeAway === 'away');
+        if (!home || !away) return;
+
+        seenMatchIds.add(String(event.id));
+
+        const isLive = event.status?.type?.state === 'in';
+        const isFinished = event.status?.type?.state === 'post';
+        const statusText = isLive ? (event.status?.displayClock || event.status?.type?.shortDetail) : (isFinished ? 'FT' : formatStartTime(new Date(event.date).getTime() / 1000));
+
+        apiMatches.push({
+          id: String(event.id),
+          league: event.season?.slug || 'Soccer',
+          startTime: event.date,
+          home: {
+            name: home.team?.name || '',
+            score: toBengaliDigits(home.score),
+            logo: home.team?.logo || '',
+            isWinner: home.winner === true,
+          },
+          away: {
+            name: away.team?.name || '',
+            score: toBengaliDigits(away.score),
+            logo: away.team?.logo || '',
+            isWinner: away.winner === true,
+          },
+          isLive,
+          isFinished,
+          statusText,
+          sport_type: 'football',
+        });
+      });
+    }
+
+    // Process Sofascore Data (multi-sport)
     results.forEach(res => {
       if (res.status === 'fulfilled' && res.value.data) {
         const events = res.value.data.events || [];
