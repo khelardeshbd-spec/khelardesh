@@ -8,13 +8,13 @@ export type ESPNMatch = {
   startTime: string
   home: {
     name: string
-    score: number | null
+    score: number | string | null
     logo: string
     isWinner: boolean
   }
   away: {
     name: string
-    score: number | null
+    score: number | string | null
     logo: string
     isWinner: boolean
   }

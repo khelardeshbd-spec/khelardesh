@@ -250,9 +250,9 @@ export default function ScoresStrip() {
                 <ScoreCard
                   league={match.league}
                   teamA={match.home.name}
-                  scoreA={match.home.score !== null ? String(match.home.score) : '-'}
+                  scoreA={match.home.score !== null && match.home.score !== undefined ? String(match.home.score) : '-'}
                   teamB={match.away.name}
-                  scoreB={match.away.score !== null ? String(match.away.score) : '-'}
+                  scoreB={match.away.score !== null && match.away.score !== undefined ? String(match.away.score) : '-'}
                   status={match.statusText}
                   isLive={match.isLive}
                   winnerTeam={winnerTeam}
@@ -277,9 +277,9 @@ export default function ScoresStrip() {
                 <ScoreCard
                   league={match.league}
                   teamA={match.home.name}
-                  scoreA={match.home.score !== null ? String(match.home.score) : '-'}
+                  scoreA={match.home.score !== null && match.home.score !== undefined ? String(match.home.score) : '-'}
                   teamB={match.away.name}
-                  scoreB={match.away.score !== null ? String(match.away.score) : '-'}
+                  scoreB={match.away.score !== null && match.away.score !== undefined ? String(match.away.score) : '-'}
                   status={match.statusText}
                   isLive={match.isLive}
                   winnerTeam={winnerTeam}
