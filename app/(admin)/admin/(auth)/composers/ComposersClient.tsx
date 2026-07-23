@@ -336,7 +336,7 @@ export default function ComposersClient({ initialComposers }: ComposersClientPro
                         {c.photoUrl ? (
                           <img src={c.photoUrl} alt={c.name} className="w-full h-full object-cover" />
                         ) : (
-                          <ImageIcon size={14} className="text-[var(--ink-ghost)]" />
+                          <Camera size={14} className="text-[var(--ink-ghost)]" />
                         )}
                       </div>
                     </td>
