@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef } from 'react';
-import { Plus, Pencil, Trash2, X, Image as ImageIcon, Check } from 'lucide-react';
+import { Plus, Pencil, Trash2, X, Camera, Check } from 'lucide-react';
 
 interface Composer {
   id: number;
@@ -224,7 +224,7 @@ export default function ComposersClient({ initialComposers }: ComposersClientPro
                     <img src={photoPreview} alt="Preview" className="w-full h-full object-cover" />
                   ) : (
                     <div className="flex flex-col items-center text-center p-2 text-[var(--ink-ghost)]">
-                      <ImageIcon size={20} />
+                      <Camera size={24} />
                       <span style={{ fontSize: 9, marginTop: 4, fontFamily: "'Hind Siliguri', sans-serif" }}>Upload Photo</span>
                     </div>
                   )}

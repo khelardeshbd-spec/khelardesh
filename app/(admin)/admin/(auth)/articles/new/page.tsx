@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { Layout, ArrowLeft, Check, Sparkles, ImageIcon, Video, Plus, Trash2, List, Quote } from 'lucide-react';
+import { ArrowLeft, Check, Sparkles, Camera, Plus, Trash2, List, Quote } from 'lucide-react';
 import AdminShell from '../../../AdminShell';
 
 interface EditorBlock {
@@ -459,7 +459,7 @@ export default function NewArticlePage() {
               ) : (
                 <div className="absolute inset-0 flex flex-col items-center justify-center text-xs text-[var(--ink-muted)] p-6 text-center">
                   <div className="p-3 bg-[var(--ink-ghost)] rounded-full mb-3 text-[var(--ink-muted)]">
-                    <ImageIcon size={24} />
+                    <Camera size={24} />
                   </div>
                   <span className="font-bold text-sm mb-1 text-[var(--ink)]">📷 ছবির ফ্রেমে ক্লিক করে মিডিয়া ফাইল যুক্ত করুন</span>
                   <span>(Accepts JPG, PNG, WEBP, or MP4)</span>
@@ -648,7 +648,7 @@ export default function NewArticlePage() {
                       <Trash2 size={16} />
                     </button>
                     <div className="text-xs font-bold text-[var(--ink-muted)] mb-1 flex items-center gap-1">
-                      <ImageIcon size={14} /> IMAGE CARD (ছবি)
+                      <Camera size={14} /> IMAGE CARD (ছবি)
                     </div>
                     {block.url ? (
                       <div className="relative aspect-video rounded overflow-hidden bg-gray-100 border border-[var(--ink-border)]" style={{ maxHeight: 300 }}>
@@ -917,7 +917,7 @@ export default function NewArticlePage() {
                           }}
                           className="w-full px-3 py-1.5 text-left hover:bg-[var(--ink-ghost)] flex items-center gap-1.5 text-[var(--ink)]"
                         >
-                          <ImageIcon size={12} /> Image Card (ছবি ক্যাপশন)
+                          <Camera size={12} /> Image Card (ছবি ক্যাপশন)
                         </button>
                         <button
                           type="button"
