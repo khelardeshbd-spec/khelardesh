@@ -14,8 +14,15 @@ function toBengaliDigits(n: number): string {
 }
 
 export function timeAgo(date: Date | string, lang: 'en' | 'bn' = 'en'): string {
+  let dateStr = typeof date === 'string' ? date : date.toISOString();
+  // If the date string matches the ISO format but lacks a timezone indicator ('Z' or '+00:00'), append 'Z' to treat it as UTC.
+  // This fixes the Postgres TIMESTAMP WITHOUT TIME ZONE bug where UTC dates are parsed as local time.
+  if (typeof date === 'string' && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?$/.test(dateStr)) {
+    dateStr += 'Z';
+  }
+  
   const now = Date.now();
-  const then = new Date(date).getTime();
+  const then = new Date(dateStr).getTime();
   const diffMs = now - then;
   const diffSec = Math.floor(diffMs / 1000);
   const diffMin = Math.floor(diffSec / 60);

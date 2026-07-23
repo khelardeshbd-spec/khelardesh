@@ -29,7 +29,12 @@ export default function ClientFormattedDate({
   }, []);
 
   if (!date) return null;
-  const d = typeof date === 'string' ? new Date(date) : date;
+  let d = typeof date === 'string' ? new Date(date) : date;
+  
+  if (typeof date === 'string' && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?$/.test(date)) {
+    d = new Date(date + 'Z');
+  }
+
   if (isNaN(d.getTime())) return null;
 
   const formatText = (useLocal: boolean) => {
