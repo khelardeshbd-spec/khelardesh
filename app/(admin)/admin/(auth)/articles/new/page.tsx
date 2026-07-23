@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { Layout, ArrowLeft, Check, Sparkles, Image as ImageIcon, Video, Plus, Trash2, List, Quote } from 'lucide-react';
+import { Layout, ArrowLeft, Check, Sparkles, ImageIcon, Video, Plus, Trash2, List, Quote } from 'lucide-react';
 import AdminShell from '../../../AdminShell';
 
 interface EditorBlock {
