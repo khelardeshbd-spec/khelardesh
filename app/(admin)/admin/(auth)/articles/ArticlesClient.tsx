@@ -182,33 +182,33 @@ function ArticleRow({
                     <>
                       {art.status === 'draft' && (
                         <>
-                          <button onClick={() => { onUpdateStatus(art, 'published'); setMenuOpen(false); }} className="w-full px-3 py-2 text-xs text-left hover:bg-[var(--ink-ghost)] flex items-center gap-2 text-slate-700 border-none bg-transparent cursor-pointer font-semibold" style={{ fontFamily: "'Hind Siliguri', sans-serif" }}>Publish</button>
-                          <button onClick={() => { onUpdateStatus(art, 'archived'); setMenuOpen(false); }} className="w-full px-3 py-2 text-xs text-left hover:bg-[var(--ink-ghost)] flex items-center gap-2 text-slate-700 border-none bg-transparent cursor-pointer font-semibold" style={{ fontFamily: "'Hind Siliguri', sans-serif" }}>Archive</button>
+                          <button onClick={() => { setMenuOpen(false); setTimeout(() => onUpdateStatus(art, 'published'), 0); }} className="w-full px-3 py-2 text-xs text-left hover:bg-[var(--ink-ghost)] flex items-center gap-2 text-slate-700 border-none bg-transparent cursor-pointer font-semibold" style={{ fontFamily: "'Hind Siliguri', sans-serif" }}>Publish</button>
+                          <button onClick={() => { setMenuOpen(false); setTimeout(() => onUpdateStatus(art, 'archived'), 0); }} className="w-full px-3 py-2 text-xs text-left hover:bg-[var(--ink-ghost)] flex items-center gap-2 text-slate-700 border-none bg-transparent cursor-pointer font-semibold" style={{ fontFamily: "'Hind Siliguri', sans-serif" }}>Archive</button>
                         </>
                       )}
                       {(art.status === 'published' || !art.status) && (
                         <>
-                          <button onClick={() => { onUpdateStatus(art, 'draft'); setMenuOpen(false); }} className="w-full px-3 py-2 text-xs text-left hover:bg-[var(--ink-ghost)] flex items-center gap-2 text-slate-700 border-none bg-transparent cursor-pointer font-semibold" style={{ fontFamily: "'Hind Siliguri', sans-serif" }}>Revert to Draft</button>
-                          <button onClick={() => { onUpdateStatus(art, 'archived'); setMenuOpen(false); }} className="w-full px-3 py-2 text-xs text-left hover:bg-[var(--ink-ghost)] flex items-center gap-2 text-slate-700 border-none bg-transparent cursor-pointer font-semibold" style={{ fontFamily: "'Hind Siliguri', sans-serif" }}>Archive</button>
+                          <button onClick={() => { setMenuOpen(false); setTimeout(() => onUpdateStatus(art, 'draft'), 0); }} className="w-full px-3 py-2 text-xs text-left hover:bg-[var(--ink-ghost)] flex items-center gap-2 text-slate-700 border-none bg-transparent cursor-pointer font-semibold" style={{ fontFamily: "'Hind Siliguri', sans-serif" }}>Revert to Draft</button>
+                          <button onClick={() => { setMenuOpen(false); setTimeout(() => onUpdateStatus(art, 'archived'), 0); }} className="w-full px-3 py-2 text-xs text-left hover:bg-[var(--ink-ghost)] flex items-center gap-2 text-slate-700 border-none bg-transparent cursor-pointer font-semibold" style={{ fontFamily: "'Hind Siliguri', sans-serif" }}>Archive</button>
                         </>
                       )}
                       {art.status === 'archived' && (
                         <>
-                          <button onClick={() => { onUpdateStatus(art, 'published'); setMenuOpen(false); }} className="w-full px-3 py-2 text-xs text-left hover:bg-[var(--ink-ghost)] flex items-center gap-2 text-slate-700 border-none bg-transparent cursor-pointer font-semibold" style={{ fontFamily: "'Hind Siliguri', sans-serif" }}>Publish</button>
-                          <button onClick={() => { onUpdateStatus(art, 'draft'); setMenuOpen(false); }} className="w-full px-3 py-2 text-xs text-left hover:bg-[var(--ink-ghost)] flex items-center gap-2 text-slate-700 border-none bg-transparent cursor-pointer font-semibold" style={{ fontFamily: "'Hind Siliguri', sans-serif" }}>Restore to Draft</button>
+                          <button onClick={() => { setMenuOpen(false); setTimeout(() => onUpdateStatus(art, 'published'), 0); }} className="w-full px-3 py-2 text-xs text-left hover:bg-[var(--ink-ghost)] flex items-center gap-2 text-slate-700 border-none bg-transparent cursor-pointer font-semibold" style={{ fontFamily: "'Hind Siliguri', sans-serif" }}>Publish</button>
+                          <button onClick={() => { setMenuOpen(false); setTimeout(() => onUpdateStatus(art, 'draft'), 0); }} className="w-full px-3 py-2 text-xs text-left hover:bg-[var(--ink-ghost)] flex items-center gap-2 text-slate-700 border-none bg-transparent cursor-pointer font-semibold" style={{ fontFamily: "'Hind Siliguri', sans-serif" }}>Restore to Draft</button>
                         </>
                       )}
                       {art.status === 'deleted' && (
                         <>
-                          <button onClick={() => { onUpdateStatus(art, 'draft'); setMenuOpen(false); }} className="w-full px-3 py-2 text-xs text-left hover:bg-[var(--ink-ghost)] flex items-center gap-2 text-green-700 border-none bg-transparent cursor-pointer font-semibold" style={{ fontFamily: "'Hind Siliguri', sans-serif" }}>Restore to Draft</button>
-                          <button onClick={() => { onUpdateStatus(art, 'published'); setMenuOpen(false); }} className="w-full px-3 py-2 text-xs text-left hover:bg-[var(--ink-ghost)] flex items-center gap-2 text-green-700 border-none bg-transparent cursor-pointer font-semibold" style={{ fontFamily: "'Hind Siliguri', sans-serif" }}>Restore & Publish</button>
+                          <button onClick={() => { setMenuOpen(false); setTimeout(() => onUpdateStatus(art, 'draft'), 0); }} className="w-full px-3 py-2 text-xs text-left hover:bg-[var(--ink-ghost)] flex items-center gap-2 text-green-700 border-none bg-transparent cursor-pointer font-semibold" style={{ fontFamily: "'Hind Siliguri', sans-serif" }}>Restore to Draft</button>
+                          <button onClick={() => { setMenuOpen(false); setTimeout(() => onUpdateStatus(art, 'published'), 0); }} className="w-full px-3 py-2 text-xs text-left hover:bg-[var(--ink-ghost)] flex items-center gap-2 text-green-700 border-none bg-transparent cursor-pointer font-semibold" style={{ fontFamily: "'Hind Siliguri', sans-serif" }}>Restore & Publish</button>
                         </>
                       )}
                     </>
                   )}
                   {canDelete && (
                     <button
-                      onClick={() => { onDelete(art.id); setMenuOpen(false); }}
+                      onClick={() => { setMenuOpen(false); setTimeout(() => onDelete(art.id), 0); }}
                       className="w-full px-3 py-2 text-xs text-left hover:bg-red-50 flex items-center gap-2 text-red-600 border-none bg-transparent cursor-pointer font-semibold"
                       style={{ fontFamily: "'Hind Siliguri', sans-serif" }}
                     >
