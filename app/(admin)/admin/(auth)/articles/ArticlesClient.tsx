@@ -152,6 +152,7 @@ function ArticleRow({
             )}
           </div>
         </div>
+        </div>
       </td>
       <td className="p-4 text-xs font-semibold text-[var(--ink-muted)]">
         {getSportLabel(art.sport)}
