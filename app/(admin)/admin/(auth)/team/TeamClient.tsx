@@ -183,7 +183,7 @@ function EmployeeRow({
           {menuOpen && (
             <FixedDropdown anchorRef={btnRef} onClose={() => setMenuOpen(false)}>
               <button
-                onClick={() => { setMenuOpen(false); setTimeout(() => onToggleActive(emp), 0); }}
+                onClick={async (e) => { e.preventDefault(); e.stopPropagation(); await onToggleActive(emp); setMenuOpen(false); }}
                 className="w-full px-3 py-2 text-xs text-left hover:bg-[var(--ink-ghost)] flex items-center gap-2 text-slate-700 border-none bg-transparent cursor-pointer font-semibold"
                 style={{ fontFamily: "'Hind Siliguri', sans-serif" }}
               >
@@ -191,7 +191,7 @@ function EmployeeRow({
                 {emp.is_active ? 'Deactivate' : 'Activate'}
               </button>
               <button
-                onClick={() => { setMenuOpen(false); setTimeout(() => onDelete(emp), 0); }}
+                onClick={async (e) => { e.preventDefault(); e.stopPropagation(); await onDelete(emp); setMenuOpen(false); }}
                 className="w-full px-3 py-2 text-xs text-left hover:bg-red-50 flex items-center gap-2 text-red-600 border-none bg-transparent cursor-pointer font-semibold"
                 style={{ fontFamily: "'Hind Siliguri', sans-serif" }}
               >
