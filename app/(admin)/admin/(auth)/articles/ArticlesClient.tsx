@@ -208,7 +208,17 @@ function ArticleRow({
                   )}
                   {canDelete && (
                     <button
-                      onClick={async (e) => { e.preventDefault(); e.stopPropagation(); await onDelete(art.id); setMenuOpen(false); }}
+                      onClick={async (e) => { 
+                        e.preventDefault(); 
+                        e.stopPropagation(); 
+                        const msg = art.status === 'deleted' 
+                          ? 'নিবন্ধটি চিরতরে মুছে ফেলতে চান? এটি আর পুনরুদ্ধার করা যাবে না।' 
+                          : 'নিবন্ধটি মুছে ফেলতে চান? এটি সাময়িকভাবে "Recently Deleted" ট্যাবে জমা থাকবে।';
+                        if (window.confirm(msg)) {
+                          await onDelete(art.id); 
+                          setMenuOpen(false);
+                        }
+                      }}
                       className="w-full px-3 py-2 text-xs text-left hover:bg-red-50 flex items-center gap-2 text-red-600 border-none bg-transparent cursor-pointer font-semibold"
                       style={{ fontFamily: "'Hind Siliguri', sans-serif" }}
                     >
@@ -277,11 +287,6 @@ export default function ArticlesClient({ initialArticles }: ArticlesClientProps)
   const handleDelete = async (id: number) => {
     const article = articles.find(a => a.id === id);
     const isAlreadyDeleted = article?.status === 'deleted';
-    const confirmMessage = isAlreadyDeleted
-      ? 'নিবন্ধটি চিরতরে মুছে ফেলতে চান? এটি আর পুনরুদ্ধার করা যাবে না।'
-      : 'নিবন্ধটি মুছে ফেলতে চান? এটি সাময়িকভাবে "Recently Deleted" ট্যাবে জমা থাকবে।';
-
-    if (!confirm(confirmMessage)) return;
 
     try {
       const res = await fetch(`/api/admin/articles/${id}`, {

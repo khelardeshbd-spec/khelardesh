@@ -191,7 +191,14 @@ function EmployeeRow({
                 {emp.is_active ? 'Deactivate' : 'Activate'}
               </button>
               <button
-                onClick={async (e) => { e.preventDefault(); e.stopPropagation(); await onDelete(emp); setMenuOpen(false); }}
+                onClick={async (e) => { 
+                  e.preventDefault(); 
+                  e.stopPropagation(); 
+                  if (window.confirm(`Delete "${emp.display_name}" (@${emp.username})? This cannot be undone.`)) {
+                    await onDelete(emp); 
+                    setMenuOpen(false);
+                  }
+                }}
                 className="w-full px-3 py-2 text-xs text-left hover:bg-red-50 flex items-center gap-2 text-red-600 border-none bg-transparent cursor-pointer font-semibold"
                 style={{ fontFamily: "'Hind Siliguri', sans-serif" }}
               >
@@ -338,7 +345,6 @@ export default function TeamClient() {
   }, []);
 
   const handleDelete = useCallback(async (emp: Employee) => {
-    if (!confirm(`Delete "${emp.display_name}" (@${emp.username})? This cannot be undone.`)) return;
     const res = await fetch(`/api/admin/team/${emp.id}`, { method: 'DELETE' });
     if (res.ok) setEmployees(prev => prev.filter(e => e.id !== emp.id));
   }, []);
