@@ -46,17 +46,22 @@ export default function ClientFormattedDate({
       ...(!useLocal ? { timeZone: 'UTC' } : {}),
     };
 
+    const hasStyleOptions = 'dateStyle' in finalOptions || 'timeStyle' in finalOptions;
+
     if (mode === 'relative') {
       return timeAgo(d, lang);
     }
 
     if (mode === 'both') {
-      const exact = d.toLocaleString(locale, {
+      const defaultOpts: Intl.DateTimeFormatOptions = hasStyleOptions ? {} : {
         day: '2-digit',
         month: 'short',
         year: 'numeric',
         hour: '2-digit',
         minute: '2-digit',
+      };
+      const exact = d.toLocaleString(locale, {
+        ...defaultOpts,
         ...finalOptions,
       });
       const rel = timeAgo(d, lang);
@@ -64,38 +69,50 @@ export default function ClientFormattedDate({
     }
 
     if (mode === 'date-only') {
-      return d.toLocaleDateString(locale, {
+      const defaultOpts: Intl.DateTimeFormatOptions = hasStyleOptions ? {} : {
         day: 'numeric',
         month: 'long',
         year: 'numeric',
+      };
+      return d.toLocaleDateString(locale, {
+        ...defaultOpts,
         ...finalOptions,
       });
     }
 
     if (mode === 'time-only') {
-      return d.toLocaleTimeString(locale, {
+      const defaultOpts: Intl.DateTimeFormatOptions = hasStyleOptions ? {} : {
         hour: '2-digit',
         minute: '2-digit',
+      };
+      return d.toLocaleTimeString(locale, {
+        ...defaultOpts,
         ...finalOptions,
       });
     }
 
     if (mode === 'time-seconds') {
-      return d.toLocaleTimeString(locale, {
+      const defaultOpts: Intl.DateTimeFormatOptions = hasStyleOptions ? {} : {
         hour: '2-digit',
         minute: '2-digit',
         second: '2-digit',
+      };
+      return d.toLocaleTimeString(locale, {
+        ...defaultOpts,
         ...finalOptions,
       });
     }
 
     // Default: absolute date + time
-    return d.toLocaleString(locale, {
+    const defaultOpts: Intl.DateTimeFormatOptions = hasStyleOptions ? {} : {
       day: '2-digit',
       month: 'short',
       year: 'numeric',
       hour: '2-digit',
       minute: '2-digit',
+    };
+    return d.toLocaleString(locale, {
+      ...defaultOpts,
       ...finalOptions,
     });
   };
