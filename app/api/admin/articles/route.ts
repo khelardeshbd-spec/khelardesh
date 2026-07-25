@@ -27,7 +27,7 @@ export async function GET() {
 
   const { data: articles, error } = await supabaseAdmin
     .from('Article')
-    .select('id, slug, headline, headlineBn, sport, isLead, publishedAt, byline, views, status')
+    .select('id, slug, headline, headlineBn, sport, isLead, publishedAt, byline, views, status, mediaUrl')
     .order('publishedAt', { ascending: false })
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })

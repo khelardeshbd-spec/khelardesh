@@ -17,6 +17,7 @@ interface Article {
   byline: string;
   views: number;
   status?: string;
+  mediaUrl?: string;
 }
 
 interface ArticlesClientProps {
@@ -112,8 +113,18 @@ function ArticleRow({
   return (
     <tr style={{ borderBottom: '0.5px solid var(--ink-border)' }} className="hover:bg-[var(--ink-ghost)] transition-colors">
       <td className="p-4 max-w-sm">
-        <div className="flex flex-col">
-          <Link href={`/admin/articles/${art.id}`} className="font-bold text-[var(--ink)] hover:underline leading-snug text-sm" lang="bn">
+        <div className="flex gap-4 items-start">
+          {art.mediaUrl ? (
+            <div className="w-16 h-12 flex-shrink-0 bg-[var(--ink-ghost)] rounded overflow-hidden mt-0.5">
+              <img src={art.mediaUrl} alt="" className="w-full h-full object-cover" />
+            </div>
+          ) : (
+            <div className="w-16 h-12 flex-shrink-0 bg-[var(--ink-ghost)] rounded overflow-hidden mt-0.5 flex items-center justify-center">
+              <span className="text-[10px] text-[var(--ink-muted)]">No Image</span>
+            </div>
+          )}
+          <div className="flex flex-col">
+            <Link href={`/admin/articles/${art.id}`} className="font-bold text-[var(--ink)] hover:underline leading-snug text-sm" lang="bn">
             {art.headlineBn || art.headline}
           </Link>
           <div className="flex items-center gap-1.5 mt-1.5 flex-wrap">
