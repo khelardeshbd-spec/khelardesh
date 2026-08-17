@@ -37,6 +37,28 @@ function safeB64Decode(str: string): string {
   }
 }
 
+function formatBanglaDate(dateStr?: string): string {
+  if (!dateStr) return '';
+  try {
+    const d = new Date(dateStr);
+    if (isNaN(d.getTime())) return dateStr;
+    const bnDigits: Record<string, string> = {
+      '0': '০', '1': '১', '2': '২', '3': '৩', '4': '৪',
+      '5': '৫', '6': '৬', '7': '৭', '8': '৮', '9': '৯'
+    };
+    const months = [
+      'জানুয়ারি', 'ফেব্রুয়ারি', 'মার্চ', 'এপ্রিল', 'মে', 'জুন',
+      'জুলাই', 'আগস্ট', 'সেপ্টেম্বর', 'অক্টোবর', 'নভেম্বর', 'ডিসেম্বর'
+    ];
+    const day = String(d.getDate()).replace(/\d/g, m => bnDigits[m]);
+    const month = months[d.getMonth()];
+    const year = String(d.getFullYear()).replace(/\d/g, m => bnDigits[m]);
+    return `${day} ${month} ${year}`;
+  } catch {
+    return dateStr;
+  }
+}
+
 function parseBodyToBlocks(bodyStr: string): EditorBlock[] {
   if (!bodyStr) return [{ id: 'block-init', type: 'paragraph', value: '' }];
   const parts = bodyStr.split(/\n\n+/);
@@ -931,27 +953,28 @@ export default function NewArticlePage() {
               )}
 
               {block.type === 'related' && (
-                <div className="relative border-2 border-emerald-500/30 rounded-lg p-4 bg-emerald-50/10 my-4 flex flex-col gap-3">
-                  <button
-                    type="button"
-                    onClick={() => removeBlock(block.id)}
-                    className="absolute top-2 right-2 text-red-500 hover:text-red-700 bg-white/80 p-1.5 rounded-full border border-red-200 z-10"
-                    title="Remove block"
-                  >
-                    <Trash2 size={16} />
-                  </button>
-                  <div className="text-xs font-bold text-emerald-700 dark:text-emerald-400 mb-1 flex items-center gap-1.5">
-                    <Link2 size={15} /> FOLLOW-UP / RELATED NEWS (আরও পড়ুন)
+                <div className="border border-emerald-500/30 bg-emerald-50/15 dark:bg-emerald-950/20 rounded-xl p-3.5 my-3 shadow-2xs">
+                  {/* Header row */}
+                  <div className="flex items-center justify-between gap-2 mb-2.5">
+                    <div className="flex items-center gap-1.5 text-xs font-bold text-emerald-700 dark:text-emerald-400">
+                      <Link2 size={14} />
+                      <span>আরও পড়ুন (Follow-up News)</span>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => removeBlock(block.id)}
+                      className="text-red-400 hover:text-red-600 p-1 rounded hover:bg-red-50 dark:hover:bg-red-950/50 transition-colors"
+                      title="ব্লকটি মুছুন"
+                    >
+                      <Trash2 size={14} />
+                    </button>
                   </div>
-                  
-                  {/* Quick Select from Recent Articles */}
+
+                  {/* Quick Select dropdown */}
                   {recentArticles.length > 0 && (
-                    <div className="flex flex-col gap-1">
-                      <label className="text-[11px] font-semibold text-[var(--ink-muted)]">
-                        পূর্বের কোনো খবর নির্বাচন করুন:
-                      </label>
+                    <div className="mb-2.5">
                       <select
-                        className="text-xs p-2 rounded border border-[var(--ink-border)] bg-[var(--bg-page)] text-[var(--ink)] focus:outline-none"
+                        className="w-full text-xs py-1.5 px-2.5 rounded-lg border border-[var(--ink-border)] bg-[var(--bg-page)] text-[var(--ink)] focus:outline-none focus:border-emerald-500"
                         onChange={(e) => {
                           const val = e.target.value;
                           if (!val) return;
@@ -967,7 +990,7 @@ export default function NewArticlePage() {
                         }}
                         defaultValue=""
                       >
-                        <option value="">-- সাম্প্রতিক খবর থেকে নির্বাচন করুন --</option>
+                        <option value="">⚡ পূর্বের খবর নির্বাচন করুন (স্বয়ংক্রিয় পূরণ)...</option>
                         {recentArticles.map(art => (
                           <option key={art.id} value={art.slug}>
                             {art.headlineBn || art.headline}
@@ -977,109 +1000,86 @@ export default function NewArticlePage() {
                     </div>
                   )}
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mt-1">
-                    <div>
-                      <label className="text-[11px] font-semibold text-[var(--ink-muted)] block mb-1">
-                        খবরের শিরোনাম:
-                      </label>
-                      <input
-                        type="text"
-                        placeholder="যেমন: ডারউইনে বাংলাদেশের ইতিহাস, চার দিনেই টেস্ট জয়"
-                        value={block.title || block.value || ''}
-                        onChange={(e) => updateBlock(block.id, { title: e.target.value, value: e.target.value })}
-                        className="w-full text-xs p-2 border border-[var(--ink-border)] rounded bg-transparent text-[var(--ink)] focus:outline-none"
-                        style={{ fontFamily: 'var(--font-body)' }}
-                      />
-                    </div>
-                    <div>
-                      <label className="text-[11px] font-semibold text-[var(--ink-muted)] block mb-1">
-                        নিউজ লিঙ্ক / URL:
-                      </label>
-                      <input
-                        type="text"
-                        placeholder="যেমন: /article/slug-name বা https://..."
-                        value={block.url || ''}
-                        onChange={(e) => updateBlock(block.id, { url: e.target.value })}
-                        className="w-full text-xs p-2 border border-[var(--ink-border)] rounded bg-transparent text-[var(--ink)] focus:outline-none font-mono"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                    <div>
-                      <label className="text-[11px] font-semibold text-[var(--ink-muted)] block mb-1">
-                        ছবির লিঙ্ক (Image URL):
-                      </label>
-                      <input
-                        type="text"
-                        placeholder="যেমন: https://.../image.jpg"
-                        value={block.imageUrl || ''}
-                        onChange={(e) => updateBlock(block.id, { imageUrl: e.target.value })}
-                        className="w-full text-xs p-2 border border-[var(--ink-border)] rounded bg-transparent text-[var(--ink)] focus:outline-none font-mono"
-                      />
-                    </div>
-                    <div>
-                      <label className="text-[11px] font-semibold text-[var(--ink-muted)] block mb-1">
-                        তারিখ (Date):
-                      </label>
-                      <input
-                        type="text"
-                        placeholder="যেমন: ১৬ আগস্ট ২০২৬ বা 2026-08-16"
-                        value={block.date || ''}
-                        onChange={(e) => updateBlock(block.id, { date: e.target.value })}
-                        className="w-full text-xs p-2 border border-[var(--ink-border)] rounded bg-transparent text-[var(--ink)] focus:outline-none"
-                      />
-                    </div>
-                  </div>
-
-                  {/* Live Preview matching exact frontend styling */}
-                  {(block.title || block.url) && (
-                    <div className="mt-2 pt-3 border-t border-[var(--ink-border)]">
-                      <div className="text-[11px] font-bold text-[var(--ink-muted)] mb-2 uppercase tracking-wider">
-                        প্রিভিউ (পাঠক যেভাবে দেখবেন):
-                      </div>
-                      <div className="my-2 p-3 bg-[var(--bg-page)] rounded-lg border border-[var(--ink-border)]">
-                        <div
+                  {/* Live Preview Card */}
+                  {block.title ? (
+                    <div className="bg-[var(--bg-surface)] border border-[var(--ink-border)] rounded-lg p-3 flex items-center justify-between gap-3 shadow-2xs">
+                      <div className="flex flex-col justify-between flex-1 min-w-0">
+                        <div className="text-[11px] font-bold text-[var(--ink-muted)] mb-0.5">আরও পড়ুন</div>
+                        <h4
                           lang="bn"
-                          className="text-xs font-bold text-[var(--ink)] mb-2"
+                          className="text-xs sm:text-sm font-black text-[var(--ink)] leading-snug line-clamp-2"
                           style={{ fontFamily: 'var(--font-headline)' }}
                         >
-                          আরও পড়ুন
-                        </div>
-                        <div className="flex items-center justify-between gap-4 p-3 rounded-md border border-[var(--ink-border)] bg-[var(--bg-surface)] shadow-2xs">
-                          <div className="flex flex-col justify-between flex-1 min-w-0">
-                            <h4
-                              lang="bn"
-                              className="text-sm sm:text-base font-black text-[var(--ink)] leading-snug line-clamp-2"
-                              style={{ fontFamily: 'var(--font-headline)' }}
-                            >
-                              {block.title || 'খবরের শিরোনাম'}
-                            </h4>
-                            <div className="mt-1.5 text-xs text-[var(--ink-muted)]">
-                              {block.date ? (
-                                <span>{block.date}</span>
-                              ) : (
-                                <span>তারিখ</span>
-                              )}
-                            </div>
-                          </div>
-                          {block.imageUrl ? (
-                            <div className="w-18 h-12 sm:w-22 sm:h-14 rounded overflow-hidden flex-shrink-0 bg-[var(--bg-page)] border border-[var(--ink-border)]">
-                              <img
-                                src={block.imageUrl}
-                                alt=""
-                                className="w-full h-full object-cover"
-                              />
-                            </div>
-                          ) : (
-                            <div className="w-16 h-12 rounded bg-gray-100 dark:bg-zinc-800 border border-dashed border-gray-300 dark:border-zinc-700 flex items-center justify-center text-[10px] text-gray-400">
-                              ছবি নেই
-                            </div>
-                          )}
+                          {block.title}
+                        </h4>
+                        <div className="mt-1 text-[11px] text-[var(--ink-muted)]">
+                          {formatBanglaDate(block.date) || 'তারিখ যুক্ত করা হয়নি'}
                         </div>
                       </div>
+                      {block.imageUrl ? (
+                        <div className="w-16 h-12 sm:w-20 sm:h-14 rounded overflow-hidden flex-shrink-0 bg-[var(--bg-page)] border border-[var(--ink-border)]">
+                          <img src={block.imageUrl} alt="" className="w-full h-full object-cover" />
+                        </div>
+                      ) : (
+                        <div className="w-14 h-10 rounded bg-gray-100 dark:bg-zinc-800 border border-dashed border-gray-300 dark:border-zinc-700 flex items-center justify-center text-[9px] text-gray-400">
+                          ছবি নেই
+                        </div>
+                      )}
+                    </div>
+                  ) : (
+                    <div className="text-center py-3 border border-dashed border-emerald-500/30 rounded-lg text-xs text-[var(--ink-muted)]">
+                      উপরের ড্রপডাউন থেকে যেকোনো একটি খবর নির্বাচন করুন
                     </div>
                   )}
+
+                  {/* Collapsible manual edit toggle */}
+                  <details className="mt-2 text-xs group">
+                    <summary className="text-[11px] text-[var(--ink-muted)] hover:text-[var(--ink)] cursor-pointer select-none font-medium">
+                      ⚙️ কাস্টম শিরোনাম বা লিংক পরিবর্তন করতে চাইলে ক্লিক করুন
+                    </summary>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mt-2 pt-2 border-t border-[var(--ink-border)]">
+                      <div>
+                        <label className="text-[10px] text-[var(--ink-muted)] block mb-0.5">খবরের শিরোনাম:</label>
+                        <input
+                          type="text"
+                          placeholder="খবরের শিরোনাম"
+                          value={block.title || block.value || ''}
+                          onChange={(e) => updateBlock(block.id, { title: e.target.value, value: e.target.value })}
+                          className="w-full text-xs p-1.5 border border-[var(--ink-border)] rounded bg-transparent text-[var(--ink)] focus:outline-none"
+                        />
+                      </div>
+                      <div>
+                        <label className="text-[10px] text-[var(--ink-muted)] block mb-0.5">লিংক / URL:</label>
+                        <input
+                          type="text"
+                          placeholder="/article/slug"
+                          value={block.url || ''}
+                          onChange={(e) => updateBlock(block.id, { url: e.target.value })}
+                          className="w-full text-xs p-1.5 border border-[var(--ink-border)] rounded bg-transparent text-[var(--ink)] focus:outline-none font-mono"
+                        />
+                      </div>
+                      <div>
+                        <label className="text-[10px] text-[var(--ink-muted)] block mb-0.5">ছবির URL:</label>
+                        <input
+                          type="text"
+                          placeholder="https://..."
+                          value={block.imageUrl || ''}
+                          onChange={(e) => updateBlock(block.id, { imageUrl: e.target.value })}
+                          className="w-full text-xs p-1.5 border border-[var(--ink-border)] rounded bg-transparent text-[var(--ink)] focus:outline-none font-mono"
+                        />
+                      </div>
+                      <div>
+                        <label className="text-[10px] text-[var(--ink-muted)] block mb-0.5">তারিখ:</label>
+                        <input
+                          type="text"
+                          placeholder="2026-08-18 বা ১৬ আগস্ট ২০২৬"
+                          value={block.date || ''}
+                          onChange={(e) => updateBlock(block.id, { date: e.target.value })}
+                          className="w-full text-xs p-1.5 border border-[var(--ink-border)] rounded bg-transparent text-[var(--ink)] focus:outline-none"
+                        />
+                      </div>
+                    </div>
+                  </details>
                 </div>
               )}
 
