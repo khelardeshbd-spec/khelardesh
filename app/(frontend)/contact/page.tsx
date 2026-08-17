@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { Mail, MapPin, Send, MessageSquare, CheckCircle, AlertCircle, Phone, Globe } from 'lucide-react';
+import { Mail, MapPin, Send, MessageSquare, CheckCircle, AlertCircle, Globe } from 'lucide-react';
 import ScrollToTopButton from '@/components/frontend/ScrollToTopButton';
 
 export default function ContactPage() {
@@ -24,14 +24,14 @@ export default function ContactPage() {
     setSubmitting(true);
     setError('');
 
-    // Simulate sending / log submission
+    // Simulate sending
     setTimeout(() => {
       setSubmitting(false);
       setSubmitted(true);
       setName('');
       setEmail('');
       setMessage('');
-    }, 800);
+    }, 600);
   };
 
   return (
@@ -51,7 +51,7 @@ export default function ContactPage() {
           </Link>
 
           <div
-            className="flex items-center gap-1.5 text-xs font-semibold tracking-wider uppercase text-[var(--ink-muted)]"
+            className="flex items-center gap-1.5 text-xs font-semibold tracking-wider text-[var(--ink-muted)]"
             style={{ fontFamily: 'var(--font-body)' }}
           >
             <Link href="/" className="hover:text-[var(--ink)] transition-colors">
@@ -65,206 +65,195 @@ export default function ContactPage() {
         </div>
       </div>
 
-      <main className="max-w-[900px] mx-auto px-4 lg:px-6 py-6 pb-20">
-        {/* Page Title */}
-        <div className="pb-4 mb-8 border-b-2 border-[var(--ink)]">
-          <h1
-            lang="bn"
-            className="text-3xl sm:text-4xl font-black text-[var(--ink)] mb-2"
-            style={{ fontFamily: 'var(--font-headline)' }}
-          >
-            যোগাযোগ ও সম্পাদকীয় অফিস
-          </h1>
-          <p className="text-sm text-[var(--ink-muted)]" style={{ fontFamily: 'var(--font-body)' }}>
-            যেকোনো ক্রীড়া সংবাদ টিপস, তথ্য সংশোধন, বিজ্ঞাপন বা মতামতের জন্য আমাদের সাথে যোগাযোগ করুন।
-          </p>
-        </div>
+      <main className="max-w-[900px] mx-auto px-4 lg:px-6 py-6 pb-20 font-sans">
+        <article className="border-t-2 border-[var(--ink)] pt-6">
+          
+          {/* Header */}
+          <header className="pb-6 mb-8 border-b border-[var(--ink-border)]">
+            <h1 
+              lang="bn"
+              className="text-3xl sm:text-4xl font-black tracking-tight text-[var(--ink)] leading-tight mb-2" 
+              style={{ fontFamily: 'var(--font-headline)' }}
+            >
+              যোগাযোগ ও সম্পাদকীয় অফিস
+            </h1>
+            <p className="text-xs sm:text-sm text-[var(--ink-muted)] font-medium" style={{ fontFamily: 'var(--font-body)' }}>
+              যেকোনো ক্রীড়া সংবাদ টিপস, তথ্য সংশোধন, বিজ্ঞাপন বা মতামতের জন্য আমাদের সাথে যোগাযোগ করুন।
+            </p>
+          </header>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-          {/* Contact Details & Info (Left 5 Cols) */}
-          <div className="lg:col-span-5 space-y-6">
-            <div className="bg-[var(--bg-surface)] border border-[var(--ink-border)] rounded-xl p-6 space-y-5 shadow-xs">
-              <h3 className="text-base font-bold text-[var(--ink)] pb-3 border-b border-[var(--ink-border)]" style={{ fontFamily: 'var(--font-headline)' }}>
-                যোগাযোগের মাধ্যমসমূহ
-              </h3>
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            {/* Left 5 cols: Contact Details */}
+            <div className="lg:col-span-5 space-y-6">
+              <div className="border border-[var(--ink-border)] bg-[var(--bg-surface)] rounded-xl p-5 space-y-5">
+                <h3 className="text-base font-bold text-[var(--ink)] pb-3 border-b border-[var(--ink-border)]" style={{ fontFamily: 'var(--font-headline)' }}>
+                  যোগাযোগের মাধ্যমসমূহ
+                </h3>
 
-              {/* Email */}
-              <div className="flex items-start gap-3.5">
-                <div className="w-9 h-9 rounded-lg bg-red-50 dark:bg-red-950/50 text-[#d33f3f] flex items-center justify-center flex-shrink-0">
-                  <Mail size={18} />
-                </div>
-                <div>
-                  <h4 className="text-xs font-bold text-[var(--ink)] uppercase tracking-wider">অফিসিয়াল ইমেইল</h4>
-                  <a href="mailto:khelardeshbd@gmail.com" className="text-xs sm:text-sm text-[#d33f3f] font-semibold hover:underline block mt-0.5">
-                    khelardeshbd@gmail.com
-                  </a>
-                  <a href="mailto:editor@khelardesh.com" className="text-xs text-[var(--ink-muted)] hover:underline block mt-0.5">
-                    editor@khelardesh.com
-                  </a>
-                </div>
-              </div>
-
-              {/* Location */}
-              <div className="flex items-start gap-3.5">
-                <div className="w-9 h-9 rounded-lg bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 flex items-center justify-center flex-shrink-0">
-                  <MapPin size={18} />
-                </div>
-                <div>
-                  <h4 className="text-xs font-bold text-[var(--ink)] uppercase tracking-wider">সম্পাদকীয় নিউজরুম</h4>
-                  <p className="text-xs text-[var(--ink-muted)] mt-0.5 leading-relaxed" style={{ fontFamily: 'var(--font-body)' }}>
-                    ঢাকা নিউজরুম, ঢাকা ১২০৫, বাংলাদেশ।
-                  </p>
-                </div>
-              </div>
-
-              {/* Website & Social */}
-              <div className="flex items-start gap-3.5">
-                <div className="w-9 h-9 rounded-lg bg-blue-50 dark:bg-blue-950/50 text-blue-600 flex items-center justify-center flex-shrink-0">
-                  <Globe size={18} />
-                </div>
-                <div>
-                  <h4 className="text-xs font-bold text-[var(--ink)] uppercase tracking-wider">সামাজিক মাধ্যম</h4>
-                  <div className="flex items-center gap-3 mt-1 text-xs">
-                    <a href="https://www.facebook.com/khelardeshbd" target="_blank" rel="noopener noreferrer" className="text-[#d33f3f] font-semibold hover:underline">
-                      Facebook Page →
-                    </a>
-                    <a href="https://www.youtube.com/@joyspeaks9655" target="_blank" rel="noopener noreferrer" className="text-[#d33f3f] font-semibold hover:underline">
-                      YouTube Channel →
+                {/* Email */}
+                <div className="flex items-start gap-3">
+                  <Mail size={16} className="text-[var(--ink-muted)] mt-0.5 flex-shrink-0" />
+                  <div>
+                    <h4 className="text-xs font-bold text-[var(--ink)] uppercase tracking-wider">অফিসিয়াল ইমেইল</h4>
+                    <a href="mailto:khelardeshbd@gmail.com" className="text-xs sm:text-sm text-[#d33f3f] font-semibold hover:underline block mt-0.5">
+                      khelardeshbd@gmail.com
                     </a>
                   </div>
                 </div>
+
+                {/* Location */}
+                <div className="flex items-start gap-3">
+                  <MapPin size={16} className="text-[var(--ink-muted)] mt-0.5 flex-shrink-0" />
+                  <div>
+                    <h4 className="text-xs font-bold text-[var(--ink)] uppercase tracking-wider">সম্পাদকীয় নিউজরুম</h4>
+                    <p className="text-xs text-[var(--ink-muted)] mt-0.5 leading-relaxed" style={{ fontFamily: 'var(--font-body)' }}>
+                      ঢাকা নিউজরুম, ঢাকা ১২০৫, বাংলাদেশ।
+                    </p>
+                  </div>
+                </div>
+
+                {/* Social Links */}
+                <div className="flex items-start gap-3">
+                  <Globe size={16} className="text-[var(--ink-muted)] mt-0.5 flex-shrink-0" />
+                  <div>
+                    <h4 className="text-xs font-bold text-[var(--ink)] uppercase tracking-wider">সামাজিক মাধ্যম</h4>
+                    <div className="flex items-center gap-3 mt-1 text-xs">
+                      <a href="https://www.facebook.com/khelardeshbd" target="_blank" rel="noopener noreferrer" className="text-[#d33f3f] font-semibold hover:underline">
+                        Facebook →
+                      </a>
+                      <a href="https://www.youtube.com/@joyspeaks9655" target="_blank" rel="noopener noreferrer" className="text-[#d33f3f] font-semibold hover:underline">
+                        YouTube →
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Response commitment note */}
+              <div className="border border-[var(--ink-border)] bg-[var(--bg-page)] rounded-xl p-4 text-xs text-[var(--ink-muted)] leading-relaxed">
+                <p className="font-semibold text-[var(--ink)] mb-1">
+                  প্রতিক্রিয়া প্রতিশ্রুতি:
+                </p>
+                আমাদের সম্পাদকীয় দল প্রাপ্ত প্রতিটি মেসেজ অত্যন্ত গুরুত্বের সাথে পর্যালোচনা করে এবং সাধারণত ২৪ ঘণ্টার মধ্যে উত্তর দেওয়া হয়।
               </div>
             </div>
 
-            {/* Note on response time */}
-            <div className="bg-amber-50/20 border border-amber-500/20 rounded-xl p-4 text-xs text-[var(--ink-muted)] leading-relaxed">
-              <p className="font-semibold text-amber-700 dark:text-amber-400 mb-1 flex items-center gap-1.5">
-                <MessageSquare size={14} /> প্রতিক্রিয়া প্রতিশ্রুতি:
-              </p>
-              আমাদের সম্পাদকীয় দল প্রাপ্ত প্রতিটি মেসেজ অত্যন্ত গুরুত্বের সাথে পর্যালোচনা করে এবং সাধারণত ২৪-৪৮ ঘণ্টার মধ্যে ইমেইলের মাধ্যমে উত্তর দেওয়া হয়।
-            </div>
-          </div>
+            {/* Right 7 cols: Contact Form */}
+            <div className="lg:col-span-7">
+              <div className="border border-[var(--ink-border)] bg-[var(--bg-surface)] rounded-xl p-6 sm:p-7">
+                <h3 className="text-base sm:text-lg font-bold text-[var(--ink)] mb-1" style={{ fontFamily: 'var(--font-headline)' }}>
+                  সরাসরি বার্তা বা সংবাদ টিপস পাঠান
+                </h3>
+                <p className="text-xs text-[var(--ink-muted)] mb-5" style={{ fontFamily: 'var(--font-body)' }}>
+                  নিচের ফর্মটি পূরণ করে আপনার মতামত, ব্রেকিং নিউজ টিপস অথবা সংশোধনী অনুরোধ জানান।
+                </p>
 
-          {/* Interactive Contact Form (Right 7 Cols) */}
-          <div className="lg:col-span-7">
-            <div className="bg-[var(--bg-surface)] border border-[var(--ink-border)] rounded-xl p-6 sm:p-8 shadow-xs">
-              <h3 className="text-lg font-bold text-[var(--ink)] mb-2" style={{ fontFamily: 'var(--font-headline)' }}>
-                সরাসরি মেসেজ বা সংবাদ টিপস পাঠান
-              </h3>
-              <p className="text-xs text-[var(--ink-muted)] mb-6" style={{ fontFamily: 'var(--font-body)' }}>
-                নিচের ফর্মটি পূরণ করে আপনার মতামত, ব্রেকিং নিউজ টিপস অথবা সংশোধনী অনুরোধ জমা দিন।
-              </p>
+                {submitted ? (
+                  <div className="py-10 text-center flex flex-col items-center gap-3 border border-[var(--ink-border)] bg-[var(--bg-page)] rounded-xl p-6">
+                    <CheckCircle size={36} className="text-[var(--ink)]" />
+                    <h4 className="text-base font-bold text-[var(--ink)]" style={{ fontFamily: 'var(--font-headline)' }}>
+                      আপনার বার্তাটি সফলভাবে পাঠানো হয়েছে!
+                    </h4>
+                    <p className="text-xs text-[var(--ink-muted)] max-w-sm" style={{ fontFamily: 'var(--font-body)' }}>
+                      খেলারদেশের সাথে যোগাযোগ করার জন্য ধন্যবাদ। আমাদের প্রতিনিধি শীঘ্রই আপনার সাথে যোগাযোগ করবেন।
+                    </p>
+                    <button
+                      type="button"
+                      onClick={() => setSubmitted(false)}
+                      className="mt-3 px-4 py-2 bg-[var(--ink)] text-[var(--bg-page)] text-xs font-bold rounded-lg hover:opacity-90 transition-opacity"
+                    >
+                      আরেকটি বার্তা পাঠান
+                    </button>
+                  </div>
+                ) : (
+                  <form onSubmit={handleSubmit} className="space-y-4">
+                    {error && (
+                      <div className="p-3 rounded-lg bg-[var(--bg-page)] border border-red-500 text-xs text-red-600 flex items-center gap-2">
+                        <AlertCircle size={15} />
+                        <span>{error}</span>
+                      </div>
+                    )}
 
-              {submitted ? (
-                <div className="py-12 text-center flex flex-col items-center gap-3 bg-emerald-50/20 border border-emerald-500/30 rounded-xl p-6">
-                  <CheckCircle size={44} className="text-emerald-500" />
-                  <h4 className="text-base font-bold text-[var(--ink)]" style={{ fontFamily: 'var(--font-headline)' }}>
-                    আপনার বার্তাটি সফলভাবে পাঠানো হয়েছে!
-                  </h4>
-                  <p className="text-xs text-[var(--ink-muted)] max-w-sm" style={{ fontFamily: 'var(--font-body)' }}>
-                    খেলারদেশের সাথে যোগাযোগ করার জন্য ধন্যবাদ। আমাদের প্রতিনিধি শীঘ্রই আপনার সাথে যোগাযোগ করবেন।
-                  </p>
-                  <button
-                    type="button"
-                    onClick={() => setSubmitted(false)}
-                    className="mt-4 px-4 py-2 bg-[var(--ink)] text-[var(--bg-page)] text-xs font-bold rounded-lg hover:opacity-90 transition-opacity"
-                  >
-                    আরেকটি বার্তা পাঠান
-                  </button>
-                </div>
-              ) : (
-                <form onSubmit={handleSubmit} className="space-y-4">
-                  {error && (
-                    <div className="p-3 rounded-lg bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-900 text-xs text-red-600 flex items-center gap-2">
-                      <AlertCircle size={15} />
-                      <span>{error}</span>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div>
+                        <label className="text-xs font-semibold text-[var(--ink)] block mb-1">
+                          আপনার নাম *
+                        </label>
+                        <input
+                          type="text"
+                          required
+                          placeholder="যেমন: তানভীর আহমেদ"
+                          value={name}
+                          onChange={(e) => setName(e.target.value)}
+                          className="w-full p-2.5 rounded-lg border border-[var(--ink-border)] bg-[var(--bg-page)] text-[var(--ink)] text-xs focus:outline-none focus:border-[var(--ink)]"
+                          style={{ fontFamily: 'var(--font-body)' }}
+                        />
+                      </div>
+                      <div>
+                        <label className="text-xs font-semibold text-[var(--ink)] block mb-1">
+                          ইমেইল ঠিকানা *
+                        </label>
+                        <input
+                          type="email"
+                          required
+                          placeholder="name@example.com"
+                          value={email}
+                          onChange={(e) => setEmail(e.target.value)}
+                          className="w-full p-2.5 rounded-lg border border-[var(--ink-border)] bg-[var(--bg-page)] text-[var(--ink)] text-xs focus:outline-none focus:border-[var(--ink)] font-mono"
+                        />
+                      </div>
                     </div>
-                  )}
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                      <label className="text-xs font-semibold text-[var(--ink-muted)] block mb-1">
-                        আপনার নাম *
+                      <label className="text-xs font-semibold text-[var(--ink)] block mb-1">
+                        বার্তার বিষয়
                       </label>
-                      <input
-                        type="text"
+                      <select
+                        value={subject}
+                        onChange={(e) => setSubject(e.target.value)}
+                        className="w-full p-2.5 rounded-lg border border-[var(--ink-border)] bg-[var(--bg-page)] text-[var(--ink)] text-xs focus:outline-none focus:border-[var(--ink)]"
+                        style={{ fontFamily: 'var(--font-body)' }}
+                      >
+                        <option value="news_tip">ব্রেকিং নিউজ বা সংবাদ টিপস</option>
+                        <option value="correction">তথ্য সংশোধনের অনুরোধ</option>
+                        <option value="advertisement">বিজ্ঞাপন বা স্পন্সরশিপ অনুসন্ধান</option>
+                        <option value="opinion">মতামত ও প্রতিক্রিয়া</option>
+                        <option value="general">সাধারণ জিজ্ঞাসা</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="text-xs font-semibold text-[var(--ink)] block mb-1">
+                        বিস্তারিত বার্তা *
+                      </label>
+                      <textarea
                         required
-                        placeholder="যেমন: তানভীর আহমেদ"
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                        className="w-full p-2.5 rounded-lg border border-[var(--ink-border)] bg-[var(--bg-page)] text-[var(--ink)] text-xs focus:outline-none focus:border-[#d33f3f]"
+                        rows={4}
+                        placeholder="আপনার বক্তব্য বা সংবাদ টিপস বিস্তারিত এখানে লিখুন..."
+                        value={message}
+                        onChange={(e) => setMessage(e.target.value)}
+                        className="w-full p-2.5 rounded-lg border border-[var(--ink-border)] bg-[var(--bg-page)] text-[var(--ink)] text-xs focus:outline-none focus:border-[var(--ink)] resize-y"
                         style={{ fontFamily: 'var(--font-body)' }}
                       />
                     </div>
 
-                    <div>
-                      <label className="text-xs font-semibold text-[var(--ink-muted)] block mb-1">
-                        ইমেইল ঠিকানা *
-                      </label>
-                      <input
-                        type="email"
-                        required
-                        placeholder="name@example.com"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        className="w-full p-2.5 rounded-lg border border-[var(--ink-border)] bg-[var(--bg-page)] text-[var(--ink)] text-xs focus:outline-none focus:border-[#d33f3f]"
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="text-xs font-semibold text-[var(--ink-muted)] block mb-1">
-                      বার্তার বিষয়
-                    </label>
-                    <select
-                      value={subject}
-                      onChange={(e) => setSubject(e.target.value)}
-                      className="w-full p-2.5 rounded-lg border border-[var(--ink-border)] bg-[var(--bg-page)] text-[var(--ink)] text-xs focus:outline-none focus:border-[#d33f3f]"
+                    <button
+                      type="submit"
+                      disabled={submitting}
+                      className="w-full py-2.5 px-4 bg-[var(--ink)] text-[var(--bg-page)] text-xs font-bold rounded-lg hover:opacity-90 transition-opacity flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
                       style={{ fontFamily: 'var(--font-body)' }}
                     >
-                      <option value="news_tip">সংবাদ টিপস / তথ্য প্রদান</option>
-                      <option value="correction">তথ্য সংশোধন অনুরোধ</option>
-                      <option value="sponsorship">বিজ্ঞাপন ও স্পন্সরশিপ</option>
-                      <option value="copyright">কপিরাইট ও কন্টেন্ট অপসারণ</option>
-                      <option value="feedback">সাধারণ মতামত বা পরামর্শ</option>
-                    </select>
-                  </div>
-
-                  <div>
-                    <label className="text-xs font-semibold text-[var(--ink-muted)] block mb-1">
-                      আপনার বার্তা বিস্তারিত লিখুন *
-                    </label>
-                    <textarea
-                      required
-                      rows={5}
-                      placeholder="এখানে আপনার বার্তা বিস্তারিত লিখুন..."
-                      value={message}
-                      onChange={(e) => setMessage(e.target.value)}
-                      className="w-full p-3 rounded-lg border border-[var(--ink-border)] bg-[var(--bg-page)] text-[var(--ink)] text-xs focus:outline-none focus:border-[#d33f3f] resize-none"
-                      style={{ fontFamily: 'var(--font-body)' }}
-                    />
-                  </div>
-
-                  <button
-                    type="submit"
-                    disabled={submitting}
-                    className="w-full py-3 bg-[#d33f3f] hover:bg-red-700 text-white rounded-lg text-xs font-bold transition-colors flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
-                    style={{ fontFamily: 'var(--font-body)' }}
-                  >
-                    {submitting ? (
-                      <span>বার্তা পাঠানো হচ্ছে...</span>
-                    ) : (
-                      <>
-                        <Send size={14} />
-                        <span>বার্তা পাঠান</span>
-                      </>
-                    )}
-                  </button>
-                </form>
-              )}
+                      <Send size={14} />
+                      {submitting ? 'পাঠানো হচ্ছে...' : 'বার্তা পাঠান'}
+                    </button>
+                  </form>
+                )}
+              </div>
             </div>
+
           </div>
-        </div>
+
+        </article>
       </main>
 
       <ScrollToTopButton />

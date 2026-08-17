@@ -1,10 +1,9 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { ShieldCheck, Target, Users, BookOpen, Scale, Award, Mail, MapPin } from 'lucide-react';
 import ScrollToTopButton from '@/components/frontend/ScrollToTopButton';
 
 export const metadata: Metadata = {
-  title: 'আমাদের সম্পর্কে (About Us) — খেলারদেশ',
+  title: 'আমাদের সম্পর্কে — খেলারদেশ',
   description: 'খেলারদেশ স্পোর্টস নিউজ পোর্টাল সম্পর্কে জানুন — আমাদের সম্পাদকীয় নীতিমালা, লক্ষ্য, টিম এবং সাংবাদিকতার আদর্শ।',
   openGraph: {
     title: 'আমাদের সম্পর্কে — খেলারদেশ',
@@ -20,7 +19,7 @@ export default function AboutPage() {
   return (
     <div style={{ backgroundColor: 'var(--bg-page)', minHeight: '100vh', color: 'var(--ink)' }}>
       {/* Breadcrumb Header */}
-      <div className="w-full max-w-[900px] mx-auto px-4 lg:px-6 pt-6 pb-2">
+      <div className="w-full max-w-[800px] mx-auto px-4 lg:px-6 pt-6 pb-2">
         <div className="flex items-center gap-3">
           <Link
             href="/"
@@ -34,7 +33,7 @@ export default function AboutPage() {
           </Link>
 
           <div
-            className="flex items-center gap-1.5 text-xs font-semibold tracking-wider uppercase text-[var(--ink-muted)]"
+            className="flex items-center gap-1.5 text-xs font-semibold tracking-wider text-[var(--ink-muted)]"
             style={{ fontFamily: 'var(--font-body)' }}
           >
             <Link href="/" className="hover:text-[var(--ink)] transition-colors">
@@ -48,147 +47,100 @@ export default function AboutPage() {
         </div>
       </div>
 
-      <main className="max-w-[900px] mx-auto px-4 lg:px-6 py-6 pb-20">
-        {/* Hero Section */}
-        <div className="bg-[var(--bg-surface)] border border-[var(--ink-border)] rounded-2xl p-6 sm:p-10 mb-10 shadow-xs">
-          <span className="px-3 py-1 bg-red-100 dark:bg-red-950/60 text-[#d33f3f] rounded-full text-xs font-black tracking-wider uppercase inline-block mb-3">
-            Khelardesh Sports Media
-          </span>
-          <h1
-            lang="bn"
-            className="text-3xl sm:text-4xl lg:text-5xl font-black text-[var(--ink)] mb-4 leading-tight"
-            style={{ fontFamily: 'var(--font-headline)' }}
-          >
-            খেলারদেশ: বাংলাদেশের স্বাধীন ক্রীড়া সংবাদ মাধ্যম
-          </h1>
-          <p
-            lang="bn"
-            className="text-base sm:text-lg leading-relaxed text-[var(--ink-muted)] max-w-[780px]"
-            style={{ fontFamily: 'var(--font-body)' }}
-          >
-            <strong>খেলারদেশ</strong> (khelardesh.com) বাংলা ভাষাভাষী ক্রীড়াপ্রেমীদের জন্য একটি আধুনিক, নিরপেক্ষ ও তথ্যবহুল ডিজিটাল স্পোর্টস নিউজ পোর্টাল। ফুটবল, ক্রিকেট থেকে শুরু করে আন্তর্জাতিক ও স্থানীয় সমস্ত খেলার বস্তুনিষ্ঠ সংবাদ, গভীর বিশ্লেষণ, লাইভ স্কোর এবং বিশেষ প্রতিবেদন পরিবেশনে আমরা নিবেদিতপ্রাণ।
-          </p>
-        </div>
-
-        {/* Core Pillars Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-          <div className="bg-[var(--bg-surface)] border border-[var(--ink-border)] p-6 rounded-xl shadow-2xs flex flex-col gap-3">
-            <div className="w-10 h-10 rounded-lg bg-red-50 dark:bg-red-950/50 text-[#d33f3f] flex items-center justify-center">
-              <Target size={22} />
-            </div>
-            <h3 className="text-base font-bold text-[var(--ink)]" style={{ fontFamily: 'var(--font-headline)' }}>
-              আমাদের লক্ষ্য
-            </h3>
-            <p className="text-xs sm:text-sm text-[var(--ink-muted)] leading-relaxed" style={{ fontFamily: 'var(--font-body)' }}>
-              সঠিক ও দ্রুততম সময়ে ক্রীড়াঙ্গনের নিরপেক্ষ সংবাদ বাংলাভাষী পাঠকদের কাছে পৌঁছে দেওয়া এবং দেশীয় ক্রীড়া প্রতিভাকে বিশ্বদরবারে তুলে ধরা।
-            </p>
-          </div>
-
-          <div className="bg-[var(--bg-surface)] border border-[var(--ink-border)] p-6 rounded-xl shadow-2xs flex flex-col gap-3">
-            <div className="w-10 h-10 rounded-lg bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 flex items-center justify-center">
-              <ShieldCheck size={22} />
-            </div>
-            <h3 className="text-base font-bold text-[var(--ink)]" style={{ fontFamily: 'var(--font-headline)' }}>
-              বস্তুনিষ্ঠতা
-            </h3>
-            <p className="text-xs sm:text-sm text-[var(--ink-muted)] leading-relaxed" style={{ fontFamily: 'var(--font-body)' }}>
-              গুজব ও ভুয়া সংবাদের বিরুদ্ধে আমরা কঠোর। প্রতিটি খবর প্রকাশের পূর্বে একাধিক নির্ভরযোগ্য সূত্র ও অফিসিয়াল তথ্যের মাধ্যমে যাচাই করা হয়।
-            </p>
-          </div>
-
-          <div className="bg-[var(--bg-surface)] border border-[var(--ink-border)] p-6 rounded-xl shadow-2xs flex flex-col gap-3">
-            <div className="w-10 h-10 rounded-lg bg-blue-50 dark:bg-blue-950/50 text-blue-600 flex items-center justify-center">
-              <Scale size={22} />
-            </div>
-            <h3 className="text-base font-bold text-[var(--ink)]" style={{ fontFamily: 'var(--font-headline)' }}>
-              সাংবাদিকতার নীতি
-            </h3>
-            <p className="text-xs sm:text-sm text-[var(--ink-muted)] leading-relaxed" style={{ fontFamily: 'var(--font-body)' }}>
-              আন্তর্জাতিক প্রেস মানদণ্ড ও ফেয়ার জার্নালিজম নীতি মেনে কোনো দল, সংস্থা বা ব্যক্তির প্রতি পক্ষপাতহীন স্বাধীন সংবাদ পরিবেশন।
-            </p>
-          </div>
-        </div>
-
-        {/* Editorial Standards & Fact Checking */}
-        <section className="bg-[var(--bg-surface)] border border-[var(--ink-border)] rounded-xl p-6 sm:p-8 mb-10 space-y-6">
-          <div className="flex items-center gap-2 border-b border-[var(--ink-border)] pb-3">
-            <BookOpen size={20} className="text-[#d33f3f]" />
-            <h2 className="text-xl font-bold text-[var(--ink)]" style={{ fontFamily: 'var(--font-headline)' }}>
-              সম্পাদকীয় ও তথ্য যাচাই নীতিমালা
-            </h2>
-          </div>
-
-          <div className="space-y-4 text-sm leading-relaxed text-[var(--ink-muted)]" style={{ fontFamily: 'var(--font-body)' }}>
-            <div>
-              <h4 className="font-bold text-[var(--ink)] mb-1">১. তথ্যের উৎস ও সত্যতা যাচাই:</h4>
-              <p>
-                খেলারদেশের সকল প্রতিবেদন সংশ্লিষ্ট ক্লাব, ফেডারেশন (যেমন: ফিফা, আইসিসি, বাফুফে, বিসিবি), প্রাতিষ্ঠানিক প্রেস রিলিজ এবং সরাসরি মাঠের রিপোর্টিংয়ের ওপর ভিত্তি করে রচিত হয়। অনানুষ্ঠানিক সূত্রের ক্ষেত্রে অন্তত দুটি নির্ভরযোগ্য স্বাধীন উৎস থেকে সত্যতা নিশ্চিত করা হয়।
-              </p>
-            </div>
-
-            <div>
-              <h4 className="font-bold text-[var(--ink)] mb-1">২. ভুল সংশোধন নীতিমালা:</h4>
-              <p>
-                সাংবাদিকতায় স্বচ্ছতা নিশ্চিত করতে যদি কোনো প্রতিবেদনে তথ্যের অসঙ্গতি বা অনিচ্ছাকৃত ভুল পরিলক্ষিত হয়, তবে আমরা তা দ্রুত সংশোধন করি এবং খবরের নিচে স্পষ্টভাবে সংশোধনী নোট প্রকাশ করি।
-              </p>
-            </div>
-
-            <div>
-              <h4 className="font-bold text-[var(--ink)] mb-1">৩. মত ও কলাম স্বাতন্ত্র্য:</h4>
-              <p>
-                বিশেষ বিশ্লেষণ ও অতিথি কলামসমূহ সংশ্লিষ্ট লেখকের নিজস্ব মতামত। সম্পাদকীয় টিম স্পষ্ট ব্যাজ ও বাইলাইন দিয়ে মতামত কন্টেন্টকে মূল সংবাদের চেয়ে আলাদা প্রদর্শন করে।
-              </p>
-            </div>
-
-            <div>
-              <h4 className="font-bold text-[var(--ink)] mb-1">৪. মালিকানা ও অর্থায়ন:</h4>
-              <p>
-                খেলারদেশ একটি স্বাধীন প্রকাশনা। ওয়েবসাইট পরিচালনা ও সাংবাদিকদের পারিশ্রমিক ডিজিটাল বিজ্ঞাপন ও স্পন্সরশিপের মাধ্যমে পরিচালিত হয়। কোনো বাণিজ্যিক বা রাজনৈতিক সংগঠন আমাদের সম্পাদকীয় সিদ্ধান্তে হস্তক্ষেপ করতে পারে না।
-              </p>
-            </div>
-          </div>
-        </section>
-
-        {/* Editorial Team & Newsroom */}
-        <section className="bg-[var(--bg-surface)] border border-[var(--ink-border)] rounded-xl p-6 sm:p-8 mb-10">
-          <div className="flex items-center gap-2 border-b border-[var(--ink-border)] pb-3 mb-6">
-            <Users size={20} className="text-[#d33f3f]" />
-            <h2 className="text-xl font-bold text-[var(--ink)]" style={{ fontFamily: 'var(--font-headline)' }}>
-              সম্পাদকীয় দল ও যোগাযোগ
-            </h2>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
-            <div className="p-4 rounded-lg bg-[var(--bg-page)] border border-[var(--ink-border)]">
-              <h4 className="text-sm font-bold text-[var(--ink)] mb-1">খেলারদেশ সম্পাদকীয় পর্ষদ</h4>
-              <p className="text-xs text-[var(--ink-muted)] mb-2">Editor-in-Chief & Senior Sports Analysts</p>
-              <p className="text-xs text-[var(--ink-muted)] leading-relaxed">
-                জাতীয় ও আন্তর্জাতিক ক্রীড়া বিশেষজ্ঞ এবং অভিজ্ঞ ক্রীড়া সাংবাদিকদের সমন্বয়ে গঠিত খেলারদেশ সম্পাদনা পর্ষদ।
-              </p>
-            </div>
-
-            <div className="p-4 rounded-lg bg-[var(--bg-page)] border border-[var(--ink-border)]">
-              <h4 className="text-sm font-bold text-[var(--ink)] mb-1">রিপোর্টিং ও ডিজিটাল মিডিয়া টিম</h4>
-              <p className="text-xs text-[var(--ink-muted)] mb-2">Field Correspondents & Digital Editors</p>
-              <p className="text-xs text-[var(--ink-muted)] leading-relaxed">
-                ঢাকা, চট্টগ্রামসহ দেশের বিভিন্ন প্রান্ত এবং আন্তর্জাতিক ম্যাচ ভেন্যু থেকে তাৎক্ষণিক সংবাদ সরবরাহকারী প্রতিনিধি দল।
-              </p>
-            </div>
-          </div>
-
-          <div className="pt-4 border-t border-[var(--ink-border)] flex items-center justify-between gap-4 flex-wrap text-xs">
-            <div className="flex items-center gap-2 text-[var(--ink-muted)]">
-              <Mail size={15} className="text-[#d33f3f]" />
-              <span>ইমেইল: <a href="mailto:khelardeshbd@gmail.com" className="font-bold text-[var(--ink)] hover:underline">khelardeshbd@gmail.com</a></span>
-            </div>
-            <Link
-              href="/contact"
-              className="px-4 py-2 bg-[#d33f3f] text-white font-bold rounded-lg hover:bg-red-700 transition-colors"
+      <main className="max-w-[800px] mx-auto px-4 lg:px-6 py-6 pb-20 font-sans">
+        <article className="border-t-2 border-[var(--ink)] pt-6">
+          
+          {/* Header */}
+          <header className="pb-6 mb-8 border-b border-[var(--ink-border)]">
+            <h1 
+              lang="bn"
+              className="text-3xl sm:text-4xl font-black tracking-tight text-[var(--ink)] leading-tight mb-2" 
+              style={{ fontFamily: 'var(--font-headline)' }}
             >
-              যোগাযোগ পেজে যান →
-            </Link>
+              খেলারদেশ: বাংলাদেশের স্বাধীন ক্রীড়া সংবাদ মাধ্যম
+            </h1>
+            <p className="text-xs text-[var(--ink-muted)] font-medium" style={{ fontFamily: 'var(--font-body)' }}>
+              প্রতিষ্ঠা: ২০২৪ | ঢাকা, বাংলাদেশ
+            </p>
+          </header>
+
+          {/* Intro Prose */}
+          <div className="space-y-8 text-sm sm:text-base leading-relaxed text-[var(--ink)]" style={{ fontFamily: 'var(--font-body)' }}>
+            
+            <section className="space-y-3">
+              <p className="text-base sm:text-lg leading-relaxed text-[var(--ink)]">
+                <strong>খেলারদেশ</strong> (khelardesh.com) বাংলা ভাষাভাষী ক্রীড়াপ্রেমীদের জন্য একটি আধুনিক, বস্তুনিষ্ঠ ও দায়িত্বশীল ডিজিটাল স্পোর্টস নিউজ পোর্টাল। ফুটবল, ক্রিকেট থেকে শুরু করে আন্তর্জাতিক ও স্থানীয় সমস্ত খেলার নির্ভরযোগ্য সংবাদ, গভীর বিশ্লেষণ, লাইভ স্কোর এবং বিশেষ প্রতিবেদন পরিবেশনে আমরা নিবেদিতপ্রাণ।
+              </p>
+            </section>
+
+            {/* Core Values */}
+            <section className="space-y-4 pt-2">
+              <h2 className="text-lg sm:text-xl font-bold text-[var(--ink)]" style={{ fontFamily: 'var(--font-headline)' }}>
+                আমাদের মূল নীতি ও অঙ্গীকার
+              </h2>
+              
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
+                <div className="border border-[var(--ink-border)] bg-[var(--bg-surface)] p-4 rounded-lg">
+                  <h3 className="text-sm font-bold text-[var(--ink)] mb-1" style={{ fontFamily: 'var(--font-headline)' }}>
+                    ১. বস্তুনিষ্ঠতা ও সত্যতা
+                  </h3>
+                  <p className="text-xs text-[var(--ink-muted)] leading-relaxed">
+                    গুজব ও ভুয়া সংবাদের বিরুদ্ধে আমরা কঠোর। প্রতিটি খবর প্রকাশের পূর্বে অফিসিয়াল তথ্যের মাধ্যমে যাচাই করা হয়।
+                  </p>
+                </div>
+
+                <div className="border border-[var(--ink-border)] bg-[var(--bg-surface)] p-4 rounded-lg">
+                  <h3 className="text-sm font-bold text-[var(--ink)] mb-1" style={{ fontFamily: 'var(--font-headline)' }}>
+                    ২. স্বাধীন সাংবাদিকতা
+                  </h3>
+                  <p className="text-xs text-[var(--ink-muted)] leading-relaxed">
+                    কোনো দল, সংস্থা বা বাণিজ্যিক মহলের প্রভাবমুক্ত থেকে সম্পূর্ণ নিরপেক্ষ ক্রীড়া বিশ্লেষণ পরিবেশন।
+                  </p>
+                </div>
+
+                <div className="border border-[var(--ink-border)] bg-[var(--bg-surface)] p-4 rounded-lg">
+                  <h3 className="text-sm font-bold text-[var(--ink)] mb-1" style={{ fontFamily: 'var(--font-headline)' }}>
+                    ৩. দেশীয় ক্রীড়ার বিকাশ
+                  </h3>
+                  <p className="text-xs text-[var(--ink-muted)] leading-relaxed">
+                    পাড়ামহল্লা থেকে শুরু করে তৃণমূল পর্যায়ের দেশীয় ক্রীড়া প্রতিভাদের বিশ্বদরবারে তুলে ধরা।
+                  </p>
+                </div>
+              </div>
+            </section>
+
+            {/* Editorial Standards & Fact Checking */}
+            <section className="space-y-3 border-t border-[var(--ink-border)] pt-6">
+              <h2 className="text-lg sm:text-xl font-bold text-[var(--ink)]" style={{ fontFamily: 'var(--font-headline)' }}>
+                সম্পাদকীয় ও তথ্য যাচাই নীতিমালা
+              </h2>
+              <div className="space-y-3 text-[var(--ink-muted)] text-xs sm:text-sm">
+                <p>
+                  <strong className="text-[var(--ink)]">তথ্যের উৎস:</strong> খেলারদেশের সকল প্রতিবেদন সংশ্লিষ্ট ক্লাব, ফেডারেশন (যেমন: ফিফা, আইসিসি, বাফুফে, বিসিবি), প্রাতিষ্ঠানিক প্রেস রিলিজ এবং সরাসরি মাঠের রিপোর্টিংয়ের ওপর ভিত্তি করে রচিত হয়।
+                </p>
+                <p>
+                  <strong className="text-[var(--ink)]">ভুল সংশোধন:</strong> সাংবাদিকতায় স্বচ্ছতা নিশ্চিত করতে যদি কোনো প্রতিবেদনে তথ্যের অসঙ্গতি পরিলক্ষিত হয়, তবে আমরা তা দ্রুত সংশোধন করে স্পষ্ট সংশোধনী প্রকাশ করি।
+                </p>
+                <p>
+                  <strong className="text-[var(--ink)]">মালিকানা ও অর্থায়ন:</strong> খেলারদেশ একটি স্বাধীন ডিজিটাল স্পোর্টস নিউজ আউটলেট। ওয়েবসাইট পরিচালনা ও সাংবাদিকদের পারিশ্রমিক ডিজিটাল বিজ্ঞাপন ও স্পন্সরশিপের মাধ্যমে পরিচালিত হয়। কোনো বাণিজ্যিক বা রাজনৈতিক সংগঠন আমাদের সম্পাদকীয় সিদ্ধান্তে হস্তক্ষেপ করতে পারে না।
+                </p>
+              </div>
+            </section>
+
+            {/* Newsroom & Contact */}
+            <section className="space-y-3 border-t border-[var(--ink-border)] pt-6">
+              <h2 className="text-lg sm:text-xl font-bold text-[var(--ink)]" style={{ fontFamily: 'var(--font-headline)' }}>
+                নিউজরুম ও যোগাযোগ
+              </h2>
+              <div className="text-xs sm:text-sm text-[var(--ink-muted)] space-y-1">
+                <p><strong className="text-[var(--ink)]">সম্পাদকীয় যোগাযোগ:</strong> <a href="mailto:khelardeshbd@gmail.com" className="text-[#d33f3f] font-semibold hover:underline">khelardeshbd@gmail.com</a></p>
+                <p><strong className="text-[var(--ink)]">অফিসিয়াল ঠিকানা:</strong> খেলারদেশ নিউজরুম, ঢাকা ১২০৫, বাংলাদেশ।</p>
+              </div>
+            </section>
+
           </div>
-        </section>
+
+        </article>
       </main>
 
       <ScrollToTopButton />
