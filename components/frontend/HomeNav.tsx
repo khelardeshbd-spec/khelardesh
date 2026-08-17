@@ -62,6 +62,7 @@ export default function HomeNav() {
         { label: 'ফর্মুলা ওয়ান', slug: 'f1' },
         { label: 'টেবিল টেনিস', slug: 'table-tennis' },
         { label: 'গল্ফ', slug: 'golf' },
+        { label: 'আর্কাইভ', slug: 'archive' },
       ]
     }
   ];
@@ -73,7 +74,7 @@ export default function HomeNav() {
           const href = item.slug === '' ? '/' : `/sport/${item.slug}`;
           const isActive = item.slug === '' 
             ? pathname === '/' 
-            : pathname === `/sport/${item.slug}` || (!!item.subItems && item.subItems.some(sub => pathname === `/sport/${sub.slug}`));
+            : pathname === `/sport/${item.slug}` || (!!item.subItems && item.subItems.some(sub => sub.slug === 'archive' ? pathname === '/archive' : pathname === `/sport/${sub.slug}`));
           const isOpen = openDropdown === item.slug;
 
           if (item.subItems) {
@@ -125,11 +126,12 @@ export default function HomeNav() {
                 </button>
                 <div className={`absolute left-0 top-[100%] ${isOpen ? 'block' : 'hidden'} bg-[#ffffff] border border-[#e2e2e2] shadow-md rounded-[3px] py-1 min-w-[150px] z-50 dropdown-bridge`}>
                   {item.subItems.map((sub, sIdx) => {
-                    const isSubActive = pathname === `/sport/${sub.slug}`;
+                    const subHref = sub.slug === 'archive' ? '/archive' : `/sport/${sub.slug}`;
+                    const isSubActive = sub.slug === 'archive' ? pathname === '/archive' : pathname === `/sport/${sub.slug}`;
                     return (
                       <Link
                         key={sIdx}
-                        href={`/sport/${sub.slug}`}
+                        href={subHref}
                         onClick={() => setOpenDropdown(null)}
                         className="block px-4 py-2 text-xs font-bold hover:bg-gray-100 transition-colors"
                         style={{ color: isSubActive ? 'var(--live-red)' : '#121212' }}

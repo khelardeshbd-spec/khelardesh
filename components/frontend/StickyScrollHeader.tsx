@@ -84,6 +84,7 @@ export default function StickyScrollHeader() {
         { label: 'ফর্মুলা ওয়ান', slug: 'f1' },
         { label: 'টেবিল টেনিস', slug: 'table-tennis' },
         { label: 'গল্ফ', slug: 'golf' },
+        { label: 'আর্কাইভ', slug: 'archive' },
       ]
     }
   ];
@@ -123,7 +124,7 @@ export default function StickyScrollHeader() {
               const href = item.slug === '' ? '/' : `/sport/${item.slug}`;
               const isActive = item.slug === '' 
                 ? pathname === '/' 
-                : pathname === `/sport/${item.slug}` || (!!item.subItems && item.subItems.some(sub => pathname === `/sport/${sub.slug}`));
+                : pathname === `/sport/${item.slug}` || (!!item.subItems && item.subItems.some(sub => sub.slug === 'archive' ? pathname === '/archive' : pathname === `/sport/${sub.slug}`));
               const isOpen = openDropdown === item.slug;
 
               if (item.subItems) {
@@ -178,14 +179,14 @@ export default function StickyScrollHeader() {
                     </button>
                     {/* Dropdown menu */}
                     <div className={`absolute right-0 lg:right-auto lg:left-0 top-[100%] ${isOpen ? 'block' : 'hidden'} bg-[var(--bg-surface)] border border-[var(--ink-border)] shadow-md rounded-[3px] py-1 min-w-[150px] z-50 dropdown-bridge`}>
-
                       {item.subItems.map((sub, sIdx) => {
-                        const isSubActive = pathname === `/sport/${sub.slug}`;
+                        const subHref = sub.slug === 'archive' ? '/archive' : `/sport/${sub.slug}`;
+                        const isSubActive = sub.slug === 'archive' ? pathname === '/archive' : pathname === `/sport/${sub.slug}`;
                         return (
                           <Link
                             key={sIdx}
                             ref={isSubActive ? activeItemRef : undefined}
-                            href={`/sport/${sub.slug}`}
+                            href={subHref}
                             onClick={() => setOpenDropdown(null)}
                             className="block px-4 py-2 text-xs font-bold transition-colors"
                             style={{ 
