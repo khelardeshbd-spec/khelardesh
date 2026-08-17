@@ -1100,11 +1100,8 @@ export default function NewArticlePage() {
             <div className="flex items-center gap-2 mb-3">
               <Tag size={16} className="text-[#d33f3f]" />
               <h3 className="text-sm font-bold text-[var(--ink)]" style={{ fontFamily: 'var(--font-body)' }}>
-                ট্যাগ ও কীওয়ার্ড (Tags & Keywords)
+                ট্যাগ ও কীওয়ার্ড
               </h3>
-              <span className="text-[11px] text-[var(--ink-muted)]">
-                — গুগল এসইও এবং পাঠক ধরে রাখার জন্য অত্যন্ত কার্যকর
-              </span>
             </div>
 
             {/* Added Tags Chips */}
