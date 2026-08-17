@@ -21,20 +21,26 @@ interface PageProps {
 const SPORT_NAMES: Record<string, string> = {
   football: 'ফুটবল',
   'bd-football': 'দেশের ফুটবল',
-  'club-football': 'ক্লাব ফুটবল',
-  'international-football': 'আন্তর্জাতিক ফুটবল',
+  'club-football': 'পাড়া মহল্লার ফুটবল',
+  'international-football': 'বিদেশের ফুটবল',
+  'world-cup-2026': 'ফুটবল বিশ্বকাপ ২০২৬',
   cricket: 'ক্রিকেট',
-  'bd-cricket': 'বাংলাদেশের ক্রিকেট',
+  'bd-cricket': 'দেশের ক্রিকেট',
+  'international-cricket': 'বিদেশের ক্রিকেট',
+  'local-cricket': 'পাড়া মহল্লার ক্রিকেট',
   basketball: 'বাস্কেটবল',
   tennis: 'টেনিস',
   f1: 'ফর্মুলা ওয়ান',
+  'table-tennis': 'টেবিল টেনিস',
+  golf: 'গল্ফ',
+  rugby: 'রাগবি',
+  athletics: 'অ্যাথলেটিক্স',
   interview: 'ইন্টারভিউ',
   feature: 'ফিচার',
   special: 'খেলার দেশ বিশেষ',
   'guest-column': 'অতিথি কলাম',
+  'on-this-day': 'এই দিনে',
   other: 'অন্যান্য',
-  rugby: 'রাগবি',
-  athletics: 'অ্যাথলেটিক্স',
 };
 
 const VALID_SPORTS = Object.keys(SPORT_NAMES);
@@ -79,7 +85,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 const SPORT_MAPPING: Record<string, string[]> = {
   football: ['football', 'bd-football', 'international-football', 'club-football', 'world-cup-2026'],
   cricket: ['cricket', 'bd-cricket', 'international-cricket', 'local-cricket'],
-  other: ['other', 'basketball', 'rugby', 'f1', 'table-tennis', 'golf'],
+  other: ['other', 'basketball', 'rugby', 'f1', 'table-tennis', 'golf', 'tennis', 'athletics'],
 };
 
 import CategoryFeedWithLoadMore from '@/components/frontend/CategoryFeedWithLoadMore';
