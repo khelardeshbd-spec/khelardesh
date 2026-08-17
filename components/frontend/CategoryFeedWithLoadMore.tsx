@@ -99,7 +99,7 @@ export default function CategoryFeedWithLoadMore({ initialArticles, sport, sport
                 <span>আরও খবর লোড হচ্ছে...</span>
               </>
             ) : (
-              <span>আরও খবর দেখুন (Load More) ↓</span>
+              <span>আরও খবর দেখুন ↓</span>
             )}
           </button>
         ) : (

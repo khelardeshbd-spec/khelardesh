@@ -73,7 +73,7 @@ export default function PrivacyPage() {
             {/* Section 1: Introduction */}
             <section className="space-y-3">
               <h2 className="text-lg font-bold text-[var(--ink)]" style={{ fontFamily: 'var(--font-headline)' }}>
-                ১. ভূমিকা (Introduction)
+                ১. ভূমিকা
               </h2>
               <p>
                 <strong>খেলারদেশ</strong> (khelardesh.com)-এ আপনাকে স্বাগত। আমরা আমাদের পাঠকদের ব্যক্তিগত তথ্যের গোপনীয়তা রক্ষা করতে প্রতিশ্রুতিবদ্ধ। এই গোপনীয়তা নীতিমালায় ব্যাখ্যা করা হয়েছে যে কীভাবে আমরা আপনার তথ্য সংগ্রহ, সংরক্ষণ, প্রক্রিয়াজাত এবং বিজ্ঞাপন পরিবেশনকারী পার্টনারদের সাথে কুকিজ সংক্রান্ত তথ্যাদি পরিচালনা করি। আমাদের ওয়েবসাইট ব্যবহারের মাধ্যমে আপনি এই নীতিমালার শর্তাবলীতে সম্মত হচ্ছেন।
@@ -83,7 +83,7 @@ export default function PrivacyPage() {
             {/* Section 2: Google AdSense & DoubleClick DART Cookies */}
             <section className="space-y-3 bg-red-50/10 border border-red-500/20 rounded-xl p-5">
               <h2 className="text-lg font-bold text-[#d33f3f]" style={{ fontFamily: 'var(--font-headline)' }}>
-                ২. গুগল অ্যাডসেন্স ও ডাবলক্লিক ডার্ট কুকিজ (Google AdSense & DoubleClick DART Cookies)
+                ২. গুগল অ্যাডসেন্স ও ডাবলক্লিক ডার্ট কুকিজ
               </h2>
               <p className="text-[var(--ink)]">
                 খেলারদেশ গুগল অ্যাডসেন্স (Google AdSense) ও অন্যান্য অনুমোদিত থার্ড-পার্টি বিজ্ঞাপন নেটওয়ার্কের মাধ্যমে বিজ্ঞাপন প্রদর্শন করে থাকে।
@@ -104,7 +104,7 @@ export default function PrivacyPage() {
             {/* Section 3: Third Party Advertising & Analytics */}
             <section className="space-y-3">
               <h2 className="text-lg font-bold text-[var(--ink)]" style={{ fontFamily: 'var(--font-headline)' }}>
-                ৩. থার্ড-পার্টি বিজ্ঞাপন ও অ্যানালিটিক্স পার্টনার (Third-Party Ads & Analytics)
+                ৩. থার্ড-পার্টি বিজ্ঞাপন ও অ্যানালিটিক্স পার্টনার
               </h2>
               <p>
                 আমাদের ওয়েবসাইটে বিজ্ঞাপন পরিবেশনকারী থার্ড-পার্টি বিজ্ঞাপন সার্ভার বা অ্যাড নেটওয়ার্কসমূহ (যেমন: Adsterra, Google AdSense ইত্যাদি) সরাসরি আপনার ব্রাউজারে বিজ্ঞাপন এবং লিঙ্ক পাঠাতে পারে। এই প্রক্রিয়া চলাকালে তারা স্বয়ংক্রিয়ভাবে আপনার আইপি (IP) ঠিকানা পেতে পারে।
@@ -117,7 +117,7 @@ export default function PrivacyPage() {
             {/* Section 4: Log Files */}
             <section className="space-y-3">
               <h2 className="text-lg font-bold text-[var(--ink)]" style={{ fontFamily: 'var(--font-headline)' }}>
-                ৪. লগ ফাইলসমূহ (Log Files)
+                ৪. লগ ফাইলসমূহ
               </h2>
               <p>
                 খেলারদেশ একটি আদর্শ পদ্ধতির অংশ হিসেবে লগ ফাইল ব্যবহার করে। এই ফাইলগুলো ওয়েবসাইটে ভিজিটরদের ট্র্যাফিক বিশ্লেষণ করার জন্য রাখা হয়। সংগৃহীত তথ্যের মধ্যে রয়েছে: ইন্টারনেট প্রোটোকল (IP) ঠিকানা, ব্রাউজারের ধরন, ইন্টারনেট সার্ভিস প্রোভাইডার (ISP), তারিখ ও সময়ের স্ট্যাম্প, রেফারেল/প্রস্থান পৃষ্ঠা এবং ক্লিকের সংখ্যা। এই তথ্যগুলোর সাথে ব্যক্তিগতভাবে শনাক্তযোগ্য কোনো তথ্যের যোগসূত্র নেই।
@@ -127,7 +127,7 @@ export default function PrivacyPage() {
             {/* Section 5: Data Collection & User Account */}
             <section className="space-y-3">
               <h2 className="text-lg font-bold text-[var(--ink)]" style={{ fontFamily: 'var(--font-headline)' }}>
-                ৫. সংগৃহীত তথ্য ও ব্যবহার (Personal Data Collection)
+                ৫. সংগৃহীত তথ্য ও ব্যবহার
               </h2>
               <ul className="list-disc pl-6 space-y-2">
                 <li>
@@ -145,7 +145,7 @@ export default function PrivacyPage() {
             {/* Section 6: GDPR & CCPA Privacy Rights */}
             <section className="space-y-3">
               <h2 className="text-lg font-bold text-[var(--ink)]" style={{ fontFamily: 'var(--font-headline)' }}>
-                ৬. ব্যবহারকারীর তথ্য অধিকার (GDPR & CCPA Data Rights)
+                ৬. ব্যবহারকারীর তথ্য অধিকার
               </h2>
               <p>
                 আমাদের প্রত্যেক ব্যবহারকারীর নিজস্ব তথ্যের ওপর সম্পূর্ণ অধিকার রয়েছে:
@@ -160,7 +160,7 @@ export default function PrivacyPage() {
             {/* Section 7: Children's Privacy (COPPA) */}
             <section className="space-y-3">
               <h2 className="text-lg font-bold text-[var(--ink)]" style={{ fontFamily: 'var(--font-headline)' }}>
-                ৭. শিশুদের তথ্যের নিরাপত্তা (Children's Information - COPPA)
+                ৭. শিশুদের তথ্যের নিরাপত্তা
               </h2>
               <p>
                 ১৩ বছরের কম বয়সী শিশুদের অনলাইন সুরক্ষা নিশ্চিত করা আমাদের অন্যতম দায়িত্ব। খেলারদেশ জেনেশুনে ১৩ বছরের কম বয়সী শিশুদের কাছ থেকে কোনো ব্যক্তিগতভাবে শনাক্তযোগ্য তথ্য সংগ্রহ করে না। যদি কোনো অভিভাবক মনে করেন যে তাঁদের সন্তান আমাদের সাইটে এ ধরনের তথ্য প্রদান করেছে, তবে অবিলম্বে আমাদের সাথে যোগাযোগ করুন, আমরা তাৎক্ষণিকভাবে তা রেকর্ড থেকে মুছে ফেলব।
@@ -170,7 +170,7 @@ export default function PrivacyPage() {
             {/* Section 8: Copyright & Fair Use */}
             <section className="space-y-3 border-t border-[var(--ink-border)] pt-6">
               <h2 className="text-lg font-bold text-[var(--ink)]" style={{ fontFamily: 'var(--font-headline)' }}>
-                ৮. কপিরাইট এবং ফেয়ার ইউজ (Copyright & Fair Use)
+                ৮. কপিরাইট এবং ফেয়ার ইউজ
               </h2>
               <p>
                 খেলারদেশে ব্যবহৃত ছবি ও মাল্টিমিডিয়া কন্টেন্টসমূহ <strong>গণপ্রজাতন্ত্রী বাংলাদেশের কপিরাইট আইন (কপিরাইট অ্যাক্ট ২০০০)</strong> এবং আন্তর্জাতিক আইনের অধীনে সংবাদ পরিবেশন ও পর্যালোচনার খাতিরে (Fair Use) ব্যবহৃত হয়ে থাকে। কোনো কন্টেন্ট নিয়ে আপত্তি থাকলে আমাদের ইমেইলে যোগাযোগ করলে যাচাই সাপেক্ষে তা দ্রুত অপসারণ বা ক্রেডিট সংশোধন করা হবে।
@@ -180,7 +180,7 @@ export default function PrivacyPage() {
             {/* Section 9: Contact */}
             <section className="space-y-3 border-t border-[var(--ink-border)] pt-6">
               <h2 className="text-lg font-bold text-[var(--ink)]" style={{ fontFamily: 'var(--font-headline)' }}>
-                ৯. যোগাযোগ ও প্রাইভেসি সাপোর্ট (Privacy Inquiries)
+                ৯. যোগাযোগ ও সহায়তা
               </h2>
               <p>
                 গোপনীয়তা নীতি সম্পর্কে যেকোনো প্রশ্ন, ডেটা মুছে ফেলার অনুরোধ বা সহায়তার জন্য যোগাযোগ করুন:

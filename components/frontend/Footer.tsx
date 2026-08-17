@@ -73,10 +73,10 @@ export default function Footer() {
             </h3>
             <ul className="flex flex-col gap-2">
               {[
-                { label: 'আমাদের সম্পর্কে (About Us)', href: '/about' },
-                { label: 'যোগাযোগ (Contact Us)', href: '/contact' },
-                { label: 'গোপনীয়তা নীতি (Privacy)', href: '/privacy' },
-                { label: 'ব্যবহারের শর্তাবলী (Terms)', href: '/terms' },
+                { label: 'আমাদের সম্পর্কে', href: '/about' },
+                { label: 'যোগাযোগ', href: '/contact' },
+                { label: 'গোপনীয়তা নীতি', href: '/privacy' },
+                { label: 'ব্যবহারের শর্তাবলী', href: '/terms' },
               ].map((link) => (
                 <li key={link.label}>
                   <Link 

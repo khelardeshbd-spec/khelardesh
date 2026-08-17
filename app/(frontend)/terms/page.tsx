@@ -70,7 +70,7 @@ export default function TermsPage() {
             
             <section className="space-y-3">
               <h2 className="text-lg font-bold text-[var(--ink)]" style={{ fontFamily: 'var(--font-headline)' }}>
-                ১. সাধারণ শর্তাবলী (Acceptance of Terms)
+                ১. সাধারণ শর্তাবলী
               </h2>
               <p>
                 <strong>খেলারদেশ</strong> (khelardesh.com) ওয়েবসাইট ব্রাউজ বা ব্যবহার করার মাধ্যমে আপনি এই ব্যবহারের শর্তাবলী এবং আমাদের গোপনীয়তা নীতি মেনে চলতে বাধ্য থাকবেন। এই শর্তাবলীর কোনো অংশে আপনার দ্বিমত থাকলে ওয়েবসাইট ব্যবহার থেকে বিরত থাকার অনুরোধ করা হচ্ছে।
@@ -79,7 +79,7 @@ export default function TermsPage() {
 
             <section className="space-y-3">
               <h2 className="text-lg font-bold text-[var(--ink)]" style={{ fontFamily: 'var(--font-headline)' }}>
-                ২. বৌদ্ধিক সম্পত্তি ও কপিরাইট (Intellectual Property)
+                ২. বৌদ্ধিক সম্পত্তি ও কপিরাইট
               </h2>
               <p>
                 খেলারদেশে প্রকাশিত সকল মূল সংবাদ, শিরোনাম, বিশ্লেষণ, বিশেষ প্রতিবেদন, লোগো এবং ডিজাইন খেলারদেশের মেধা সম্পদ। আমাদের অনুমতি ব্যতীত কোনো প্রতিবেদন হুবহু নকল বা ব্যবসায়িক উদ্দেশ্যে পুনর্প্রকাশ করা বেআইনি। সংবাদের অংশবিশেষ উদ্ধৃত করার ক্ষেত্রে অবশ্যই সক্রিয় লিঙ্কসহ খেলারদেশকে ক্রেডিট প্রদান করতে হবে।
@@ -88,7 +88,7 @@ export default function TermsPage() {
 
             <section className="space-y-3">
               <h2 className="text-lg font-bold text-[var(--ink)]" style={{ fontFamily: 'var(--font-headline)' }}>
-                ৩. মন্তব্য ও ব্যবহারকারী আচরণ নীতিমালা (User Comments Code of Conduct)
+                ৩. মন্তব্য ও ব্যবহারকারী আচরণ নীতিমালা
               </h2>
               <p>
                 খেলারদেশ পাঠকদের মতামত প্রকাশের স্বাধীনতাকে সম্মান করে। তবে মন্তব্যের ঘরে নিম্নলিখিত আচরণ সম্পূর্ণ নিষিদ্ধ:
@@ -105,7 +105,7 @@ export default function TermsPage() {
 
             <section className="space-y-3">
               <h2 className="text-lg font-bold text-[var(--ink)]" style={{ fontFamily: 'var(--font-headline)' }}>
-                ৪. দায়মুক্তি ও তথ্যের যথার্থতা (Disclaimer of Liability)
+                ৪. দায়মুক্তি ও তথ্যের যথার্থতা
               </h2>
               <p>
                 আমরা সর্বদা নির্ভুল ও সাম্প্রতিক সংবাদ পরিবেশনের সর্বোচ্চ চেষ্টা করি। তবে লাইভ ম্যাচ স্কোর, খেলোয়াড়দের পরিসংখ্যান বা তৃতীয় পক্ষের তথ্যে অপ্রত্যাশিত কোনো বিলম্ব বা প্রযুক্তিগত অসঙ্গতির জন্য খেলারদেশ কোনো প্রত্যক্ষ বা পরোক্ষ ক্ষতির দায় বহন করবে না।
@@ -114,7 +114,7 @@ export default function TermsPage() {
 
             <section className="space-y-3">
               <h2 className="text-lg font-bold text-[var(--ink)]" style={{ fontFamily: 'var(--font-headline)' }}>
-                ৫. বিজ্ঞাপন ও বহিরাগত লিঙ্ক (External Links & Advertisements)
+                ৫. বিজ্ঞাপন ও বহিরাগত লিঙ্ক
               </h2>
               <p>
                 আমাদের ওয়েবসাইটে প্রদর্শিত বিজ্ঞাপনদাতাদের পণ্য, সেবা বা তাদের ওয়েবসাইটের কন্টেন্টের দায় সংশ্লিষ্ট বিজ্ঞাপন প্রদানকারী প্রতিষ্ঠানের। কোনো তৃতীয় পক্ষের লিঙ্কে প্রবেশ করার পূর্বে সংশ্লিষ্ট সাইটের শর্তাবলী যাচাই করার দায়িত্ব ব্যবহারকারীর।
@@ -123,7 +123,7 @@ export default function TermsPage() {
 
             <section className="space-y-3 border-t border-[var(--ink-border)] pt-6">
               <h2 className="text-lg font-bold text-[var(--ink)]" style={{ fontFamily: 'var(--font-headline)' }}>
-                ৬. যোগাযোগ (Legal Inquiries)
+                ৬. আইনি যোগাযোগ
               </h2>
               <p>
                 আইনি বা ব্যবহারের শর্তাবলী সংক্রান্ত যেকোনো অনুসন্ধানের জন্য আমাদের সাথে যোগাযোগ করুন:

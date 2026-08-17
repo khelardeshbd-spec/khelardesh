@@ -214,7 +214,7 @@ export default function ContactPage() {
 
                   <div>
                     <label className="text-xs font-semibold text-[var(--ink-muted)] block mb-1">
-                      বার্তার বিষয় (Topic / Subject)
+                      বার্তার বিষয়
                     </label>
                     <select
                       value={subject}
@@ -222,11 +222,11 @@ export default function ContactPage() {
                       className="w-full p-2.5 rounded-lg border border-[var(--ink-border)] bg-[var(--bg-page)] text-[var(--ink)] text-xs focus:outline-none focus:border-[#d33f3f]"
                       style={{ fontFamily: 'var(--font-body)' }}
                     >
-                      <option value="news_tip">সংবাদ টিপস / তথ্য প্রদান (News Tip)</option>
-                      <option value="correction">তথ্য সংশোধন অনুরোধ (Correction Request)</option>
-                      <option value="sponsorship">বিজ্ঞাপন ও স্পন্সরশিপ (Advertising / Ads)</option>
-                      <option value="copyright">কপিরাইট ও কন্টেন্ট অপসারণ (Copyright / Removal)</option>
-                      <option value="feedback">সাধারণ মতামত বা পরামর্শ (General Feedback)</option>
+                      <option value="news_tip">সংবাদ টিপস / তথ্য প্রদান</option>
+                      <option value="correction">তথ্য সংশোধন অনুরোধ</option>
+                      <option value="sponsorship">বিজ্ঞাপন ও স্পন্সরশিপ</option>
+                      <option value="copyright">কপিরাইট ও কন্টেন্ট অপসারণ</option>
+                      <option value="feedback">সাধারণ মতামত বা পরামর্শ</option>
                     </select>
                   </div>
 
@@ -256,7 +256,7 @@ export default function ContactPage() {
                     ) : (
                       <>
                         <Send size={14} />
-                        <span>বার্তা পাঠান (Send Message)</span>
+                        <span>বার্তা পাঠান</span>
                       </>
                     )}
                   </button>

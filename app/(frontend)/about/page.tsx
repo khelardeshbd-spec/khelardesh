@@ -77,7 +77,7 @@ export default function AboutPage() {
               <Target size={22} />
             </div>
             <h3 className="text-base font-bold text-[var(--ink)]" style={{ fontFamily: 'var(--font-headline)' }}>
-              আমাদের লক্ষ্য (Mission)
+              আমাদের লক্ষ্য
             </h3>
             <p className="text-xs sm:text-sm text-[var(--ink-muted)] leading-relaxed" style={{ fontFamily: 'var(--font-body)' }}>
               সঠিক ও দ্রুততম সময়ে ক্রীড়াঙ্গনের নিরপেক্ষ সংবাদ বাংলাভাষী পাঠকদের কাছে পৌঁছে দেওয়া এবং দেশীয় ক্রীড়া প্রতিভাকে বিশ্বদরবারে তুলে ধরা।
@@ -89,7 +89,7 @@ export default function AboutPage() {
               <ShieldCheck size={22} />
             </div>
             <h3 className="text-base font-bold text-[var(--ink)]" style={{ fontFamily: 'var(--font-headline)' }}>
-              বস্তুনিষ্ঠতা (Accuracy)
+              বস্তুনিষ্ঠতা
             </h3>
             <p className="text-xs sm:text-sm text-[var(--ink-muted)] leading-relaxed" style={{ fontFamily: 'var(--font-body)' }}>
               গুজব ও ভুয়া সংবাদের বিরুদ্ধে আমরা কঠোর। প্রতিটি খবর প্রকাশের পূর্বে একাধিক নির্ভরযোগ্য সূত্র ও অফিসিয়াল তথ্যের মাধ্যমে যাচাই করা হয়।
@@ -101,7 +101,7 @@ export default function AboutPage() {
               <Scale size={22} />
             </div>
             <h3 className="text-base font-bold text-[var(--ink)]" style={{ fontFamily: 'var(--font-headline)' }}>
-              সাংবাদিকতার নীতি (Ethics)
+              সাংবাদিকতার নীতি
             </h3>
             <p className="text-xs sm:text-sm text-[var(--ink-muted)] leading-relaxed" style={{ fontFamily: 'var(--font-body)' }}>
               আন্তর্জাতিক প্রেস মানদণ্ড ও ফেয়ার জার্নালিজম নীতি মেনে কোনো দল, সংস্থা বা ব্যক্তির প্রতি পক্ষপাতহীন স্বাধীন সংবাদ পরিবেশন।
@@ -114,7 +114,7 @@ export default function AboutPage() {
           <div className="flex items-center gap-2 border-b border-[var(--ink-border)] pb-3">
             <BookOpen size={20} className="text-[#d33f3f]" />
             <h2 className="text-xl font-bold text-[var(--ink)]" style={{ fontFamily: 'var(--font-headline)' }}>
-              সম্পাদকীয় ও তথ্য যাচাই নীতিমালা (Editorial & Fact-Checking Policy)
+              সম্পাদকীয় ও তথ্য যাচাই নীতিমালা
             </h2>
           </div>
 
@@ -127,21 +127,21 @@ export default function AboutPage() {
             </div>
 
             <div>
-              <h4 className="font-bold text-[var(--ink)] mb-1">২. ভুল সংশোধন নীতিমালা (Corrections Policy):</h4>
+              <h4 className="font-bold text-[var(--ink)] mb-1">২. ভুল সংশোধন নীতিমালা:</h4>
               <p>
                 সাংবাদিকতায় স্বচ্ছতা নিশ্চিত করতে যদি কোনো প্রতিবেদনে তথ্যের অসঙ্গতি বা অনিচ্ছাকৃত ভুল পরিলক্ষিত হয়, তবে আমরা তা দ্রুত সংশোধন করি এবং খবরের নিচে স্পষ্টভাবে সংশোধনী নোট প্রকাশ করি।
               </p>
             </div>
 
             <div>
-              <h4 className="font-bold text-[var(--ink)] mb-1">৩. মত ও কলাম স্বাতন্ত্র্য (Opinion & Analysis):</h4>
+              <h4 className="font-bold text-[var(--ink)] mb-1">৩. মত ও কলাম স্বাতন্ত্র্য:</h4>
               <p>
                 বিশেষ বিশ্লেষণ ও অতিথি কলামসমূহ সংশ্লিষ্ট লেখকের নিজস্ব মতামত। সম্পাদকীয় টিম স্পষ্ট ব্যাজ ও বাইলাইন দিয়ে মতামত কন্টেন্টকে মূল সংবাদের চেয়ে আলাদা প্রদর্শন করে।
               </p>
             </div>
 
             <div>
-              <h4 className="font-bold text-[var(--ink)] mb-1">৪. মালিকানা ও অর্থায়ন (Ownership & Funding):</h4>
+              <h4 className="font-bold text-[var(--ink)] mb-1">৪. মালিকানা ও অর্থায়ন:</h4>
               <p>
                 খেলারদেশ একটি স্বাধীন প্রকাশনা। ওয়েবসাইট পরিচালনা ও সাংবাদিকদের পারিশ্রমিক ডিজিটাল বিজ্ঞাপন ও স্পন্সরশিপের মাধ্যমে পরিচালিত হয়। কোনো বাণিজ্যিক বা রাজনৈতিক সংগঠন আমাদের সম্পাদকীয় সিদ্ধান্তে হস্তক্ষেপ করতে পারে না।
               </p>
@@ -154,7 +154,7 @@ export default function AboutPage() {
           <div className="flex items-center gap-2 border-b border-[var(--ink-border)] pb-3 mb-6">
             <Users size={20} className="text-[#d33f3f]" />
             <h2 className="text-xl font-bold text-[var(--ink)]" style={{ fontFamily: 'var(--font-headline)' }}>
-              সম্পাদকীয় দল ও যোগাযোগ (Editorial Desk)
+              সম্পাদকীয় দল ও যোগাযোগ
             </h2>
           </div>
 

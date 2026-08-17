@@ -104,7 +104,7 @@ export default function ArchiveFeedClient({ initialSport = 'all', initialDate = 
         <div className="flex items-center gap-2 mb-4 pb-3 border-b border-[var(--ink-border)]">
           <Filter size={18} className="text-[#d33f3f]" />
           <h2 className="text-sm font-bold text-[var(--ink)]" style={{ fontFamily: 'var(--font-body)' }}>
-            আর্কাইভ ফিল্টার (Archive Search & Filters)
+            আর্কাইভ অনুসন্ধান ও ফিল্টার
           </h2>
           {(sport !== 'all' || date || searchQuery) && (
             <button
