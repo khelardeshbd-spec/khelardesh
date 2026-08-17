@@ -27,7 +27,7 @@ export async function GET() {
 
   const { data: articles, error } = await supabaseAdmin
     .from('Article')
-    .select('id, slug, headline, headlineBn, sport, isLead, publishedAt, byline, views, status, mediaUrl')
+    .select('id, slug, headline, headlineBn, sport, isLead, publishedAt, byline, views, status, mediaUrl, tags')
     .order('publishedAt', { ascending: false })
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
@@ -48,6 +48,7 @@ export async function POST(request: NextRequest) {
       headline, headlineBn, deck, body: articleBody,
       kicker, sport, mediaType, mediaUrl, mediaCaption,
       byline = 'Staff Reporter', isLead = false, status = 'published',
+      tags = null,
     } = body
 
     if (!headline || !articleBody || !sport || !mediaType || !mediaUrl) {
@@ -77,6 +78,7 @@ export async function POST(request: NextRequest) {
         mediaCaption: mediaCaption || null,
         byline,
         isLead,
+        tags: tags || null,
         status,
         publishedAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),

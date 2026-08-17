@@ -3,22 +3,21 @@
 import { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { ArrowLeft, Check, Sparkles, Camera, Plus, Trash2, List, Quote } from 'lucide-react';
+import { ArrowLeft, Check, Sparkles, Camera, Plus, Trash2, List, Quote, Link2, Tag, X, Search } from 'lucide-react';
 import AdminShell from '../../../AdminShell';
 
 interface EditorBlock {
   id: string;
-  type: 'paragraph' | 'image' | 'ad' | 'bullet' | 'quote' | 'bold_paragraph';
+  type: 'paragraph' | 'image' | 'ad' | 'bullet' | 'quote' | 'bold_paragraph' | 'related';
   value?: string;
   url?: string;
+  title?: string;
   caption?: string;
   imageUrl?: string;
   ctaUrl?: string;
   useAdsterra?: boolean;
   adsterraCode?: string;
   fontSize?: string;
-  // bullet: value is newline-separated items
-  // quote: value is the quote text, caption is the attribution
 }
 
 function safeB64Encode(str: string): string {
@@ -67,6 +66,10 @@ function parseBodyToBlocks(bodyStr: string): EditorBlock[] {
     if (boldMatch) {
       return { id, type: 'bold_paragraph', fontSize: boldMatch[1], value: boldMatch[2].trim() };
     }
+    const relatedMatch = part.trim().match(/^\[(?:RELATED|FOLLOWUP):\s*([\s\S]*?)\s*\|\s*([\s\S]*?)\]$/i);
+    if (relatedMatch) {
+      return { id, type: 'related', url: relatedMatch[1].trim(), title: relatedMatch[2].trim() };
+    }
     return { id, type: 'paragraph', value: part };
   });
 }
@@ -92,6 +95,9 @@ function serializeBlocksToBody(blocks: EditorBlock[]): string {
       }
       if (block.type === 'bold_paragraph') {
         return `[BOLD: ${block.fontSize || '19'} | ${block.value || ''}]`;
+      }
+      if (block.type === 'related') {
+        return `[RELATED: ${block.url || ''} | ${block.title || block.value || ''}]`;
       }
       return block.value || '';
     })
@@ -135,6 +141,9 @@ export default function NewArticlePage() {
   const [mediaCaption, setMediaCaption] = useState('');
   const [isLead, setIsLead] = useState(false);
   const [body, setBody] = useState('');
+  const [tags, setTags] = useState<string[]>([]);
+  const [tagInput, setTagInput] = useState('');
+  const [recentArticles, setRecentArticles] = useState<{ id: number; slug: string; headline: string; headlineBn?: string }[]>([]);
 
   const [composers, setComposers] = useState<{ id: number; name: string; photoUrl?: string | null }[]>([]);
 
@@ -148,6 +157,13 @@ export default function NewArticlePage() {
           setByline(list[0].name);
         }
       });
+
+    fetch('/api/articles?pageSize=20')
+      .then(res => res.json())
+      .then(data => {
+        setRecentArticles(data.articles ?? []);
+      })
+      .catch(() => {});
   }, []);
 
   const [mediaPreview, setMediaPreview] = useState<string | null>(null);
@@ -161,12 +177,13 @@ export default function NewArticlePage() {
   ]);
   const [activeMenuBlockId, setActiveMenuBlockId] = useState<string | null>(null);
 
-  const addBlock = (index: number, type: 'paragraph' | 'image' | 'ad' | 'bullet' | 'quote' | 'bold_paragraph') => {
+  const addBlock = (index: number, type: 'paragraph' | 'image' | 'ad' | 'bullet' | 'quote' | 'bold_paragraph' | 'related') => {
     const newBlock: EditorBlock = {
       id: `block-${Date.now()}-${Math.random()}`,
       type,
       value: '',
       url: '',
+      title: '',
       caption: '',
       imageUrl: '',
       ctaUrl: ''
@@ -191,6 +208,19 @@ export default function NewArticlePage() {
     const newBlocks = blocks.map(b => b.id === id ? { ...b, ...updates } : b);
     setBlocks(newBlocks);
     setBody(serializeBlocksToBody(newBlocks));
+  };
+
+  const handleAddTag = (tagToAdd?: string) => {
+    const raw = (tagToAdd || tagInput).trim().replace(/^#/, '');
+    if (!raw) return;
+    if (!tags.includes(raw)) {
+      setTags([...tags, raw]);
+    }
+    setTagInput('');
+  };
+
+  const handleRemoveTag = (tagToRemove: string) => {
+    setTags(tags.filter(t => t !== tagToRemove));
   };
 
   async function handleUpload(file: File) {
@@ -236,6 +266,7 @@ export default function NewArticlePage() {
         mediaUrl: finalMediaUrl || '/media/placeholder-football.jpg',
         mediaCaption: mediaCaption || null,
         isLead,
+        tags: tags.length > 0 ? tags.join(', ') : null,
         status,
       };
 
@@ -884,6 +915,93 @@ export default function NewArticlePage() {
                 </div>
               )}
 
+              {block.type === 'related' && (
+                <div className="relative border-2 border-emerald-500/30 rounded-lg p-4 bg-emerald-50/10 my-4 flex flex-col gap-3">
+                  <button
+                    type="button"
+                    onClick={() => removeBlock(block.id)}
+                    className="absolute top-2 right-2 text-red-500 hover:text-red-700 bg-white/80 p-1.5 rounded-full border border-red-200 z-10"
+                    title="Remove block"
+                  >
+                    <Trash2 size={16} />
+                  </button>
+                  <div className="text-xs font-bold text-emerald-700 dark:text-emerald-400 mb-1 flex items-center gap-1.5">
+                    <Link2 size={15} /> FOLLOW-UP / RELATED NEWS (আরও পড়ুন)
+                  </div>
+                  
+                  {/* Quick Select from Recent Articles */}
+                  {recentArticles.length > 0 && (
+                    <div className="flex flex-col gap-1">
+                      <label className="text-[11px] font-semibold text-[var(--ink-muted)]">
+                        পূর্বের কোনো খবর নির্বাচন করুন (Quick Select):
+                      </label>
+                      <select
+                        className="text-xs p-2 rounded border border-[var(--ink-border)] bg-[var(--bg-page)] text-[var(--ink)] focus:outline-none"
+                        onChange={(e) => {
+                          const val = e.target.value;
+                          if (!val) return;
+                          const selected = recentArticles.find(a => a.slug === val);
+                          if (selected) {
+                            updateBlock(block.id, {
+                              url: `/article/${selected.slug}`,
+                              title: selected.headlineBn || selected.headline
+                            });
+                          }
+                        }}
+                        defaultValue=""
+                      >
+                        <option value="">-- সাম্প্রতিক খবর থেকে নির্বাচন করুন --</option>
+                        {recentArticles.map(art => (
+                          <option key={art.id} value={art.slug}>
+                            {art.headlineBn || art.headline}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  )}
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mt-1">
+                    <div>
+                      <label className="text-[11px] font-semibold text-[var(--ink-muted)] block mb-1">
+                        খবরের শিরোনাম (Display Title):
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="যেমন: বার্সার নতুন তারকার অবিশ্বাস্য গোল"
+                        value={block.title || block.value || ''}
+                        onChange={(e) => updateBlock(block.id, { title: e.target.value, value: e.target.value })}
+                        className="w-full text-xs p-2 border border-[var(--ink-border)] rounded bg-transparent text-[var(--ink)] focus:outline-none"
+                        style={{ fontFamily: 'var(--font-body)' }}
+                      />
+                    </div>
+                    <div>
+                      <label className="text-[11px] font-semibold text-[var(--ink-muted)] block mb-1">
+                        নিউজ লিঙ্ক / URL (Relative or Full):
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="যেমন: /article/slug-name বা https://..."
+                        value={block.url || ''}
+                        onChange={(e) => updateBlock(block.id, { url: e.target.value })}
+                        className="w-full text-xs p-2 border border-[var(--ink-border)] rounded bg-transparent text-[var(--ink)] focus:outline-none font-mono"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Live Preview of Related box */}
+                  {(block.title || block.url) && (
+                    <div className="mt-2 p-3 rounded-lg border border-red-500/20 bg-red-50/10 flex items-center gap-2 text-xs">
+                      <span className="font-bold text-[#d33f3f] bg-red-100 dark:bg-red-950/50 px-2 py-0.5 rounded text-[11px] flex-shrink-0">
+                        আরও পড়ুন:
+                      </span>
+                      <span className="font-semibold text-[var(--ink)] hover:underline truncate">
+                        {block.title || 'শিরোনাম এখানে দেখা যাবে'}
+                      </span>
+                    </div>
+                  )}
+                </div>
+              )}
+
                 {/* Hovering Plus icon dropdown */}
                 <div className="flex justify-center my-2 opacity-50 hover:opacity-100 transition-opacity relative">
                   <div className="absolute inset-0 flex items-center" aria-hidden="true">
@@ -898,7 +1016,7 @@ export default function NewArticlePage() {
                       <Plus size={12} />
                     </button>
                     {activeMenuBlockId === block.id && (
-                      <div className="absolute top-7 z-50 bg-[var(--bg-surface)] border border-[var(--ink-border)] rounded-md shadow-lg py-1 min-w-[140px] text-xs">
+                      <div className="absolute top-7 z-50 bg-[var(--bg-surface)] border border-[var(--ink-border)] rounded-md shadow-lg py-1 min-w-[160px] text-xs">
                         <button
                           type="button"
                           onClick={() => {
@@ -908,6 +1026,16 @@ export default function NewArticlePage() {
                           className="w-full px-3 py-1.5 text-left hover:bg-[var(--ink-ghost)] flex items-center gap-1.5 text-[var(--ink)]"
                         >
                           <Plus size={12} /> Paragraph (অনুচ্ছেদ)
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            addBlock(index, 'related');
+                            setActiveMenuBlockId(null);
+                          }}
+                          className="w-full px-3 py-1.5 text-left hover:bg-emerald-50/50 flex items-center gap-1.5 text-emerald-700 dark:text-emerald-400 font-semibold"
+                        >
+                          <Link2 size={12} /> Related News (আরও পড়ুন)
                         </button>
                         <button
                           type="button"
@@ -965,6 +1093,91 @@ export default function NewArticlePage() {
                 </div>
               </div>
             ))}
+          </div>
+
+          {/* Tags Manager Section */}
+          <div className="mt-8 pt-6 border-t border-[var(--ink-border)] bg-[var(--bg-surface)] p-5 rounded-lg border">
+            <div className="flex items-center gap-2 mb-3">
+              <Tag size={16} className="text-[#d33f3f]" />
+              <h3 className="text-sm font-bold text-[var(--ink)]" style={{ fontFamily: 'var(--font-body)' }}>
+                ট্যাগ ও কীওয়ার্ড (Tags & Keywords)
+              </h3>
+              <span className="text-[11px] text-[var(--ink-muted)]">
+                — গুগল এসইও এবং পাঠক ধরে রাখার জন্য অত্যন্ত কার্যকর
+              </span>
+            </div>
+
+            {/* Added Tags Chips */}
+            <div className="flex flex-wrap gap-2 mb-3 min-h-[32px] items-center">
+              {tags.length === 0 ? (
+                <span className="text-xs text-[var(--ink-muted)] italic">এখনও কোনো ট্যাগ যোগ করা হয়নি।</span>
+              ) : (
+                tags.map((t, idx) => (
+                  <span
+                    key={idx}
+                    className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-red-50 dark:bg-red-950/40 text-[#d33f3f] border border-red-200 dark:border-red-900"
+                    style={{ fontFamily: 'var(--font-body)' }}
+                  >
+                    #{t}
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveTag(t)}
+                      className="hover:text-red-800 transition-colors p-0.5"
+                    >
+                      <X size={12} />
+                    </button>
+                  </span>
+                ))
+              )}
+            </div>
+
+            {/* Input for new tag */}
+            <div className="flex items-center gap-2">
+              <div className="relative flex-1">
+                <input
+                  type="text"
+                  placeholder="নতুন ট্যাগ লিখুন (যেমন: মেসি, বার্সেলোনা, বিপিএল) এবং Enter চাপুন..."
+                  value={tagInput}
+                  onChange={(e) => setTagInput(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ',') {
+                      e.preventDefault();
+                      handleAddTag();
+                    }
+                  }}
+                  className="w-full text-xs p-2.5 rounded border border-[var(--ink-border)] bg-[var(--bg-page)] text-[var(--ink)] focus:outline-none focus:border-[#d33f3f]"
+                  style={{ fontFamily: 'var(--font-body)' }}
+                />
+              </div>
+              <button
+                type="button"
+                onClick={() => handleAddTag()}
+                className="px-4 py-2.5 bg-[var(--ink)] text-[var(--bg-page)] rounded text-xs font-bold hover:opacity-90 transition-opacity flex-shrink-0"
+                style={{ fontFamily: 'var(--font-body)' }}
+              >
+                + ট্যাগ যোগ করুন
+              </button>
+            </div>
+
+            {/* Popular Suggested Tags */}
+            <div className="mt-3 flex items-center gap-2 flex-wrap text-xs text-[var(--ink-muted)]">
+              <span className="text-[11px] font-semibold">পপুলার সাজেশন:</span>
+              {[
+                'ফুটবল', 'ক্রিকেট', 'মেসি', 'রোনালদো', 'নেইমার', 'এমবাপ্পে',
+                'বার্সেলোনা', 'রিয়াল_মাদ্রিদ', 'ম্যানচেস্টার_সিটি', 'আর্জেন্টিনা', 'ব্রাজিল',
+                'বাংলাদেশ_ক্রিকেট', 'সাকিব_আল_হাসান', 'বিপিএল', 'আইপিএল', 'চ্যাম্পিয়ন্স_লিগ', 'বিশ্বকাপ'
+              ].map(suggested => (
+                <button
+                  key={suggested}
+                  type="button"
+                  onClick={() => handleAddTag(suggested)}
+                  className="px-2 py-0.5 rounded bg-[var(--bg-page)] border border-[var(--ink-border)] hover:border-[#d33f3f] hover:text-[#d33f3f] transition-all text-[11px]"
+                  style={{ fontFamily: 'var(--font-body)' }}
+                >
+                  +{suggested}
+                </button>
+              ))}
+            </div>
           </div>
 
         </div>

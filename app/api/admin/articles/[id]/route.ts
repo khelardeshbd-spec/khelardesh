@@ -49,7 +49,7 @@ export async function PUT(
     const {
       headline, headlineBn, deck, body: articleBody,
       kicker, sport, mediaType, mediaUrl, mediaCaption,
-      byline, isLead, status,
+      byline, isLead, status, tags,
     } = body
 
     // Fetch previous status for permission check and action type determination
@@ -89,6 +89,7 @@ export async function PUT(
       mediaCaption: mediaCaption || null,
       byline,
       isLead: isLead ?? false,
+      tags: tags !== undefined ? (tags || null) : undefined,
       status: status || 'published',
       updatedAt: new Date().toISOString(),
     }

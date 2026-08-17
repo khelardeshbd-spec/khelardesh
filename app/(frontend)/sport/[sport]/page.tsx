@@ -82,6 +82,8 @@ const SPORT_MAPPING: Record<string, string[]> = {
   other: ['other', 'basketball', 'rugby', 'f1', 'table-tennis', 'golf'],
 };
 
+import CategoryFeedWithLoadMore from '@/components/frontend/CategoryFeedWithLoadMore';
+
 export default async function SportPage({ params }: PageProps) {
   if (!VALID_SPORTS.includes(params.sport)) notFound();
 
@@ -118,14 +120,10 @@ export default async function SportPage({ params }: PageProps) {
 
   const lead = leadArr?.[0] ?? null;
   const articlesList = articles ?? [];
-  const scoresList = scores ?? [];
-  const sponsorsList = sponsors ?? [];
-
-  const inlineSponsors = sponsorsList.filter((s) => s.placement === 'inline');
   const sportBn = SPORT_NAMES[params.sport];
 
   return (
-    <div style={{ backgroundColor: 'var(--bg-page)', minHeight: '100vh' }}>
+    <div style={{ backgroundColor: 'var(--bg-page)', minHeight: '100vh', color: 'var(--ink)' }}>
       
       {/* Back button / Breadcrumbs */}
       <div className="w-full max-w-[800px] mx-auto px-4 lg:px-6 pt-6 pb-2">
@@ -149,81 +147,50 @@ export default async function SportPage({ params }: PageProps) {
               মাঠ
             </Link>
             <span>/</span>
-            <span className="text-[#1a5c2e]">
+            <span className="text-[#1a5c2e] font-bold">
               {sportBn}
             </span>
           </div>
         </div>
       </div>
 
-      {/* Desktop */}
-      <div className="hidden lg:block max-w-[800px] mx-auto px-6 pb-12">
-        {/* Main Column (Left): Sport heading & Feed */}
-        <div className="pt-8">
+      {/* Main Feed Container */}
+      <div className="max-w-[800px] mx-auto px-4 lg:px-6 pb-16">
+        <div className="pt-6">
           {/* Sport heading */}
           <div
-            className="pb-2 mb-6"
-            style={{ borderBottom: '1.5px solid var(--ink)' }}
+            className="pb-3 mb-6 flex items-center justify-between border-b-2 border-[var(--ink)]"
           >
             <h1
               style={{
-                fontFamily: "var(--font-body)",
+                fontFamily: "var(--font-headline)",
                 fontWeight: 900,
-                fontSize: 'clamp(24px, 3.5vw, 36px)',
+                fontSize: 'clamp(26px, 4vw, 36px)',
                 letterSpacing: '-0.01em',
                 color: 'var(--ink)',
-                marginBottom: 4,
+                marginBottom: 0,
               }}
             >
               <span lang="bn">{sportBn}</span>
             </h1>
+            <Link
+              href={`/archive?sport=${encodeURIComponent(params.sport)}`}
+              className="text-xs font-bold text-[#d33f3f] hover:underline"
+              style={{ fontFamily: 'var(--font-body)' }}
+            >
+              পুরোনো আর্কাইভ →
+            </Link>
           </div>
 
           {lead && <div className="mb-8 mt-2"><LeadStory article={lead} /></div>}
-          {articlesList.map((article) => (
-            <div key={article.id}>
-              <ArticleCard article={article} />
-            </div>
-          ))}
-          {articlesList.length === 0 && (
-            <p style={{ color: 'var(--ink-muted)', fontFamily: "var(--font-body)", fontSize: 14, padding: '24px 0' }}>
-              এই বিভাগে কোনো খবর নেই।
-            </p>
-          )}
-        </div>
-      </div>
 
-      {/* Mobile */}
-      <div className="lg:hidden px-4 pb-12">
-        {/* Sport heading */}
-        <div
-          className="pt-4 pb-2 mb-4"
-          style={{ borderBottom: '1.5px solid var(--ink)' }}
-        >
-          <h1
-            style={{
-              fontFamily: "var(--font-body)",
-              fontWeight: 900,
-              fontSize: '28px',
-              color: 'var(--ink)',
-              marginBottom: 4,
-            }}
-          >
-            <span lang="bn">{sportBn}</span>
-          </h1>
+          <CategoryFeedWithLoadMore
+            initialArticles={articlesList}
+            sport={params.sport}
+            sportsToQuery={sportsToQuery}
+            sportBn={sportBn}
+          />
         </div>
-
-        {lead && <div className="pt-4"><LeadStory article={lead} /></div>}
-        {articlesList.map((article) => (
-          <div key={article.id}>
-            <ArticleCard article={article} />
-          </div>
-        ))}
-        {articlesList.length === 0 && (
-          <p style={{ color: 'var(--ink-muted)', fontFamily: "var(--font-body)", fontSize: 14, paddingTop: 24 }} lang="bn">
-            এই বিভাগে কোনো খবর নেই।
-          </p>
-        )}
       </div>
     </div>
   );

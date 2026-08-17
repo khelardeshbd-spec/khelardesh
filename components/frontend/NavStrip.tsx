@@ -41,6 +41,7 @@ export const NAV_ITEMS = [
       { label: 'গল্ফ', slug: 'golf' },
     ],
   },
+  { label: 'আর্কাইভ', slug: 'archive' },
 ];
 
 interface NavStripProps {
@@ -100,6 +101,7 @@ export default function NavStrip({ noBorder = false, vertical = false, onNavigat
 
   const isActive = (slug: string) => {
     if (slug === '') return pathname === '/';
+    if (slug === 'archive') return pathname === '/archive';
     if (pathname === `/sport/${slug}`) return true;
     const item = NAV_ITEMS.find((i) => i.slug === slug);
     if (item && item.subItems) {
@@ -115,7 +117,7 @@ export default function NavStrip({ noBorder = false, vertical = false, onNavigat
         <ul className="flex flex-col">
           {NAV_ITEMS.map((item) => {
             const active = isActive(item.slug);
-            const href = item.slug === '' ? '/' : `/sport/${item.slug}`;
+            const href = item.slug === '' ? '/' : item.slug === 'archive' ? '/archive' : `/sport/${item.slug}`;
             const hasSubItems = !!item.subItems;
             const isOpen = openDropdown === item.slug;
 
@@ -204,7 +206,7 @@ export default function NavStrip({ noBorder = false, vertical = false, onNavigat
       <ul className="flex flex-nowrap items-center lg:overflow-visible">
         {NAV_ITEMS.map((item) => {
           const active = isActive(item.slug);
-          const href = item.slug === '' ? '/' : `/sport/${item.slug}`;
+          const href = item.slug === '' ? '/' : item.slug === 'archive' ? '/archive' : `/sport/${item.slug}`;
           const hasSubItems = !!item.subItems;
           const isOpen = openDropdown === item.slug;
 

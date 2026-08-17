@@ -92,29 +92,59 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 }
 
 export default async function ArticlePage({ params }: PageProps) {
-  const [{ data: article }, { data: articles }] = await Promise.all([
-    supabaseAdmin
-      .from('Article')
-      .select('*')
-      .eq('slug', params.slug)
-      .eq('status', 'published')
-      .single(),
-    supabaseAdmin
-      .from('Article')
-      .select('id, slug, headline, headlineBn, deck, sport, mediaType, mediaUrl, byline, publishedAt')
-      .eq('isLead', false)
-      .eq('status', 'published')
-      .order('publishedAt', { ascending: false })
-      .limit(5)
-  ]);
+  const { data: article } = await supabaseAdmin
+    .from('Article')
+    .select('*')
+    .eq('slug', params.slug)
+    .eq('status', 'published')
+    .single();
 
   if (!article) notFound();
 
   const {
     id, slug, headline, headlineBn, deck, body,
     kicker, sport, mediaType, mediaUrl, mediaCaption,
-    byline, publishedAt,
+    byline, publishedAt, tags,
   } = article;
+
+  // Query related articles (same sport or latest, excluding this article)
+  let relatedQuery = supabaseAdmin
+    .from('Article')
+    .select('id, slug, headline, headlineBn, deck, sport, mediaType, mediaUrl, byline, publishedAt')
+    .eq('status', 'published')
+    .neq('id', id);
+
+  if (sport) {
+    relatedQuery = relatedQuery.eq('sport', sport);
+  }
+
+  const { data: relatedData } = await relatedQuery
+    .order('publishedAt', { ascending: false })
+    .limit(6);
+
+  let relatedArticles = relatedData ?? [];
+
+  // Fallback to latest articles if few related articles found
+  if (relatedArticles.length < 3) {
+    const { data: fallbackData } = await supabaseAdmin
+      .from('Article')
+      .select('id, slug, headline, headlineBn, deck, sport, mediaType, mediaUrl, byline, publishedAt')
+      .eq('status', 'published')
+      .neq('id', id)
+      .order('publishedAt', { ascending: false })
+      .limit(6);
+    
+    if (fallbackData && fallbackData.length > 0) {
+      // Merge unique
+      const existingIds = new Set(relatedArticles.map(a => a.id));
+      for (const item of fallbackData) {
+        if (!existingIds.has(item.id) && relatedArticles.length < 6) {
+          relatedArticles.push(item);
+          existingIds.add(item.id);
+        }
+      }
+    }
+  }
 
   // Fetch composer profile image if available
   let composerPhotoUrl = null;
@@ -142,7 +172,7 @@ export default async function ArticlePage({ params }: PageProps) {
     .map((p: string) => p.trim())
     .filter(Boolean);
 
-  const articlesList = articles ?? [];
+  const articlesList = relatedArticles ?? [];
   const sportMap: Record<string, string> = {
     football: 'ফুটবল',
     'bd-football': 'দেশের ফুটবল',
@@ -396,6 +426,7 @@ export default async function ArticlePage({ params }: PageProps) {
               const bulletsMatch = para.match(/^\[BULLETS:([\s\S]*)\]$/i);
               const quoteMatch = para.match(/^\[QUOTE:\s*([\s\S]*?)\s*\|\s*([\s\S]*?)\s*\]$/i);
               const boldMatch = para.match(/^\[BOLD:\s*(\d+)\s*\|\s*([\s\S]*?)\]$/i);
+              const relatedMatch = para.match(/^\[(?:RELATED|FOLLOWUP):\s*(.*?)\s*\|\s*(.*?)\s*\]$/i);
 
               return (
                 <div key={i}>
@@ -419,6 +450,27 @@ export default async function ArticlePage({ params }: PageProps) {
                   ) : adsterraMatch ? (
                     <div className="my-6">
                       <AdsterraAd htmlCode={adsterraMatch[1] ? safeB64Decode(adsterraMatch[1]) : ''} type="article" />
+                    </div>
+                  ) : relatedMatch ? (
+                    <div className="my-6">
+                      <Link
+                        href={relatedMatch[1].trim()}
+                        className="group flex items-center gap-3 p-4 rounded-xl border border-red-500/25 bg-red-50/15 hover:bg-red-50/30 transition-all shadow-xs hover:border-[#d33f3f]"
+                      >
+                        <span className="px-2.5 py-1 rounded text-xs font-black bg-[#d33f3f] text-white tracking-wider uppercase flex-shrink-0">
+                          আরও পড়ুন:
+                        </span>
+                        <p
+                          lang="bn"
+                          className="text-base sm:text-lg font-bold text-[var(--ink)] group-hover:text-[#d33f3f] transition-colors leading-snug truncate"
+                          style={{ fontFamily: 'var(--font-headline)' }}
+                        >
+                          {relatedMatch[2].trim()}
+                        </p>
+                        <svg className="w-4 h-4 ml-auto text-[#d33f3f] flex-shrink-0 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                        </svg>
+                      </Link>
                     </div>
                   ) : bulletsMatch ? (
                     <ul
@@ -529,15 +581,42 @@ export default async function ArticlePage({ params }: PageProps) {
                       {para}
                     </p>
                   )}
-
-                  {/* Removed inline recirculation */}
                 </div>
               );
             })}
           </div>
 
+          {/* Tags Chips Section */}
+          {(() => {
+            const tagList = tags
+              ? tags.split(',').map((t: string) => t.trim().replace(/^#/, '')).filter(Boolean)
+              : [];
+            if (tagList.length === 0) return null;
+            return (
+              <div className="mt-8 pt-6 border-t border-[var(--ink-border)]">
+                <div className="flex items-center gap-2 mb-3">
+                  <span className="text-xs font-bold text-[var(--ink-muted)] uppercase tracking-wider" style={{ fontFamily: 'var(--font-body)' }}>
+                    ট্যাগসমূহ:
+                  </span>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {tagList.map((t: string, idx: number) => (
+                    <Link
+                      key={idx}
+                      href={`/tag/${encodeURIComponent(t)}`}
+                      className="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-semibold bg-[var(--bg-surface)] hover:bg-[#d33f3f] hover:text-white text-[var(--ink)] border border-[var(--ink-border)] hover:border-[#d33f3f] transition-all shadow-2xs"
+                      style={{ fontFamily: 'var(--font-body)' }}
+                    >
+                      #{t}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            );
+          })()}
+
           {/* Bottom bio info */}
-          <div className="mt-12 pt-8 border-t border-[var(--ink-border)] flex items-start gap-4">
+          <div className="mt-8 pt-6 border-t border-[var(--ink-border)] flex items-start gap-4">
             <div 
               className="w-12 h-12 rounded-full flex items-center justify-center border overflow-hidden text-sm font-bold flex-shrink-0"
               style={{
@@ -561,6 +640,66 @@ export default async function ArticlePage({ params }: PageProps) {
               </p>
             </div>
           </div>
+
+          {/* Similar Posts Section (সিমিলার পোস্ট সাজেশন) */}
+          {relatedArticles.length > 0 && (
+            <section className="mt-12 pt-8 border-t-2 border-[var(--ink)]">
+              <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center gap-2">
+                  <span className="w-2.5 h-6 bg-[#d33f3f] rounded-xs inline-block"></span>
+                  <h3
+                    lang="bn"
+                    className="text-xl sm:text-2xl font-black text-[var(--ink)]"
+                    style={{ fontFamily: 'var(--font-headline)' }}
+                  >
+                    সম্পর্কিত আরও খবর
+                  </h3>
+                </div>
+                <Link
+                  href={sport ? `/sport/${sport}` : '/'}
+                  className="text-xs font-bold text-[#d33f3f] hover:underline"
+                  style={{ fontFamily: 'var(--font-body)' }}
+                >
+                  এই বিভাগের সব খবর →
+                </Link>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {relatedArticles.slice(0, 6).map((rel) => (
+                  <Link
+                    key={rel.id}
+                    href={`/article/${rel.slug}`}
+                    className="group flex flex-col bg-[var(--bg-surface)] border border-[var(--ink-border)] hover:border-[#d33f3f] rounded-lg overflow-hidden transition-all shadow-2xs hover:shadow-md"
+                  >
+                    <div className="relative aspect-[16/9] w-full overflow-hidden bg-[var(--bg-page)]">
+                      <img
+                        src={rel.mediaUrl || '/og-default.png'}
+                        alt={rel.headlineBn || rel.headline}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        loading="lazy"
+                      />
+                      <span className="absolute bottom-2 left-2 px-2 py-0.5 text-[10px] font-bold bg-black/75 text-white rounded">
+                        {sportMap[rel.sport?.toLowerCase()] || rel.sport || 'খেলাধুলা'}
+                      </span>
+                    </div>
+                    <div className="p-3 flex flex-col flex-1 justify-between gap-2">
+                      <h4
+                        lang="bn"
+                        className="text-sm font-bold text-[var(--ink)] group-hover:text-[#d33f3f] transition-colors line-clamp-2 leading-snug"
+                        style={{ fontFamily: 'var(--font-headline)' }}
+                      >
+                        {rel.headlineBn || rel.headline}
+                      </h4>
+                      <div className="text-[10px] text-[var(--ink-muted)] flex items-center justify-between pt-1 border-t border-[var(--ink-border)]">
+                        <span>{rel.byline || 'খেলারদেশ'}</span>
+                        <ClientFormattedDate date={rel.publishedAt} mode="relative" lang="bn" />
+                      </div>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </section>
+          )}
 
           {/* Comment Section */}
           <div id="comments">

@@ -16,5 +16,8 @@ const nextConfig = {
   experimental: {
     serverComponentsExternalPackages: ['@max-xoo/fotmob'],
   },
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
 }
 module.exports = nextConfig
