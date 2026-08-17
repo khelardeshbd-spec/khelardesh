@@ -1008,28 +1008,30 @@ export default function EditArticlePage({ params }: { params: { id: string } }) 
               )}
 
               {block.type === 'related' && (
-                <div className="border border-emerald-500/30 bg-emerald-50/15 dark:bg-emerald-950/20 rounded-xl p-3.5 my-3 shadow-2xs">
+                <div className="relative border border-[var(--ink-border)] bg-[var(--bg-surface)]/75 backdrop-blur-md rounded-2xl p-4 my-4 shadow-sm transition-all">
                   {/* Header row */}
-                  <div className="flex items-center justify-between gap-2 mb-2.5">
-                    <div className="flex items-center gap-1.5 text-xs font-bold text-emerald-700 dark:text-emerald-400">
-                      <Link2 size={14} />
-                      <span>আরও পড়ুন (Follow-up News)</span>
+                  <div className="flex items-center justify-between gap-2 mb-3">
+                    <div className="flex items-center gap-2 text-xs font-bold text-[var(--ink)]">
+                      <span className="p-1 rounded-md bg-[var(--ink-ghost)] text-[var(--ink)]">
+                        <Link2 size={14} />
+                      </span>
+                      <span className="tracking-wide">আরও পড়ুন (FOLLOW-UP / RELATED NEWS)</span>
                     </div>
                     <button
                       type="button"
                       onClick={() => removeBlock(block.id)}
-                      className="text-red-400 hover:text-red-600 p-1 rounded hover:bg-red-50 dark:hover:bg-red-950/50 transition-colors"
+                      className="text-[var(--ink-muted)] hover:text-red-600 p-1.5 rounded-full hover:bg-red-50 dark:hover:bg-red-950/40 transition-colors"
                       title="ব্লকটি মুছুন"
                     >
-                      <Trash2 size={14} />
+                      <Trash2 size={15} />
                     </button>
                   </div>
 
                   {/* Quick Select dropdown */}
                   {recentArticles.length > 0 && (
-                    <div className="mb-2.5">
+                    <div className="mb-3">
                       <select
-                        className="w-full text-xs py-1.5 px-2.5 rounded-lg border border-[var(--ink-border)] bg-[var(--bg-page)] text-[var(--ink)] focus:outline-none focus:border-emerald-500"
+                        className="w-full text-xs py-2 px-3 rounded-xl border border-[var(--ink-border)] bg-[var(--bg-page)]/90 backdrop-blur-sm text-[var(--ink)] font-medium focus:outline-none focus:border-[var(--ink)] shadow-2xs"
                         onChange={(e) => {
                           const val = e.target.value;
                           if (!val) return;
@@ -1045,7 +1047,7 @@ export default function EditArticlePage({ params }: { params: { id: string } }) 
                         }}
                         defaultValue=""
                       >
-                        <option value="">⚡ পূর্বের খবর নির্বাচন করুন (স্বয়ংক্রিয় পূরণ)...</option>
+                        <option value="">⚡ পূর্বের কোনো খবর নির্বাচন করুন (অটোমেটিক পূরণ)...</option>
                         {recentArticles.map(art => (
                           <option key={art.id} value={art.slug}>
                             {art.headlineBn || art.headline}
@@ -1057,80 +1059,82 @@ export default function EditArticlePage({ params }: { params: { id: string } }) 
 
                   {/* Live Preview Card */}
                   {block.title ? (
-                    <div className="bg-[var(--bg-surface)] border border-[var(--ink-border)] rounded-lg p-3 flex items-center justify-between gap-3 shadow-2xs">
+                    <div className="bg-[var(--bg-page)]/95 backdrop-blur-sm border border-[var(--ink-border)] rounded-xl p-3.5 flex items-center justify-between gap-4 shadow-2xs">
                       <div className="flex flex-col justify-between flex-1 min-w-0">
-                        <div className="text-[11px] font-bold text-[var(--ink-muted)] mb-0.5">আরও পড়ুন</div>
+                        <span className="text-[11px] font-bold text-[var(--ink-muted)] mb-1 uppercase tracking-wider">
+                          আরও পড়ুন
+                        </span>
                         <h4
                           lang="bn"
-                          className="text-xs sm:text-sm font-black text-[var(--ink)] leading-snug line-clamp-2"
+                          className="text-sm sm:text-[15px] font-bold text-[var(--ink)] leading-snug line-clamp-2"
                           style={{ fontFamily: 'var(--font-headline)' }}
                         >
                           {block.title}
                         </h4>
-                        <div className="mt-1 text-[11px] text-[var(--ink-muted)]">
+                        <div className="mt-1.5 text-xs text-[var(--ink-muted)] font-medium">
                           {formatBanglaDate(block.date) || 'তারিখ যুক্ত করা হয়নি'}
                         </div>
                       </div>
                       {block.imageUrl ? (
-                        <div className="w-16 h-12 sm:w-20 sm:h-14 rounded overflow-hidden flex-shrink-0 bg-[var(--bg-page)] border border-[var(--ink-border)]">
+                        <div className="w-20 h-14 sm:w-24 sm:h-16 rounded-lg overflow-hidden flex-shrink-0 bg-[var(--bg-surface)] border border-[var(--ink-border)]">
                           <img src={block.imageUrl} alt="" className="w-full h-full object-cover" />
                         </div>
                       ) : (
-                        <div className="w-14 h-10 rounded bg-gray-100 dark:bg-zinc-800 border border-dashed border-gray-300 dark:border-zinc-700 flex items-center justify-center text-[9px] text-gray-400">
+                        <div className="w-16 h-12 rounded-lg bg-[var(--ink-ghost)] border border-dashed border-[var(--ink-border)] flex items-center justify-center text-[10px] text-[var(--ink-muted)]">
                           ছবি নেই
                         </div>
                       )}
                     </div>
                   ) : (
-                    <div className="text-center py-3 border border-dashed border-emerald-500/30 rounded-lg text-xs text-[var(--ink-muted)]">
-                      উপরের ড্রপডাউন থেকে যেকোনো একটি খবর নির্বাচন করুন
+                    <div className="text-center py-3.5 border border-dashed border-[var(--ink-border)] rounded-xl text-xs text-[var(--ink-muted)] bg-[var(--bg-page)]/40">
+                      উপরের ড্রপডাউন থেকে একটি খবর সিলেক্ট করুন অথবা নিচে কাস্টম তথ্য দিন
                     </div>
                   )}
 
                   {/* Collapsible manual edit toggle */}
-                  <details className="mt-2 text-xs group">
-                    <summary className="text-[11px] text-[var(--ink-muted)] hover:text-[var(--ink)] cursor-pointer select-none font-medium">
-                      ⚙️ কাস্টম শিরোনাম বা লিংক পরিবর্তন করতে চাইলে ক্লিক করুন
+                  <details className="mt-3 text-xs group">
+                    <summary className="text-[11px] text-[var(--ink-muted)] hover:text-[var(--ink)] cursor-pointer select-none font-semibold flex items-center gap-1.5">
+                      <span>⚙️ কাস্টম শিরোনাম বা লিঙ্ক পরিবর্তন / এডিট করুন</span>
                     </summary>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mt-2 pt-2 border-t border-[var(--ink-border)]">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-3 pt-3 border-t border-[var(--ink-border)]">
                       <div>
-                        <label className="text-[10px] text-[var(--ink-muted)] block mb-0.5">খবরের শিরোনাম:</label>
+                        <label className="text-[11px] font-semibold text-[var(--ink)] block mb-1">খবরের শিরোনাম:</label>
                         <input
                           type="text"
-                          placeholder="খবরের শিরোনাম"
+                          placeholder="খবরের শিরোনাম লিখুন"
                           value={block.title || block.value || ''}
                           onChange={(e) => updateBlock(block.id, { title: e.target.value, value: e.target.value })}
-                          className="w-full text-xs p-1.5 border border-[var(--ink-border)] rounded bg-transparent text-[var(--ink)] focus:outline-none"
+                          className="w-full text-xs p-2 border border-[var(--ink-border)] rounded-lg bg-[var(--bg-page)]/90 text-[var(--ink)] focus:outline-none focus:border-[var(--ink)]"
                         />
                       </div>
                       <div>
-                        <label className="text-[10px] text-[var(--ink-muted)] block mb-0.5">লিংক / URL:</label>
+                        <label className="text-[11px] font-semibold text-[var(--ink)] block mb-1">লিঙ্ক / URL:</label>
                         <input
                           type="text"
-                          placeholder="/article/slug"
+                          placeholder="/article/slug-name"
                           value={block.url || ''}
                           onChange={(e) => updateBlock(block.id, { url: e.target.value })}
-                          className="w-full text-xs p-1.5 border border-[var(--ink-border)] rounded bg-transparent text-[var(--ink)] focus:outline-none font-mono"
+                          className="w-full text-xs p-2 border border-[var(--ink-border)] rounded-lg bg-[var(--bg-page)]/90 text-[var(--ink)] focus:outline-none focus:border-[var(--ink)] font-mono"
                         />
                       </div>
                       <div>
-                        <label className="text-[10px] text-[var(--ink-muted)] block mb-0.5">ছবির URL:</label>
+                        <label className="text-[11px] font-semibold text-[var(--ink)] block mb-1">ছবির URL:</label>
                         <input
                           type="text"
                           placeholder="https://..."
                           value={block.imageUrl || ''}
                           onChange={(e) => updateBlock(block.id, { imageUrl: e.target.value })}
-                          className="w-full text-xs p-1.5 border border-[var(--ink-border)] rounded bg-transparent text-[var(--ink)] focus:outline-none font-mono"
+                          className="w-full text-xs p-2 border border-[var(--ink-border)] rounded-lg bg-[var(--bg-page)]/90 text-[var(--ink)] focus:outline-none focus:border-[var(--ink)] font-mono"
                         />
                       </div>
                       <div>
-                        <label className="text-[10px] text-[var(--ink-muted)] block mb-0.5">তারিখ:</label>
+                        <label className="text-[11px] font-semibold text-[var(--ink)] block mb-1">তারিখ:</label>
                         <input
                           type="text"
-                          placeholder="2026-08-18 বা ১৬ আগস্ট ২০২৬"
+                          placeholder="2026-08-18 বা ১৮ আগস্ট ২০২৬"
                           value={block.date || ''}
                           onChange={(e) => updateBlock(block.id, { date: e.target.value })}
-                          className="w-full text-xs p-1.5 border border-[var(--ink-border)] rounded bg-transparent text-[var(--ink)] focus:outline-none"
+                          className="w-full text-xs p-2 border border-[var(--ink-border)] rounded-lg bg-[var(--bg-page)]/90 text-[var(--ink)] focus:outline-none focus:border-[var(--ink)]"
                         />
                       </div>
                     </div>
