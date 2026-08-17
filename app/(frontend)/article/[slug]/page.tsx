@@ -426,7 +426,7 @@ export default async function ArticlePage({ params }: PageProps) {
               const bulletsMatch = para.match(/^\[BULLETS:([\s\S]*)\]$/i);
               const quoteMatch = para.match(/^\[QUOTE:\s*([\s\S]*?)\s*\|\s*([\s\S]*?)\s*\]$/i);
               const boldMatch = para.match(/^\[BOLD:\s*(\d+)\s*\|\s*([\s\S]*?)\]$/i);
-              const relatedMatch = para.match(/^\[(?:RELATED|FOLLOWUP):\s*(.*?)\s*\|\s*(.*?)\s*\]$/i);
+              const relatedMatch = para.match(/^\[(?:RELATED|FOLLOWUP):\s*([\s\S]*?)\s*\|\s*([\s\S]*?)(?:\s*\|\s*([\s\S]*?))?(?:\s*\|\s*([\s\S]*?))?\]$/i);
 
               return (
                 <div key={i}>
@@ -453,23 +453,41 @@ export default async function ArticlePage({ params }: PageProps) {
                     </div>
                   ) : relatedMatch ? (
                     <div className="my-6">
+                      <div
+                        lang="bn"
+                        className="text-sm font-bold text-[var(--ink)] mb-2"
+                        style={{ fontFamily: 'var(--font-headline)' }}
+                      >
+                        আরও পড়ুন
+                      </div>
                       <Link
                         href={relatedMatch[1].trim()}
-                        className="group flex items-center gap-3 p-4 rounded-xl border border-red-500/25 bg-red-50/15 hover:bg-red-50/30 transition-all shadow-xs hover:border-[#d33f3f]"
+                        className="group flex items-center justify-between gap-4 p-3.5 sm:p-4 rounded-md border border-[var(--ink-border)] bg-[var(--bg-surface)] hover:border-[#d33f3f] transition-all shadow-2xs hover:shadow-xs"
                       >
-                        <span className="px-2.5 py-1 rounded text-xs font-black bg-[#d33f3f] text-white tracking-wider uppercase flex-shrink-0">
-                          আরও পড়ুন:
-                        </span>
-                        <p
-                          lang="bn"
-                          className="text-base sm:text-lg font-bold text-[var(--ink)] group-hover:text-[#d33f3f] transition-colors leading-snug truncate"
-                          style={{ fontFamily: 'var(--font-headline)' }}
-                        >
-                          {relatedMatch[2].trim()}
-                        </p>
-                        <svg className="w-4 h-4 ml-auto text-[#d33f3f] flex-shrink-0 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-                        </svg>
+                        <div className="flex flex-col justify-between flex-1 min-w-0">
+                          <h4
+                            lang="bn"
+                            className="text-base sm:text-lg font-black text-[var(--ink)] group-hover:text-[#d33f3f] transition-colors leading-snug line-clamp-2"
+                            style={{ fontFamily: 'var(--font-headline)' }}
+                          >
+                            {relatedMatch[2].trim()}
+                          </h4>
+                          {relatedMatch[4]?.trim() && (
+                            <div className="mt-2 text-xs text-[var(--ink-muted)] font-medium">
+                              <ClientFormattedDate date={relatedMatch[4].trim()} mode="date-only" lang="bn" />
+                            </div>
+                          )}
+                        </div>
+                        {relatedMatch[3]?.trim() && (
+                          <div className="w-20 h-14 sm:w-28 sm:h-18 rounded overflow-hidden flex-shrink-0 bg-[var(--bg-page)] border border-[var(--ink-border)]">
+                            <img
+                              src={relatedMatch[3].trim()}
+                              alt={relatedMatch[2].trim()}
+                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                              loading="lazy"
+                            />
+                          </div>
+                        )}
                       </Link>
                     </div>
                   ) : bulletsMatch ? (

@@ -18,6 +18,7 @@ interface EditorBlock {
   useAdsterra?: boolean;
   adsterraCode?: string;
   fontSize?: string;
+  date?: string;
 }
 
 function safeB64Encode(str: string): string {
@@ -67,9 +68,16 @@ function parseBodyToBlocks(bodyStr: string): EditorBlock[] {
     if (boldMatch) {
       return { id, type: 'bold_paragraph', fontSize: boldMatch[1], value: boldMatch[2].trim() };
     }
-    const relatedMatch = part.trim().match(/^\[(?:RELATED|FOLLOWUP):\s*([\s\S]*?)\s*\|\s*([\s\S]*?)\]$/i);
+    const relatedMatch = part.trim().match(/^\[(?:RELATED|FOLLOWUP):\s*([\s\S]*?)\s*\|\s*([\s\S]*?)(?:\s*\|\s*([\s\S]*?))?(?:\s*\|\s*([\s\S]*?))?\]$/i);
     if (relatedMatch) {
-      return { id, type: 'related', url: relatedMatch[1].trim(), title: relatedMatch[2].trim() };
+      return {
+        id,
+        type: 'related',
+        url: relatedMatch[1]?.trim() || '',
+        title: relatedMatch[2]?.trim() || '',
+        imageUrl: relatedMatch[3]?.trim() || '',
+        date: relatedMatch[4]?.trim() || '',
+      };
     }
     return { id, type: 'paragraph', value: part };
   });
@@ -98,7 +106,14 @@ function serializeBlocksToBody(blocks: EditorBlock[]): string {
         return `[BOLD: ${block.fontSize || '19'} | ${block.value || ''}]`;
       }
       if (block.type === 'related') {
-        return `[RELATED: ${block.url || ''} | ${block.title || block.value || ''}]`;
+        const u = block.url || '';
+        const t = block.title || block.value || '';
+        const img = block.imageUrl || '';
+        const d = block.date || '';
+        if (img || d) {
+          return `[RELATED: ${u} | ${t} | ${img} | ${d}]`;
+        }
+        return `[RELATED: ${u} | ${t}]`;
       }
       return block.value || '';
     })
@@ -146,7 +161,7 @@ export default function EditArticlePage({ params }: { params: { id: string } }) 
   const [status, setStatus] = useState('published');
   const [tags, setTags] = useState<string[]>([]);
   const [tagInput, setTagInput] = useState('');
-  const [recentArticles, setRecentArticles] = useState<{ id: number; slug: string; headline: string; headlineBn?: string }[]>([]);
+  const [recentArticles, setRecentArticles] = useState<{ id: number; slug: string; headline: string; headlineBn?: string; mediaUrl?: string; publishedAt?: string }[]>([]);
 
   const [blocks, setBlocks] = useState<EditorBlock[]>([
     { id: 'block-init', type: 'paragraph', value: '' }
@@ -988,7 +1003,7 @@ export default function EditArticlePage({ params }: { params: { id: string } }) 
                   {recentArticles.length > 0 && (
                     <div className="flex flex-col gap-1">
                       <label className="text-[11px] font-semibold text-[var(--ink-muted)]">
-                        পূর্বের কোনো খবর নির্বাচন করুন (Quick Select):
+                        পূর্বের কোনো খবর নির্বাচন করুন:
                       </label>
                       <select
                         className="text-xs p-2 rounded border border-[var(--ink-border)] bg-[var(--bg-page)] text-[var(--ink)] focus:outline-none"
@@ -999,7 +1014,9 @@ export default function EditArticlePage({ params }: { params: { id: string } }) 
                           if (selected) {
                             updateBlock(block.id, {
                               url: `/article/${selected.slug}`,
-                              title: selected.headlineBn || selected.headline
+                              title: selected.headlineBn || selected.headline,
+                              imageUrl: selected.mediaUrl || '',
+                              date: selected.publishedAt || ''
                             });
                           }
                         }}
@@ -1018,11 +1035,11 @@ export default function EditArticlePage({ params }: { params: { id: string } }) 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mt-1">
                     <div>
                       <label className="text-[11px] font-semibold text-[var(--ink-muted)] block mb-1">
-                        খবরের শিরোনাম (Display Title):
+                        খবরের শিরোনাম:
                       </label>
                       <input
                         type="text"
-                        placeholder="যেমন: বার্সার নতুন তারকার অবিশ্বাস্য গোল"
+                        placeholder="যেমন: ডারউইনে বাংলাদেশের ইতিহাস, চার দিনেই টেস্ট জয়"
                         value={block.title || block.value || ''}
                         onChange={(e) => updateBlock(block.id, { title: e.target.value, value: e.target.value })}
                         className="w-full text-xs p-2 border border-[var(--ink-border)] rounded bg-transparent text-[var(--ink)] focus:outline-none"
@@ -1031,7 +1048,7 @@ export default function EditArticlePage({ params }: { params: { id: string } }) 
                     </div>
                     <div>
                       <label className="text-[11px] font-semibold text-[var(--ink-muted)] block mb-1">
-                        নিউজ লিঙ্ক / URL (Relative or Full):
+                        নিউজ লিঙ্ক / URL:
                       </label>
                       <input
                         type="text"
@@ -1043,15 +1060,79 @@ export default function EditArticlePage({ params }: { params: { id: string } }) 
                     </div>
                   </div>
 
-                  {/* Live Preview of Related box */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                    <div>
+                      <label className="text-[11px] font-semibold text-[var(--ink-muted)] block mb-1">
+                        ছবির লিঙ্ক (Image URL):
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="যেমন: https://.../image.jpg"
+                        value={block.imageUrl || ''}
+                        onChange={(e) => updateBlock(block.id, { imageUrl: e.target.value })}
+                        className="w-full text-xs p-2 border border-[var(--ink-border)] rounded bg-transparent text-[var(--ink)] focus:outline-none font-mono"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-[11px] font-semibold text-[var(--ink-muted)] block mb-1">
+                        তারিখ (Date):
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="যেমন: ১৬ আগস্ট ২০২৬ বা 2026-08-16"
+                        value={block.date || ''}
+                        onChange={(e) => updateBlock(block.id, { date: e.target.value })}
+                        className="w-full text-xs p-2 border border-[var(--ink-border)] rounded bg-transparent text-[var(--ink)] focus:outline-none"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Live Preview matching exact frontend styling */}
                   {(block.title || block.url) && (
-                    <div className="mt-2 p-3 rounded-lg border border-red-500/20 bg-red-50/10 flex items-center gap-2 text-xs">
-                      <span className="font-bold text-[#d33f3f] bg-red-100 dark:bg-red-950/50 px-2 py-0.5 rounded text-[11px] flex-shrink-0">
-                        আরও পড়ুন:
-                      </span>
-                      <span className="font-semibold text-[var(--ink)] hover:underline truncate">
-                        {block.title || 'শিরোনাম এখানে দেখা যাবে'}
-                      </span>
+                    <div className="mt-2 pt-3 border-t border-[var(--ink-border)]">
+                      <div className="text-[11px] font-bold text-[var(--ink-muted)] mb-2 uppercase tracking-wider">
+                        প্রিভিউ (পাঠক যেভাবে দেখবেন):
+                      </div>
+                      <div className="my-2 p-3 bg-[var(--bg-page)] rounded-lg border border-[var(--ink-border)]">
+                        <div
+                          lang="bn"
+                          className="text-xs font-bold text-[var(--ink)] mb-2"
+                          style={{ fontFamily: 'var(--font-headline)' }}
+                        >
+                          আরও পড়ুন
+                        </div>
+                        <div className="flex items-center justify-between gap-4 p-3 rounded-md border border-[var(--ink-border)] bg-[var(--bg-surface)] shadow-2xs">
+                          <div className="flex flex-col justify-between flex-1 min-w-0">
+                            <h4
+                              lang="bn"
+                              className="text-sm sm:text-base font-black text-[var(--ink)] leading-snug line-clamp-2"
+                              style={{ fontFamily: 'var(--font-headline)' }}
+                            >
+                              {block.title || 'খবরের শিরোনাম'}
+                            </h4>
+                            <div className="mt-1.5 text-xs text-[var(--ink-muted)]">
+                              {block.date ? (
+                                <span>{block.date}</span>
+                              ) : (
+                                <span>তারিখ</span>
+                              )}
+                            </div>
+                          </div>
+                          {block.imageUrl ? (
+                            <div className="w-18 h-12 sm:w-22 sm:h-14 rounded overflow-hidden flex-shrink-0 bg-[var(--bg-page)] border border-[var(--ink-border)]">
+                              <img
+                                src={block.imageUrl}
+                                alt=""
+                                className="w-full h-full object-cover"
+                              />
+                            </div>
+                          ) : (
+                            <div className="w-16 h-12 rounded bg-gray-100 dark:bg-zinc-800 border border-dashed border-gray-300 dark:border-zinc-700 flex items-center justify-center text-[10px] text-gray-400">
+                              ছবি নেই
+                            </div>
+                          )}
+                        </div>
+                      </div>
                     </div>
                   )}
                 </div>
