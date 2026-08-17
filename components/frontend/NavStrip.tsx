@@ -39,9 +39,9 @@ export const NAV_ITEMS = [
       { label: 'ফর্মুলা ওয়ান', slug: 'f1' },
       { label: 'টেবিল টেনিস', slug: 'table-tennis' },
       { label: 'গল্ফ', slug: 'golf' },
+      { label: 'আর্কাইভ', slug: 'archive' },
     ],
   },
-  { label: 'আর্কাইভ', slug: 'archive' },
 ];
 
 interface NavStripProps {
@@ -105,7 +105,7 @@ export default function NavStrip({ noBorder = false, vertical = false, onNavigat
     if (pathname === `/sport/${slug}`) return true;
     const item = NAV_ITEMS.find((i) => i.slug === slug);
     if (item && item.subItems) {
-      return item.subItems.some((sub) => pathname === `/sport/${sub.slug}`);
+      return item.subItems.some((sub) => sub.slug === 'archive' ? pathname === '/archive' : pathname === `/sport/${sub.slug}`);
     }
     return false;
   };
@@ -166,25 +166,29 @@ export default function NavStrip({ noBorder = false, vertical = false, onNavigat
                 {/* Sub-items accordion */}
                 {hasSubItems && isOpen && (
                   <ul role="menu" className="bg-[var(--bg-surface)] border-t border-[var(--ink-border)]">
-                    {item.subItems!.map((sub) => (
-                      <li key={sub.slug} role="none">
-                        <Link
-                          href={`/sport/${sub.slug}`}
-                          role="menuitem"
-                          lang="bn"
-                          className="block px-8 py-2.5 hover:bg-[var(--ink-ghost)] transition-colors"
-                          style={{
-                            fontFamily: "var(--font-body)",
-                            fontSize: 15,
-                            color: pathname === `/sport/${sub.slug}` ? 'var(--live-red)' : 'var(--ink-muted)',
-                            fontWeight: pathname === `/sport/${sub.slug}` ? 600 : 400,
-                          }}
-                          onClick={() => { closeDropdown(); onNavigate?.(); }}
-                        >
-                          {sub.label}
-                        </Link>
-                      </li>
-                    ))}
+                    {item.subItems!.map((sub) => {
+                      const isSubActive = sub.slug === 'archive' ? pathname === '/archive' : pathname === `/sport/${sub.slug}`;
+                      const subHref = sub.slug === 'archive' ? '/archive' : `/sport/${sub.slug}`;
+                      return (
+                        <li key={sub.slug} role="none">
+                          <Link
+                            href={subHref}
+                            role="menuitem"
+                            lang="bn"
+                            className="block px-8 py-2.5 hover:bg-[var(--ink-ghost)] transition-colors"
+                            style={{
+                              fontFamily: "var(--font-body)",
+                              fontSize: 15,
+                              color: isSubActive ? 'var(--live-red)' : 'var(--ink-muted)',
+                              fontWeight: isSubActive ? 600 : 400,
+                            }}
+                            onClick={() => { closeDropdown(); onNavigate?.(); }}
+                          >
+                            {sub.label}
+                          </Link>
+                        </li>
+                      );
+                    })}
                   </ul>
                 )}
               </li>
@@ -206,7 +210,7 @@ export default function NavStrip({ noBorder = false, vertical = false, onNavigat
       <ul className="flex flex-nowrap items-center lg:overflow-visible">
         {NAV_ITEMS.map((item) => {
           const active = isActive(item.slug);
-          const href = item.slug === '' ? '/' : item.slug === 'archive' ? '/archive' : `/sport/${item.slug}`;
+          const href = item.slug === '' ? '/' : `/sport/${item.slug}`;
           const hasSubItems = !!item.subItems;
           const isOpen = openDropdown === item.slug;
 
@@ -286,25 +290,29 @@ export default function NavStrip({ noBorder = false, vertical = false, onNavigat
                     className="bg-[var(--bg-surface)] border border-[var(--ink-border)] shadow-xl overflow-hidden"
                     style={{ borderRadius: 2 }}
                   >
-                    {item.subItems!.map((sub) => (
-                      <li key={sub.slug} role="none">
-                        <Link
-                          href={`/sport/${sub.slug}`}
-                          role="menuitem"
-                          lang="bn"
-                          className="block px-4 py-2.5 hover:bg-[var(--ink-ghost)] transition-colors whitespace-nowrap"
-                          style={{
-                            fontFamily: "var(--font-body)",
-                            fontSize: 14,
-                            color: pathname === `/sport/${sub.slug}` ? 'var(--live-red)' : 'var(--ink)',
-                            fontWeight: pathname === `/sport/${sub.slug}` ? 600 : 400,
-                          }}
-                          onClick={closeDropdown}
-                        >
-                          {sub.label}
-                        </Link>
-                      </li>
-                    ))}
+                    {item.subItems!.map((sub) => {
+                      const isSubActive = sub.slug === 'archive' ? pathname === '/archive' : pathname === `/sport/${sub.slug}`;
+                      const subHref = sub.slug === 'archive' ? '/archive' : `/sport/${sub.slug}`;
+                      return (
+                        <li key={sub.slug} role="none">
+                          <Link
+                            href={subHref}
+                            role="menuitem"
+                            lang="bn"
+                            className="block px-4 py-2.5 hover:bg-[var(--ink-ghost)] transition-colors whitespace-nowrap"
+                            style={{
+                              fontFamily: "var(--font-body)",
+                              fontSize: 14,
+                              color: isSubActive ? 'var(--live-red)' : 'var(--ink)',
+                              fontWeight: isSubActive ? 600 : 400,
+                            }}
+                            onClick={closeDropdown}
+                          >
+                            {sub.label}
+                          </Link>
+                        </li>
+                      );
+                    })}
                   </ul>
                 </div>
               )}
@@ -317,25 +325,29 @@ export default function NavStrip({ noBorder = false, vertical = false, onNavigat
                     className="bg-[var(--bg-surface)] border border-[var(--ink-border)] overflow-hidden"
                     style={{ borderRadius: 2 }}
                   >
-                    {item.subItems!.map((sub) => (
-                      <li key={sub.slug} role="none">
-                        <Link
-                          href={`/sport/${sub.slug}`}
-                          role="menuitem"
-                          lang="bn"
-                          className="block px-4 py-2.5 hover:bg-[var(--ink-ghost)] transition-colors whitespace-nowrap"
-                          style={{
-                            fontFamily: "var(--font-body)",
-                            fontSize: 14,
-                            color: pathname === `/sport/${sub.slug}` ? 'var(--live-red)' : 'var(--ink-muted)',
-                            fontWeight: pathname === `/sport/${sub.slug}` ? 600 : 400,
-                          }}
-                          onClick={() => { closeDropdown(); onNavigate?.(); }}
-                        >
-                          {sub.label}
-                        </Link>
-                      </li>
-                    ))}
+                    {item.subItems!.map((sub) => {
+                      const isSubActive = sub.slug === 'archive' ? pathname === '/archive' : pathname === `/sport/${sub.slug}`;
+                      const subHref = sub.slug === 'archive' ? '/archive' : `/sport/${sub.slug}`;
+                      return (
+                        <li key={sub.slug} role="none">
+                          <Link
+                            href={subHref}
+                            role="menuitem"
+                            lang="bn"
+                            className="block px-4 py-2.5 hover:bg-[var(--ink-ghost)] transition-colors whitespace-nowrap"
+                            style={{
+                              fontFamily: "var(--font-body)",
+                              fontSize: 14,
+                              color: isSubActive ? 'var(--live-red)' : 'var(--ink-muted)',
+                              fontWeight: isSubActive ? 600 : 400,
+                            }}
+                            onClick={() => { closeDropdown(); onNavigate?.(); }}
+                          >
+                            {sub.label}
+                          </Link>
+                        </li>
+                      );
+                    })}
                   </ul>
                 </div>
               )}
