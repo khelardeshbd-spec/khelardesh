@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { signIn, signOut } from 'next-auth/react';
+import { signIn, signOut, useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
 import ClientFormattedDate from './ClientFormattedDate';
@@ -14,7 +14,9 @@ interface ProfileMenuProps {
   } | null;
 }
 
-export default function ProfileMenu({ user }: ProfileMenuProps) {
+export default function ProfileMenu({ user: propUser }: ProfileMenuProps) {
+  const { data: session } = useSession();
+  const user = propUser ?? session?.user;
   const [isOpen, setIsOpen] = useState(false);
   const [activeView, setActiveView] = useState<'main' | 'notifications'>('main');
   const [notifs, setNotifs] = useState<any[]>([]);

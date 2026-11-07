@@ -4,7 +4,7 @@ import { supabaseAdmin } from '@/lib/supabase';
 import ArticleCard from '@/components/frontend/ArticleCard';
 import ScrollToTopButton from '@/components/frontend/ScrollToTopButton';
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 60; // ISR cache for 60 seconds at edge
 
 interface PageProps {
   params: { tag: string };

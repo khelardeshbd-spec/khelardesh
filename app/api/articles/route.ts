@@ -61,15 +61,22 @@ export async function GET(request: Request) {
     const { data: articles, count, error } = await query
     if (error) throw error
 
-    return NextResponse.json({
-      articles: articles ?? [],
-      pagination: {
-        page,
-        pageSize,
-        total: count ?? 0,
-        totalPages: Math.ceil((count ?? 0) / pageSize),
+    const cacheHeaders = q
+      ? { 'Cache-Control': 'public, s-maxage=10, stale-while-revalidate=30' }
+      : { 'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=120' }
+
+    return NextResponse.json(
+      {
+        articles: articles ?? [],
+        pagination: {
+          page,
+          pageSize,
+          total: count ?? 0,
+          totalPages: Math.ceil((count ?? 0) / pageSize),
+        },
       },
-    })
+      { headers: cacheHeaders }
+    )
   } catch (error) {
     console.error('[GET /api/articles]', error)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })

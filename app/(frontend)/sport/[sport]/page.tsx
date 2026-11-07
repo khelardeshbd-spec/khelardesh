@@ -9,10 +9,7 @@ import Sidebar from '@/components/frontend/Sidebar';
 import Masthead from '@/components/frontend/Masthead';
 import BriefsColumn from '@/components/frontend/BriefsColumn';
 
-export const dynamic = 'force-dynamic';
-
-
-
+export const revalidate = 60; // ISR cache for 60 seconds at edge
 
 interface PageProps {
   params: { sport: string };

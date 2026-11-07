@@ -3,7 +3,7 @@ import Link from 'next/link';
 import ArchiveFeedClient from '@/components/frontend/ArchiveFeedClient';
 import ScrollToTopButton from '@/components/frontend/ScrollToTopButton';
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 60; // ISR cache for 60 seconds
 
 export const metadata: Metadata = {
   title: 'খবরের আর্কাইভ — খেলারদেশ',

@@ -30,8 +30,8 @@ export async function POST(req: NextRequest) {
     const sharp = (await import('sharp')).default;
     // @ts-ignore
     buffer = await sharp(buffer)
-      .resize({ width: 1920, withoutEnlargement: true })
-      .webp({ quality: 80 })
+      .resize({ width: 1200, withoutEnlargement: true })
+      .webp({ quality: 75 })
       .toBuffer()
     contentType = 'image/webp'
   }
@@ -40,6 +40,7 @@ export async function POST(req: NextRequest) {
     .from(process.env.SUPABASE_BUCKET_NAME!)
     .upload(key, buffer, {
       contentType: contentType,
+      cacheControl: '31536000, public, immutable',
       upsert: true
     })
 

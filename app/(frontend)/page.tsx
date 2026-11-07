@@ -20,10 +20,7 @@ import HomeNav from '@/components/frontend/HomeNav';
 import LiveDate from '@/components/frontend/LiveDate';
 import AdsterraAd from '@/components/frontend/AdsterraAd';
 
-export const dynamic = 'force-dynamic';
-
-
-
+export const revalidate = 60; // ISR cache every 60 seconds at Vercel edge
 
 export const metadata: Metadata = {
   title: 'খেলারদেশ | Bangla Sports News | বাংলা স্পোর্টস নিউজ',
@@ -44,18 +41,12 @@ export const metadata: Metadata = {
   },
 };
 
-export const revalidate = 30; // ISR every 30 seconds
-
 /**
  * Homepage — Section 4 / 8
  * Mobile: Lead → Scores strip → Story feed (sponsor every 3rd)
  * Desktop: 2fr main + 1fr sidebar
  */
 export default async function HomePage() {
-  const { getServerSession } = require('next-auth');
-  const { authOptions } = require('@/lib/auth');
-  const session = await getServerSession(authOptions);
-
   // Fetch data server-side via Supabase
   const [
     leadResult,
@@ -249,7 +240,7 @@ export default async function HomePage() {
 
             {/* Right: Actions */}
             <div className="flex items-center justify-end">
-              <ProfileMenu user={session?.user} />
+              <ProfileMenu />
             </div>
           </div>
 
