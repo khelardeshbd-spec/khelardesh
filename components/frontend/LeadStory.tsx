@@ -49,9 +49,6 @@ export default function LeadStory({ article }: LeadStoryProps) {
               src={mediaUrl}
               alt={displayHeadline}
               loading="lazy"
-              onError={(e) => {
-                (e.target as HTMLElement).style.opacity = '0';
-              }}
               style={{ width: '100%', height: '100%', objectFit: 'cover' }}
               className="group-hover:scale-[1.01] transition-transform duration-500"
             />
