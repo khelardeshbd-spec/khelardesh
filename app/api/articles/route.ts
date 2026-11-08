@@ -58,8 +58,62 @@ export async function GET(request: Request) {
       )
     }
 
-    const { data: articles, count, error } = await query
-    if (error) throw error
+    let articles: any[] = [];
+    let count: number = 0;
+
+    try {
+      const { data, count: exactCount, error } = await query;
+      if (error) throw error;
+      articles = data ?? [];
+      count = exactCount ?? 0;
+    } catch (supaErr) {
+      console.warn('[GET /api/articles] Supabase failed, falling back to PostgreSQL:', supaErr);
+      const { query: dbQuery } = await import('@/lib/db');
+      const conditions: string[] = [`status = 'published'`];
+      const params: any[] = [];
+      let paramIdx = 1;
+
+      if (sport && sport !== 'all') {
+        const sports = sport.includes(',') ? sport.split(',') : [sport];
+        conditions.push(`sport = ANY($${paramIdx})`);
+        params.push(sports);
+        paramIdx++;
+      }
+
+      if (tag) {
+        const cleanTag = tag.replace(/^#/, '');
+        conditions.push(`tags ILIKE $${paramIdx}`);
+        params.push(`%${cleanTag}%`);
+        paramIdx++;
+      }
+
+      if (date) {
+        conditions.push(`"publishedAt" >= $${paramIdx} AND "publishedAt" <= $${paramIdx + 1}`);
+        params.push(`${date}T00:00:00.000Z`, `${date}T23:59:59.999Z`);
+        paramIdx += 2;
+      }
+
+      if (q) {
+        const avroObj = avroParse(q);
+        const avroQuery = avroObj?.bangla || q;
+        conditions.push(`(headline ILIKE $${paramIdx} OR "headlineBn" ILIKE $${paramIdx} OR deck ILIKE $${paramIdx} OR tags ILIKE $${paramIdx} OR headline ILIKE $${paramIdx + 1} OR "headlineBn" ILIKE $${paramIdx + 1})`);
+        params.push(`%${q}%`, `%${avroQuery}%`);
+        paramIdx += 2;
+      }
+
+      const whereClause = conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : '';
+      const countRes = await dbQuery<{ count: string }>(`SELECT COUNT(*) FROM "Article" ${whereClause}`, params);
+      count = parseInt(countRes[0]?.count || '0', 10);
+
+      const dataRes = await dbQuery(
+        `SELECT id, slug, headline, "headlineBn", deck, kicker, sport, "mediaType", "mediaUrl", "mediaCaption", byline, "isLead", "publishedAt", tags 
+         FROM "Article" ${whereClause} 
+         ORDER BY "isLead" DESC, "publishedAt" DESC 
+         LIMIT $${paramIdx} OFFSET $${paramIdx + 1}`,
+        [...params, pageSize, from]
+      );
+      articles = dataRes ?? [];
+    }
 
     const cacheHeaders = q
       ? { 'Cache-Control': 'public, s-maxage=10, stale-while-revalidate=30' }

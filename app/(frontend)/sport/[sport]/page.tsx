@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { supabaseAdmin } from '@/lib/supabase';
+import { fetchSportPageData } from '@/lib/db';
 import LeadStory from '@/components/frontend/LeadStory';
 import ArticleCard from '@/components/frontend/ArticleCard';
 import SponsorBlock from '@/components/frontend/SponsorBlock';
@@ -92,37 +93,48 @@ export default async function SportPage({ params }: PageProps) {
 
   const sportsToQuery = SPORT_MAPPING[params.sport] || [params.sport];
 
-  const [{ data: leadArr }, { data: articles }, { data: scores }, { data: sponsors }] = await Promise.all([
-    supabaseAdmin
-      .from('Article')
-      .select('*')
-      .in('sport', sportsToQuery)
-      .eq('isLead', true)
-      .eq('status', 'published')
-      .order('publishedAt', { ascending: false })
-      .limit(1),
-    supabaseAdmin
-      .from('Article')
-      .select('id, slug, headline, headlineBn, deck, sport, mediaType, mediaUrl, byline, publishedAt')
-      .in('sport', sportsToQuery)
-      .eq('status', 'published')
-      .order('publishedAt', { ascending: false })
-      .limit(20),
-    supabaseAdmin
-      .from('ScoreCard')
-      .select('*')
-      .eq('is_visible', true)
-      .order('isLive', { ascending: false })
-      .order('displayOrder', { ascending: true }),
-    supabaseAdmin
-      .from('Sponsor')
-      .select('*')
-      .eq('isActive', true)
-      .order('displayOrder', { ascending: true }),
-  ]);
+  const dbData = await fetchSportPageData(sportsToQuery);
 
-  const lead = leadArr?.[0] ?? null;
-  const articlesList = articles ?? [];
+  let lead = dbData?.lead ?? null;
+  let articlesList = dbData?.articles ?? [];
+  let scores = dbData?.scores ?? [];
+  let sponsors = dbData?.sponsors ?? [];
+
+  if (!dbData || articlesList.length === 0) {
+    const [{ data: leadArr }, { data: articles }, { data: sScores }, { data: sSponsors }] = await Promise.all([
+      supabaseAdmin
+        .from('Article')
+        .select('*')
+        .in('sport', sportsToQuery)
+        .eq('isLead', true)
+        .eq('status', 'published')
+        .order('publishedAt', { ascending: false })
+        .limit(1),
+      supabaseAdmin
+        .from('Article')
+        .select('id, slug, headline, headlineBn, deck, sport, mediaType, mediaUrl, byline, publishedAt')
+        .in('sport', sportsToQuery)
+        .eq('status', 'published')
+        .order('publishedAt', { ascending: false })
+        .limit(20),
+      supabaseAdmin
+        .from('ScoreCard')
+        .select('*')
+        .eq('is_visible', true)
+        .order('isLive', { ascending: false })
+        .order('displayOrder', { ascending: true }),
+      supabaseAdmin
+        .from('Sponsor')
+        .select('*')
+        .eq('isActive', true)
+        .order('displayOrder', { ascending: true }),
+    ]);
+
+    if (leadArr && leadArr[0]) lead = leadArr[0];
+    if (articles) articlesList = articles;
+    if (sScores) scores = sScores;
+    if (sSponsors) sponsors = sSponsors;
+  }
   const sportBn = SPORT_NAMES[params.sport];
 
   return (

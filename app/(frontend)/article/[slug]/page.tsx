@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import type { Metadata } from 'next';
 import { supabaseAdmin } from '@/lib/supabase';
+import { fetchArticleBySlug, fetchRelatedArticles } from '@/lib/db';
 import ClientFormattedDate from '@/components/frontend/ClientFormattedDate';
 import BookmarkButton from '@/components/frontend/BookmarkButton';
 import ShareButton from '@/components/frontend/ShareButton';
@@ -35,12 +36,16 @@ const SPORT_LABELS: Record<string, string> = {
 };
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const { data: article } = await supabaseAdmin
-    .from('Article')
-    .select('headline, headlineBn, deck, mediaUrl, byline, publishedAt, updatedAt, sport, slug')
-    .eq('slug', params.slug)
-    .eq('status', 'published')
-    .single();
+  let article = await fetchArticleBySlug(params.slug);
+  if (!article) {
+    const { data } = await supabaseAdmin
+      .from('Article')
+      .select('headline, headlineBn, deck, mediaUrl, byline, publishedAt, updatedAt, sport, slug')
+      .eq('slug', params.slug)
+      .eq('status', 'published')
+      .single();
+    article = data;
+  }
 
   if (!article) return { title: 'Not Found' };
 
@@ -92,12 +97,16 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 }
 
 export default async function ArticlePage({ params }: PageProps) {
-  const { data: article } = await supabaseAdmin
-    .from('Article')
-    .select('*')
-    .eq('slug', params.slug)
-    .eq('status', 'published')
-    .single();
+  let article = await fetchArticleBySlug(params.slug);
+  if (!article) {
+    const { data } = await supabaseAdmin
+      .from('Article')
+      .select('*')
+      .eq('slug', params.slug)
+      .eq('status', 'published')
+      .single();
+    article = data;
+  }
 
   if (!article) notFound();
 
@@ -107,22 +116,26 @@ export default async function ArticlePage({ params }: PageProps) {
     byline, publishedAt, tags,
   } = article;
 
-  // Query related articles (same sport or latest, excluding this article)
-  let relatedQuery = supabaseAdmin
-    .from('Article')
-    .select('id, slug, headline, headlineBn, deck, sport, mediaType, mediaUrl, byline, publishedAt')
-    .eq('status', 'published')
-    .neq('id', id);
+  // Query related articles via direct DB pool (fallback to Supabase)
+  let relatedArticles = await fetchRelatedArticles(sport, id, 6);
 
-  if (sport) {
-    relatedQuery = relatedQuery.eq('sport', sport);
+  if (!relatedArticles || relatedArticles.length === 0) {
+    let relatedQuery = supabaseAdmin
+      .from('Article')
+      .select('id, slug, headline, headlineBn, deck, sport, mediaType, mediaUrl, byline, publishedAt')
+      .eq('status', 'published')
+      .neq('id', id);
+
+    if (sport) {
+      relatedQuery = relatedQuery.eq('sport', sport);
+    }
+
+    const { data: relatedData } = await relatedQuery
+      .order('publishedAt', { ascending: false })
+      .limit(6);
+
+    relatedArticles = relatedData ?? [];
   }
-
-  const { data: relatedData } = await relatedQuery
-    .order('publishedAt', { ascending: false })
-    .limit(6);
-
-  let relatedArticles = relatedData ?? [];
 
   // Fallback to latest articles if few related articles found
   if (relatedArticles.length < 3) {

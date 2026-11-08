@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import Image from 'next/image';
 import { supabaseAdmin } from '@/lib/supabase';
+import { fetchHomepageData } from '@/lib/db';
 import HeroSlideshow from '@/components/frontend/HeroSlideshow';
 import LeadStory from '@/components/frontend/LeadStory';
 import HomeSlider from '@/components/frontend/HomeSlider';
@@ -47,116 +48,134 @@ export const metadata: Metadata = {
  * Desktop: 2fr main + 1fr sidebar
  */
 export default async function HomePage() {
-  // Fetch data server-side via Supabase
-  const [
-    leadResult,
-    footballResult,
-    cricketResult,
-    interviewResult,
-    featureResult,
-    specialResult,
-    guestResult,
-    othersResult,
-    didYouKnowResult,
-    onThisDayResult,
-    scoresResult,
-    sponsorsResult
-  ] = await Promise.allSettled([
-    supabaseAdmin
-      .from('Article')
-      .select('*')
-      .eq('isLead', true)
-      .eq('status', 'published')
-      .order('publishedAt', { ascending: false })
-      .limit(5),
-    supabaseAdmin
-      .from('Article')
-      .select('id, slug, headline, headlineBn, deck, sport, mediaType, mediaUrl, byline, publishedAt')
-      .in('sport', ['football', 'bd-football', 'international-football', 'club-football'])
-      .eq('status', 'published')
-      .order('publishedAt', { ascending: false })
-      .limit(10),
-    supabaseAdmin
-      .from('Article')
-      .select('id, slug, headline, headlineBn, deck, sport, mediaType, mediaUrl, byline, publishedAt')
-      .in('sport', ['cricket', 'bd-cricket', 'international-cricket', 'local-cricket'])
-      .eq('status', 'published')
-      .order('publishedAt', { ascending: false })
-      .limit(10),
-    supabaseAdmin
-      .from('Article')
-      .select('id, slug, headline, headlineBn, deck, sport, mediaType, mediaUrl, byline, publishedAt')
-      .eq('sport', 'interview')
-      .eq('status', 'published')
-      .order('publishedAt', { ascending: false })
-      .limit(10),
-    supabaseAdmin
-      .from('Article')
-      .select('id, slug, headline, headlineBn, deck, sport, mediaType, mediaUrl, byline, publishedAt')
-      .eq('sport', 'feature')
-      .eq('status', 'published')
-      .order('publishedAt', { ascending: false })
-      .limit(10),
-    supabaseAdmin
-      .from('Article')
-      .select('id, slug, headline, headlineBn, deck, sport, mediaType, mediaUrl, byline, publishedAt')
-      .eq('sport', 'special')
-      .eq('status', 'published')
-      .order('publishedAt', { ascending: false })
-      .limit(10),
-    supabaseAdmin
-      .from('Article')
-      .select('id, slug, headline, headlineBn, deck, sport, mediaType, mediaUrl, byline, publishedAt')
-      .eq('sport', 'guest-column')
-      .eq('status', 'published')
-      .order('publishedAt', { ascending: false })
-      .limit(10),
-    supabaseAdmin
-      .from('Article')
-      .select('id, slug, headline, headlineBn, deck, sport, mediaType, mediaUrl, byline, publishedAt')
-      .in('sport', ['others', 'other', 'basketball', 'tennis', 'f1', 'rugby', 'athletics', 'table-tennis', 'golf'])
-      .eq('status', 'published')
-      .order('publishedAt', { ascending: false })
-      .limit(10),
-    supabaseAdmin
-      .from('Article')
-      .select('id, slug, headline, headlineBn, deck, sport, mediaType, mediaUrl, byline, publishedAt')
-      .eq('sport', 'did-you-know')
-      .eq('status', 'published')
-      .order('publishedAt', { ascending: false })
-      .limit(5),
-    supabaseAdmin
-      .from('Article')
-      .select('id, slug, headline, headlineBn, deck, sport, mediaType, mediaUrl, byline, publishedAt')
-      .eq('sport', 'on-this-day')
-      .eq('status', 'published')
-      .order('publishedAt', { ascending: false })
-      .limit(5),
-    supabaseAdmin
-      .from('ScoreCard')
-      .select('*')
-      .eq('is_visible', true)
-      .order('isLive', { ascending: false })
-      .order('displayOrder', { ascending: true }),
-    supabaseAdmin
-      .from('Sponsor')
-      .select('*')
-      .eq('isActive', true)
-      .order('displayOrder', { ascending: true }),
-  ]);
+  // Fetch data server-side via direct PostgreSQL pool (immune to REST API quotas)
+  const dbData = await fetchHomepageData();
 
-  const leads = leadResult.status === 'fulfilled' ? (leadResult.value.data ?? []) : [];
-  const footballArticles = footballResult.status === 'fulfilled' ? (footballResult.value.data ?? []) : [];
-  const cricketArticles = cricketResult.status === 'fulfilled' ? (cricketResult.value.data ?? []) : [];
-  const interviewArticles = interviewResult.status === 'fulfilled' ? (interviewResult.value.data ?? []) : [];
-  const featureArticles = featureResult.status === 'fulfilled' ? (featureResult.value.data ?? []) : [];
-  const specialArticles = specialResult.status === 'fulfilled' ? (specialResult.value.data ?? []) : [];
-  const guestArticles = guestResult.status === 'fulfilled' ? (guestResult.value.data ?? []) : [];
-  const othersArticles = othersResult.status === 'fulfilled' ? (othersResult.value.data ?? []) : [];
-  const didYouKnowArticles = didYouKnowResult.status === 'fulfilled' ? (didYouKnowResult.value.data ?? []) : [];
-  const onThisDayArticles = onThisDayResult.status === 'fulfilled' ? (onThisDayResult.value.data ?? []) : [];
-  const scores = scoresResult.status === 'fulfilled' ? (scoresResult.value.data ?? []) : [];
-  const sponsors = sponsorsResult.status === 'fulfilled' ? (sponsorsResult.value.data ?? []) : [];
+  let leads = dbData?.leads ?? [];
+  let footballArticles = dbData?.footballArticles ?? [];
+  let cricketArticles = dbData?.cricketArticles ?? [];
+  let interviewArticles = dbData?.interviewArticles ?? [];
+  let featureArticles = dbData?.featureArticles ?? [];
+  let specialArticles = dbData?.specialArticles ?? [];
+  let guestArticles = dbData?.guestArticles ?? [];
+  let othersArticles = dbData?.othersArticles ?? [];
+  let didYouKnowArticles = dbData?.didYouKnowArticles ?? [];
+  let onThisDayArticles = dbData?.onThisDayArticles ?? [];
+  let scores = dbData?.scores ?? [];
+  let sponsors = dbData?.sponsors ?? [];
+
+  // Fallback to Supabase if DB pool returned nothing
+  if (!dbData || leads.length === 0) {
+    const [
+      leadResult,
+      footballResult,
+      cricketResult,
+      interviewResult,
+      featureResult,
+      specialResult,
+      guestResult,
+      othersResult,
+      didYouKnowResult,
+      onThisDayResult,
+      scoresResult,
+      sponsorsResult
+    ] = await Promise.allSettled([
+      supabaseAdmin
+        .from('Article')
+        .select('*')
+        .eq('isLead', true)
+        .eq('status', 'published')
+        .order('publishedAt', { ascending: false })
+        .limit(5),
+      supabaseAdmin
+        .from('Article')
+        .select('id, slug, headline, headlineBn, deck, sport, mediaType, mediaUrl, byline, publishedAt')
+        .in('sport', ['football', 'bd-football', 'international-football', 'club-football'])
+        .eq('status', 'published')
+        .order('publishedAt', { ascending: false })
+        .limit(10),
+      supabaseAdmin
+        .from('Article')
+        .select('id, slug, headline, headlineBn, deck, sport, mediaType, mediaUrl, byline, publishedAt')
+        .in('sport', ['cricket', 'bd-cricket', 'international-cricket', 'local-cricket'])
+        .eq('status', 'published')
+        .order('publishedAt', { ascending: false })
+        .limit(10),
+      supabaseAdmin
+        .from('Article')
+        .select('id, slug, headline, headlineBn, deck, sport, mediaType, mediaUrl, byline, publishedAt')
+        .eq('sport', 'interview')
+        .eq('status', 'published')
+        .order('publishedAt', { ascending: false })
+        .limit(10),
+      supabaseAdmin
+        .from('Article')
+        .select('id, slug, headline, headlineBn, deck, sport, mediaType, mediaUrl, byline, publishedAt')
+        .eq('sport', 'feature')
+        .eq('status', 'published')
+        .order('publishedAt', { ascending: false })
+        .limit(10),
+      supabaseAdmin
+        .from('Article')
+        .select('id, slug, headline, headlineBn, deck, sport, mediaType, mediaUrl, byline, publishedAt')
+        .eq('sport', 'special')
+        .eq('status', 'published')
+        .order('publishedAt', { ascending: false })
+        .limit(10),
+      supabaseAdmin
+        .from('Article')
+        .select('id, slug, headline, headlineBn, deck, sport, mediaType, mediaUrl, byline, publishedAt')
+        .eq('sport', 'guest-column')
+        .eq('status', 'published')
+        .order('publishedAt', { ascending: false })
+        .limit(10),
+      supabaseAdmin
+        .from('Article')
+        .select('id, slug, headline, headlineBn, deck, sport, mediaType, mediaUrl, byline, publishedAt')
+        .in('sport', ['others', 'other', 'basketball', 'tennis', 'f1', 'rugby', 'athletics', 'table-tennis', 'golf'])
+        .eq('status', 'published')
+        .order('publishedAt', { ascending: false })
+        .limit(10),
+      supabaseAdmin
+        .from('Article')
+        .select('id, slug, headline, headlineBn, deck, sport, mediaType, mediaUrl, byline, publishedAt')
+        .eq('sport', 'did-you-know')
+        .eq('status', 'published')
+        .order('publishedAt', { ascending: false })
+        .limit(5),
+      supabaseAdmin
+        .from('Article')
+        .select('id, slug, headline, headlineBn, deck, sport, mediaType, mediaUrl, byline, publishedAt')
+        .eq('sport', 'on-this-day')
+        .eq('status', 'published')
+        .order('publishedAt', { ascending: false })
+        .limit(5),
+      supabaseAdmin
+        .from('ScoreCard')
+        .select('*')
+        .eq('is_visible', true)
+        .order('isLive', { ascending: false })
+        .order('displayOrder', { ascending: true }),
+      supabaseAdmin
+        .from('Sponsor')
+        .select('*')
+        .eq('isActive', true)
+        .order('displayOrder', { ascending: true }),
+    ]);
+
+    if (leadResult.status === 'fulfilled' && leadResult.value.data) leads = leadResult.value.data;
+    if (footballResult.status === 'fulfilled' && footballResult.value.data) footballArticles = footballResult.value.data;
+    if (cricketResult.status === 'fulfilled' && cricketResult.value.data) cricketArticles = cricketResult.value.data;
+    if (interviewResult.status === 'fulfilled' && interviewResult.value.data) interviewArticles = interviewResult.value.data;
+    if (featureResult.status === 'fulfilled' && featureResult.value.data) featureArticles = featureResult.value.data;
+    if (specialResult.status === 'fulfilled' && specialResult.value.data) specialArticles = specialResult.value.data;
+    if (guestResult.status === 'fulfilled' && guestResult.value.data) guestArticles = guestResult.value.data;
+    if (othersResult.status === 'fulfilled' && othersResult.value.data) othersArticles = othersResult.value.data;
+    if (didYouKnowResult.status === 'fulfilled' && didYouKnowResult.value.data) didYouKnowArticles = didYouKnowResult.value.data;
+    if (onThisDayResult.status === 'fulfilled' && onThisDayResult.value.data) onThisDayArticles = onThisDayResult.value.data;
+    if (scoresResult.status === 'fulfilled' && scoresResult.value.data) scores = scoresResult.value.data;
+    if (sponsorsResult.status === 'fulfilled' && sponsorsResult.value.data) sponsors = sponsorsResult.value.data;
+  }
 
   const inlineSponsors = sponsors.filter((s) => s.placement === 'inline');
   const leftSponsor = sponsors.find((s) => s.placement === 'header-left');

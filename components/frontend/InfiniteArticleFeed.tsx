@@ -82,6 +82,9 @@ function ArticleRow({ article }: { article: Article }) {
               src={article.mediaUrl}
               alt={displayHeadline}
               loading="lazy"
+              onError={(e) => {
+                (e.target as HTMLElement).style.opacity = '0';
+              }}
               style={{
                 width: '100%',
                 height: '100%',

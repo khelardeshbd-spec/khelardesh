@@ -2,6 +2,7 @@ export const dynamic = 'force-dynamic'
 
 import { NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
+import { query } from '@/lib/db'
 
 /**
  * GET /api/articles/lead
@@ -9,16 +10,30 @@ import { supabaseAdmin } from '@/lib/supabase'
  */
 export async function GET() {
   try {
-    const { data: article, error } = await supabaseAdmin
-      .from('Article')
-      .select('*')
-      .eq('isLead', true)
-      .eq('status', 'published')
-      .order('publishedAt', { ascending: false })
-      .limit(1)
-      .single()
+    let article: any = null;
 
-    if (error || !article) {
+    try {
+      const rows = await query(
+        `SELECT * FROM "Article" WHERE "isLead" = true AND status = 'published' ORDER BY "publishedAt" DESC LIMIT 1`
+      );
+      if (rows && rows.length > 0) article = rows[0];
+    } catch (dbErr) {
+      console.error('[GET /api/articles/lead] DB query error:', dbErr);
+    }
+
+    if (!article) {
+      const { data, error } = await supabaseAdmin
+        .from('Article')
+        .select('*')
+        .eq('isLead', true)
+        .eq('status', 'published')
+        .order('publishedAt', { ascending: false })
+        .limit(1)
+        .single();
+      if (!error && data) article = data;
+    }
+
+    if (!article) {
       return NextResponse.json({ error: 'No lead story found' }, { status: 404 })
     }
 
