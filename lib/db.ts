@@ -26,7 +26,7 @@ export function getDbPool(): Pool {
 export async function query<T = any>(text: string, params?: any[]): Promise<T[]> {
   const p = getDbPool();
   const res = await p.query(text, params);
-  return res.rows as T[];
+  return JSON.parse(JSON.stringify(res.rows)) as T[];
 }
 
 export async function fetchHomepageData() {
