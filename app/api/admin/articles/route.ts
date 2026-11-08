@@ -25,12 +25,24 @@ export async function GET() {
   const err = requirePermission(user, 'view_articles')
   if (err) return err
 
-  const { data: articles, error } = await supabaseAdmin
-    .from('Article')
-    .select('id, slug, headline, headlineBn, sport, isLead, publishedAt, byline, views, status, mediaUrl, tags')
-    .order('publishedAt', { ascending: false })
+  let articles: any[] = []
+  try {
+    const { data, error } = await supabaseAdmin
+      .from('Article')
+      .select('id, slug, headline, headlineBn, sport, isLead, publishedAt, byline, views, status, mediaUrl, tags')
+      .order('publishedAt', { ascending: false })
+    if (error) throw error
+    articles = data ?? []
+  } catch (supaErr) {
+    console.warn('[GET /api/admin/articles] Supabase error, falling back to PostgreSQL:', supaErr)
+    const { query } = await import('@/lib/db')
+    articles = await query(
+      `SELECT id, slug, headline, "headlineBn", sport, "isLead", "publishedAt", byline, views, status, "mediaUrl", tags 
+       FROM "Article" 
+       ORDER BY "publishedAt" DESC`
+    )
+  }
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
   return NextResponse.json({ articles: articles ?? [] })
 }
 
@@ -57,36 +69,77 @@ export async function POST(request: NextRequest) {
 
     // Generate unique slug
     const baseSlug = slugify(headline || headlineBn || 'article')
-    const { data: existing } = await supabaseAdmin
-      .from('Article')
-      .select('slug')
-      .like('slug', `${baseSlug}%`)
-    const slug = (existing && existing.length > 0) ? `${baseSlug}-${Date.now()}` : baseSlug
+    let slug = baseSlug
+    try {
+      const { data: existing } = await supabaseAdmin
+        .from('Article')
+        .select('slug')
+        .like('slug', `${baseSlug}%`)
+      if (existing && existing.length > 0) slug = `${baseSlug}-${Date.now()}`
+    } catch {
+      slug = `${baseSlug}-${Date.now()}`
+    }
 
-    const { data: article, error } = await supabaseAdmin
-      .from('Article')
-      .insert({
-        slug,
-        headline,
-        headlineBn: headlineBn || null,
-        deck: deck || '',
-        body: articleBody,
-        kicker: kicker || '',
-        sport,
-        mediaType,
-        mediaUrl,
-        mediaCaption: mediaCaption || null,
-        byline,
-        isLead,
-        tags: tags || null,
-        status,
-        publishedAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      })
-      .select()
-      .single()
+    let article: any = null
+    const nowIso = new Date().toISOString()
 
-    if (error) throw error
+    try {
+      const { data, error } = await supabaseAdmin
+        .from('Article')
+        .insert({
+          slug,
+          headline,
+          headlineBn: headlineBn || null,
+          deck: deck || '',
+          body: articleBody,
+          kicker: kicker || '',
+          sport,
+          mediaType,
+          mediaUrl,
+          mediaCaption: mediaCaption || null,
+          byline,
+          isLead,
+          tags: tags || null,
+          status,
+          publishedAt: nowIso,
+          updatedAt: nowIso,
+        })
+        .select()
+        .single()
+
+      if (error) throw error
+      article = data
+    } catch (supaErr) {
+      console.warn('[POST /api/admin/articles] Supabase insert failed, falling back to PostgreSQL:', supaErr)
+      const { query } = await import('@/lib/db')
+      const rows = await query(
+        `INSERT INTO "Article" (
+          slug, headline, "headlineBn", deck, body, kicker, sport, 
+          "mediaType", "mediaUrl", "mediaCaption", byline, "isLead", 
+          tags, status, "publishedAt", "updatedAt"
+        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16)
+        RETURNING *`,
+        [
+          slug,
+          headline,
+          headlineBn || null,
+          deck || '',
+          articleBody,
+          kicker || '',
+          sport,
+          mediaType,
+          mediaUrl,
+          mediaCaption || null,
+          byline,
+          Boolean(isLead),
+          tags || null,
+          status,
+          nowIso,
+          nowIso,
+        ]
+      )
+      article = rows[0]
+    }
 
     await logActivity({
       actor: user!,
